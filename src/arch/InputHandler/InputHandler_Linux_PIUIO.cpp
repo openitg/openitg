@@ -9,8 +9,6 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 {
 	m_bShutdown = false;
 
-//	IOBoard.FindDevice
-
 	// device found and set
 	if( IOBoard.Open() )
 	{
@@ -19,6 +17,11 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 		InputThread.SetName( "PIUIO thread" );
 		InputThread.Create( InputThread_Start, this );
 	}
+	else
+	{
+		LOG->Warn( "InputHandler_Linux_PIUIO: could not open I/O board." );
+
+
 }
 
 InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()
@@ -33,8 +36,6 @@ InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()
 
 	// remember to delete device handler when finished
 }
-
-
 
 bool InputHandler_Linux_PIUIO::DeviceMatches( int idVendor, int idProduct )
 {
@@ -105,6 +106,7 @@ int InputHandler_Linux_PIUIO::InputThread_Start( void *p )
 void InputHandler_Linux_PIUIO::InputThreadMain()
 {
 	UpdateLights();
+	Write();
 }
 
 void InputHandler_Linux_PIUIO::UpdateLights()

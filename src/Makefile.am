@@ -109,6 +109,12 @@ StepMania = StdString.h \
 LoadingWindow = arch/LoadingWindow/LoadingWindow.h \
 		arch/LoadingWindow/LoadingWindow_Null.h
 
+#if HAVE_LIBUSB
+LIBS += -lusb
+DataStructures += io/USBDriver.cpp io/USBDriver.h \
+		  io/PIUIO.cpp io/PIUIO.h
+#endif
+
 if HAVE_GTK
 LoadingWindow += arch/LoadingWindow/LoadingWindow_Gtk.cpp arch/LoadingWindow/LoadingWindow_Gtk.h
 endif

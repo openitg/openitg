@@ -1,5 +1,6 @@
 #include "global.h"
 #include "RageLog.h"
+#include "RageException.h"
 
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h" // needed for g_LightsState
@@ -15,6 +16,7 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 	// device found and set
 	if( IOBoard.Open() )
 	{
+		LOG->Trace( "Opened I/O board." );
 		m_bFoundDevice = true;
 
 		InputThread.SetName( "PIUIO thread" );
@@ -22,7 +24,7 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 	}
 	else
 	{
-		LOG->Warn( "InputHandler_Linux_PIUIO: could not open I/O board." );
+		sm_crash( "InputHandler_Linux_PIUIO: Failed to open PIU I/O board." );
 	}
 }
 
@@ -57,9 +59,12 @@ int InputHandler_Linux_PIUIO::InputThread_Start( void *p )
 
 void InputHandler_Linux_PIUIO::InputThreadMain()
 {
-	/* For now, we just want to test lights updates. */
-	UpdateLights();
-	IOBoard.Write( m_iLightData );
+	while( !m_bShutdown )
+	{	
+		/* For now, we just want to test lights updates. */
+		UpdateLights();
+		IOBoard.Write( m_iLightData );
+	}
 }
 
 void InputHandler_Linux_PIUIO::UpdateLights()

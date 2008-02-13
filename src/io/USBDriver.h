@@ -13,7 +13,7 @@ public:
 	bool Open();
 	void Close();
 protected:
-	struct usb_device *FindDevice();
+	struct usb_device *FindDevice( usb_bus *usb_busses );
 
 	virtual bool Matches( int idVendor, int idProduct );
 

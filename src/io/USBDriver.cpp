@@ -6,10 +6,14 @@
 
 USBDriver::USBDriver()
 {
+	LOG->Trace( "USBDriver::USBDriver()" );
+	m_pHandle = NULL; // work around segfault
+	usb_init();
 }
 
 USBDriver::~USBDriver()
 {
+	LOG->Trace( "USBDriver::~USBDriver()" );
 	Close();
 }
 
@@ -19,20 +23,28 @@ bool USBDriver::Matches( int idVendor, int idProduct )
 	return false;
 }
 
-struct usb_device *USBDriver::FindDevice()
+struct usb_device *USBDriver::FindDevice( usb_bus *usb_busses )
 {
-	for( usb_bus *bus = usb_get_busses(); bus; bus->next )
-		for( struct usb_device *dev = bus->devices; dev; dev->next )
+	LOG->Trace( "USBDriver::FindDevice()." );
+
+	for( usb_bus *bus = usb_busses; bus; bus = bus->next )
+		for( struct usb_device *dev = bus->devices; dev; dev = dev->next )
 			if( Matches(dev->descriptor.idVendor, dev->descriptor.idProduct) )
+			{
+				LOG->Trace( "FindDevice() got a match." );
 				return dev;
+			}
 
 	// fall through
+	LOG->Trace( "FindDevice() found no matches." );
 	return NULL;
 }
 
 void USBDriver::Close()
 {
-	// already closed
+	LOG->Trace( "USBDriver::Close()" );
+
+	// never opened
 	if( m_pHandle == NULL )
 		return;
 
@@ -44,9 +56,12 @@ void USBDriver::Close()
 
 bool USBDriver::Open()
 {
+	LOG->Trace( "USBDriver::Open()" );
 	Close();
 
+	LOG->Trace( "Attempting to usb_init()." );
 	usb_init();
+	LOG->Trace( "USB subsystem successfully initialized." );
 
 	if( usb_find_busses() < 0 )
 	{
@@ -54,28 +69,29 @@ bool USBDriver::Open()
 		return false;
 	}
 
+	LOG->Trace( "usb_find_busses successful." );
+
 	if( usb_find_devices() < 0 )
 	{
 		LOG->Warn( "usb_find_devices: %s", usb_strerror() );
 		return false;
 	}
-	
-	if( !usb_busses )
-	{
-		LOG->Warn( "usb_busses: %s", usb_strerror() );
-		return false;
-	}
+
+	LOG->Trace( "usb_find_devices successful." );
 
 	// set the device
-	struct usb_device *device = FindDevice();
+	struct usb_device *device = FindDevice( usb_busses );
+
+	LOG->Trace( "device set." );
 
 	if( device == NULL )
 	{
 		LOG->Warn( "USBDriver: could not set usb_device" );
 		return false;
 	}
-	
+
 	m_pHandle = usb_open( device );
+
 	if( m_pHandle == NULL )
 	{
 		LOG->Warn( "usb_open: %s", usb_strerror() );

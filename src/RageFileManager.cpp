@@ -450,7 +450,7 @@ void RageFileManager::Mount( CString Type, CString Root, CString MountPoint, boo
 
 	if( MountPoint.Left(1) != "/" )
 		MountPoint = "/" + MountPoint;
-	ASSERT( Root != "" );
+// 	ASSERT( Root != "" );
 
 	CHECKPOINT_M( ssprintf("\"%s\", \"%s\", \"%s\"",
 		Type.c_str(), Root.c_str(), MountPoint.c_str() ) );

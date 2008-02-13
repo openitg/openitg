@@ -51,7 +51,7 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
 #ifdef USE_INPUT_HANDLER_XBOX
 		if(!s->CompareNoCase("Xbox") )		ret = new InputHandler_Xbox;
 #endif
-#ifdef USE_INPUT_HANDLER_LINUX_PIUIO_NOTIMPL
+#ifdef USE_INPUT_HANDLER_LINUX_PIUIO
 		if(!s->CompareNoCase("PIUIO") )		ret = new InputHandler_Linux_PIUIO;
 #endif
 #ifdef USE_INPUT_HANDLER_LINUX_IOW_NOTIMPL

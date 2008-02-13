@@ -134,6 +134,8 @@ static const CString InputDeviceNames[] = {
 	"Pump2",
 	"Midi",
 	"Para1",
+	"ITGIO",
+	"PIUIO",
 };
 XToString( InputDevice, NUM_INPUT_DEVICES );
 StringToX( InputDevice );

@@ -13,8 +13,9 @@ public:
 	
 	void Set( const LightsState *ls );
 
-	LightsState g_LightsState;
 };
+
+extern LightsState g_LightsState;
 
 #define USE_LIGHTS_DRIVER_EXTERNAL
 

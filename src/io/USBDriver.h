@@ -12,7 +12,6 @@ public:
 
 	bool Open();
 	void Close();
-
 protected:
 	struct usb_device *FindDevice();
 
@@ -22,7 +21,7 @@ protected:
 	int m_iInterfaceNumber;
 };
 
-#endif
+#endif /* IO_USBDRIVER_H */
 
 /*
  * (c) 2008 BoXoRRoXoRs

@@ -7,7 +7,6 @@
 
 #include "InputHandler.h"
 #include "RageThreads.h"
-#include "InputHandler_USBDriver.h"
 #include "io/PIUIO.h"
 
 class InputHandler_Linux_PIUIO: public InputHandler
@@ -16,11 +15,14 @@ public:
 	InputHandler_Linux_PIUIO();
 	~InputHandler_Linux_PIUIO();
 
-	void Update( float fDeltaTime );
+//	for non-threaded input...should we even bother?
+//	void Update( float fDeltaTime );
+	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
 	PIUIO IOBoard;
 	RageThread InputThread;
 
+	bool m_bFoundDevice;
 	bool m_bShutdown;
 	uint32_t m_iLightData;
 

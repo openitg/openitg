@@ -2,8 +2,11 @@
 #include "RageLog.h"
 
 #include "LightsManager.h"
+#include "arch/Lights/LightsDriver_External.h" // needed for g_LightsState
 #include "PrefsManager.h"
 #include "InputHandler_Linux_PIUIO.h"
+
+LightsState g_LightsState;
 
 InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 {
@@ -12,7 +15,7 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 	// device found and set
 	if( IOBoard.Open() )
 	{
-		m_iLightData = 0; // initialise
+		m_bFoundDevice = true;
 
 		InputThread.SetName( "PIUIO thread" );
 		InputThread.Create( InputThread_Start, this );
@@ -20,8 +23,7 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 	else
 	{
 		LOG->Warn( "InputHandler_Linux_PIUIO: could not open I/O board." );
-
-
+	}
 }
 
 InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()
@@ -37,63 +39,13 @@ InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()
 	// remember to delete device handler when finished
 }
 
-bool InputHandler_Linux_PIUIO::DeviceMatches( int idVendor, int idProduct )
-{
-	if( idVendor == 1351 && idProduct == 4098 )
-		return true;
-
-	return false;
-}
-
-bool InputHandler_Linux_PIUIO::Read( u_int32_t *pData )
-{
-	int iResult;
-
-	while( 1 )
-	{
-		iResult = usb_control_msg(device, 192, 174, 0, 0, *pData, 8, 10000);
-		if( iResult == 8 ) // all data read
-			break;
-
-		// all data not read
-		LOG->Trace( "Device error: %s", usb_strerror() );
-		Close();
-	
-		while( !Open() )
-			usleep( 100000 );
-	}
-
-	return true;
-}
-
-bool InputHandler_Linux_PIUIO::Write( u_int32_t iData )
-{
-	int iResult;
-
-	while( 1 )
-	{
-		// XXX: this can't be right...but we'll worry later.
-		iResult = usb_control_msg(device, 64, 174, 0, 0, iData, 8, 10000 );
-		
-		if( iResult == 8 )
-			break;
-		
-		LOG->Trace( "Device error: %s", usb_strerror() );
-		Close();
-
-		while( !Open() )
-			usleep( 100000 );
-	}
-
-	return true;
-}
-
 void InputHandler_Linux_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )
 {
 	if( m_bFoundDevice )
 	{
-//		vDevicesOut.push_back( In
-		vDescriptionsOut.push_back( "Input/lights controller" );
+		// currently a dummy number
+		vDevicesOut.push_back( InputDevice(DEVICE_PIUIO) );
+		vDescriptionsOut.push_back( "PIUIO" );
 	}
 }
 
@@ -105,20 +57,27 @@ int InputHandler_Linux_PIUIO::InputThread_Start( void *p )
 
 void InputHandler_Linux_PIUIO::InputThreadMain()
 {
+	/* For now, we just want to test lights updates. */
 	UpdateLights();
-	Write();
+	IOBoard.Write( m_iLightData );
 }
 
 void InputHandler_Linux_PIUIO::UpdateLights()
 {
 	// XXX: need to check LightsDriver somehow
-	ASSERT( g_LightsState );
 
-	// lighting needs cleaned up - vector/array map?
-	// currently, I just want to get all this outlined.
-	// it might even be completely wrong, but at least
-	// we'll know what we're doing.
+	static const int iCabinetData[NUM_CABINET_LIGHTS-1] = 
+	{ (1 << 22), (1 << 25), (1 << 24), (1 << 23), 0, 0, (1 << 10) };
 
+	// reset
+	m_iLightData = 0;
+
+	// Just do cabinet lights for now and we'll figure the rest later.
+	FOREACH_ENUM( CabinetLight, NUM_CABINET_LIGHTS-1, cl )
+		if( g_LightsState.m_bCabinetLights[cl] )
+			m_iLightData += iCabinetData[cl];
+// for reference	
+#if 0	
 	// probably marquee lights
 	if( g_LightsState[0] ) m_iLightData += (1 << 22);
 	if( g_LightsState[1] ) m_iLightData += (1 << 25);
@@ -140,4 +99,6 @@ void InputHandler_Linux_PIUIO::UpdateLights()
 	if( g_LightsState[29] ) m_iLightData += (1 << 5);
 	if( g_LightsState[30] ) m_iLightData += (1 << 2);
 	if( g_LightsState[31] ) m_iLightData += (1 << 3);
+#endif
 }
+

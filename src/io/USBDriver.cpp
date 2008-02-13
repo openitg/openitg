@@ -82,13 +82,13 @@ bool USBDriver::Open()
 	// set the device
 	struct usb_device *device = FindDevice( usb_busses );
 
-	LOG->Trace( "device set." );
-
 	if( device == NULL )
 	{
 		LOG->Warn( "USBDriver: could not set usb_device" );
 		return false;
 	}
+
+	LOG->Trace( "device set." );
 
 	m_pHandle = usb_open( device );
 

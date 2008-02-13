@@ -9,11 +9,13 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 {
 	m_bShutdown = false;
 
-	// initialise m_pDevice
+//	IOBoard.FindDevice
 
-	// device found and opened
-	if( m_pDevice.Open() )
+	// device found and set
+	if( IOBoard.Open() )
 	{
+		m_iLightData = 0; // initialise
+
 		InputThread.SetName( "PIUIO thread" );
 		InputThread.Create( InputThread_Start, this );
 	}
@@ -102,11 +104,38 @@ int InputHandler_Linux_PIUIO::InputThread_Start( void *p )
 
 void InputHandler_Linux_PIUIO::InputThreadMain()
 {
-
+	UpdateLights();
 }
 
 void InputHandler_Linux_PIUIO::UpdateLights()
 {
 	// XXX: need to check LightsDriver somehow
 	ASSERT( g_LightsState );
+
+	// lighting needs cleaned up - vector/array map?
+	// currently, I just want to get all this outlined.
+	// it might even be completely wrong, but at least
+	// we'll know what we're doing.
+
+	// probably marquee lights
+	if( g_LightsState[0] ) m_iLightData += (1 << 22);
+	if( g_LightsState[1] ) m_iLightData += (1 << 25);
+	if( g_LightsState[2] ) m_iLightData += (1 << 24);
+	if( g_LightsState[3] ) m_iLightData += (1 << 23);
+
+	// probably bass neons
+	if( g_LightsState[6] || g_LightsState[7] )
+		m_iLightData += (1 << 10);
+
+	// pad lighting P1
+	if( g_LightsState[08] ) m_iLightData += (1 << 19);
+	if( g_LightsState[09] ) m_iLightData += (1 << 20);
+	if( g_LightsState[10] ) m_iLightData += (1 << 17);
+	if( g_LightsState[11] ) m_iLightData += (1 << 18);
+
+	// pad lighting P2
+	if( g_LightsState[28] ) m_iLightData += (1 << 4);
+	if( g_LightsState[29] ) m_iLightData += (1 << 5);
+	if( g_LightsState[30] ) m_iLightData += (1 << 2);
+	if( g_LightsState[31] ) m_iLightData += (1 << 3);
 }

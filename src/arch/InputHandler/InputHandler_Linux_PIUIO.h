@@ -1,10 +1,14 @@
 #ifndef INPUT_HANDLER_LINUX_PIUIO_H
 #define INPUT_HANDLER_LINUX_PIUIO_H
 
+/*  I've heard bad things about portability relating to stdint.  /
+/   If you run into any problems, let me know. - Vyhd		 */
+#include <stdint.h>
+
 #include "InputHandler.h"
 #include "RageThreads.h"
 #include "InputHandler_USBDriver.h"
-#include "USBDevice.h"
+#include "io/PIUIO.h"
 
 class InputHandler_Linux_PIUIO: public InputHandler
 {
@@ -14,9 +18,11 @@ public:
 
 	void Update( float fDeltaTime );
 private:
-//	USBDevice *m_pDevice;
+	PIUIO IOBoard;
 	RageThread InputThread;
+
 	bool m_bShutdown;
+	uint32_t m_iLightData;
 
 	static int InputThread_Start( void *p );
 

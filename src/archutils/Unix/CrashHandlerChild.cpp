@@ -262,10 +262,23 @@ static void child_process()
     }
 
 	const char *home = getenv( "HOME" );
-	CString sCrashInfoPath = "/tmp";
+	
+	// I make my first move here...
+// 	CString sCrashInfoPath = "/tmp"; // Commented...
+	CString sCrashInfoPath = "/stats"; // Yeaaa ITG2AC Style!
+
 	if( home )
 		sCrashInfoPath = home;
-	sCrashInfoPath += "/crashinfo.txt";
+		
+	// This is where I make my move!
+	// -- Matt1360
+// 	sCrashInfoPath += "/crashinfo.txt"; // Commented...
+	
+	// Make the variable
+	time_t seconds;
+	seconds = time( NULL );
+	
+	sCrashInfoPath += ssprintf( "/crashlog-%ld.txt" , seconds ); // Timestamped!
 
 	FILE *CrashDump = fopen( sCrashInfoPath, "w+" );
 	if(CrashDump == NULL)
@@ -360,8 +373,7 @@ static void child_process()
             "\n"
             "Please report a bug at:\n"
             "\n"
-            "    " + CRASH_REPORT_URL
-		//"http://sourceforge.net/tracker/?func=add&group_id=37892&atid=421366\n"
+            "    http://sourceforge.net/tracker/?func=add&group_id=37892&atid=421366\n"
             "\n"
             );
 #endif

@@ -327,6 +327,8 @@ inline int GetNumDeviceButtons( InputDevice device )
 	case DEVICE_PUMP2:	return NUM_PUMP_PAD_BUTTONS;
 	case DEVICE_MIDI:	return NUM_MIDI_CHANNELS;
 	case DEVICE_PARA1:	return NUM_PARA_PAD_BUTTONS;
+	case DEVICE_PIUIO:
+	case DEVICE_ITGIO:	return NUM_JOYSTICK_BUTTONS; // dummy
 	default:	ASSERT(0);	return 0;
 	}
 };

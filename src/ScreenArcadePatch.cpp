@@ -194,7 +194,7 @@ bool ScreenArcadePatch::ScanPatch()
 
 bool ScreenArcadePatch::CopyPatch()
 {
-	Root = ssprintf( "/rootfs/stats/patch-unchecked/%s" , aPatches[0].c_str() );
+	Root = ssprintf( "/rootfs/tmp/%s" , aPatches[0].c_str() );
 	if( FileCopy( sFile , Root ) )
 	{
 		m_Status.SetText( "Patch copied! Checking..." );
@@ -234,7 +234,7 @@ bool ScreenArcadePatch::CheckSignature()
 	fZip = new RageFileDriverSlice( rf, 0, filesize - 128 );
 	
 	if (! CryptHelpers::VerifyFile( *fZip, patchSig, patchRSA, sErr ) ) {
-		m_Status.SetText( ssprintf("Patch signature verification failed: %s", sErr.c_str()) );
+		m_Status.SetText( ssprintf("Patch signature verification failed:\n%s", sErr.c_str()) );
 		return false;
 	}
 

@@ -38,6 +38,8 @@ private:
 	
 	CString Type;
 	CString Root;
+
+	CString m_sSuccessMsg;
 	
 	RageFile fPatch;
 	

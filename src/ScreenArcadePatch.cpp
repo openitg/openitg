@@ -14,6 +14,8 @@
 #include "RageFileManager.h"
 #include "RageFileDriverSlice.h"
 #include "CryptHelpers.h"
+#include "RageFileDriverZip.h"
+#include "XmlFile.h"
 
 #include "Foreach.h"		// Foreach loops without the command is hard.
 #include "MemoryCardManager.h"	// Where else are we getting the patch from?
@@ -114,7 +116,7 @@ bool ScreenArcadePatch::CommitPatch()
 				if( CheckSignature() )
 					if( CheckXml() )
 					{
-						m_Status.SetText("Success!");
+						m_Status.SetText(m_sSuccessMsg);
 						return true;
 					}
 		}
@@ -237,12 +239,39 @@ bool ScreenArcadePatch::CheckSignature()
 	}
 
 	m_Status.SetText( "Patch signature verified :)" );
-	return false;
+	return true;
 }
 
 bool ScreenArcadePatch::CheckXml()
 {
+	CString sErr, sResultMessage;
+	int iErr;
+	unsigned filesize;
+	RageFileBasic *fRoot, *fScl, *fXml;
+	RageFileDriverZip *rfdZip = new RageFileDriverZip;
+	XNode *rNode = new XNode;
+
+	fRoot = FILEMAN->Open( Root, RageFile::READ, iErr );
+	filesize = GetFileSizeInBytes( Root ) - 128;
+	fScl = new RageFileDriverSlice( fRoot, 0, filesize );
+
+	
+	if (! rfdZip->Load(fScl)) {
+		m_Status.SetText( "Patch XML data check failed" );
+		return false;
+	}
+
+	fXml = rfdZip->Open("patch.xml", RageFile::READ, iErr );
+
+	if (fXml == NULL) {
+		m_Status.SetText( "Could not open patch.xml" );
+		return false;
+	}
+
+	rNode->m_sName = "Patch";
+	rNode->LoadFromFile(*fXml);
+	m_sSuccessMsg = rNode->GetChildValue("Message");
+	
 	return true;
 }
-
 

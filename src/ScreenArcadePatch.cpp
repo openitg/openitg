@@ -11,6 +11,9 @@
 #include "GameManager.h"
 #include "PrefsManager.h"
 #include "RageInput.h"
+#include "RageFileManager.h"
+#include "RageFileDriverSlice.h"
+#include "CryptHelpers.h"
 
 #include "Foreach.h"		// Foreach loops without the command is hard.
 #include "MemoryCardManager.h"	// Where else are we getting the patch from?
@@ -29,17 +32,20 @@ ScreenArcadePatch::ScreenArcadePatch( CString sClassName ) : ScreenWithMenuEleme
 void ScreenArcadePatch::Init()
 {
 	ScreenWithMenuElements::Init();
+
 	this->SortByDrawOrder();
 	
-	m_Status.LoadFromFont( THEME->GetPathF("Common","normal") );
-	m_Patch.LoadFromFont( THEME->GetPathF("Common","normal") );
+	m_Status.LoadFromFont( THEME->GetPathF("ScreenArcadePatch","text") );
+	m_Patch.LoadFromFont( THEME->GetPathF("ScreenArcadePatch","text") );
 	
 	m_Status.SetName( "State" );
 	m_Patch.SetName( "List" );
 	
 	m_Status.SetXY( SCREEN_CENTER_X , SCREEN_CENTER_Y );
 	m_Patch.SetXY( SCREEN_CENTER_X , SCREEN_CENTER_Y + 200 );
-	
+
+	m_Status.SetZoom( 0.6 );
+
 	m_Status.SetHidden( false );
 	m_Patch.SetHidden( true );
 	
@@ -148,7 +154,7 @@ bool ScreenArcadePatch::MountCards()
 	if( sDir.Right( 1 ) != "/" )
 		sDir += "/";
 	
-	sFullDir = sDir + "*.itg";
+	sFullDir = sDir + "ITG 2 *.itg";
 	
 	// Finally mount the card
 	if( MEMCARDMAN->MountCard( pn ) )
@@ -186,7 +192,7 @@ bool ScreenArcadePatch::ScanPatch()
 
 bool ScreenArcadePatch::CopyPatch()
 {
-	Root = ssprintf( "/stats/patch-unchecked/%s" , aPatches[0].c_str() );
+	Root = ssprintf( "/rootfs/stats/patch-unchecked/%s" , aPatches[0].c_str() );
 	if( FileCopy( sFile , Root ) )
 	{
 		m_Status.SetText( "Patch copied! Checking..." );
@@ -206,27 +212,37 @@ bool ScreenArcadePatch::UnmountCards()
 
 bool ScreenArcadePatch::CheckSignature()
 {
+	int iErr;
+	unsigned filesize;
+	CString patchRSA, patchSig, sErr;
+	RageFileBasic *fSig, *fZip;
+
+	RageFileBasic *rf = FILEMAN->Open( Root, RageFile::READ, iErr );
+	filesize = GetFileSizeInBytes( Root );
+
+	/////////// LOLOLOLOLOLOLOL /////////////
+	GetFileContents("/Data/Patch.rsa", patchRSA);
+	///////////////////////////////////////////////////////////
+
+	fSig = new RageFileDriverSlice( rf, filesize - 128, 128 );
+	if (fSig->Read(patchSig, 128) < 128) {
+		m_Status.SetText( "Patch signature verification failed: unexpected end of file" );
+		return false;
+	}
+	fZip = new RageFileDriverSlice( rf, 0, filesize - 128 );
 	
-	
-	return true;
+	if (! CryptHelpers::VerifyFile( *fZip, patchSig, patchRSA, sErr ) ) {
+		m_Status.SetText( ssprintf("Patch signature verification failed: %s", sErr.c_str()) );
+		return false;
+	}
+
+	m_Status.SetText( "Patch signature verified :)" );
+	return false;
 }
 
 bool ScreenArcadePatch::CheckXml()
 {
 	return true;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

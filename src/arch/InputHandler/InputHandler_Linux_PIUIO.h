@@ -4,6 +4,7 @@
 #include "InputHandler.h"
 #include "RageThreads.h"
 #include "InputHandler_USBDriver.h"
+#include "USBDevice.h"
 
 class InputHandler_Linux_PIUIO: public InputHandler
 {
@@ -13,7 +14,7 @@ public:
 
 	void Update( float fDeltaTime );
 private:
-	USBDevice *m_pDevice;
+//	USBDevice *m_pDevice;
 	RageThread InputThread;
 	bool m_bShutdown;
 

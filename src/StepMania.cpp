@@ -1028,6 +1028,22 @@ int main(int argc, char* argv[])
 	}
 	MountTreeOfZips( ZIPS_DIR );
 
+	{
+		CStringArray dzips;
+
+		GetDirListing( "/CryptPackages/d*.zip", dzips, false, true );
+
+		for( unsigned i = 0; i < dzips.size(); ++i )
+		{
+			if( !IsAFile(dzips[i]) )
+				continue;
+
+			LOG->Trace( "VFS: found %s (crypt)", dzips[i].c_str() );
+			FILEMAN->Mount( "kry", dzips[i], "/" );
+		}
+	}
+
+
 	/* One of the above filesystems might contain files that affect preferences, eg Data/Static.ini.
 	 * Re-read preferences. */
 	PREFSMAN->ReadGlobalPrefsFromDisk();

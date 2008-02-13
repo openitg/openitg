@@ -84,7 +84,7 @@ bool USBDriver::Open()
 
 	if( device == NULL )
 	{
-		LOG->Warn( "USBDriver: could not set usb_device" );
+		LOG->Warn( "USBDriver: could not set usb_device." );
 		return false;
 	}
 

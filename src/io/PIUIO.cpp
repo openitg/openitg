@@ -8,8 +8,6 @@ bool PIUIO::Matches( int idVendor, int idProduct )
 	if( idVendor == 0x547 && idProduct == 0x1002 )
 		return true;
 
-	LOG->Trace( "Not a match. idVendor %u, idProduct %u", idVendor, idProduct );
-
 	return false;
 }
 

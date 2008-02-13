@@ -850,6 +850,7 @@ static void MountTreeOfZips( const CString &dir )
 		vector<CString> zips;
 		GetDirListing( path + "/*.zip", zips, false, true );
 		GetDirListing( path + "/*.smzip", zips, false, true );
+		GetDirListing( path + "/*.dxl" , zips, false, true );
 
 		for( unsigned i = 0; i < zips.size(); ++i )
 		{

@@ -277,14 +277,22 @@ void RageFileManager::MountInitialFilesystems()
 	/* Search for a directory with "Songs" in it.  Be careful: the CWD is likely to
 	 * be ~, and it's possible that some users will have a ~/Songs/ directory that
 	 * has nothing to do with us, so check the initial directory last. */
+	 
+	 
+	RageFileManager::Mount( "dir" , "/stats/" , "/Data" );
+	RageFileManager::Mount( "dir" , "/dxldata" , "/Packages" );
+	
 	CString Root = "";
 	struct stat st;
 	if( Root == "" && !stat( DirOfExecutable + "/Songs", &st ) && st.st_mode&S_IFDIR )
 		Root = DirOfExecutable;
 	if( Root == "" && !stat( InitialWorkingDirectory + "/Songs", &st ) && st.st_mode&S_IFDIR )
 		Root = InitialWorkingDirectory;
-	if( Root == "" )
-		RageException::Throw( "Couldn't find \"Songs\"" );
+// 	if( Root == "" )
+// 		RageException::Throw( "Couldn't find \"Songs\"" );
+	// Disabled above, for it crashes if there is no primary Songs directory
+	// I'm loading off zips and additional folders...I don't want no crashes...
+	// -- Matt1360
 			
 	RageFileManager::Mount( "dir", Root, "/" );
 #elif defined(_WINDOWS)

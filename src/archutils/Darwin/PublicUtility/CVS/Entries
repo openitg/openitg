@@ -1,0 +1,14 @@
+/CAAudioHardwareDevice.cpp/1.1/Wed Mar 24 16:59:17 2004//D2005.06.19.04.00.00
+/CAAudioHardwareDevice.h/1.1/Wed Mar 24 16:59:17 2004//D2005.06.19.04.00.00
+/CAAudioHardwareStream.cpp/1.1/Wed Mar 24 16:59:17 2004//D2005.06.19.04.00.00
+/CAAudioHardwareStream.h/1.1/Wed Mar 24 16:59:17 2004//D2005.06.19.04.00.00
+/CAAudioHardwareSystem.cpp/1.1/Wed Mar 24 16:59:17 2004//D2005.06.19.04.00.00
+/CAAudioHardwareSystem.h/1.1/Wed Mar 24 16:59:17 2004//D2005.06.19.04.00.00
+/CAAutoDisposer.h/1.2/Mon Apr  5 05:21:59 2004//D2005.06.19.04.00.00
+/CAConditionalMacros.h/1.1/Wed Mar 24 17:14:49 2004//D2005.06.19.04.00.00
+/CADebugMacros.h/1.1/Wed Mar 24 17:20:17 2004//D2005.06.19.04.00.00
+/CAException.h/1.1/Wed Mar 24 16:59:17 2004//D2005.06.19.04.00.00
+/CAPrefix.h/1.2/Mon Apr  5 05:21:59 2004//D2005.06.19.04.00.00
+/CAStreamBasicDescription.cpp/1.1/Wed Mar 24 16:59:17 2004//D2005.06.19.04.00.00
+/CAStreamBasicDescription.h/1.2/Mon Apr  5 05:21:59 2004//D2005.06.19.04.00.00
+D

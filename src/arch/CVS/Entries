@@ -1,0 +1,14 @@
+/arch.cpp/1.85/Thu May 26 00:35:51 2005//D2005.06.19.04.00.00
+/arch.h/1.42/Mon May 16 19:47:28 2005//D2005.06.19.04.00.00
+/arch_default.h/1.23/Sat May 14 02:29:18 2005//D2005.06.19.04.00.00
+/arch_platform.h/1.8/Wed May  4 05:08:49 2005//D2005.06.19.04.00.00
+D/ArchHooks////
+D/Dialog////
+D/InputHandler////
+D/Lights////
+D/LoadingWindow////
+D/LowLevelWindow////
+D/MemoryCard////
+D/MovieTexture////
+D/Sound////
+D/Threads////

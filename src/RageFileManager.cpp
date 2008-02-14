@@ -279,7 +279,7 @@ void RageFileManager::MountInitialFilesystems()
 	 * has nothing to do with us, so check the initial directory last. */
 	 
 	 
-	RageFileManager::Mount( "dir" , "/stats/" , "/Data" );
+	RageFileManager::Mount( "dir" , "/stats" , "/Data" );
 	RageFileManager::Mount( "dir" , "/dxldata" , "/Packages" );
 	
 	CString Root = "";
@@ -293,8 +293,9 @@ void RageFileManager::MountInitialFilesystems()
 	// Disabled above, for it crashes if there is no primary Songs directory
 	// I'm loading off zips and additional folders...I don't want no crashes...
 	// -- Matt1360
-			
-	RageFileManager::Mount( "dir", Root, "/" );
+
+	// not standard for ITG file structure, keep commented out			
+	//RageFileManager::Mount( "dir", Root, "/" );
 #elif defined(_WINDOWS)
 	/* All Windows data goes in the directory one level above the executable. */
 	CHECKPOINT_M( ssprintf( "DOE \"%s\"", DirOfExecutable.c_str()) );

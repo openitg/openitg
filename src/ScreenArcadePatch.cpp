@@ -38,12 +38,14 @@ ScreenArcadePatch::ScreenArcadePatch( CString sClassName ) : ScreenWithMenuEleme
 static BitmapText *m_PatchStatus;
 static bool g_doReboot;
 
+int GetRevision();
+
 ScreenArcadePatch::~ScreenArcadePatch()
 {
 	LOG->Warn( "ScreenArcadePatch::~ScreenArcadePatch() %i", (int)g_doReboot );
 	if (g_doReboot)
 	{
-		LOG->Warn("REBOOTING");
+		LOG->Warn("ZOMG REBOOTING");
 		struct stat ncr; // lol get it?
 		if ( stat("/tmp/no-crash-reboot", &ncr) != 0 )
 		{
@@ -56,6 +58,10 @@ ScreenArcadePatch::~ScreenArcadePatch()
 			//GAMESTATE->EndGame();
 			exit(0);
 		}
+	}
+	else
+	{
+		LOG->Warn("ZOMG NOT REBOOTING");
 	}
 }
 
@@ -126,11 +132,11 @@ int ScreenArcadePatch::CommitPatch()
 
 void ScreenArcadePatch::Update( float fDeltaTime )
 {
+	Screen::Update(fDeltaTime);
 	if( !bChecking )
 	{
 		CommitPatch();
 	}
-	Screen::Update(fDeltaTime);
 }
 
 void ScreenArcadePatch::DrawPrimitives()
@@ -242,8 +248,8 @@ void UpdatePatchCopyProgress( float fPercent )
 	
 	//SCREENMAN->OverlayMessage( sText );
 	m_PatchStatus->SetText( sText );
-	//SCREENMAN->Draw();
 	m_PatchStatus->Draw();
+	SCREENMAN->Draw();
 }
 
 bool ScreenArcadePatch::CopyPatch()

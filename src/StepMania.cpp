@@ -1039,7 +1039,7 @@ int main(int argc, char* argv[])
 				continue;
 
 			LOG->Trace( "VFS: found %s (crypt)", dzips[i].c_str() );
-			FILEMAN->Mount( "kry", dzips[i], "/" );
+			FILEMAN->Mount( "zip", dzips[i], "/" );
 		}
 	}
 

@@ -4,11 +4,13 @@
 #include "ScreenWithMenuElements.h"
 #include "BitmapText.h"
 #include "RageFile.h"
+#include "RageThreads.h"
 
 class ScreenArcadePatch : public ScreenWithMenuElements
 {
 public:
 	ScreenArcadePatch( CString sName );
+	~ScreenArcadePatch();
 
 	virtual void Init();
 
@@ -20,27 +22,30 @@ public:
 	virtual void MenuStart( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn );
 	
-	virtual bool CommitPatch();
-	virtual bool CheckCards();
-	virtual bool MountCards();
-	virtual bool ScanPatch();
-	virtual bool CopyPatch();
-	virtual bool UnmountCards();
-	virtual bool CheckSignature();
-	virtual bool CheckXml();
 
-private:
-	BitmapText m_Status;
-	BitmapText m_Patch;
-	PlayerNumber pn;
 	bool bChecking;
 	bool bScanned;
+	BitmapText m_Status;
+	CString m_sSuccessMsg;
+	
+private:
+	int CommitPatch();
+	bool CheckCards();
+	bool MountCards();
+	bool ScanPatch();
+	bool CopyPatch();
+	bool UnmountCards();
+	bool CheckSignature();
+	bool CheckXml();
+	bool CopyPatchContents();
+	//void *UpdatePatchCopyProgress(float fPercent);
+
+	BitmapText m_Patch;
+	PlayerNumber pn;
 	
 	CString Type;
 	CString Root;
 
-	CString m_sSuccessMsg;
-	
 	RageFile fPatch;
 	
 	CString sFullDir;

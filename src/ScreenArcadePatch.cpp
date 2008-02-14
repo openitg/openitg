@@ -3,6 +3,7 @@
 #include "ScreenManager.h"
 #include "RageLog.h"
 #include "InputMapper.h"
+#include "LuaManager.h"
 #include "GameState.h"
 #include "GameSoundManager.h"
 #include "ThemeManager.h"
@@ -24,11 +25,38 @@
 #include "RageUtil.h"		// I need this for copying the patch
 #include "RageFile.h"		// For the .itg extraction
 
+#include <sys/stat.h>
+#include <sys/reboot.h>
+
 REGISTER_SCREEN_CLASS( ScreenArcadePatch );
 
 ScreenArcadePatch::ScreenArcadePatch( CString sClassName ) : ScreenWithMenuElements( sClassName )
 {
 	LOG->Trace( "ScreenArcadePatch::ScreenArcadePatch()" );
+}
+
+static BitmapText *m_PatchStatus;
+static bool g_doReboot;
+
+ScreenArcadePatch::~ScreenArcadePatch()
+{
+	LOG->Warn( "ScreenArcadePatch::~ScreenArcadePatch() %i", (int)g_doReboot );
+	if (g_doReboot)
+	{
+		LOG->Warn("REBOOTING");
+		struct stat ncr; // lol get it?
+		if ( stat("/tmp/no-crash-reboot", &ncr) != 0 )
+		{
+			LOG->Warn("Hard reboot commence...");
+			reboot(RB_AUTOBOOT);
+		}
+		else
+		{
+			LOG->Warn("SM Quit commence...");
+			//GAMESTATE->EndGame();
+			exit(0);
+		}
+	}
 }
 
 void ScreenArcadePatch::Init()
@@ -48,13 +76,16 @@ void ScreenArcadePatch::Init()
 
 	m_Status.SetZoom( 0.6 );
 
-	m_Status.SetHidden( false );
+	//m_Status.SetHidden( false );
 	m_Patch.SetHidden( true );
 	
 	this->AddChild( &m_Status );
 	this->AddChild( &m_Patch );
 	
 	bChecking = false;
+	m_PatchStatus = &m_Status;
+	g_doReboot = false;
+	
 }
 
 void ScreenArcadePatch::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
@@ -64,10 +95,41 @@ void ScreenArcadePatch::Input( const DeviceInput& DeviceI, const InputEventType 
 	Screen::Input( DeviceI, type, GameI, MenuI, StyleI );
 }
 
+int ScreenArcadePatch::CommitPatch()
+{
+	if( CheckCards() )
+	{
+		if( MountCards() )
+		{
+			if( ScanPatch() )
+				CopyPatch();
+			
+			UnmountCards();
+			
+			if( bScanned )
+				if( CheckSignature() )
+					if( CheckXml() )
+					{
+						if ( CopyPatchContents() )
+						{
+							m_Status.SetText(m_sSuccessMsg);
+							g_doReboot = true;
+							return 0;
+						}
+					}
+		}
+	} else
+		bChecking = false;
+	
+	return -1;
+}
+
 void ScreenArcadePatch::Update( float fDeltaTime )
 {
 	if( !bChecking )
+	{
 		CommitPatch();
+	}
 	Screen::Update(fDeltaTime);
 }
 
@@ -99,31 +161,6 @@ void ScreenArcadePatch::MenuBack( PlayerNumber pn )
 		SCREENMAN->PlayStartSound();
 		StartTransitioning( SM_GoToPrevScreen );		
 	}
-}
-
-bool ScreenArcadePatch::CommitPatch()
-{
-	if( CheckCards() )
-	{
-		if( MountCards() )
-		{
-			if( ScanPatch() )
-				CopyPatch();
-			
-			UnmountCards();
-			
-			if( bScanned )
-				if( CheckSignature() )
-					if( CheckXml() )
-					{
-						m_Status.SetText(m_sSuccessMsg);
-						return true;
-					}
-		}
-	} else
-		bChecking = false;
-	
-	return false;
 }
 
 // Check the Cards Presence
@@ -192,10 +229,27 @@ bool ScreenArcadePatch::ScanPatch()
 	return true;
 }
 
+// lol thanx Vyhd
+
+// XXX: SOMEONE GET THIS TO WORK D=
+void UpdatePatchCopyProgress( float fPercent )
+{
+	LOG->Trace( "UpdatePatchCopyProgress( %f ), BitmapText.GetText() = %s", fPercent , m_PatchStatus->GetText().c_str());
+
+	CString sText = ssprintf( "Copying patch (%u%%)\n\n"
+		"Please do not remove the USB Card.", 
+		(int)(fPercent) );
+	
+	//SCREENMAN->OverlayMessage( sText );
+	m_PatchStatus->SetText( sText );
+	//SCREENMAN->Draw();
+	m_PatchStatus->Draw();
+}
+
 bool ScreenArcadePatch::CopyPatch()
 {
-	Root = ssprintf( "/rootfs/tmp/%s" , aPatches[0].c_str() );
-	if( FileCopy( sFile , Root ) )
+	Root = "/rootfs/tmp/" + aPatches[0];
+	if( CopyWithProgress( sFile , Root, &UpdatePatchCopyProgress ) )
 	{
 		m_Status.SetText( "Patch copied! Checking..." );
 		return true;
@@ -234,7 +288,7 @@ bool ScreenArcadePatch::CheckSignature()
 	fZip = new RageFileDriverSlice( rf, 0, filesize - 128 );
 	
 	if (! CryptHelpers::VerifyFile( *fZip, patchSig, patchRSA, sErr ) ) {
-		m_Status.SetText( ssprintf("Patch signature verification failed:\n%s", sErr.c_str()) );
+		m_Status.SetText( ssprintf("Patch signature verification failed: %s", sErr.c_str()) );
 		return false;
 	}
 
@@ -245,7 +299,7 @@ bool ScreenArcadePatch::CheckSignature()
 bool ScreenArcadePatch::CheckXml()
 {
 	CString sErr, sResultMessage;
-	int iErr;
+	int iErr, iRevNum;
 	unsigned filesize;
 	RageFileBasic *fRoot, *fScl, *fXml;
 	RageFileDriverZip *rfdZip = new RageFileDriverZip;
@@ -257,21 +311,96 @@ bool ScreenArcadePatch::CheckXml()
 
 	
 	if (! rfdZip->Load(fScl)) {
-		m_Status.SetText( "Patch XML data check failed" );
+		m_Status.SetText( "Patch XML data check failed, could not load .itg file" );
 		return false;
 	}
 
 	fXml = rfdZip->Open("patch.xml", RageFile::READ, iErr );
 
 	if (fXml == NULL) {
-		m_Status.SetText( "Could not open patch.xml" );
+		m_Status.SetText( "Patch XML data check failed, Could not open patch.xml" );
 		return false;
 	}
 
 	rNode->m_sName = "Patch";
 	rNode->LoadFromFile(*fXml);
+
+	// I don't care what game it is
+	if (rNode->GetChild("Game")==NULL || rNode->GetChild("Revision")==NULL || rNode->GetChild("Message")==NULL) {
+		m_Status.SetText( "Cannot proceed update, patch.xml corrupt" );
+		return false;
+	}
+	rNode->GetChild("Revision")->GetValue(iRevNum);
+	if (GetRevision() == iRevNum) {
+		m_Status.SetText( "Cannot proceed update, revision on USB card is the same as the machine revision" );
+		return false;
+	}
+
 	m_sSuccessMsg = rNode->GetChildValue("Message");
 	
 	return true;
 }
 
+bool ScreenArcadePatch::CopyPatchContents()
+{
+	CString sErr;
+	int iErr;
+	RageFileDriverZip *rfdZip = new RageFileDriverZip;
+	vector<CString> patchDirs;
+	bool bReadError;
+
+	if (! rfdZip->Load( Root ) )
+	{
+		m_Status.SetText( "Could not copy patch contents" );
+		return false;
+	}
+
+	if (IsADirectory("Data/new-patch-unchecked")) {
+		FILEMAN->Remove("Data/new-patch-unchecked/*");
+		FILEMAN->Remove("Data/new-patch-unchecked");
+	}		
+	FILEMAN->CreateDir( "Data/new-patch-unchecked" );
+
+	// MountTreeOfZips copycat ;)
+	patchDirs.push_back("/");
+	while ( patchDirs.size() )
+	{
+		CString sDirPath = patchDirs.back();
+		patchDirs.pop_back();
+
+		vector<CString> patchFiles;
+
+		rfdZip->GetDirListing( sDirPath + "/*", patchFiles, false, true );
+		
+		for (unsigned i = 0; i < patchFiles.size(); i++)
+		{
+			CString sPath = patchFiles[i];
+			if ( rfdZip->GetFileType( sPath ) != RageFileManager::TYPE_FILE )
+				continue;
+
+			LOG->Trace("ScreenArcadePatch::CopyPatchContents(): copying %s", sPath.c_str());
+			RageFileBasic *fCopySrc;
+			RageFile fCopyDest;
+			fCopySrc = rfdZip->Open( sPath, RageFile::READ, iErr );
+			fCopyDest.Open( "Data/new-patch-unchecked/" + sPath, RageFile::WRITE );
+			if (! FileCopy( *fCopySrc, fCopyDest, sErr, &bReadError ) )
+			{
+				LOG->Warn("Failed to copy file %s", sPath.c_str() );
+				m_Status.SetText( ssprintf("Failed to copy file %s, cannot proceed", sPath.c_str()) );
+				return false;
+			}
+			const RageFileDriverZip::FileInfo *fi = rfdZip->GetFileInfo( sPath );
+			fCopyDest.Close();
+
+			sPath = "/stats/new-patch-unchecked/" + sPath;
+			chmod( sPath.c_str(), fi->m_iFilePermissions );
+
+			
+		}
+		rfdZip->GetDirListing( sDirPath + "/*", patchDirs, true, true );
+
+	}
+	// defeats the purpose of Win32 portability
+	rename("/stats/new-patch-unchecked", "/stats/new-patch" );
+	return true;		
+}

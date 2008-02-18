@@ -1605,53 +1605,11 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bRe
 	return true;
 }
 
-bool CopyWithProgress( RageFileBasic &in, RageFileBasic &out, RageFileBasic &read,
-		       CString &sError, void(*OnUpdate)(float), bool *bReadError )
-{
-	int iTarget = in.GetFileSize();
-	float fPercent;
-	while(1)
-	{
-		CString data;
-		if( in.Read(data, 1024*32) == -1 )
-		{
-			sError = ssprintf( "read error: %s", in.GetError().c_str() );
-			if( bReadError != NULL )
-				*bReadError = true;
-			return false;
-		}
-		if( data.empty() )
-			break;
-		int i = out.Write(data);
-		if( i == -1 )
-		{
-			sError = ssprintf( "write error: %s", out.GetError().c_str() );
-			if( bReadError != NULL )
-				*bReadError = false;
-			return false;
-		}
-
-		// now, update our loop
-
-
-		fPercent = (float)(read.GetFileSize() / iTarget);
-		LOG->Trace( "Copying.... %f done. %u of %u.", fPercent, read.GetFileSize(), iTarget );
-		OnUpdate( fPercent );
-	}
-
-	if( out.Flush() == -1 )
-	{
-		sError = ssprintf( "write error: %s", out.GetError().c_str() );
-		if( bReadError != NULL )
-			*bReadError = false;
-		return false;
-	}
-
-	return true;
-}
+/* Removed obsolete/unused function -- Vyhd */
 
 /*
  * Copyright (c) 2001-2004 Chris Danford, Glenn Maynard
+ * Copyright (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

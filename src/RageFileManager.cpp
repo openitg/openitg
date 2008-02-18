@@ -277,11 +277,12 @@ void RageFileManager::MountInitialFilesystems()
 	/* Search for a directory with "Songs" in it.  Be careful: the CWD is likely to
 	 * be ~, and it's possible that some users will have a ~/Songs/ directory that
 	 * has nothing to do with us, so check the initial directory last. */
-	 
-	 
-	RageFileManager::Mount( "dir" , "/stats" , "/Data" );
-	RageFileManager::Mount( "dir" , "/dxldata" , "/Packages" );
-	
+
+	/* Not yet, matt. We want this to stay self-contained	*
+	 * until the beta stage. :) - Vyhd			*/
+	//RageFileManager::Mount( "dir" , "/stats/" , "/Data" );
+	//RageFileManager::Mount( "dir" , "/dxldata" , "/Packages" );
+
 	CString Root = "";
 	struct stat st;
 	if( Root == "" && !stat( DirOfExecutable + "/Songs", &st ) && st.st_mode&S_IFDIR )
@@ -294,8 +295,10 @@ void RageFileManager::MountInitialFilesystems()
 	// I'm loading off zips and additional folders...I don't want no crashes...
 	// -- Matt1360
 
-	// not standard for ITG file structure, keep commented out			
-	//RageFileManager::Mount( "dir", Root, "/" );
+	// not standard for ITG file structure, keep commented out
+	// Bad idea - this breaks all file loading on Linux. -- Vyhd
+	RageFileManager::Mount( "dir", Root, "/" );
+
 #elif defined(_WINDOWS)
 	/* All Windows data goes in the directory one level above the executable. */
 	CHECKPOINT_M( ssprintf( "DOE \"%s\"", DirOfExecutable.c_str()) );

@@ -386,6 +386,7 @@ main_LDADD = \
 
 stepmania_SOURCES = $(main_SOURCES)
 stepmania_LDADD = $(main_LDADD)
+#	$(srcdir)/ffmpeg/lib/libavcodec.a $(srcdir)/ffmpeg/lib/libavformat.a
 
 if HAVE_GTK
 bin_PROGRAMS += GtkModule.so

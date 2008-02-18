@@ -7,6 +7,7 @@
 
 #include <fcntl.h>
 #include <cerrno>
+// XXX: is this stuff portable? I have no idea. - Vyhd
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -19,6 +20,9 @@
 #endif
 #include <io.h>
 #endif
+
+/* courtesy of random.org. This is for future testing. -- Vyhd */
+#define DEFAULT_AES_KEY "65487573252940086457044055343188392138734144585"
 
 //#define tell( handle ) lseek( handle, 0L, SEEK_CUR )
 //#define _tell tell
@@ -55,9 +59,9 @@ RageFileBasic *RageFileDriverCrypt::Open( const CString &path, int mode, int &er
 	FDB->ResolvePath( sPath );
 
 	crypt_file *newFile = ITG2CryptInterface::crypt_open(sPath, secret);
-	if (newFile == NULL) {
+
+	if (newFile == NULL)
 		return NULL;
-	}
 
 	return new RageFileObjCrypt(newFile);
 }

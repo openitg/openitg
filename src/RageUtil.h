@@ -428,13 +428,15 @@ void FileWrite(RageFileBasic& f, float fWrite);
 bool FileCopy( CString sSrcFile, CString sDstFile );
 bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bReadError = NULL );
 bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float) );
-bool CopyWithProgress( RageFileBasic &in, RageFileBasic &out, RageFileBasic &read,
-		       CString &sError, void(*OnUpdate)(float), bool *bReadError = NULL );
+/* We will probably never need to use this. */
+//bool CopyWithProgress( RageFileBasic &in, RageFileBasic &out, RageFileBasic &read,
+//		       CString &sError, void(*OnUpdate)(float), bool *bReadError = NULL );
 
 #endif
 
 /*
  * Copyright (c) 2001-2004 Chris Danford, Glenn Maynard
+ * Copyright (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

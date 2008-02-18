@@ -70,6 +70,38 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 /* Requires "LightsDriver=ext" */
 void InputHandler_Linux_PIUIO::UpdateLights()
 {
+	/* From the decompile: */
+#if 0
+  if ( LightsDriver_External__g_LightState[9] )
+    *(_WORD *)(a2 + 2) |= 0x20u;
+  if ( LightsDriver_External__g_LightState[8] )
+    *(_WORD *)(a2 + 2) |= 0x10u;
+  if ( LightsDriver_External__g_LightState[11] )
+    *(_WORD *)(a2 + 2) |= 8u;
+  if ( LightsDriver_External__g_LightState[10] )
+    *(_WORD *)(a2 + 2) |= 4u;
+  if ( LightsDriver_External__g_LightState[29] )
+    *(_WORD *)a2 |= 0x20u;
+  if ( LightsDriver_External__g_LightState[28] )
+    *(_WORD *)a2 |= 0x10u;
+  if ( LightsDriver_External__g_LightState[31] )
+    *(_WORD *)a2 |= 8u;
+  if ( LightsDriver_External__g_LightState[30] )
+    *(_WORD *)a2 |= 4u;
+  if ( (_BYTE)LightsDriver_External__g_LightState )
+    *(_WORD *)(a2 + 2) |= 0x80u;
+  if ( LightsDriver_External__g_LightState[2] )
+    *(_WORD *)(a2 + 2) |= 0x200u;
+  if ( LightsDriver_External__g_LightState[1] )
+    *(_WORD *)(a2 + 2) |= 0x400u;
+  if ( LightsDriver_External__g_LightState[3] )
+    *(_WORD *)(a2 + 2) |= 0x100u;
+  if ( LightsDriver_External__g_LightState[6] )
+    *(_WORD *)a2 |= 0x400u;
+  if ( LightsDriver_External__g_LightState[7] )
+    *(_WORD *)a2 |= 0x400u;
+#endif
+
 	static const int iCabinetBits[NUM_CABINET_LIGHTS-1] = 
 	{ (1 << 22), (1 << 25), (1 << 24), (1 << 23), 0, 0, (1 << 10) };
 
@@ -99,6 +131,11 @@ void InputHandler_Linux_PIUIO::UpdateLights()
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( g_LightsState.m_bGameButtonLights[gc][gb] )
 				m_iLightData += iPlayerBits[gc][gb];
+
+	LOG->Trace( "UpdateLights: %u", m_iLightData );
+
+	// lights updating isn't too important...leave a lot of process time.
+	usleep( 10000 );
 }
 
 /*

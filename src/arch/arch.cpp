@@ -60,7 +60,7 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
 
 
 		if( ret == NULL )
-			LOG->Warn( "Unknown lights driver name: %s", s->c_str() );
+			LOG->Warn( "Unknown input handler name: %s", s->c_str() );
 		else
 			Add.push_back( ret );
 	}

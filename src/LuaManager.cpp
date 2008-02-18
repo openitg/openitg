@@ -23,12 +23,15 @@
 
 #include "XmlFile.h" // I need this, for checking the Revision [ScreenArcadeDiagnostics]
 
+// If you need this, uncomment it. - Vyhd
+#if 0
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <ifaddrs.h> // Hayy, now I can get an IP! [ScreenArcadeDiagnostics]
 
 #include <csetjmp>
 #include <cassert>
+#endif
 
 LuaManager *LUA = NULL;
 static LuaFunctionList *g_LuaFunctions = NULL;
@@ -455,8 +458,10 @@ static size_t FindEndOfHeaders( const CString &buf )
 	else
 		return string::npos;
 }
-
+// If you need this, we can uncomment it. I don't think it's being used, though.
+// - Vyhd
 // Progress Indicator for loading custom songs. -- Matt1360
+/*
 void UpdateLoadingProgress( float fProgress )
 {
 	CString sText = ssprintf( "Please wait ... Copying Patch: \n%u%%\n\n\n"
@@ -467,6 +472,7 @@ void UpdateLoadingProgress( float fProgress )
 	SCREENMAN->OverlayMessage( sText );
 	SCREENMAN->Draw();
 }
+*/
 
 #if 0
 // Get Newest Revision
@@ -888,6 +894,7 @@ LuaFunction( GetNumMachineScores, GetNumMachineScores() ); // Call the machine s
 
 /*
  * (c) 2004 Glenn Maynard
+ * (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

@@ -60,8 +60,8 @@ ScreenArcadePatch::~ScreenArcadePatch()
 		else
 		{
 			LOG->Warn("SM Quit commence...");
-			//GAMESTATE->EndGame();
-			exit(0);
+			GAMESTATE->EndGame();
+			//exit(0);
 		}
 	}
 	else
@@ -113,21 +113,27 @@ int ScreenArcadePatch::CommitPatch()
 		if( MountCards() )
 		{
 			if( ScanPatch() )
-				CopyPatch();
-			
-			UnmountCards();
-			
-			if( bScanned )
-				if( CheckSignature() )
-					if( CheckXml() )
+			{
+				if (CopyPatch())
+				{
+					UnmountCards();
+					if( bScanned )
 					{
-						if ( CopyPatchContents() )
+						if( CheckSignature() )
 						{
-							m_Status.SetText(m_sSuccessMsg);
-							g_doReboot = true;
-							return 0;
+							if( CheckXml() )
+							{
+								if ( CopyPatchContents() )
+								{
+									m_Status.SetText(m_sSuccessMsg);
+									g_doReboot = true;
+									return 0;
+								}
+							}
 						}
 					}
+				}
+			}
 		}
 	} else
 		bChecking = false;
@@ -241,8 +247,6 @@ bool ScreenArcadePatch::ScanPatch()
 }
 
 // lol thanx Vyhd
-
-// XXX: SOMEONE GET THIS TO WORK D=
 void UpdatePatchCopyProgress( float fPercent )
 {
 	LOG->Trace( "UpdatePatchCopyProgress( %f ), BitmapText.GetText() = %s", fPercent , m_PatchStatus->GetText().c_str());
@@ -257,6 +261,7 @@ void UpdatePatchCopyProgress( float fPercent )
 	SCREENMAN->Draw();
 }
 
+// XXX: this cannot handle large patch files
 bool ScreenArcadePatch::CopyPatch()
 {
 	Root = "/rootfs/tmp/" + aPatches[0];

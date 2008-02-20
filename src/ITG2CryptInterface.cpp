@@ -1,6 +1,3 @@
-#ifndef ITG2_CRYPT_INTERFACE_H
-#define ITG2_CRYPT_INTERFACE_H
-
 #include "global.h"
 #include "RageException.h"
 #include "RageLog.h"
@@ -149,6 +146,3 @@ int ITG2CryptInterface::crypt_tell(crypt_file *cf) {
 int ITG2CryptInterface::crypt_close(crypt_file *cf) {
 	return close(cf->fd);
 }
-
-
-#endif // ITG2_CRYPT_INTERFACE_H

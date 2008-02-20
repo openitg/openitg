@@ -283,7 +283,9 @@ void RageFileManager::MountInitialFilesystems()
 	//RageFileManager::Mount( "dir" , "/stats/" , "/Data" );
 	//RageFileManager::Mount( "dir" , "/dxldata" , "/Packages" );
 
-	CString Root = "";
+	/* FileDB cannot except relative paths, so Root must be absolute */
+	/* using DirOfExecutable for now  --infamouspat */
+	CString Root = DirOfExecutable;
 	struct stat st;
 	if( Root == "" && !stat( DirOfExecutable + "/Songs", &st ) && st.st_mode&S_IFDIR )
 		Root = DirOfExecutable;
@@ -297,6 +299,7 @@ void RageFileManager::MountInitialFilesystems()
 
 	// not standard for ITG file structure, keep commented out
 	// Bad idea - this breaks all file loading on Linux. -- Vyhd
+	RageFileManager::Mount( "kry", Root + "/CryptPackages", "/CryptPackages" );
 	RageFileManager::Mount( "dir", Root, "/" );
 
 #elif defined(_WINDOWS)
@@ -307,6 +310,7 @@ void RageFileManager::MountInitialFilesystems()
 	CHECKPOINT_M( ssprintf( "... %i parts", parts.size()) );
 	ASSERT_M( parts.size() > 1, ssprintf("Strange DirOfExecutable: %s", DirOfExecutable.c_str()) );
 	CString Dir = join( "/", parts.begin(), parts.end()-1 );
+	RageFileManager::Mount( "kry", Dir + "/CryptPackages", "/CryptPackages" );
 	RageFileManager::Mount( "dir", Dir, "/" );
 #elif defined(DARWIN)
 	CHECKPOINT_M( ssprintf("DOE \"%s\"", DirOfExecutable.c_str()) );

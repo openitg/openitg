@@ -863,6 +863,13 @@ static void MountTreeOfZips( const CString &dir )
 
 		GetDirListing( path + "/*", dirs, true, true );
 	}
+
+	if ( IsADirectory("/Data/Patch") )
+	{
+		FILEMAN->Mount( "patch", "/Data/Patch", "/Patch" );
+		if ( IsAFile("/Patch/patch.zip") )
+			FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
+	}
 }
 
 #if defined(HAVE_VERSION_INFO)
@@ -1031,7 +1038,7 @@ int main(int argc, char* argv[])
 	{
 		CStringArray dzips;
 
-		GetDirListing( "/CryptPackages/d*.zip", dzips, false, true );
+		GetDirListing( "/CryptPackages/*.zip", dzips, false, true );
 
 		for( unsigned i = 0; i < dzips.size(); ++i )
 		{

@@ -41,18 +41,7 @@ enum CourseEntryType
 	NUM_COURSE_ENTRY_TYPES	// leave this at the end
 };
 
-inline CString CourseEntryTypeToString( CourseEntryType cet )
-{
-	switch( cet )
-	{
-	case COURSE_ENTRY_FIXED:				return "fixed";
-	case COURSE_ENTRY_RANDOM:				return "random";
-	case COURSE_ENTRY_RANDOM_WITHIN_GROUP:	return "random_within_group";
-	case COURSE_ENTRY_BEST:					return "best";
-	case COURSE_ENTRY_WORST:				return "worst";
-	default:					ASSERT(0);	return "";
-	}
-}
+CString CourseEntryTypeToString( CourseEntryType cet );
 
 class CourseEntry
 {

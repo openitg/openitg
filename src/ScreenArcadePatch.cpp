@@ -18,6 +18,8 @@
 #include "RageFileDriverZip.h"
 #include "XmlFile.h"
 
+#include "StepMania.h"		// For ExitAndReboot()
+
 #include "Foreach.h"		// Foreach loops without the command is hard.
 #include "MemoryCardManager.h"	// Where else are we getting the patch from?
 #include "GameState.h"		// Check which USB...
@@ -47,27 +49,10 @@ int GetRevision()
 
 ScreenArcadePatch::~ScreenArcadePatch()
 {
-	LOG->Warn( "ScreenArcadePatch::~ScreenArcadePatch() %i", (int)g_doReboot );
-	if (g_doReboot)
-	{
-		LOG->Warn("ZOMG REBOOTING");
-		struct stat ncr; // lol get it?
-		if ( stat("/tmp/no-crash-reboot", &ncr) != 0 )
-		{
-			LOG->Warn("Hard reboot commence...");
-			reboot(RB_AUTOBOOT);
-		}
-		else
-		{
-			LOG->Warn("SM Quit commence...");
-			GAMESTATE->EndGame();
-			//exit(0);
-		}
-	}
-	else
-	{
-		LOG->Warn("ZOMG NOT REBOOTING");
-	}
+	LOG->Trace( "ScreenArcadePatch::~ScreenArcadePatch() %i", (int)g_doReboot );
+
+	if( g_doReboot )
+		ExitAndReboot();
 }
 
 void ScreenArcadePatch::Init()
@@ -95,8 +80,7 @@ void ScreenArcadePatch::Init()
 	
 	bChecking = false;
 	m_PatchStatus = &m_Status;
-	g_doReboot = false;
-	
+	g_doReboot = true;	
 }
 
 void ScreenArcadePatch::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )

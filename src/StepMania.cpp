@@ -75,6 +75,11 @@
 #include <windows.h>
 #endif
 
+#if defined(UNIX)
+#include <sys/reboot.h>
+#include <cerrno>
+#endif
+
 #define ZIPS_DIR "Packages/"
 
 int g_argc = 0;
@@ -252,6 +257,59 @@ void ShutdownGame()
 	SAFE_DELETE( LOG );
 	SAFE_DELETE( FILEMAN );
 	SAFE_DELETE( HOOKS );
+}
+
+/* Does exactly what it suggests. Use with caution; people generally 
+ * don't like having their computers restarted unexpectedly.
+
+ * To simply end StepMania instead of rebooting, have one of these filenames:
+ * "/tmp/no-crash-reboot" - Unix-like only, for ITG compatibility
+ * "Data/no-reboot" - usable for all platforms
+ */
+void ExitAndReboot()
+{
+	/* Should we reboot or just quit? */
+	if( IsAFile("Data/no-reboot") || IsAFile("/rootfs/tmp/no-crash-reboot") )
+	{
+		LOG->Warn( "Found no-reboot file. Exiting OpenITG." );
+		ExitGame();
+		return;
+	}
+
+	LOG->Warn( "Could not find no-reboot file. Rebooting." );
+
+	bool bRestart = false;
+	CString sError;
+
+#if defined(UNIX)
+	/* If reboot() succeeds, we will never pass here. */
+	bRestart = !reboot( RB_AUTOBOOT );
+
+	sError = strerror(errno);
+#elif defined(WIN32) && !defined(XBOX)
+	bRestart = ExitWindowsEx( EWX_REBOOT | EWX_FORCEIFHUNG,
+	SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_MAINTENANCE 
+	| SHTDN_REASON_FLAG_PLANNED ); // returns "0" on failure only
+
+	/* This will be more useful to Windows users than me... */
+	sError = ssprintf( "%#x", (unsigned int)GetLastError() );
+#else
+	sError = "function not implemented for your OS.";
+	bRestart = false;
+#endif
+
+	CString sMessage = ssprintf( "Could not reboot: %s", sError.c_str() );
+
+	/* Windows restarts asynchronously, so bRestart can be true and 
+	 * we'll still be here. Wrap this for false conditions, so any 
+	 * true conditions can fallthrough to the clean exit. */
+	if( !bRestart )
+	{
+		Dialog::Error( sMessage );
+		exit( 1 );
+	}
+	
+	exit( 0 );
 }
 
 /* Cleanly shut down, show a dialog and exit the game.  We don't go back
@@ -968,7 +1026,7 @@ int main(int argc, char* argv[])
 	int argc = 1;
 	char *argv[] = {"default.xbe"};
 #endif
-	
+
 	g_argc = argc;
 	g_argv = argv;
 
@@ -1035,6 +1093,7 @@ int main(int argc, char* argv[])
 	}
 	MountTreeOfZips( ZIPS_DIR );
 
+	// TODO: soft-code this!
 	{
 		CStringArray dzips;
 

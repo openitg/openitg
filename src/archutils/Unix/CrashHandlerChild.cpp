@@ -10,11 +10,12 @@
 #include "Backtrace.h"
 #include "BacktraceNames.h"
 
+#include "RageLog.h" /* for RageLog::GetAdditionalLog, etc. only */
 #include "RageUtil.h"
 #include "CrashHandler.h"
 #include "CrashHandlerInternal.h"
-#include "RageLog.h" /* for RageLog::GetAdditionalLog, etc. only */
-#include "ProductInfo.h"
+#include "ProductInfo.h" /* For CRASH_REPORT_URL */
+#include "StepMania.h" /* To call ExitAndReboot() */
 
 #if defined(DARWIN)
 #include "archutils/Darwin/Crash.h"
@@ -261,20 +262,14 @@ static void child_process()
         /* keep going */
     }
 
-	const char *home = getenv( "HOME" );
-	
-	// I make my first move here...
-// 	CString sCrashInfoPath = "/tmp"; // Commented...
-	CString sCrashInfoPath = "/stats"; // Yeaaa ITG2AC Style!
+	// We don't need the file/ext, but they're required args.
+	CString sPath, sDir, sFile, sExt;
 
-	if( home )
-		sCrashInfoPath = home;
-		
-	// This is where I make my move!
-	// -- Matt1360
-// 	sCrashInfoPath += "/crashinfo.txt"; // Commented...
+	sPath = g_pCrashHandlerArgv0;
+	splitpath( sPath, sDir, sFile, sExt );
+
+	CString sCrashInfoPath = sDir + "Stats";
 	
-	// Make the variable
 	time_t seconds;
 	seconds = time( NULL );
 	
@@ -373,10 +368,13 @@ static void child_process()
             "\n"
             "Please report a bug at:\n"
             "\n"
-            "    http://sourceforge.net/tracker/?func=add&group_id=37892&atid=421366\n"
+            "    " CRASH_REPORT_URL "\n"
             "\n"
             );
+
 #endif
+
+	ExitAndReboot(); // restart
 }
 
 

@@ -250,7 +250,10 @@ void DirectFilenameDB::PopulateFileSet( FileSet &fs, const CString &path )
 	DIR *pDir = opendir(root+sPath);
 	if( pDir == NULL )
 	{
-		LOG->MapLog("opendir " + root+sPath, "Couldn't opendir(%s%s): %s", root.c_str(), sPath.c_str(), strerror(errno) );
+		// HACK: these messages are annoying me. Keep them out. -- Vyhd
+		if( errno != 2 ) // "No such file or directory"
+			LOG->MapLog("opendir " + root+sPath, "Couldn't opendir(%s%s): %s", root.c_str(), sPath.c_str(), strerror(errno) );
+
 		return;
 	}
 

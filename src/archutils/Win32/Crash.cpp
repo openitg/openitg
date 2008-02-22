@@ -4,6 +4,7 @@
 //#include <stdio.h>
 #include <stdarg.h>
 #include <crtdbg.h>
+#include <time.h> // needed for timestamping
 
 #include <windows.h>
 #include <tlhelp32.h>
@@ -782,7 +783,14 @@ static void DoSave()
 {
 	char szModName2[MAX_PATH];
 
-	SpliceProgramPath(szModName2, sizeof szModName2, "../crashinfo.txt");
+	/* Set up a timestamp for the crashlog. */
+	time_t seconds;
+	seconds = time( NULL );
+	
+	char sCrashLog[32];
+	sprintf( sCrashLog, "../Stats/crashlog-%ld.txt", seconds );
+
+	SpliceProgramPath(szModName2, sizeof szModName2, sCrashLog);
 
 	HANDLE hFile = CreateFile(szModName2, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (INVALID_HANDLE_VALUE == hFile)

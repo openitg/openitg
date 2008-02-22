@@ -12,8 +12,9 @@
  * to support problems in dev builds since they're not	*
  * official releases and likely have bugs we've fixed.	*/
 
-#define PRODUCT_NAME "In The Groove 2"
-#define PRODUCT_VER "alpha 3 DEV-3"
+/* I guess this is the official name now. :P   --Vyhd	*/
+#define PRODUCT_NAME "OpenITG"
+#define PRODUCT_VER "alpha 3"
 #define PRODUCT_SERIAL "ITG-C-12222007-529-3"
 
 #define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_VER

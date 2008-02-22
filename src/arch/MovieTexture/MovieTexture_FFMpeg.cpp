@@ -13,6 +13,9 @@
 
 #include <cerrno>
 
+// dumb workaround...dunno if it'll compile. -- Vyhd
+#define HAVE_IMG_CONVERT
+
 #if defined(WIN32) && !defined(XBOX)
 #include <windows.h>
 #endif

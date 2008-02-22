@@ -1,4 +1,4 @@
-bin_PROGRAMS = stepmania
+bin_PROGRAMS = openitg
 TESTS = 
 tests: $(TESTS)
 if BUILD_TESTS
@@ -109,6 +109,7 @@ StepMania = StdString.h \
 LoadingWindow = arch/LoadingWindow/LoadingWindow.h \
 		arch/LoadingWindow/LoadingWindow_Null.h
 
+#Make sure any dependencies on these data structure are wrapped.
 #if HAVE_LIBUSB
 LIBS += -lusb
 DataStructures += io/USBDriver.cpp io/USBDriver.h \
@@ -207,8 +208,14 @@ endif
 
 if LINUX
 MemoryCard += arch/MemoryCard/MemoryCardDriverThreaded_Linux.cpp arch/MemoryCard/MemoryCardDriverThreaded_Linux.h
-InputHandler +=	arch/InputHandler/InputHandler_Linux_Joystick.h arch/InputHandler/InputHandler_Linux_Joystick.cpp \
-		arch/InputHandler/InputHandler_Linux_PIUIO.h arch/InputHandler/InputHandler_Linux_PIUIO.cpp
+InputHandler +=	arch/InputHandler/InputHandler_Linux_Joystick.h arch/InputHandler/InputHandler_Linux_Joystick.cpp
+
+# These cannot build without USBDriver, which depends on libusb
+#if HAVE_LIBUSB
+InputHandler += arch/InputHandler/InputHandler_Linux_PIUIO.h \
+		arch/InputHandler/InputHandler_Linux_PIUIO.cpp
+#endif
+
 endif
 
 Arch = $(LoadingWindow) $(Sound) $(ArchHooks) $(InputHandler) $(MovieTexture) \
@@ -384,8 +391,8 @@ main_LDADD = \
 		  $(XLIBS) \
 		  $(srcdir)/libresample/libresample.a
 
-stepmania_SOURCES = $(main_SOURCES)
-stepmania_LDADD = $(main_LDADD)
+openitg_SOURCES = $(main_SOURCES)
+openitg_LDADD = $(main_LDADD)
 #	$(srcdir)/ffmpeg/lib/libavcodec.a $(srcdir)/ffmpeg/lib/libavformat.a
 
 if HAVE_GTK

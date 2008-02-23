@@ -17,6 +17,7 @@
 #include "CryptHelpers.h"
 #include "RageFileDriverZip.h"
 #include "XmlFile.h"
+#include "MiscITG.h"
 
 #include "StepMania.h"		// For ExitAndReboot()
 
@@ -39,13 +40,6 @@ ScreenArcadePatch::ScreenArcadePatch( CString sClassName ) : ScreenWithMenuEleme
 
 static BitmapText *m_PatchStatus;
 static bool g_doReboot;
-
-// This is hacky, obviously. I'll fix it up soon.
-// Right now, this just needs to compile. -- Vyhd
-int GetRevision()
-{
-	return 21;
-}
 
 ScreenArcadePatch::~ScreenArcadePatch()
 {

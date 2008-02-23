@@ -248,7 +248,11 @@ void UpdatePatchCopyProgress( float fPercent )
 // XXX: this cannot handle large patch files
 bool ScreenArcadePatch::CopyPatch()
 {
+#if defined(LINUX)
 	Root = "/rootfs/tmp/" + aPatches[0];
+#else
+	Root = "Temp/" + aPatches[0];
+#endif
 	if( CopyWithProgress( sFile , Root, &UpdatePatchCopyProgress ) )
 	{
 		m_Status.SetText( "Patch copied! Checking..." );
@@ -310,14 +314,16 @@ bool ScreenArcadePatch::CheckXml()
 	fScl = new RageFileDriverSlice( fRoot, 0, filesize );
 
 	
-	if (! rfdZip->Load(fScl)) {
+	if (! rfdZip->Load(fScl))
+	{
 		m_Status.SetText( "Patch XML data check failed, could not load .itg file" );
 		return false;
 	}
 
 	fXml = rfdZip->Open("patch.xml", RageFile::READ, iErr );
 
-	if (fXml == NULL) {
+	if (fXml == NULL)
+	{
 		m_Status.SetText( "Patch XML data check failed, Could not open patch.xml" );
 		return false;
 	}
@@ -325,13 +331,20 @@ bool ScreenArcadePatch::CheckXml()
 	rNode->m_sName = "Patch";
 	rNode->LoadFromFile(*fXml);
 
-	// I don't care what game it is
-	if (rNode->GetChild("Game")==NULL || rNode->GetChild("Revision")==NULL || rNode->GetChild("Message")==NULL) {
+	if (rNode->GetChild("Game")==NULL || rNode->GetChild("Revision")==NULL || rNode->GetChild("Message")==NULL)
+	{
 		m_Status.SetText( "Cannot proceed update, patch.xml corrupt" );
 		return false;
 	}
+	CString sGame = rNode->GetChildValue("Game");
+	if (sGame != "In The Groove 2" )
+	{
+		m_Status.SetText( ssprintf( "Cannot proceed update, revision is for another game (\"%s\").", rNode->GetChildValue("Game") ) );
+		return false;
+	}
 	rNode->GetChild("Revision")->GetValue(iRevNum);
-	if (GetRevision() == iRevNum) {
+	if (GetRevision() == iRevNum)
+	{
 		m_Status.SetText( "Cannot proceed update, revision on USB card is the same as the machine revision" );
 		return false;
 	}
@@ -392,15 +405,21 @@ bool ScreenArcadePatch::CopyPatchContents()
 			const RageFileDriverZip::FileInfo *fi = rfdZip->GetFileInfo( sPath );
 			fCopyDest.Close();
 
+#ifdef LINUX
 			sPath = "/stats/new-patch-unchecked/" + sPath;
 			chmod( sPath.c_str(), fi->m_iFilePermissions );
+#endif
 
 			
 		}
 		rfdZip->GetDirListing( sDirPath + "/*", patchDirs, true, true );
 
 	}
-	// defeats the purpose of Win32 portability
+	// XXX: windows portion might need changed
+#ifdef LINUX
 	rename("/stats/new-patch-unchecked", "/stats/new-patch" );
+#else
+	rename("Data/new-patch-unchecked", "Data/new-patch" );
+#endif
 	return true;		
 }

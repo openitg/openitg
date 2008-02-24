@@ -30,12 +30,10 @@ void ScreenArcadeDiagnostics::Init()
 
 	// XXX: SOMEONE PLEASE FIX THE TEXT D= --infamouspat
 	ActorUtil::SetXY( USBInfo, "ScreenArcadeDiagnostics" );
-	USBInfo.SetZoom( 0.6f );
-	USBInfo.SetText("USB Info: ");
-	USBInfo.AddX(100.0f);
-	USBInfo.AddY(25.0f);
-	USBInfo.SetVisible(true);
-
+	//USBInfo.SetZoom( 0.6f );
+	//USBInfo.SetText("USB Info: ");
+	ActorUtil::LoadAndPlayCommand( USBInfo, "ScreenArcadeDiagnostics", "On" );
+	
 	this->AddChild(&USBInfo);
 	this->SortByDrawOrder();
 }
@@ -47,11 +45,10 @@ ScreenArcadeDiagnostics::~ScreenArcadeDiagnostics()
 
 void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 {
-	ActorFrame::PlayCommand( "Refresh" ); // This updates our uptime.
-	Screen::Update( fDeltaTime );
+	this->PlayCommand( "Refresh" ); // This updates our uptime.
 
 	vector<USBDevice> vDevList;
-	CString sDispInfo = "USB Info:\n";
+	CString sDispInfo = "";
 	GetUSBDeviceList(vDevList);
 
 	if (vDevList.size() == 0)
@@ -63,12 +60,14 @@ void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 	for (unsigned i = 0; i < vDevList.size(); i++)
 	{
 		USBDevice nDevice = vDevList[i];
-		sDispInfo += ssprintf("\n%s: %.04X:%.04X: %s (%dmA)", 
+		sDispInfo += ssprintf("%s: %.04X:%.04X: %s (%dmA)\n", 
 			nDevice.GetDeviceDir().c_str(),
 			nDevice.GetIdVendor(), nDevice.GetIdProduct(),
 			nDevice.GetDescription().c_str(), nDevice.GetMaxPower() );
 	}
 	USBInfo.SetText(sDispInfo);
+
+	Screen::Update( fDeltaTime );
 }
 
 void ScreenArcadeDiagnostics::DrawPrimitives()

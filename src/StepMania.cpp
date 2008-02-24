@@ -921,21 +921,6 @@ static void MountTreeOfZips( const CString &dir )
 
 		GetDirListing( path + "/*", dirs, true, true );
 	}
-
-#ifdef LINUX
-	if ( IsAFile("/rootfs/stats/patch/patch.zip") )
-#else
-	if ( IsAFile("Data/patch/patch.zip") )
-#endif
-	{
-
-#ifdef LINUX
-		FILEMAN->Mount( "patch", "/stats/patch", "/Patch" );
-#else
-		FILEMAN->Mount( "patch", "Data/patch", "/Patch" );
-#endif
-		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
-	}
 }
 
 #if defined(HAVE_VERSION_INFO)
@@ -1101,6 +1086,7 @@ int main(int argc, char* argv[])
 	}
 	MountTreeOfZips( ZIPS_DIR );
 
+
 	// TODO: soft-code this!
 	{
 		CStringArray dzips;
@@ -1117,6 +1103,22 @@ int main(int argc, char* argv[])
 		}
 	}
 
+	/* Mount the patch data. I know this is a bit less
+	 * efficient, but it is much more readable. -- Vyhd */
+
+#ifdef ITG_ARCADE
+	if ( IsAFile("/rootfs/stats/patch/patch.zip") )
+	{
+		FILEMAN->Mount( "patch", "/stats/patch", "/Patch" );
+		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
+	}
+#else
+	if ( IsAFile("Stats/patch/patch.zip") )
+	{
+		FILEMAN->Mount( "patch", "Stats/patch", "/Patch" );
+		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
+	}
+#endif
 
 	/* One of the above filesystems might contain files that affect preferences, eg Data/Static.ini.
 	 * Re-read preferences. */

@@ -7,11 +7,21 @@
 #include "RageTimer.h"
 #include "SongManager.h"
 #include "ProductInfo.h"
+#include "io/USBDevice.h"
 
+#ifdef ITG_ARCADE
 extern "C" {
 #include "ibutton/ownet.h"
 #include "ibutton/shaib.h"
 }
+#endif
+
+/* Redundant, but readable...let's make global directory paths later. -- Vyhd */
+#ifdef ITG_ARCADE
+#define STATS_DIR_PATH "/rootfs/stats/"
+#else
+#define STATS_DIR_PATH "/Stats/"
+#endif
 
 // This is how I chose to find the Crash Log size.
 // -- Matt1360
@@ -21,7 +31,7 @@ int GetNumCrashLogs()
 	CStringArray aLogs;
 	
 	// Get them all.
-	GetDirListing( "/stats/crashlog-*.txt" , aLogs );
+	GetDirListing( STATS_DIR_PATH "crashlog-*.txt" , aLogs );
 	
 	return aLogs.size();
 }
@@ -43,56 +53,62 @@ int GetIP()
 
 int GetRevision()
 {
+	CString sPath = STATS_DIR_PATH "patch/patch.xml";
+
 	// Create the XML Handler, and clear it, for practice.
 	XNode *xml = new XNode;
 	xml->Clear();
 	xml->m_sName = "patch";
-	int rev;
 	
 	// Check for the file existing
-	if( !IsAFile( "/Data/patch/patch.xml" ) )
+	if( !IsAFile(sPath) )
 	{
-		LOG->Trace( "There is no patch file (patch.xml)" );
+		LOG->Warn( "There is no patch file (patch.xml)" );
 		return 1;
 	}
 	
 	// Make sure you can read it
-	if( !xml->LoadFromFile( "/Data/patch/patch.xml" ) )
+	if( !xml->LoadFromFile(sPath) )
 	{
-		LOG->Trace( "patch.xml unloadable" );
+		LOG->Warn( "patch.xml unloadable" );
 		return 1;
 	}
 	
 	// Check the node <Revision>x</Revision>
 	if( !xml->GetChild( "Revision" ) )
 	{
-		LOG->Trace( "Revision node missing! (patch.xml)" );
+		LOG->Warn( "Revision node missing! (patch.xml)" );
 		return 1;
 	}
 	
 	// Return as an integer
-	xml->GetChild("Revision")->GetValue(rev);
-	return rev;
+	return atoi( xml->GetChild("Revision")->m_sValue );
 }
 
+/* Make sure you delete anything you new!
+ * Otherwise, memory leaks may occur -- Vyhd */
 int GetNumMachineScores()
 {
+	CString sXMLPath = "/Data/MachineProfile/Stats.xml";
+
 	// Create the XML Handler and clear it, for practice
 	XNode *xml = new XNode;
 	xml->Clear();
 	
 	// Check for the file existing
-	if( !IsAFile( "/Data/MachineProfile/Stats.xml" ) )
+	if( !IsAFile(sXMLPath) )
 	{
-		LOG->Trace( "There is no stats file!" );
-		return 1;
+		LOG->Warn( "There is no Stats.xml file!" );
+		delete xml;
+		return 0;
 	}
 	
 	// Make sure you can read it
-	if( !xml->LoadFromFile( "/Data/MachineProfile/Stats.xml" ) )
+	if( !xml->LoadFromFile(sXMLPath) )
 	{
 		LOG->Trace( "Stats.xml unloadable!" );
-		return 1;
+		delete xml;
+		return 0;
 	}
 	
 	const XNode *pData = xml->GetChild( "SongScores" );
@@ -100,10 +116,12 @@ int GetNumMachineScores()
 	if( pData == NULL )
 	{
 		LOG->Warn( "Error loading scores: <SongScores> node missing" );
+		delete xml;
 		return 0;
 	}
 	
-	int iScoreCount = 0;
+	/* Even I'll admit this change is pedantic... -- Vyhd */
+	unsigned int iScoreCount = 0;
 	
 	// Named here, for LoadFromFile() renames it to "Stats"
 	xml->m_sName = "SongScores";
@@ -111,15 +129,18 @@ int GetNumMachineScores()
 	// For each pData Child, or the Child in SongScores...
 	FOREACH_CONST_Child( pData , p )
 		iScoreCount++;
-	
+
+	delete xml;
+
 	return iScoreCount;
 }
 
 CString GetSerialNumber()
 {
-	if (! g_SerialNum.empty())
+	if ( !g_SerialNum.empty() )
 		return g_SerialNum;
 
+#ifdef ITG_ARCADE
 	SHACopr copr;
 	CString sNewSerial;
 	uchar spBuf[32];
@@ -139,6 +160,26 @@ CString GetSerialNumber()
 	g_SerialNum = sNewSerial;
 
 	return sNewSerial;
+#endif
+
+	/* Dummy return */
+	return "ITG-C-02242008-529-3";
+}
+
+bool HubIsConnected()
+{
+	vector<USBDevice> vDevices;
+	GetUSBDeviceList( vDevices );
+
+	/* Hub can't be connected if there are no devices. */
+	if( vDevices.size() == 0 )
+		return false;
+
+	for( unsigned i = 0; i < vDevices.size(); i++ )
+		if( vDevices[i].IsHub() )
+			return true;
+
+	return false;
 }
 
 /*
@@ -174,6 +215,8 @@ LuaFunction_NoArgs( GetNumIOErrors	, 0 ); // Call the number of I/O Errors [Scre
 LuaFunction_NoArgs( GetNumMachineScores, GetNumMachineScores() ); // Call the machine score count [ScreenArcadeDiagnostics]
 // added by infamouspat
 LuaFunction_NoArgs( GetSerialNumber, GetSerialNumber() ); // returns serial from page 9 on dongle
+
+LuaFunction_NoArgs( HubIsConnected, HubIsConnected() ); // well, is it?
 
 
 /*

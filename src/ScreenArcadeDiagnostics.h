@@ -24,7 +24,8 @@ public:
 	virtual void MenuBack( PlayerNumber pn );
 
 private:
-	BitmapText USBInfo;
+	BitmapText m_USBInfo;
+	unsigned int m_iLastSeenDevices;
 };
 
 #endif

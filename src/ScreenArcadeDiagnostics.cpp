@@ -25,16 +25,17 @@ void ScreenArcadeDiagnostics::Init()
 {
 	ScreenWithMenuElements::Init();
 
-	USBInfo.LoadFromFont( THEME->GetPathF( "ScreenArcadeDiagnostics", "text" ) );
-	USBInfo.SetName( "USBInfo" );
+	m_USBInfo.LoadFromFont( THEME->GetPathF( "ScreenArcadeDiagnostics", "text" ) );
+	m_USBInfo.SetName( "USBInfo" );
 
-	// XXX: SOMEONE PLEASE FIX THE TEXT D= --infamouspat
-	ActorUtil::SetXY( USBInfo, "ScreenArcadeDiagnostics" );
-	//USBInfo.SetZoom( 0.6f );
-	//USBInfo.SetText("USB Info: ");
-	ActorUtil::LoadAndPlayCommand( USBInfo, "ScreenArcadeDiagnostics", "On" );
+	//m_USBInfo.SetZoom( 0.6f );
+	//m_USBInfo.SetText("USB Info: ");
+
+	// You can use some #define'd macros in ActorUtil.h for these. -- Vyhd
+	SET_XY( m_USBInfo );
+	COMMAND( m_USBInfo, "On" );
 	
-	this->AddChild(&USBInfo);
+	this->AddChild( &m_USBInfo );
 	this->SortByDrawOrder();
 }
 
@@ -47,28 +48,38 @@ void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 {
 	this->PlayCommand( "Refresh" ); // This updates our uptime.
 
-	vector<USBDevice> vDevList;
-	CString sDispInfo = "";
-	GetUSBDeviceList(vDevList);
+	/* Any reason this was at the end? If so, sorry for moving it. */
+	Screen::Update( fDeltaTime );
 
-	if (vDevList.size() == 0)
+	vector<USBDevice> vDevList;
+	GetUSBDeviceList( vDevList );
+
+	if ( vDevList.size() == 0 )
 	{
-		USBInfo.SetText("No USB Devices");
+		m_USBInfo.SetText("No USB Devices");
 		return;
 	}
 
+	/* Nothing's changed, why go through the list? */
+	if( vDevList.size() == m_iLastSeenDevices )
+		return;
+
+	CString sInfo;
+
+	/* You can just access the device directly through the vector.
+	 * No need to create a new device. :) -- Vyhd */
 	for (unsigned i = 0; i < vDevList.size(); i++)
 	{
-		USBDevice nDevice = vDevList[i];
-		sDispInfo += nDevice.GetDeviceDir() + ":";
-		CString dDispAdd = ssprintf("%04X:%04X: %s (%dmA)\n", 
-			nDevice.GetIdVendor(), nDevice.GetIdProduct(),
-			nDevice.GetDescription().c_str(), nDevice.GetMaxPower() );
-		sDispInfo += dDispAdd;
+		sInfo += vDevList[i].GetDeviceDir() + ":";
+		CString sDevInfo = ssprintf("%04X:%04X: %s (%dmA)\n",
+			vDevList[i].GetIdVendor(),
+			vDevList[i].GetIdProduct(),
+			vDevList[i].GetDescription().c_str(),
+			vDevList[i].GetMaxPower() );
+		sInfo += sDevInfo;
 	}
-	USBInfo.SetText(sDispInfo);
 
-	Screen::Update( fDeltaTime );
+	m_USBInfo.SetText( sInfo );
 }
 
 void ScreenArcadeDiagnostics::DrawPrimitives()

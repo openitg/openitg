@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <cstring>
 #include <cerrno>
+#include <sys/stat.h>
+#include <sys/reboot.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 
@@ -15,7 +17,6 @@
 #include "CrashHandler.h"
 #include "CrashHandlerInternal.h"
 #include "ProductInfo.h" /* For CRASH_REPORT_URL */
-#include "StepMania.h" /* To call ExitAndReboot() */
 
 #if defined(DARWIN)
 #include "archutils/Darwin/Crash.h"
@@ -374,7 +375,13 @@ static void child_process()
 
 #endif
 
-	ExitAndReboot(); // restart
+	/* If /tmp/no-crash-reboot exists, don't reboot on crashing. */
+
+	struct stat ncr;
+	if ( stat("/tmp/no-crash-reboot", &ncr) != 0 )
+		reboot(RB_AUTOBOOT);
+	else
+		printf( "Not rebooting. no-crash-reboot found.\n" );
 }
 
 

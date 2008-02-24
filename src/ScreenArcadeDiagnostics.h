@@ -3,6 +3,7 @@
 #ifndef SCREEN_ARCADE_DIAGNOSTICS_H
 #define SCREEN_ARCADE_DIAGNOSTICS_H
 
+#include "io/USBDevice.h"
 #include "ScreenWithMenuElements.h"
 #include "BitmapText.h"
 
@@ -21,6 +22,9 @@ public:
 
 	virtual void MenuStart( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn );
+
+private:
+	BitmapText USBInfo;
 };
 
 #endif

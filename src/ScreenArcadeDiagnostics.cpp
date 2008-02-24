@@ -116,6 +116,8 @@ void ScreenArcadeDiagnostics::MenuBack( PlayerNumber pn )
 	if(!IsTransitioning())
 	{
 		SCREENMAN->PlayStartSound();
+
+		this->PlayCommand( "Off" ); // don't forget m_USBInfo!
 		StartTransitioning( SM_GoToPrevScreen );		
 	}
 }

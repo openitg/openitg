@@ -1,7 +1,11 @@
 #ifndef IO_USBDEVICE_H
 #define IO_USBDEVICE_H
+#include "global.h"
 
 #include <usb.h>
+
+// XXX: we probably need to move this to arch or archutils in preparation for windows portability
+//           --infamouspat
 
 /* A class we can use to characterize all USB devices on the system */
 class USBDevice
@@ -10,22 +14,40 @@ public:
 	USBDevice();
 	~USBDevice();
 
-	bool Load();
+	bool Load(const CString &nDeviceDir, const vector<CString> &interfaces);
 
-	CString GetDeviceProperty( CString sProperty );
-	CString GetInterfaceProperty( CString sProperty, int iInterface );
-	CString GetClassDescription( int iClass );
+	bool GetDeviceProperty( const CString &sProperty, CString &out );
+	bool GetInterfaceProperty( const CString &sProperty, const unsigned iInterface, CString &out);
+	CString GetClassDescription( unsigned iClass );
 	CString GetDescription();
+
+	int GetIdVendor() { return iIdVendor; }
+	int GetIdProduct() { return iIdProduct; }
+	int GetMaxPower() { return iMaxPower; }
+
+	CString GetDeviceDir() { return sDeviceDir; }
 
 	bool IsHub();
 	bool IsITGIO();
 	bool IsPIUIO();
+
+private:
+	int iIdVendor;
+	int iIdProduct;
+	int iMaxPower;
+	CString sDeviceDir;
+
+	vector<CString> sInterfaceDeviceDirs;
+	vector<unsigned> iInterfaceClasses;
+
 };
+
+bool GetUSBDeviceList(vector<USBDevice> &pDevList);
 
 #endif /* IO_USBDEVICE_H */
 
 /*
- * (c) 2008 BoXoRRoXoRs
+ * (c) 2005 Glenn Maynard reimplemented by nice people @ BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

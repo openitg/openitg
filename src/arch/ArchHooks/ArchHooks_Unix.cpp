@@ -1,16 +1,20 @@
 #include "global.h"
 #include "RageLog.h"
+#include "RageUtil.h"
 #include "RageThreads.h"
-#include "ArchHooks_Unix.h"
 #include "StepMania.h"
+
+#include "ArchHooks_Unix.h"
 #include "archutils/Unix/SignalHandler.h"
 #include "archutils/Unix/GetSysInfo.h"
 #include "archutils/Unix/LinuxThreadHelpers.h"
 #include "archutils/Unix/EmergencyShutdown.h"
 #include "archutils/Unix/AssertionHandler.h"
-#include <unistd.h>
-#include "RageUtil.h"
+
 #include <sys/time.h>
+#include <sys/reboot.h>
+#include <unistd.h>
+#include <cerrno>
 
 #if defined(CRASH_HANDLER)
 #include "archutils/Unix/CrashHandler.h"
@@ -31,6 +35,26 @@ static bool IsFatalSignal( int signal )
 		return true;
 	}
 }
+
+/* The fuck...? This gets called at runtime. I've
+ * got no clue what's going on here... -- Vyhd */
+
+/*
+void ArchHooks_Unix::SystemReboot()
+{
+	if( !(IsAFile("/rootfs/tmp/no-crash-reboot") || IsAFile( "Data/no-reboot")) )
+	{
+		LOG->Warn( "no-reboot not found. Rebooting." );
+
+		if( reboot(RB_AUTOBOOT) != 0 )
+			LOG->Warn( "Could not reboot: %s", strerror(errno) );
+	}
+	else
+		LOG->Warn( "Found a no-reboot file. Exiting instead of rebooting." );
+
+	ExitGame();
+}
+*/
 
 static void DoCleanShutdown( int signal, siginfo_t *si, const ucontext_t *uc )
 {

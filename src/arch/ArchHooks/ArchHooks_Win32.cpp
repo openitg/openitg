@@ -4,6 +4,7 @@
 #include "RageLog.h"
 #include "RageThreads.h"
 #include "PrefsManager.h"
+#include "StepMania.h"
 #include "ProductInfo.h"
 
 #include "archutils/win32/AppInstance.h"
@@ -157,6 +158,27 @@ void ArchHooks_Win32::CheckVideoDriver()
 void ArchHooks_Win32::RestartProgram()
 {
 	Win32RestartProgram();
+}
+
+/* Necessary? Is there anything RestartProgram can't do that this can? */
+void ArchHooks_Win32::SystemReboot()
+{
+	return; // pretend there's nothing here right now -- we'll enable if needed
+
+	if( IsAFile( "/Data/no-reboot" )
+		return;
+
+	/* Reboot, kill any hung processes, "Application Maintenance: Planned" */
+	bool bRestart = ExitWindowsEx( EWX_REBOOT | EWX_FORCEIFHUNG,
+	SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_MAINTENANCE
+	| SHTDN_REASON_FLAG_PLANNED );
+
+	if( bRestart ) // success
+		return;
+
+	LOG->Warn( "Could not restart StepMania: %#x", (unsigned int)GetLastError() );
+
+	ExitGame();
 }
 
 void ArchHooks_Win32::EnterTimeCriticalSection()

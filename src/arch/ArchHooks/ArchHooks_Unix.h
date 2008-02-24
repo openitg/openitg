@@ -5,11 +5,12 @@
 class ArchHooks_Unix: public ArchHooks
 {
 public:
-    static int64_t m_iStartTime;
-    ArchHooks_Unix();
-    void DumpDebugInfo();
+	ArchHooks_Unix();
+	void DumpDebugInfo();
+	void SystemReboot();
 
 	void SetTime( tm newtime );
+	static int64_t m_iStartTime;
 	int64_t GetMicrosecondsSinceStart();
 };
 

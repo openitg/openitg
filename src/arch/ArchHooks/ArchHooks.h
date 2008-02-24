@@ -15,6 +15,9 @@ public:
 	/* Re-exec the game.  If this is implemented, it doesn't return. */
 	virtual void RestartProgram() { }
 
+	/* Restart the entire computer, in case of installation updates, etc. */
+	virtual void SystemReboot() { }
+
 	/* Call this to temporarily enter a high-priority or realtime scheduling (depending
 	 * on the implementation) mode.  This is used to improve timestamp accuracy.  Do as
 	 * little as possible in this mode; hanging in it might hang the system entirely. */

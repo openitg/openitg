@@ -922,11 +922,19 @@ static void MountTreeOfZips( const CString &dir )
 		GetDirListing( path + "/*", dirs, true, true );
 	}
 
-	if ( IsADirectory("/Data/Patch") )
+#ifdef LINUX
+	if ( IsAFile("/rootfs/stats/patch/patch.zip") )
+#else
+	if ( IsAFile("Data/patch/patch.zip") )
+#endif
 	{
-		FILEMAN->Mount( "patch", "/Data/Patch", "/Patch" );
-		if ( IsAFile("/Patch/patch.zip") )
-			FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
+
+#ifdef LINUX
+		FILEMAN->Mount( "patch", "/stats/patch", "/Patch" );
+#else
+		FILEMAN->Mount( "patch", "Data/patch", "/Patch" );
+#endif
+		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
 }
 

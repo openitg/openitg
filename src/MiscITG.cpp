@@ -1,11 +1,17 @@
 #include "global.h"
 #include "XmlFile.h"
 #include "RageUtil.h"
+#include "MiscITG.h"
 #include "ProfileManager.h"
 #include "RageLog.h"
 #include "RageTimer.h"
 #include "SongManager.h"
 #include "ProductInfo.h"
+
+extern "C" {
+#include "ibutton/ownet.h"
+#include "ibutton/shaib.h"
+}
 
 // This is how I chose to find the Crash Log size.
 // -- Matt1360
@@ -109,6 +115,32 @@ int GetNumMachineScores()
 	return iScoreCount;
 }
 
+CString GetSerialNumber()
+{
+	if (! g_SerialNum.empty())
+		return g_SerialNum;
+
+	SHACopr copr;
+	CString sNewSerial;
+	uchar spBuf[32];
+
+	if ( (copr.portnum = owAcquireEx("/dev/ttyS0")) == -1 )
+	{
+		LOG->Warn("Failed to get machine serial, unable to acquire port");
+		return "????????";
+	}
+	FindNewSHA(copr.portnum, copr.devAN, true);
+	ReadAuthPageSHA18(copr.portnum, 9, spBuf, NULL, false);
+	owRelease(copr.portnum);
+
+	sNewSerial = (char*)spBuf;
+	TrimLeft(sNewSerial);
+	TrimRight(sNewSerial);
+	g_SerialNum = sNewSerial;
+
+	return sNewSerial;
+}
+
 /*
  * [ScreenArcadeDiagnostics]
  *
@@ -140,6 +172,9 @@ LuaFunction_NoArgs( GetNumCrashLogs	, GetNumCrashLogs() ); // Count the crashlog
 LuaFunction_NoArgs( GetNumMachineEdits	, GetNumMachineEdits() ); // Count the machine edits [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumIOErrors	, 0 ); // Call the number of I/O Errors [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumMachineScores, GetNumMachineScores() ); // Call the machine score count [ScreenArcadeDiagnostics]
+// added by infamouspat
+LuaFunction_NoArgs( GetSerialNumber, GetSerialNumber() ); // returns serial from page 9 on dongle
+
 
 /*
  * (c) 2004 Glenn Maynard

@@ -60,10 +60,11 @@ void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 	for (unsigned i = 0; i < vDevList.size(); i++)
 	{
 		USBDevice nDevice = vDevList[i];
-		sDispInfo += ssprintf("%s: %.04X:%.04X: %s (%dmA)\n", 
-			nDevice.GetDeviceDir().c_str(),
+		sDispInfo += nDevice.GetDeviceDir() + ":";
+		CString dDispAdd = ssprintf("%04X:%04X: %s (%dmA)\n", 
 			nDevice.GetIdVendor(), nDevice.GetIdProduct(),
 			nDevice.GetDescription().c_str(), nDevice.GetMaxPower() );
+		sDispInfo += dDispAdd;
 	}
 	USBInfo.SetText(sDispInfo);
 

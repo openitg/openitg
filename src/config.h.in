@@ -127,6 +127,9 @@
 /* Integer Vorbis decoding */
 #undef INTEGER_VORBIS
 
+/* ITG Arcade specification */
+#undef ITG_ARCADE
+
 /* Linux */
 #undef LINUX
 

@@ -157,6 +157,12 @@ SM_AUDIO
 SM_TLS
 SM_LIBUSB
 
+AC_ARG_ENABLE(itg-arcade, AC_HELP_STRING([--enable-itg-arcade], [Tailor game behavior to mimic ITG2 Arcade exactly]), itg_arcade=$withval, itg_arcade=no)
+if test "$itg_arcade" = "yes"; then
+	AC_DEFINE(ITG_ARCADE, 1, [ITG Arcade specification])
+fi
+AM_CONDITIONAL(ITG_ARCADE, test "$itg_arcade" = "yes")
+
 AC_SEARCH_LIBS(avcodec_init, [avcodec], have_libavcodec=yes,  have_libavcodec=no)
 AC_SEARCH_LIBS(guess_format, [avformat], have_libavformat=yes,  have_libavformat=no)
 

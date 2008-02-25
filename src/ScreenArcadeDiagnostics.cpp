@@ -28,14 +28,18 @@ void ScreenArcadeDiagnostics::Init()
 	m_USBInfo.LoadFromFont( THEME->GetPathF( "ScreenArcadeDiagnostics", "text" ) );
 	m_USBInfo.SetName( "USBInfo" );
 
-	//m_USBInfo.SetZoom( 0.6f );
-	//m_USBInfo.SetText("USB Info: ");
+	m_Title.LoadFromFont( THEME->GetPathF( "ScreenArcadeDiagnostics", "text" ) );
+	m_Title.SetName( "Title" );
 
 	// You can use some #define'd macros in ActorUtil.h for these. -- Vyhd
 	SET_XY( m_USBInfo );
 	COMMAND( m_USBInfo, "On" );
+
+	SET_XY( m_Title );
+	COMMAND( m_Title, "On" );
 	
 	this->AddChild( &m_USBInfo );
+	this->AddChild( &m_Title );
 	this->SortByDrawOrder();
 }
 
@@ -54,23 +58,25 @@ void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 	vector<USBDevice> vDevList;
 	GetUSBDeviceList( vDevList );
 
-	if ( vDevList.size() == 0 )
-	{
-		m_USBInfo.SetText("No USB Devices");
-		return;
-	}
-
 	/* Nothing's changed, why go through the list? */
 	if( vDevList.size() == m_iLastSeenDevices )
 		return;
 
-	CString sInfo;
+	if ( vDevList.size() == 0 )
+	{
+		m_USBInfo.SetText("No USB Devices");
+		m_Title.SetText("");
+		m_iLastSeenDevices = 0;
+		return;
+	}
+
+	CString sInfo, sTitleInfo;
 
 	/* You can just access the device directly through the vector.
 	 * No need to create a new device. :) -- Vyhd */
 	for (unsigned i = 0; i < vDevList.size(); i++)
 	{
-		sInfo += vDevList[i].GetDeviceDir() + ":";
+		sTitleInfo += vDevList[i].GetDeviceDir() + ":\n";
 		CString sDevInfo = ssprintf("%04X:%04X: %s (%dmA)\n",
 			vDevList[i].GetIdVendor(),
 			vDevList[i].GetIdProduct(),
@@ -78,8 +84,10 @@ void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 			vDevList[i].GetMaxPower() );
 		sInfo += sDevInfo;
 	}
+	m_iLastSeenDevices = vDevList.size();
 
 	m_USBInfo.SetText( sInfo );
+	m_Title.SetText( sTitleInfo );
 }
 
 void ScreenArcadeDiagnostics::DrawPrimitives()
@@ -115,7 +123,8 @@ void ScreenArcadeDiagnostics::MenuBack( PlayerNumber pn )
 {
 	if(!IsTransitioning())
 	{
-		SCREENMAN->PlayStartSound();
+		//COMMAND( m_Title, "Off" );
+		//COMMAND( m_USBInfo, "Off" );
 
 		this->PlayCommand( "Off" ); // don't forget m_USBInfo!
 		StartTransitioning( SM_GoToPrevScreen );		

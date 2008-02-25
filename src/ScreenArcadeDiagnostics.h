@@ -26,6 +26,7 @@ public:
 private:
 	BitmapText m_USBInfo;
 	unsigned int m_iLastSeenDevices;
+	BitmapText m_Title;
 };
 
 #endif

@@ -60,29 +60,39 @@ int GetRevision()
 	xml->Clear();
 	xml->m_sName = "patch";
 	
+	bool bLoaded;
+
 	// Check for the file existing
 	if( !IsAFile(sPath) )
 	{
+		bLoaded = false;
 		LOG->Warn( "There is no patch file (patch.xml)" );
-		return 1;
 	}
 	
 	// Make sure you can read it
 	if( !xml->LoadFromFile(sPath) )
 	{
+		bLoaded = false;
 		LOG->Warn( "patch.xml unloadable" );
-		return 1;
 	}
 	
 	// Check the node <Revision>x</Revision>
 	if( !xml->GetChild( "Revision" ) )
 	{
+		bLoaded = false;
 		LOG->Warn( "Revision node missing! (patch.xml)" );
-		return 1;
 	}
 	
-	// Return as an integer
-	return atoi( xml->GetChild("Revision")->m_sValue );
+	/* Default, if nothing's loaded */
+	int iRevision = 1;
+
+	if( bLoaded )
+		iRevision = atoi( xml->GetChild("Revision")->m_sValue );
+
+	/* Can't forget about this! Remember to SAFE_DELETE 'new' objects. */
+	SAFE_DELETE( xml ); 
+
+	return iRevision;
 }
 
 /* Make sure you delete anything you new!
@@ -99,7 +109,7 @@ int GetNumMachineScores()
 	if( !IsAFile(sXMLPath) )
 	{
 		LOG->Warn( "There is no Stats.xml file!" );
-		delete xml;
+		SAFE_DELETE( xml ); 
 		return 0;
 	}
 	
@@ -107,7 +117,7 @@ int GetNumMachineScores()
 	if( !xml->LoadFromFile(sXMLPath) )
 	{
 		LOG->Trace( "Stats.xml unloadable!" );
-		delete xml;
+		SAFE_DELETE( xml ); 
 		return 0;
 	}
 	
@@ -116,7 +126,7 @@ int GetNumMachineScores()
 	if( pData == NULL )
 	{
 		LOG->Warn( "Error loading scores: <SongScores> node missing" );
-		delete xml;
+		SAFE_DELETE( xml ); 
 		return 0;
 	}
 	
@@ -130,7 +140,8 @@ int GetNumMachineScores()
 	FOREACH_CONST_Child( pData , p )
 		iScoreCount++;
 
-	delete xml;
+	/* Can't forget about this! Remember to SAFE_DELETE 'new' objects. */
+	SAFE_DELETE( xml ); 
 
 	return iScoreCount;
 }
@@ -206,8 +217,7 @@ bool HubIsConnected()
 #include "LuaFunctions.h"
 LuaFunction_NoArgs( GetProductName	, CString( PRODUCT_NAME ) ); // Return the product's name from ProductInfo.h [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetRevision	, GetRevision() ); // Return current Revision ( ProductInfo.h ) [ScreenArcadeDiagnostics]
-// do we really need it by the millisecond?
-LuaFunction_NoArgs( GetUptime		, SecondsToMMSSMsMsMs( RageTimer::GetTimeSinceStart() ) ); // Uptime calling [ScreenArcadeDiagnostics]
+LuaFunction_NoArgs( GetUptime		, SecondsToHHMMSS( RageTimer::GetTimeSinceStart() ) ); // Uptime calling [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetIP		, GetIP() ); // Calling the IP [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumCrashLogs	, GetNumCrashLogs() ); // Count the crashlogs [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumMachineEdits	, GetNumMachineEdits() ); // Count the machine edits [ScreenArcadeDiagnostics]

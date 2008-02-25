@@ -1033,6 +1033,9 @@ int main(int argc, char* argv[])
 	}
 	MountTreeOfZips( ZIPS_DIR );
 
+#ifndef ITG_ARCADE
+	FILEMAN->Mount( "kry", "CryptPackages", "/CryptPackages" );
+#endif
 
 	// TODO: soft-code this!
 	{

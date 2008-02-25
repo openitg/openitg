@@ -7,7 +7,7 @@ class ArchHooks_Unix: public ArchHooks
 public:
 	ArchHooks_Unix();
 	void DumpDebugInfo();
-	void SystemReboot();
+//	void SystemReboot();
 
 	void SetTime( tm newtime );
 	static int64_t m_iStartTime;

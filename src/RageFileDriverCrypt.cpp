@@ -30,7 +30,14 @@
 static struct FileDriverEntry_KRY: public FileDriverEntry
 {
 	FileDriverEntry_KRY(): FileDriverEntry( "KRY" ) { }
-	RageFileDriver *Create( CString Root ) const { return new RageFileDriverCrypt( Root, "" ); }
+	RageFileDriver *Create( CString Root ) const
+	{
+#ifdef ITG_ARCADE
+		return new RageFileDriverCrypt( Root, "" );
+#else
+		return new RageFileDriverCrypt( Root, DEFAULT_AES_KEY );
+#endif
+	}
 } const g_RegisterDriver;
 
 RageFileDriverCrypt::RageFileDriverCrypt( CString root_, CString secret_):RageFileDriver( new CryptFilenameDB(root_) )

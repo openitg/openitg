@@ -280,10 +280,10 @@ void RageFileManager::MountInitialFilesystems()
 
 	/* Not yet, matt. We want this to stay self-contained	*
 	 * until the beta stage. :) - Vyhd			*/
-	//RageFileManager::Mount( "dir" , "/stats/" , "/Data" );
+	//RageFileManager::Mount( "dir" , "/stats" , "/Data" );
 	//RageFileManager::Mount( "dir" , "/dxldata" , "/Packages" );
 
-	/* FileDB cannot except relative paths, so Root must be absolute */
+	/* FileDB cannot accept relative paths, so Root must be absolute */
 	/* using DirOfExecutable for now  --infamouspat */
 	CString Root = DirOfExecutable;
 	struct stat st;
@@ -297,10 +297,13 @@ void RageFileManager::MountInitialFilesystems()
 	// I'm loading off zips and additional folders...I don't want no crashes...
 	// -- Matt1360
 
-	// not standard for ITG file structure, keep commented out
-	// Bad idea - this breaks all file loading on Linux. -- Vyhd
+#ifdef ITG_ARCADE
+	RageFileManager::Mount( "dir", "/stats", "/Data" );
+	RageFileManager::Mount( "kry", "/itgdata", "/Packages" );
+#else
 	RageFileManager::Mount( "kry", Root + "/CryptPackages", "/CryptPackages" );
 	RageFileManager::Mount( "dir", Root, "/" );
+#endif
 
 #elif defined(_WINDOWS)
 	/* All Windows data goes in the directory one level above the executable. */

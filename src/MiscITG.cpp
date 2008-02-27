@@ -20,7 +20,9 @@ extern "C" {
 #ifdef ITG_ARCADE
 #define STATS_DIR_PATH "/rootfs/stats/"
 #else
-#define STATS_DIR_PATH "/Stats/"
+// /Stats does not exist in the VFS
+//   --infamouspat
+#define STATS_DIR_PATH "Data/"
 #endif
 
 // This is how I chose to find the Crash Log size.
@@ -99,7 +101,7 @@ int GetRevision()
  * Otherwise, memory leaks may occur -- Vyhd */
 int GetNumMachineScores()
 {
-	CString sXMLPath = "/Data/MachineProfile/Stats.xml";
+	CString sXMLPath = STATS_DIR_PATH "/MachineProfile/Stats.xml";
 
 	// Create the XML Handler and clear it, for practice
 	XNode *xml = new XNode;

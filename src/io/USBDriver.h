@@ -1,9 +1,12 @@
-#ifndef IO_USBDRIVER_H
-#define IO_USBDRIVER_H
+#ifndef INPUT_HANDLER_USBDRIVER_H
+#define INPUT_HANDLER_USBDRIVER_H
 
+extern "C" {
 #include <usb.h>
+}
 
-/* A class for USB-driven input or output device drivers. */
+// USBDriver is not a subclass of InputHandler ;P
+//  --infamouspat
 class USBDriver
 {
 public:
@@ -12,16 +15,19 @@ public:
 
 	bool Open();
 	void Close();
-protected:
-	struct usb_device *FindDevice( usb_bus *usb_busses );
 
-	virtual bool Matches( int idVendor, int idProduct );
+protected:
+	struct usb_device *FindDevice(usb_bus*);
+
+	virtual bool Matches(int idVendor, int idProduct) const = 0;
 
 	usb_dev_handle *m_pHandle;
-	int m_iInterfaceNumber;
+	int m_iInterfaceNum;
+	int m_iIdVendor;
+	int m_iIdProduct;
 };
 
-#endif /* IO_USBDRIVER_H */
+#endif
 
 /*
  * (c) 2008 BoXoRRoXoRs

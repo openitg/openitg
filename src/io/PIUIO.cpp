@@ -3,7 +3,7 @@
 #include "USBDevice.h"
 #include "PIUIO.h"
 
-bool PIUIO::Matches( int idVendor, int idProduct )
+bool PIUIO::Matches( int idVendor, int idProduct ) const
 {
 	if( idVendor == 0x547 && idProduct == 0x1002 )
 		return true;

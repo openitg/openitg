@@ -11,7 +11,7 @@ public:
 	bool Write( uint32_t iData );
 
 protected:
-	bool Matches( int idVendor, int idProduct );
+	bool Matches( int idVendor, int idProduct ) const;
 };
 
 #endif /* IO_PIUIO_H */

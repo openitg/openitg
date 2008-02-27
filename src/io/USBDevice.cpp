@@ -81,7 +81,7 @@ bool USBDevice::IsITGIO()
 bool USBDevice::IsPIUIO()
 {
 	// return PIUIO::DeviceMatches( iIdVendor, iIdProduct );
-	if ( iIdVendor == 0x547 || iIdProduct == 0x1002 ) return true;
+	if ( iIdVendor == 0x547 && iIdProduct == 0x1002 ) return true;
 	return false;
 }
 

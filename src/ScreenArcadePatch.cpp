@@ -1,4 +1,5 @@
 #include "global.h"
+#include "HelpDisplay.h"
 #include "ScreenArcadePatch.h"
 #include "ScreenManager.h"
 #include "RageLog.h"
@@ -19,7 +20,7 @@
 #include "XmlFile.h"
 #include "MiscITG.h"
 
-#include "StepMania.h"		// For ExitAndReboot()
+#include "arch/ArchHooks/ArchHooks.h" // for HOOKS->SystemReboot()
 
 #include "Foreach.h"		// Foreach loops without the command is hard.
 #include "MemoryCardManager.h"	// Where else are we getting the patch from?
@@ -46,35 +47,34 @@ ScreenArcadePatch::~ScreenArcadePatch()
 	LOG->Trace( "ScreenArcadePatch::~ScreenArcadePatch() %i", (int)g_doReboot );
 
 	if( g_doReboot )
-		ExitAndReboot();
+		HOOKS->SystemReboot();
 }
 
 void ScreenArcadePatch::Init()
 {
 	ScreenWithMenuElements::Init();
 
-	this->SortByDrawOrder();
-	
 	m_Status.LoadFromFont( THEME->GetPathF("ScreenArcadePatch","text") );
 	m_Patch.LoadFromFont( THEME->GetPathF("ScreenArcadePatch","text") );
 	
 	m_Status.SetName( "State" );
 	m_Patch.SetName( "List" );
-	
-	m_Status.SetXY( SCREEN_CENTER_X , SCREEN_CENTER_Y );
-	m_Patch.SetXY( SCREEN_CENTER_X , SCREEN_CENTER_Y + 200 );
 
-	m_Status.SetZoom( 0.6 );
+	SET_XY_AND_ON_COMMAND( m_Status );
+	SET_XY_AND_ON_COMMAND( m_Patch );
 
-	//m_Status.SetHidden( false );
-	m_Patch.SetHidden( true );
-	
+	m_Status.SetText( THEME->GetMetric("ScreenArcadePatch","IntroText") );
+	m_Patch.SetText( "Please insert a USB Card containing an update." );
+	m_textHelp->SetText( "THIS IS A TEST LOL" );
+
 	this->AddChild( &m_Status );
 	this->AddChild( &m_Patch );
+
+	this->SortByDrawOrder();
 	
 	bChecking = false;
 	m_PatchStatus = &m_Status;
-	g_doReboot = true;	
+	g_doReboot = false;	
 }
 
 void ScreenArcadePatch::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
@@ -104,6 +104,7 @@ int ScreenArcadePatch::CommitPatch()
 								if ( CopyPatchContents() )
 								{
 									m_Status.SetText(m_sSuccessMsg);
+									m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextFinished" ) );
 									g_doReboot = true;
 									return 0;
 								}
@@ -153,8 +154,9 @@ void ScreenArcadePatch::MenuBack( PlayerNumber pn )
 {
 	if(!IsTransitioning())
 	{
-		SCREENMAN->PlayStartSound();
-		StartTransitioning( SM_GoToPrevScreen );		
+		COMMAND( m_Status, "Off" );
+		COMMAND( m_Patch, "Off" );
+		this->StartTransitioning( SM_GoToPrevScreen );		
 	}
 }
 
@@ -163,11 +165,12 @@ bool ScreenArcadePatch::CheckCards()
 {
 	// Set first, so it doesn't check again.
 	bChecking = true;
-	
+
 	FOREACH_PlayerNumber( p )
 	{
 		if( MEMCARDMAN->IsNameAvailable( p ) )
 		{
+			m_Patch.SetVisible(false);
 			pn = p;
 			m_Status.SetText( ssprintf( "Checking Player %d's card for a patch..." , p + 1 ) );
 			return true;
@@ -175,7 +178,8 @@ bool ScreenArcadePatch::CheckCards()
 	}
 	
 	// No cards found
-	m_Status.SetText( "Please insert a USB Card containing an update." );
+	m_Patch.SetText( "Please insert a USB Card containing an update." );
+	m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextWaiting" ) );
 
 	return false;
 }
@@ -216,8 +220,7 @@ bool ScreenArcadePatch::ScanPatch()
 	sFile = ssprintf( "%s%s" , sDir.c_str() , aPatches[0].c_str() );
 	
 	m_Status.SetText( ssprintf( "Patchfile found on Player %d's Card!" , pn + 1 ) );
-	m_Patch.SetText( aPatches[0].c_str() );
-	m_Patch.SetHidden( false );
+	m_textHelp->SetText( aPatches[0].c_str() );
 	
 	bScanned = true;
 	
@@ -239,10 +242,10 @@ void UpdatePatchCopyProgress( float fPercent )
 	SCREENMAN->Draw();
 }
 
-// XXX: this cannot handle large patch files
+// XXX: this cannot handle large patch files, plz fix this somehow kthx --infamouspat
 bool ScreenArcadePatch::CopyPatch()
 {
-#if defined(LINUX)
+#ifdef ITG_ARCADE
 	Root = "/rootfs/tmp/" + aPatches[0];
 #else
 	Root = "Temp/" + aPatches[0];
@@ -253,6 +256,7 @@ bool ScreenArcadePatch::CopyPatch()
 		return true;
 	} else {
 		m_Status.SetText( "Patch copying failed!! Please re-insert your card and try again!" );
+		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 }
@@ -275,18 +279,20 @@ bool ScreenArcadePatch::CheckSignature()
 	filesize = GetFileSizeInBytes( Root );
 
 	/////////// LOLOLOLOLOLOLOL /////////////
-	GetFileContents("/Data/Patch.rsa", patchRSA);
+	GetFileContents("Data/Patch.rsa", patchRSA);
 	///////////////////////////////////////////////////////////
 
 	fSig = new RageFileDriverSlice( rf, filesize - 128, 128 );
 	if (fSig->Read(patchSig, 128) < 128) {
 		m_Status.SetText( "Patch signature verification failed: unexpected end of file" );
+		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 	fZip = new RageFileDriverSlice( rf, 0, filesize - 128 );
 	
 	if (! CryptHelpers::VerifyFile( *fZip, patchSig, patchRSA, sErr ) ) {
 		m_Status.SetText( ssprintf("Patch signature verification failed: %s", sErr.c_str()) );
+		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 
@@ -311,6 +317,7 @@ bool ScreenArcadePatch::CheckXml()
 	if (! rfdZip->Load(fScl))
 	{
 		m_Status.SetText( "Patch XML data check failed, could not load .itg file" );
+		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 
@@ -319,6 +326,7 @@ bool ScreenArcadePatch::CheckXml()
 	if (fXml == NULL)
 	{
 		m_Status.SetText( "Patch XML data check failed, Could not open patch.xml" );
+		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 
@@ -328,18 +336,21 @@ bool ScreenArcadePatch::CheckXml()
 	if (rNode->GetChild("Game")==NULL || rNode->GetChild("Revision")==NULL || rNode->GetChild("Message")==NULL)
 	{
 		m_Status.SetText( "Cannot proceed update, patch.xml corrupt" );
+		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 	CString sGame = rNode->GetChildValue("Game");
 	if (sGame != "In The Groove 2" )
 	{
 		m_Status.SetText( ssprintf( "Cannot proceed update, revision is for another game (\"%s\").", rNode->GetChildValue("Game") ) );
+		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 	rNode->GetChild("Revision")->GetValue(iRevNum);
 	if (GetRevision() == iRevNum)
 	{
 		m_Status.SetText( "Cannot proceed update, revision on USB card is the same as the machine revision" );
+		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 
@@ -359,6 +370,7 @@ bool ScreenArcadePatch::CopyPatchContents()
 	if (! rfdZip->Load( Root ) )
 	{
 		m_Status.SetText( "Could not copy patch contents" );
+		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 
@@ -400,7 +412,11 @@ bool ScreenArcadePatch::CopyPatchContents()
 			fCopyDest.Close();
 
 #ifdef LINUX
+#ifdef ITG_ARCADE
 			sPath = "/stats/new-patch-unchecked/" + sPath;
+#else
+			sPath = "Data/new-patch-unchecked/" + sPath;
+#endif
 			chmod( sPath.c_str(), fi->m_iFilePermissions );
 #endif
 
@@ -409,8 +425,7 @@ bool ScreenArcadePatch::CopyPatchContents()
 		rfdZip->GetDirListing( sDirPath + "/*", patchDirs, true, true );
 
 	}
-	// XXX: windows portion might need changed
-#ifdef LINUX
+#ifdef ITG_ARCADE
 	rename("/stats/new-patch-unchecked", "/stats/new-patch" );
 #else
 	rename("Data/new-patch-unchecked", "Data/new-patch" );

@@ -41,6 +41,7 @@ private:
 	//void *UpdatePatchCopyProgress(float fPercent);
 
 	BitmapText m_Patch;
+
 	PlayerNumber pn;
 	
 	CString Type;

@@ -22,7 +22,7 @@ extern "C" {
 #else
 // /Stats does not exist in the VFS
 //   --infamouspat
-#define STATS_DIR_PATH "Stats/"
+#define STATS_DIR_PATH "Data/"
 #endif
 
 // This is how I chose to find the Crash Log size.
@@ -55,7 +55,7 @@ int GetIP()
 
 int GetRevision()
 {
-	CString sPath = "Patch/patch.xml";
+	CString sPath = STATS_DIR_PATH "patch/patch.xml";
 
 	// Create the XML Handler, and clear it, for practice.
 	XNode *xml = new XNode;

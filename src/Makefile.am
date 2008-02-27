@@ -111,8 +111,6 @@ LoadingWindow = arch/LoadingWindow/LoadingWindow.h \
 		arch/LoadingWindow/LoadingWindow_Null.h
 
 #Make sure any dependencies on these data structure are wrapped.
-#if HAVE_LIBUSB
-LIBS += -lusb
 DataStructures += io/USBDriver.cpp io/USBDriver.h \
 		  io/USBDevice.cpp io/USBDevice.h \
 		  io/PIUIO.cpp io/PIUIO.h

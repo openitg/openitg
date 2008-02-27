@@ -2098,8 +2098,6 @@ public:
 		PlayerNumber pn = (PlayerNumber)IArg(1);
 		lua_pushboolean(L, p->GetStageResult(pn)==RESULT_WIN); return 1;
 	}
-	/* XXX: this should go somewhere less ugly */
-	static int GetSerialNumber( T* p, lua_State *L )	{ lua_pushstring(L, PRODUCT_SERIAL); return 1; }
 
 	static void Register(lua_State *L)
 	{
@@ -2148,7 +2146,6 @@ public:
 		ADD_METHOD( GetPremium )
 		ADD_METHOD( IsSyncDataChanged )
 		ADD_METHOD( IsWinner )
-		ADD_METHOD( GetSerialNumber )
 
 		Luna<T>::Register( L );
 

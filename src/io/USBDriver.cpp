@@ -42,11 +42,11 @@ struct usb_device *USBDriver::FindDevice( usb_bus *usb_busses )
 
 void USBDriver::Close()
 {
-	LOG->Trace( "USBDriver::Close()" );
-
 	// never opened
 	if( m_pHandle == NULL )
 		return;
+
+	LOG->Trace( "USBDriver::Close()" );
 
 	usb_set_altinterface( m_pHandle, 0 );
 	usb_reset( m_pHandle );

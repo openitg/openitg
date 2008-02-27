@@ -123,10 +123,7 @@ void ScreenArcadeDiagnostics::MenuBack( PlayerNumber pn )
 {
 	if(!IsTransitioning())
 	{
-		//COMMAND( m_Title, "Off" );
-		//COMMAND( m_USBInfo, "Off" );
-
-		this->PlayCommand( "Off" ); // don't forget m_USBInfo!
+		this->PlayCommand( "Off" );
 		StartTransitioning( SM_GoToPrevScreen );		
 	}
 }

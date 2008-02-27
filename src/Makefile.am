@@ -114,8 +114,11 @@ LoadingWindow = arch/LoadingWindow/LoadingWindow.h \
 #if HAVE_LIBUSB
 LIBS += -lusb
 DataStructures += io/USBDriver.cpp io/USBDriver.h \
+		  io/USBDevice.cpp io/USBDevice.h \
 		  io/PIUIO.cpp io/PIUIO.h
 #endif
+
+
 
 if HAVE_GTK
 LoadingWindow += arch/LoadingWindow/LoadingWindow_Gtk.cpp arch/LoadingWindow/LoadingWindow_Gtk.h

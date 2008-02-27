@@ -60,7 +60,7 @@ int GetRevision()
 	xml->Clear();
 	xml->m_sName = "patch";
 	
-	bool bLoaded;
+	bool bLoaded = false;
 
 	// Check for the file existing
 	if( !IsAFile(sPath) )

@@ -12,9 +12,15 @@
 #include "Preference.h"
 #include "RageLog.h"
 
-#define DEFAULTS_INI_PATH	"Data/Defaults.ini"		// these can be overridden
-#define STEPMANIA_INI_PATH	"Data/StepMania.ini"	// overlay on Defaults.ini, contains the user's choices
-#define STATIC_INI_PATH		"Data/Static.ini"		// overlay on the 2 above, can't be overridden
+#ifdef ITG_ARCADE
+#define INI_FOLDER	"Stats/"
+#else
+#define INI_FOLDER	"Data/"
+#endif
+
+#define DEFAULTS_INI_PATH	INI_FOLDER "Defaults.ini"	// these can be overridden
+#define STEPMANIA_INI_PATH	INI_FOLDER "StepMania.ini"	// overlay on Defaults.ini, contains the user's choices
+#define STATIC_INI_PATH		INI_FOLDER "Static.ini"		// overlay on the 2 above, can't be overridden
 
 PrefsManager*	PREFSMAN = NULL;	// global and accessable from anywhere in our program
 

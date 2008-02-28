@@ -56,7 +56,7 @@ public:
 	bool m_bUseModNameForIcon;
 	vector<CString> m_vsBroadcastOnExport;
 
-	OptionRowHandlerList::OptionRowHandlerList() { Init(); }
+	OptionRowHandlerList() { Init(); }
 	virtual void Init()
 	{
 		OptionRowHandler::Init();
@@ -811,7 +811,7 @@ class OptionRowHandlerConfig : public OptionRowHandler
 public:
 	const ConfOption *opt;
 
-	OptionRowHandlerConfig::OptionRowHandlerConfig() { Init(); }
+	OptionRowHandlerConfig() { Init(); }
 	void Init()
 	{
 		OptionRowHandler::Init();
@@ -884,7 +884,7 @@ public:
 	BroadcastOnChange<StepsType> *m_pstToFill;
 	vector<StepsType> m_vStepsTypesToShow;
 
-	OptionRowHandlerStepsType::OptionRowHandlerStepsType() { Init(); }
+	OptionRowHandlerStepsType() { Init(); }
 	void Init()
 	{
 		OptionRowHandler::Init();
@@ -981,7 +981,7 @@ public:
 	vector<Steps*> m_vSteps;
 	vector<Difficulty> m_vDifficulties;
 
-	OptionRowHandlerSteps::OptionRowHandlerSteps() { Init(); }
+	OptionRowHandlerSteps() { Init(); }
 	void Init()
 	{
 		OptionRowHandler::Init();

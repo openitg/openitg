@@ -231,6 +231,7 @@ PrefsManager::PrefsManager() :
 	m_bUseUnlockSystem				( "UseUnlockSystem",			false ),
 	m_bAutoMapOnJoyChange			( "AutoMapOnJoyChange",			true ),
 	m_fGlobalOffsetSeconds			( "GlobalOffsetSeconds",		0 ),
+	m_fVisualDelaySeconds			( "VisualDelaySeconds",			0 ),
 	m_iProgressiveLifebar			( "ProgressiveLifebar",			0 ),
 	m_iProgressiveStageLifebar		( "ProgressiveStageLifebar",	0 ),
 	m_iProgressiveNonstopLifebar	( "ProgressiveNonstopLifebar",	0 ),

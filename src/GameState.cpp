@@ -653,6 +653,8 @@ void GameState::ResetMusicStatistics()
 {	
 	m_fMusicSeconds = 0; // MUSIC_SECONDS_INVALID;
 	m_fSongBeat = 0;
+	m_fMusicSecondsVisible = 0;
+	m_fSongBeatVisible = 0;
 	m_fCurBPS = 10;
 	m_bFreeze = false;
 	m_bPastHereWeGo = false;
@@ -723,7 +725,13 @@ void GameState::UpdateSongPosition( float fPositionSeconds, const TimingData &ti
 	m_fMusicSeconds = fPositionSeconds;
 	m_fLightSongBeat = timing.GetBeatFromElapsedTime( fPositionSeconds + g_fLightsAheadSeconds );
 
-	Actor::SetBGMTime( fPositionSeconds, m_fSongBeat );
+	m_fMusicSecondsVisible = fPositionSeconds - PREFSMAN->m_fVisualDelaySeconds;
+	
+	float fThrowAway; bool bThrowAway;
+	timing.GetBeatAndBPSFromElapsedTime( m_fMusicSecondsVisible, m_fSongBeatVisible, fThrowAway, bThrowAway );
+
+	Actor::SetBGMTime( m_fMusicSecondsVisible, m_fSongBeatVisible );
+//	Actor::SetBGMTime( fPositionSeconds, m_fSongBeat );
 	
 //	LOG->Trace( "m_fMusicSeconds = %f, m_fSongBeat = %f, m_fCurBPS = %f, m_bFreeze = %f", m_fMusicSeconds, m_fSongBeat, m_fCurBPS, m_bFreeze );
 }
@@ -2084,6 +2092,7 @@ public:
 	static int IsEventMode( T* p, lua_State *L )			{ lua_pushboolean(L, p->IsEventMode() ); return 1; }
 	static int GetNumPlayersEnabled( T* p, lua_State *L )	{ lua_pushnumber(L, p->GetNumPlayersEnabled() ); return 1; }
 	static int GetSongBeat( T* p, lua_State *L )			{ lua_pushnumber(L, p->m_fSongBeat ); return 1; }
+	static int GetSongBeatVisible( T* p, lua_State *L )		{ lua_pushnumber(L, p->m_fSongBeatVisible ); return 1; }
 	static int PlayerUsingBothSides( T* p, lua_State *L )	{ lua_pushboolean(L, p->PlayerUsingBothSides() ); return 1; }
 	static int GetCoins( T* p, lua_State *L )				{ lua_pushnumber(L, p->m_iCoins ); return 1; }
 	static int IsSideJoined( T* p, lua_State *L )			{ lua_pushboolean(L, p->m_bSideIsJoined[(PlayerNumber)IArg(1)] ); return 1; }
@@ -2136,6 +2145,7 @@ public:
 		ADD_METHOD( IsEventMode )
 		ADD_METHOD( GetNumPlayersEnabled )
 		ADD_METHOD( GetSongBeat )
+		ADD_METHOD( GetSongBeatVisible )
 		ADD_METHOD( PlayerUsingBothSides )
 		ADD_METHOD( GetCoins )
 		ADD_METHOD( IsSideJoined )

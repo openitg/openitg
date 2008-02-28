@@ -206,6 +206,7 @@ public:
 	Preference<bool>	m_bUseUnlockSystem;
 	Preference<bool>	m_bAutoMapOnJoyChange;
 	Preference<float>	m_fGlobalOffsetSeconds;
+	Preference<float>	m_fVisualDelaySeconds;
 	Preference<int>		m_iProgressiveLifebar;
 	Preference<int>		m_iProgressiveStageLifebar;
 	Preference<int>		m_iProgressiveNonstopLifebar;

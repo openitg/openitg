@@ -101,9 +101,9 @@ protected:
 	virtual void PopulateFileSet( FileSet &fs, const CString &sPath ) { }
 
 public:
-	FilenameDB::FilenameDB():
+	FilenameDB():
 		m_Mutex("FilenameDB"), ExpireSeconds( -1 ) { }
-	virtual FilenameDB::~FilenameDB() { FlushDirCache(); }
+	virtual ~FilenameDB() { FlushDirCache(); }
 
 	void AddFile( const CString &sPath, int size, int hash, void *priv=NULL );
 	void DelFile( const CString &sPath );

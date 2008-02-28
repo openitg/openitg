@@ -125,7 +125,7 @@ private:
 	void GameOver(PacketFunctions& Packet, const unsigned int clientNum);
 	void ScreenNetMusicSelectStatus(PacketFunctions& Packet, const unsigned int clientNum);
 	void AnalizeChat(PacketFunctions &Packet, const unsigned int clientNum);
-	CString StepManiaLanServer::ListPlayers();
+	CString ListPlayers();
 	void Kick(CString &name);
 	void Ban(CString &name);
 	bool IsBanned(CString &ip);

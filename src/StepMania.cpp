@@ -1063,9 +1063,9 @@ int main(int argc, char* argv[])
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
 #else
-	if ( IsAFile("Stats/patch/patch.zip") )
+	if ( IsAFile("Data/patch/patch.zip") )
 	{
-		FILEMAN->Mount( "patch", "Stats/patch", "/Patch" );
+		FILEMAN->Mount( "patch", "Data/patch", "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
 #endif
@@ -1164,7 +1164,7 @@ int main(int argc, char* argv[])
 	STATSMAN	= new StatsManager;
 
 	SAFE_DELETE( loading_window );		// destroy this before init'ing Display
-    
+
 	StartDisplay();
 
 	StoreActualGraphicOptions( true );
@@ -1202,6 +1202,9 @@ int main(int argc, char* argv[])
 	if( GetCommandlineArgument("netip") )
 		NSMAN->DisplayStartupStatus();	// If we're using networking show what happened
 
+	PREFSMAN->SaveGlobalPrefsToDisk();
+	SaveGamePrefsToDisk();
+    
 	/* Run the main loop. */
 	GameLoop();
 

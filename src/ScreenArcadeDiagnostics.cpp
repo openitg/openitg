@@ -14,6 +14,12 @@
 #include "ActorUtil.h"
 #include "ActorFrame.h" // We need this to call PlayCommand,Refresh and update the uptime.
 
+#ifdef ITG_ARCADE
+#include "io/USBDevice.h"
+#else
+#include "io/USBDevice_Libusb.h"
+#endif
+
 REGISTER_SCREEN_CLASS( ScreenArcadeDiagnostics );
 
 ScreenArcadeDiagnostics::ScreenArcadeDiagnostics( CString sClassName ) : ScreenWithMenuElements( sClassName )
@@ -32,11 +38,8 @@ void ScreenArcadeDiagnostics::Init()
 	m_Title.SetName( "Title" );
 
 	// You can use some #define'd macros in ActorUtil.h for these. -- Vyhd
-	SET_XY( m_USBInfo );
-	COMMAND( m_USBInfo, "On" );
-
-	SET_XY( m_Title );
-	COMMAND( m_Title, "On" );
+	SET_XY_AND_ON_COMMAND( m_USBInfo );
+	SET_XY_AND_ON_COMMAND( m_Title );
 	
 	this->AddChild( &m_USBInfo );
 	this->AddChild( &m_Title );

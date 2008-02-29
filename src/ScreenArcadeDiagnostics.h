@@ -3,7 +3,6 @@
 #ifndef SCREEN_ARCADE_DIAGNOSTICS_H
 #define SCREEN_ARCADE_DIAGNOSTICS_H
 
-#include "io/USBDevice.h"
 #include "ScreenWithMenuElements.h"
 #include "BitmapText.h"
 

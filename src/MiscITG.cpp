@@ -7,7 +7,12 @@
 #include "RageTimer.h"
 #include "SongManager.h"
 #include "ProductInfo.h"
+
+#ifdef ITG_ARCADE
 #include "io/USBDevice.h"
+#else
+#include "io/USBDevice_Libusb.h"
+#endif
 
 #ifdef ITG_ARCADE
 extern "C" {

@@ -112,9 +112,13 @@ LoadingWindow = arch/LoadingWindow/LoadingWindow.h \
 
 #Make sure any dependencies on these data structure are wrapped.
 DataStructures += io/USBDriver.cpp io/USBDriver.h \
-		  io/USBDevice.cpp io/USBDevice.h \
 		  io/PIUIO.cpp io/PIUIO.h
-#endif
+
+if ITG_ARCADE
+DataStructures += io/USBDevice.cpp io/USBDevice.h
+else
+DataStructures += io/USBDevice_Libusb.cpp io/USBDevice_Libusb.h
+endif
 
 
 
@@ -212,11 +216,8 @@ if LINUX
 MemoryCard += arch/MemoryCard/MemoryCardDriverThreaded_Linux.cpp arch/MemoryCard/MemoryCardDriverThreaded_Linux.h
 InputHandler +=	arch/InputHandler/InputHandler_Linux_Joystick.h arch/InputHandler/InputHandler_Linux_Joystick.cpp
 
-# These cannot build without USBDriver, which depends on libusb
-#if HAVE_LIBUSB
 InputHandler += arch/InputHandler/InputHandler_Linux_PIUIO.h \
 		arch/InputHandler/InputHandler_Linux_PIUIO.cpp
-#endif
 
 endif
 

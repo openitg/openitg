@@ -3,6 +3,7 @@
 #include "RageUtil.h"
 #include "MiscITG.h"
 #include "ProfileManager.h"
+#include "RageInput.h" /* for g_sInputType */
 #include "RageLog.h"
 #include "RageTimer.h"
 #include "SongManager.h"
@@ -10,35 +11,29 @@
 
 #ifdef ITG_ARCADE
 #include "io/USBDevice.h"
+extern "C" {
+#include "ibutton/ownet.h"
+#include "ibutton/shaib.h"
+}
 #else
 #include "io/USBDevice_Libusb.h"
 #endif
 
 #ifdef ITG_ARCADE
-extern "C" {
-#include "ibutton/ownet.h"
-#include "ibutton/shaib.h"
-}
-#endif
-
-/* Redundant, but readable...let's make global directory paths later. -- Vyhd */
-#ifdef ITG_ARCADE
-#define STATS_DIR_PATH "/rootfs/stats/"
+#define STATS_DIR_PATH CString("/rootfs/stats/")
 #else
-// /Stats does not exist in the VFS
-//   --infamouspat
-#define STATS_DIR_PATH "Data/"
+#define STATS_DIR_PATH CString("Data/")
 #endif
 
-// This is how I chose to find the Crash Log size.
-// -- Matt1360
+extern CString g_sInputType;
+
 int GetNumCrashLogs()
 {
 	// Give ourselves a variable.
 	CStringArray aLogs;
 	
 	// Get them all.
-	GetDirListing( STATS_DIR_PATH "crashlog-*.txt" , aLogs );
+	GetDirListing( STATS_DIR_PATH + "crashlog-*.txt" , aLogs );
 	
 	return aLogs.size();
 }
@@ -60,7 +55,7 @@ int GetIP()
 
 int GetRevision()
 {
-	CString sPath = STATS_DIR_PATH "patch/patch.xml";
+	CString sPath = STATS_DIR_PATH + "patch/patch.xml";
 
 	// Create the XML Handler, and clear it, for practice.
 	XNode *xml = new XNode;
@@ -106,7 +101,7 @@ int GetRevision()
  * Otherwise, memory leaks may occur -- Vyhd */
 int GetNumMachineScores()
 {
-	CString sXMLPath = STATS_DIR_PATH "/MachineProfile/Stats.xml";
+	CString sXMLPath = STATS_DIR_PATH + "/MachineProfile/Stats.xml";
 
 	// Create the XML Handler and clear it, for practice
 	XNode *xml = new XNode;
@@ -232,7 +227,7 @@ LuaFunction_NoArgs( GetNumIOErrors	, 0 ); // Call the number of I/O Errors [Scre
 LuaFunction_NoArgs( GetNumMachineScores, GetNumMachineScores() ); // Call the machine score count [ScreenArcadeDiagnostics]
 // added by infamouspat
 LuaFunction_NoArgs( GetSerialNumber, GetSerialNumber() ); // returns serial from page 9 on dongle
-
+LuaFunction_NoArgs( GetInputType, g_sInputType ); // grabs from RageInput's global variable
 LuaFunction_NoArgs( HubIsConnected, HubIsConnected() ); // well, is it?
 
 

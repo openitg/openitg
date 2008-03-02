@@ -80,6 +80,10 @@
 #include <cerrno>
 #endif
 
+#ifdef HAVE_LIBUSB
+#include "io/ITGIO.h"
+#endif
+
 #define ZIPS_DIR "Packages/"
 
 int g_argc = 0;
@@ -1033,9 +1037,9 @@ int main(int argc, char* argv[])
 	}
 	MountTreeOfZips( ZIPS_DIR );
 
-#ifndef ITG_ARCADE
+//#ifndef ITG_ARCADE
 	FILEMAN->Mount( "kry", "CryptPackages", "/CryptPackages" );
-#endif
+//#endif
 
 	// TODO: soft-code this!
 	{
@@ -1510,12 +1514,24 @@ static void CheckSkips( float fDeltaTime )
 static void GameLoop()
 {
 	RageTimer timer;
+	CString sLastInputError;
+
 	while(!g_bQuitting)
 	{
 
 		/*
 		 * Update
 		 */
+
+		/* XXX: sLastInputError factors into this, but I'm too
+		 * tired to figure it out at this point in time. -- Vyhd */
+#ifdef HAVE_LIBUSB
+		if( ITGIO::m_sInputError != "" )
+			SCREENMAN->SystemMessageNoAnimate( ITGIO::m_sInputError );
+		else
+			SCREENMAN->HideSystemMessage();
+#endif
+
 		float fDeltaTime = timer.GetDeltaTime();
 
 		if( PREFSMAN->m_fConstantUpdateDeltaSeconds > 0 )

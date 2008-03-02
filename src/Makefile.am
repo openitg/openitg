@@ -110,16 +110,23 @@ StepMania = StdString.h \
 LoadingWindow = arch/LoadingWindow/LoadingWindow.h \
 		arch/LoadingWindow/LoadingWindow_Null.h
 
+
+#if HAVE_LIBUSB
+
+LIBS += -lusb
+
 #Make sure any dependencies on these data structure are wrapped.
 DataStructures += io/USBDriver.cpp io/USBDriver.h \
-		  io/PIUIO.cpp io/PIUIO.h
+		  io/PIUIO.cpp io/PIUIO.h \
+		  io/ITGIO.cpp io/ITGIO.h
 
-if ITG_ARCADE
+if UNIX
 DataStructures += io/USBDevice.cpp io/USBDevice.h
 else
 DataStructures += io/USBDevice_Libusb.cpp io/USBDevice_Libusb.h
 endif
 
+#endif HAVE_LIBUSB
 
 
 if HAVE_GTK

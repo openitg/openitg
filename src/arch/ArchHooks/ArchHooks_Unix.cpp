@@ -38,6 +38,10 @@ static bool IsFatalSignal( int signal )
 
 /* The fuck...? This gets called at runtime. I've
  * got no clue what's going on here... -- Vyhd */
+void ArchHooks_Unix::SystemReboot()
+{
+	LOG->Warn( "SystemReboot() called." );
+}
 
 /*
 void ArchHooks_Unix::SystemReboot()

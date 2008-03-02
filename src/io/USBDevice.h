@@ -1,6 +1,11 @@
 #ifndef IO_USBDEVICE_H
 #define IO_USBDEVICE_H
+
 #include "global.h"
+
+/* For "DeviceMatches" */
+#include "PIUIO.h"
+#include "ITGIO.h"
 
 #include <usb.h>
 
@@ -21,24 +26,24 @@ public:
 	CString GetClassDescription( unsigned iClass );
 	CString GetDescription();
 
-	int GetIdVendor() { return iIdVendor; }
-	int GetIdProduct() { return iIdProduct; }
-	int GetMaxPower() { return iMaxPower; }
+	int GetIdVendor() { return m_iIdVendor; }
+	int GetIdProduct() { return m_iIdProduct; }
+	int GetMaxPower() { return m_iMaxPower; }
 
-	CString GetDeviceDir() { return sDeviceDir; }
+	CString GetDeviceDir() { return m_sDeviceDir; }
 
 	bool IsHub();
 	bool IsITGIO();
 	bool IsPIUIO();
 
 private:
-	int iIdVendor;
-	int iIdProduct;
-	int iMaxPower;
-	CString sDeviceDir;
+	int m_iIdVendor;
+	int m_iIdProduct;
+	int m_iMaxPower;
+	CString m_sDeviceDir;
 
-	vector<CString> sInterfaceDeviceDirs;
-	vector<unsigned> iInterfaceClasses;
+	vector<CString> m_sInterfaceDeviceDirs;
+	vector<unsigned> m_iInterfaceClasses;
 
 };
 

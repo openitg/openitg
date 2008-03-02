@@ -245,7 +245,9 @@ void RageFileManager::MountInitialFilesystems()
 {
 	/* Add file search paths, higher priority first. */
 #if defined(XBOX)
+	/* ITG_ARCADE not implemented here -- Vyhd */
 	RageFileManager::Mount( "dir", "D:\\", "/" );
+
 #elif defined(LINUX)
 	/* Mount the root filesystem, so we can read files in /proc, /etc, and so on.
 	 * This is /rootfs, not /root, to avoid confusion with root's home directory. */
@@ -254,34 +256,6 @@ void RageFileManager::MountInitialFilesystems()
         /* Mount /proc, so Alsa9Buf::GetSoundCardDebugInfo() and others can access it.
 	 * (Deprecated; use rootfs.) */
 	RageFileManager::Mount( "dir", "/proc", "/proc" );
-	
-	/* We can almost do this, to have machine profiles be system-global to eg. share
-	 * scores.  It would need to handle permissions properly. */
-/*	RageFileManager::Mount( "dir", "/var/lib/games/stepmania", "/Data/Profiles" ); */
-	
-	// CString Home = getenv( "HOME" ) + "/" + PRODUCT_NAME;
-
-	/*
-	 * Next: path to write general mutable user data.  If the above path fails (eg.
-	 * wrong permissions, doesn't exist), machine memcard data will also go in here. 
-	 * XXX: It seems silly to have two ~ directories.  If we're going to create a
-	 * directory on our own, it seems like it should be a dot directory, but it
-	 * seems wrong to put lots of data (eg. music) in one.  Hmm. 
-	 */
-	/* XXX: create */
-/*	RageFileManager::Mount( "dir", Home + "." PRODUCT_NAME, "/Data" ); */
-
-	/* Next, search ~/StepMania.  This is where users can put music, themes, etc. */
-	/* RageFileManager::Mount( "dir", Home + PRODUCT_NAME, "/" ); */
-
-	/* Search for a directory with "Songs" in it.  Be careful: the CWD is likely to
-	 * be ~, and it's possible that some users will have a ~/Songs/ directory that
-	 * has nothing to do with us, so check the initial directory last. */
-
-	/* Not yet, matt. We want this to stay self-contained	*
-	 * until the beta stage. :) - Vyhd			*/
-	//RageFileManager::Mount( "dir" , "/stats" , "/Data" );
-	//RageFileManager::Mount( "dir" , "/dxldata" , "/Packages" );
 
 	/* FileDB cannot accept relative paths, so Root must be absolute */
 	/* using DirOfExecutable for now  --infamouspat */
@@ -291,40 +265,48 @@ void RageFileManager::MountInitialFilesystems()
 		Root = DirOfExecutable;
 	if( Root == "" && !stat( InitialWorkingDirectory + "/Songs", &st ) && st.st_mode&S_IFDIR )
 		Root = InitialWorkingDirectory;
-// 	if( Root == "" )
-// 		RageException::Throw( "Couldn't find \"Songs\"" );
-	// Disabled above, for it crashes if there is no primary Songs directory
-	// I'm loading off zips and additional folders...I don't want no crashes...
-	// -- Matt1360
 
 #ifdef ITG_ARCADE
 	RageFileManager::Mount( "dir", "/stats", "/Data" );
-	RageFileManager::Mount( "kry", "/itgdata", "/Packages" );
+	RageFileManager::Mount( "kry", "/itgdata", "/CryptPackages" );
 #else
 	RageFileManager::Mount( "kry", Root + "/CryptPackages", "/CryptPackages" );
+	/* This mounts everything else, including Data, etc. */
 	RageFileManager::Mount( "dir", Root, "/" );
-#endif
+#endif // ITG_ARCADE
 
 #elif defined(_WINDOWS)
 	/* All Windows data goes in the directory one level above the executable. */
 	CHECKPOINT_M( ssprintf( "DOE \"%s\"", DirOfExecutable.c_str()) );
+
 	CStringArray parts;
 	split( DirOfExecutable, "/", parts );
+
 	CHECKPOINT_M( ssprintf( "... %i parts", parts.size()) );
 	ASSERT_M( parts.size() > 1, ssprintf("Strange DirOfExecutable: %s", DirOfExecutable.c_str()) );
+
 	CString Dir = join( "/", parts.begin(), parts.end()-1 );
+
+	/* XXX: how are directories going to be arranged on a Windows arcade machine? */
 	RageFileManager::Mount( "kry", Dir + "/CryptPackages", "/CryptPackages" );
 	RageFileManager::Mount( "dir", Dir, "/" );
+
 #elif defined(DARWIN)
 	CHECKPOINT_M( ssprintf("DOE \"%s\"", DirOfExecutable.c_str()) );
+
 	CStringArray parts;
 	split( DirOfExecutable, "/", parts );
+
 	ASSERT( parts.size() > 3 );
 	CString Dir = '/' + join( "/", parts.begin(), parts.end()-3 );
+
+	RageFileManager::Mount( "kry", Dir + "/CryptPackages", "/CryptPackages" );
 	RageFileManager::Mount( "dir", Dir, "/" );
+
 #else
 	/* Paths relative to the CWD: */
 	RageFileManager::Mount( "dir", ".", "/" );
+
 #endif
 }
 

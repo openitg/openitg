@@ -1,7 +1,7 @@
 #include "global.h"
 #include "RageLog.h"
-#include "USBDevice.h"
-#include "PIUIO.h"
+
+#include "io/PIUIO.h"
 
 bool PIUIO::Matches( int idVendor, int idProduct ) const
 {

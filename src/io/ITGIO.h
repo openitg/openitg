@@ -1,27 +1,39 @@
-#ifndef ARCH_HOOKS_UNIX_H
-#define ARCH_HOOKS_UNIX_H
+#ifndef IO_ITGIO_H
+#define IO_ITGIO_H
 
-#include "ArchHooks.h"
-class ArchHooks_Unix: public ArchHooks
+#include <usb.h>
+#include "USBDriver.h"
+
+class ITGIO: public USBDriver
 {
 public:
-	ArchHooks_Unix();
-	void DumpDebugInfo();
-	void SystemReboot();
 
-	void SetTime( tm newtime );
-	static int64_t m_iStartTime;
-	int64_t GetMicrosecondsSinceStart();
+//	I'd like to implement this, so our "IsITGIO" declarations are
+//	all in one place. It's not important right now, though. - Vyhd
+//	static bool DeviceMatches( int idVendor, int idProduct );
+
+	bool Read( uint32_t *pData );
+	bool Write( uint32_t iData );
+
+	/* Globally accessible. */
+	static int m_iInputErrorCount;
+	static CString m_sInputError;
+protected:
+	bool Matches( int idVendor, int idProduct ) const;
+
+	void Reconnect();
+
+	/* Until we know where this is called, I'd appreciate
+	 * not having all the unnecessary linker errors. -- Vyhd */
+	bool g_bIgnoreNextITGIOError; 
 };
 
-#ifdef ARCH_HOOKS
-#error "More than one ArchHooks selected!"
-#endif
-#define ARCH_HOOKS ArchHooks_Unix
+//extern bool g_bIgnoreNextITGIOError;
 
-#endif
+#endif /* IO_ITGIO_H */
+
 /*
- * (c) 2003-2004 Glenn Maynard
+ * (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -44,3 +56,4 @@ public:
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+

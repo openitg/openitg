@@ -7,9 +7,10 @@ class RageMutex;
 class ArchHooks_Win32: public ArchHooks
 {
 public:
-    ArchHooks_Win32();
-    ~ArchHooks_Win32();
-    void DumpDebugInfo();
+	ArchHooks_Win32();
+	~ArchHooks_Win32();
+
+	void DumpDebugInfo();
 	void RestartProgram();
 	void SystemReboot();
 

@@ -1,7 +1,11 @@
 #include "global.h"
-#include "io/USBDevice.h"
 #include "RageUtil.h"
 #include "RageLog.h"
+
+#include "io/USBDevice.h"
+#include "io/PIUIO.h"
+#include "io/ITGIO.h"
+
 #include <map>
 #include <usb.h>
 
@@ -37,42 +41,58 @@ CString USBDevice::GetDescription()
 	
 	vector<CString> sInterfaceDescriptions;
 
-	for (unsigned i = 0; i < iInterfaceClasses.size(); i++)
-		sInterfaceDescriptions.push_back( GetClassDescription(iInterfaceClasses[i]) );
+	for (unsigned i = 0; i < m_iInterfaceClasses.size(); i++)
+		sInterfaceDescriptions.push_back( GetClassDescription(m_iInterfaceClasses[i]) );
 
 	return join( ", ", sInterfaceDescriptions );
 }
 
 bool USBDevice::GetDeviceProperty( const CString &sProperty, CString &out )
 {
-	CString sTargetFile = "/rootfs/sys/bus/usb/devices/" + sDeviceDir + "/" + sProperty;
+	CString sTargetFile = "/rootfs/sys/bus/usb/devices/" + m_sDeviceDir + "/" + sProperty;
 	return GetFileContents(sTargetFile, out, true);
 }
 
 bool USBDevice::GetInterfaceProperty( const CString &sProperty, const unsigned iInterface, CString &out)
 {
-	if (iInterface > sInterfaceDeviceDirs.size() - 1)
+	if (iInterface > m_sInterfaceDeviceDirs.size() - 1)
 	{
-		LOG->Warn( "Cannot access interface %i with USBDevice interface count %i", iInterface, sInterfaceDeviceDirs.size() );
+		LOG->Warn( "Cannot access interface %i with USBDevice interface count %i", iInterface, m_sInterfaceDeviceDirs.size() );
 		return false;
 	}
-	CString sTargetFile = "/rootfs/sys/bus/usb/devices/" + sDeviceDir + ":" + sInterfaceDeviceDirs[iInterface] + "/" + sProperty;
+	CString sTargetFile = "/rootfs/sys/bus/usb/devices/" + m_sDeviceDir + ":" + m_sInterfaceDeviceDirs[iInterface] + "/" + sProperty;
 	return GetFileContents( sTargetFile, out, true );
 }
 
+/* CRASH: Somehow, m_iInterfaceClasses.size is getting corrupted and
+ * returning larger amounts than exist, causing segfaults. -- Vyhd */
 bool USBDevice::IsHub()
 {
-	for (unsigned i = 0; i < iInterfaceClasses.size(); i++)
-		if (iInterfaceClasses[i] == 9) return true;
+	LOG->Trace( "USBDevice::IsHub()" );
+	CHECKPOINT_M( ssprintf("Total interfaces: %i", m_iInterfaceClasses.size()) );
+
+	int iClasses = m_iInterfaceClasses.size();
+	LOG->Trace( "iClasses: %i; vector size: %i", iClasses, m_iInterfaceClasses.size() );
+	for (unsigned i = 0; i < iClasses; i++)
+	{
+//		for( unsigned j = 0; j < m_iInterfaceClasses.size(); j++ )
+//			LOG->Trace( "Part %i: %i", j, m_iInterfaceClasses[j] );
+
+		CHECKPOINT_M( ssprintf("Interface %i of %i", i, m_iInterfaceClasses.size()) );
+
+		if (m_iInterfaceClasses[i] == 9)
+			return true;
+	}
+	CHECKPOINT;
 	return false;
 }
 
 bool USBDevice::IsITGIO()
 {
-	// return ITGIO::DeviceMatches( iIdVendor, iIdProduct );
-	if ( iIdVendor == 0x7c0 )
+//	return ITGIO::DeviceMatches( m_iIdVendor, m_iIdProduct );
+	if ( m_iIdVendor == 0x7c0 )
 	{
-		if (iIdProduct == 0x1501 || iIdProduct == 0x1582 || iIdProduct == 0x1584)
+		if (m_iIdProduct == 0x1501 || m_iIdProduct == 0x1582 || m_iIdProduct == 0x1584)
 			return true;
 	}
 	return false;
@@ -80,39 +100,39 @@ bool USBDevice::IsITGIO()
 
 bool USBDevice::IsPIUIO()
 {
-	// return PIUIO::DeviceMatches( iIdVendor, iIdProduct );
-	if ( iIdVendor == 0x547 && iIdProduct == 0x1002 ) return true;
+	// return PIUIO::DeviceMatches( m_iIdVendor, m_iIdProduct );
+	if ( m_iIdVendor == 0x547 && m_iIdProduct == 0x1002 ) return true;
 	return false;
 }
 
 bool USBDevice::Load(const CString &nDeviceDir, const vector<CString> &interfaces)
 {
-	sDeviceDir = nDeviceDir;
-	sInterfaceDeviceDirs = interfaces;
+	m_sDeviceDir = nDeviceDir;
+	m_sInterfaceDeviceDirs = interfaces;
 	CString buf;
 
 	if (GetDeviceProperty("idVendor", buf))
-		sscanf(buf, "%x", &iIdVendor);
+		sscanf(buf, "%x", &m_iIdVendor);
 	else
-		iIdVendor = -1;
+		m_iIdVendor = -1;
 
 	if (GetDeviceProperty("idProduct", buf))
-		sscanf(buf, "%x", &iIdProduct);
+		sscanf(buf, "%x", &m_iIdProduct);
 	else
-		iIdProduct = -1;
+		m_iIdProduct = -1;
 
 	if (GetDeviceProperty("bMaxPower", buf))
-		sscanf(buf, "%imA", &iMaxPower);
+		sscanf(buf, "%imA", &m_iMaxPower);
 	else
-		iMaxPower = -1;
+		m_iMaxPower = -1;
 
-	if (iIdVendor == -1 || iIdProduct == -1 || iMaxPower == -1)
+	if (m_iIdVendor == -1 || m_iIdProduct == -1 || m_iMaxPower == -1)
 	{
 		LOG->Warn( "Could not load USBDevice %s", nDeviceDir.c_str() );
 		return false;
 	}
 
-	for (unsigned i = 0; i < sInterfaceDeviceDirs.size(); i++)
+	for (unsigned i = 0; i < m_sInterfaceDeviceDirs.size(); i++)
 	{
 		int iClass;
 		if ( GetInterfaceProperty( "bInterfaceClass", i, buf ) )
@@ -121,10 +141,10 @@ bool USBDevice::Load(const CString &nDeviceDir, const vector<CString> &interface
 		}
 		else
 		{
-			LOG->Warn("Could not read interface %i for %s:%s", i, sDeviceDir.c_str(), sInterfaceDeviceDirs[i].c_str() );
+			LOG->Warn("Could not read interface %i for %s:%s", i, m_sDeviceDir.c_str(), m_sInterfaceDeviceDirs[i].c_str() );
 			iClass = -1;
 		}
-		iInterfaceClasses.push_back(iClass);
+		m_iInterfaceClasses.push_back(iClass);
 	}
 	return true;
 }
@@ -162,9 +182,12 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
  
 	for(iter = sDevInterfaceList.begin(); iter != sDevInterfaceList.end(); iter++)
 	{
+		CHECKPOINT;
 		USBDevice newDev;
 		CString sDevName = iter->first;
+		CHECKPOINT;
 		vector<CString> sDevChildren = iter->second;
+		CHECKPOINT;
 		
 		//LOG->Info("Loading USB device %s", sDevName.c_str() );
 		//for (unsigned j = 0; j < sDevChildren.size(); j++)
@@ -173,6 +196,7 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 		//}
 
 		if ( newDev.Load(sDevName, sDevChildren) ) pDevList.push_back(newDev);
+		CHECKPOINT;
 	}
 	return true;
 }

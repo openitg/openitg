@@ -2,7 +2,6 @@
 #include "RageLog.h"
 #include "RageException.h"
 
-#include "PrefsManager.h"
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h" // needed for g_LightsState
 #include "InputHandler_Linux_PIUIO.h"
@@ -70,69 +69,54 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 /* Requires "LightsDriver=ext" */
 void InputHandler_Linux_PIUIO::UpdateLights()
 {
-	/* From the decompile: */
-#if 0
-  if ( LightsDriver_External__g_LightState[9] )
-    *(_WORD *)(a2 + 2) |= 0x20u;
-  if ( LightsDriver_External__g_LightState[8] )
-    *(_WORD *)(a2 + 2) |= 0x10u;
-  if ( LightsDriver_External__g_LightState[11] )
-    *(_WORD *)(a2 + 2) |= 8u;
-  if ( LightsDriver_External__g_LightState[10] )
-    *(_WORD *)(a2 + 2) |= 4u;
-  if ( LightsDriver_External__g_LightState[29] )
-    *(_WORD *)a2 |= 0x20u;
-  if ( LightsDriver_External__g_LightState[28] )
-    *(_WORD *)a2 |= 0x10u;
-  if ( LightsDriver_External__g_LightState[31] )
-    *(_WORD *)a2 |= 8u;
-  if ( LightsDriver_External__g_LightState[30] )
-    *(_WORD *)a2 |= 4u;
-  if ( (_BYTE)LightsDriver_External__g_LightState )
-    *(_WORD *)(a2 + 2) |= 0x80u;
-  if ( LightsDriver_External__g_LightState[2] )
-    *(_WORD *)(a2 + 2) |= 0x200u;
-  if ( LightsDriver_External__g_LightState[1] )
-    *(_WORD *)(a2 + 2) |= 0x400u;
-  if ( LightsDriver_External__g_LightState[3] )
-    *(_WORD *)(a2 + 2) |= 0x100u;
-  if ( LightsDriver_External__g_LightState[6] )
-    *(_WORD *)a2 |= 0x400u;
-  if ( LightsDriver_External__g_LightState[7] )
-    *(_WORD *)a2 |= 0x400u;
-#endif
+	/* CONFIRMED BYTES
+	 * ---------------
+	 *
+	 * Cabinet Lighting:
+	 *
+	 * Upper-left:	(????)			LL marquee:	(1 << 24)
+	 * Upper-right:	(1 << 23)		LR marquee:	(1 << 25)
+	 * Bass lights:	(1 << 10)
 
-	static const int iCabinetBits[NUM_CABINET_LIGHTS-1] = 
-	{ (1 << 22), (1 << 25), (1 << 24), (1 << 23), 0, 0, (1 << 10) };
+	 * P1 lighting:
+	 *
+	 * P1-Left:	????			P1-Right:	????
+	 * P1-Up:	????			P1-Down:	????
 
-	static const int iPlayerBits[2][4] = 
+	 * P2 lighting:
+	 * 
+	 * P2-Left:	(1 << 4)		P2-Right:	(1 << 5)
+	 * P2-Up:	(1 << 2)		P2-Down:	(1 << 3)
+	 */
+
+	static const int iCabinetBits[NUM_CABINET_LIGHTS] = 
+	{ (1 << 26), (1 << 23), (1 << 24), (1 << 25), 0, 0, (1 << 10), (1 << 10) };
+
+	static const int iPadBits[2][4] = 
 	{
-		{ (1 << 19), (1 << 20), (1 << 17), (1 << 18) }, /* Player 1 */
+		{ (1 << 20), (1 << 21), (1 << 18), (1 << 19) },	/* Player 1 */
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
 	// reset
 	m_iLightData = 0;
 
-	// there's one trigger for both bass lights, but we can only add
-	// the value once - otherwise, it'll mess with our bits. Set left
-	// if right is true, so we can iterate to NUM_CABINET_LIGHTS-1 only.
-
-	if( g_LightsState.m_bCabinetLights[LIGHT_BASS_RIGHT] )
-		g_LightsState.m_bCabinetLights[LIGHT_BASS_LEFT] = true;
-
 	// update marquee lights
-	FOREACH_ENUM( CabinetLight, NUM_CABINET_LIGHTS-1, cl )
+	FOREACH_CabinetLight( cl )
 		if( g_LightsState.m_bCabinetLights[cl] )
-			m_iLightData += iCabinetBits[cl];
+			m_iLightData |= iCabinetBits[cl];
 
 	// update the four pad lights on both game controllers
 	FOREACH_GameController( gc )
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( g_LightsState.m_bGameButtonLights[gc][gb] )
-				m_iLightData += iPlayerBits[gc][gb];
+				m_iLightData |= iPadBits[gc][gb];
 
-	LOG->Trace( "UpdateLights: %u", m_iLightData );
+	/* Debugging purposes */
+	if( m_iLastLightData != m_iLightData )
+		LOG->Trace( "UpdateLights: %u", m_iLightData );
+
+	m_iLastLightData = m_iLightData;
 
 	// lights updating isn't too important...leave a lot of process time.
 	usleep( 10000 );

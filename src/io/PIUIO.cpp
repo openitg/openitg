@@ -11,7 +11,7 @@ bool PIUIO::Matches( int idVendor, int idProduct ) const
 	return false;
 }
 
-bool PIUIO::Read( u_int32_t *pData )
+bool PIUIO::Read( uint32_t *pData )
 {
 	int iResult;
 
@@ -32,7 +32,7 @@ bool PIUIO::Read( u_int32_t *pData )
 	return true;
 }
 
-bool PIUIO::Write( u_int32_t iData )
+bool PIUIO::Write( uint32_t iData )
 {
 	int iResult;
 
@@ -49,6 +49,12 @@ bool PIUIO::Write( u_int32_t iData )
 		while( !Open() )
 			usleep( 100000 );
 	}
+
+	/* Debugging */
+	if( m_iLastWrite != iData )
+		LOG->Trace( "Successfully wrote data %i", iData );
+
+	m_iLastWrite = iData;
 
 	return true;
 }

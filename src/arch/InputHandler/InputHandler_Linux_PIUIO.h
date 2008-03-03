@@ -24,6 +24,7 @@ private:
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;
+	uint32_t m_iLastLightData;
 	uint32_t m_iLightData;
 
 	static int InputThread_Start( void *p );

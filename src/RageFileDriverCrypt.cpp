@@ -33,6 +33,7 @@ static struct FileDriverEntry_KRY: public FileDriverEntry
 	RageFileDriver *Create( CString Root ) const
 	{
 #ifdef ITG_ARCADE
+		/* If no secret is given, CryptInterface will get it from the dongle. */
 		return new RageFileDriverCrypt( Root, "" );
 #else
 		return new RageFileDriverCrypt( Root, DEFAULT_AES_KEY );

@@ -64,26 +64,12 @@ bool USBDevice::GetInterfaceProperty( const CString &sProperty, const unsigned i
 	return GetFileContents( sTargetFile, out, true );
 }
 
-/* CRASH: Somehow, m_iInterfaceClasses.size is getting corrupted and
- * returning larger amounts than exist, causing segfaults. -- Vyhd */
 bool USBDevice::IsHub()
 {
-	LOG->Trace( "USBDevice::IsHub()" );
-	CHECKPOINT_M( ssprintf("Total interfaces: %i", m_iInterfaceClasses.size()) );
-
-	int iClasses = m_iInterfaceClasses.size();
-	LOG->Trace( "iClasses: %i; vector size: %i", iClasses, m_iInterfaceClasses.size() );
-	for (unsigned i = 0; i < iClasses; i++)
-	{
-//		for( unsigned j = 0; j < m_iInterfaceClasses.size(); j++ )
-//			LOG->Trace( "Part %i: %i", j, m_iInterfaceClasses[j] );
-
-		CHECKPOINT_M( ssprintf("Interface %i of %i", i, m_iInterfaceClasses.size()) );
-
+	for (unsigned i = 0; i < m_iInterfaceClasses.size(); i++)
 		if (m_iInterfaceClasses[i] == 9)
 			return true;
-	}
-	CHECKPOINT;
+
 	return false;
 }
 
@@ -173,7 +159,8 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 
 		CHECKPOINT;
 		// ugly and will most likely cause a crash
-		sDevInterfaceList[components[0]].push_back(components[1]);
+		// you're right, it does -- Vyhd
+		// sDevInterfaceList[components[0]].push_back(components[1]);
 		CHECKPOINT;
 
 	}

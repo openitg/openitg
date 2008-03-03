@@ -70,6 +70,38 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 {
 	{
 		"dance",
+		"ITGIO|PIUIO",
+		"ITGIO|PIUIO",
+		{
+			/* Player 1 */
+			{ 0, IO_P1_LEFT,	DANCE_BUTTON_LEFT,		false },
+			{ 0, IO_P1_RIGHT,	DANCE_BUTTON_RIGHT,		false },
+			{ 0, IO_P1_UP,		DANCE_BUTTON_UP,		false },
+			{ 0, IO_P1_DOWN,	DANCE_BUTTON_DOWN,		false },
+			{ 0, IO_P1_SELECT,	DANCE_BUTTON_SELECT,		false },
+			{ 0, IO_P1_START,	DANCE_BUTTON_START,		false },
+			{ 0, IO_P1_MENU_LEFT,	DANCE_BUTTON_MENULEFT,		false },
+			{ 0, IO_P1_MENU_RIGHT,	DANCE_BUTTON_MENURIGHT,		false },
+
+			/* Player 2 */
+			{ 1, IO_P2_LEFT,	DANCE_BUTTON_LEFT,		false },
+			{ 1, IO_P2_RIGHT,	DANCE_BUTTON_RIGHT,		false },
+			{ 1, IO_P2_UP,		DANCE_BUTTON_UP,		false },
+			{ 1, IO_P2_DOWN,	DANCE_BUTTON_DOWN,		false },
+			{ 1, IO_P2_SELECT,	DANCE_BUTTON_SELECT,		false },
+			{ 1, IO_P2_START,	DANCE_BUTTON_START,		false },
+			{ 1, IO_P2_MENU_LEFT,	DANCE_BUTTON_MENULEFT,		false },
+			{ 1, IO_P2_MENU_RIGHT,	DANCE_BUTTON_MENURIGHT,		false },
+
+			/* Other controls */
+			
+			{ 0, IO_OPERATOR_MENU,	DANCE_BUTTON_OPERATOR,		false },
+			{ 0, IO_INSERT_COIN,	DANCE_BUTTON_COIN,		false },
+			END_MARKER
+		}
+	},
+	{
+		"dance",
 		"GIC USB Joystick",
 		"Boom USB convertor (black/gray)",
 		{
@@ -295,8 +327,6 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			END_MARKER
 		}
 	},
-
-	// and so, the quest begins.
 	{
 		"pump",
 		"Pump USB",

@@ -60,10 +60,55 @@ int InputHandler_Linux_PIUIO::InputThread_Start( void *p )
 void InputHandler_Linux_PIUIO::InputThreadMain()
 {
 	while( !m_bShutdown )
-	{	
+	{
+		/* Figure out the lights and write them */
 		UpdateLights();
 		IOBoard.Write( m_iLightData );
+
+		/* Get the data and send it to RageInput */
+		IOBoard.Read( &m_iInputData );
+		HandleInput();
+
+		usleep( 10000 ); // avoid unnecessary lag during testing
 	}
+}
+
+void InputHandler_Linux_PIUIO::HandleInput()
+{
+	if( m_iLastInputData != m_iInputData )
+		LOG->Trace( "Input: %i", m_iInputData );
+
+	m_iLastInputData = m_iInputData;
+
+// The decompile is unreadable on this. I'm gonna brute-force it with the above.
+#if 0
+	static const int iInputBits[NUM_IO_BUTTONS] = {
+	/* P1 pad - Left, Right, Up, Down */
+	(1 << xx), (1 << xx), (1 << xx), (1 << xx),
+	/* P1 control - Select, Start, MenuLeft, MenuRight */
+	(1 << xx), (1 << xx), (1 << xx), (1 << xx),
+
+	/* P2 pad - Left, Right, Up, Down */
+	(1 << xx), (1 << xx), (1 << xx), (1 << xx),
+	/* P2 control - Select, Start, MenuLeft, MenuRight */
+	(1 << xx), (1 << xx), (1 << xx), (1 << xx),
+
+	/* General - Service button, Coin event */
+	(1 << xx), (1 << xx), };
+
+	InputDevice id = DEVICE_PIUIO;
+
+	for( int iButton = 0; iButton < NUM_IO_BUTTONS; iButton++ )
+	{
+		DeviceInput di(id, iButton);
+
+		/* If we're in a thread, our timestamp is accurate */
+		if( InputThread.IsCreated() )
+			di.ts.Touch();
+
+		ButtonPressed( di, !( m_iInputData & iInputBits[iButton]);
+	}
+#endif // 0
 }
 
 /* Requires "LightsDriver=ext" */

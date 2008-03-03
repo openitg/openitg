@@ -234,6 +234,30 @@ static const CString ParaPadButtonNames[] = {
 XToString( ParaPadButton, NUM_PARA_PAD_BUTTONS );
 StringToX( ParaPadButton );
 
+static const CString IOBoardButtonNames[] = {
+	"P1-Left",
+	"P1-Right",
+	"P1-Up",
+	"P1-Down",
+	"P1-Select",
+	"P1-Start",
+	"P1-MenuLeft",
+	"P1-MenuRight",
+
+	"P2-Left",
+	"P2-Right",
+	"P2-Up",
+	"P2-Down",
+	"P2-Select",
+	"P2-Start",
+	"P2-MenuLeft",
+	"P2-MenuRight",
+
+	"Service",
+	"Coin",
+};
+XToString( IOBoardButton, NUM_IO_BUTTONS );
+StringToX( IOBoardButton );
 
 CString MidiButtonToString( DeviceButton i )
 {
@@ -272,6 +296,8 @@ CString DeviceButtonToString( InputDevice device, DeviceButton i )
 	case DEVICE_PUMP2:		return PumpPadButtonToString( (PumpPadButton)i );
 	case DEVICE_MIDI:		return MidiButtonToString( i );
 	case DEVICE_PARA1:		return ParaPadButtonToString( (ParaPadButton)i );
+	case DEVICE_PIUIO:
+	case DEVICE_ITGIO:		return IOBoardButtonToString( (IOBoardButton)i );
 	case DEVICE_NONE:		return "";
 	default:	ASSERT(0);	return "";
 	}
@@ -302,6 +328,8 @@ DeviceButton StringToDeviceButton( InputDevice device, const CString& s )
 	case DEVICE_PUMP2:		return (DeviceButton)StringToPumpPadButton( s );
 	case DEVICE_MIDI:		return (DeviceButton)StringToMidiButton( s );
 	case DEVICE_PARA1:		return (DeviceButton)StringToParaPadButton( s );
+	case DEVICE_PIUIO:
+	case DEVICE_ITGIO:		return (DeviceButton)StringToIOBoardButton( s );
 	case DEVICE_NONE:		return DEVICE_BUTTON_INVALID;
 	default:	ASSERT(0);	return DEVICE_BUTTON_INVALID;
 	}

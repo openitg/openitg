@@ -24,13 +24,17 @@ private:
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;
-	uint32_t m_iLastLightData;
+
+	uint32_t m_iInputData;
+	uint32_t m_iLastInputData;
+
 	uint32_t m_iLightData;
+	uint32_t m_iLastLightData;
 
 	static int InputThread_Start( void *p );
 
 	void InputThreadMain();
-//	void HandleInput();
+	void HandleInput();
 
 	// allow this driver to update lights with "ext"
 	void UpdateLights();

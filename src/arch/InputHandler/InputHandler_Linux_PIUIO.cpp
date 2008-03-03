@@ -1,7 +1,9 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageException.h"
+#include "RageUtil.h"
 
+#include "ScreenManager.h" // for SCREENMAN->SystemMessageNoAnimate
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h" // needed for g_LightsState
 #include "InputHandler_Linux_PIUIO.h"
@@ -45,7 +47,6 @@ void InputHandler_Linux_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& v
 {
 	if( m_bFoundDevice )
 	{
-		// currently a dummy number
 		vDevicesOut.push_back( InputDevice(DEVICE_PIUIO) );
 		vDescriptionsOut.push_back( "PIUIO" );
 	}
@@ -75,8 +76,24 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 
 void InputHandler_Linux_PIUIO::HandleInput()
 {
-	if( m_iLastInputData != m_iInputData )
-		LOG->Trace( "Input: %i", m_iInputData );
+	if( (m_iInputData != 0) && (m_iLastInputData != m_iInputData) )
+	{
+		CString sInputs;
+		
+		for( unsigned x = 0; x < 32; x++ )
+		{
+			// bitwise AND comparison
+			if( !(m_iInputData & (1 << x)) )
+				continue;
+
+			if( sInputs == "" )
+				sInputs	= ssprintf( "Inputs: (1 << %i)", x );
+			else
+				sInputs += ssprintf( ", (1 << %i)", x );
+		}
+
+		SCREENMAN->SystemMessageNoAnimate( sInputs );
+	}
 
 	m_iLastInputData = m_iInputData;
 

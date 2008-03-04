@@ -12,8 +12,6 @@ public:
 
 protected:
 	bool Matches( int idVendor, int idProduct ) const;
-
-	uint32_t m_iLastWrite;
 };
 
 #endif /* IO_PIUIO_H */

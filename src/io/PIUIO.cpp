@@ -50,11 +50,5 @@ bool PIUIO::Write( uint32_t iData )
 			usleep( 100000 );
 	}
 
-	/* Debugging */
-	if( m_iLastWrite != iData )
-		LOG->Trace( "Successfully wrote data %i", iData );
-
-	m_iLastWrite = iData;
-
 	return true;
 }

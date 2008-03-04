@@ -3,6 +3,8 @@
 #include "RageException.h"
 #include "RageUtil.h"
 
+#include "InputMapper.h" // temp
+
 #include "ScreenManager.h" // for SCREENMAN->SystemMessageNoAnimate
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h" // needed for g_LightsState
@@ -28,6 +30,9 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 		/* We can't accept input, so why bother? */
 		sm_crash( "Failed to connect to PIUIO board." );
 	}
+
+	/* Until ScreenArcadeStart is implemented... */
+	//INPUTMAPPER->AutoMapJoysticksForCurrentGame();
 }
 
 InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()
@@ -48,7 +53,7 @@ void InputHandler_Linux_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& v
 	if( m_bFoundDevice )
 	{
 		vDevicesOut.push_back( InputDevice(DEVICE_PIUIO) );
-		vDescriptionsOut.push_back( "PIUIO" );
+		vDescriptionsOut.push_back( "ITGIO|PIUIO" );
 	}
 }
 
@@ -76,14 +81,22 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 
 void InputHandler_Linux_PIUIO::HandleInput()
 {
-	if( (m_iInputData != 0) && (m_iLastInputData != m_iInputData) )
+	if( m_iInputData != 0 && ( m_iInputData != m_iLastInputData ) )
 	{
+		LOG->Info( "Input: %i", m_iInputData );
+	}
+
+	m_iLastInputData;
+
+	return;
+
+#if 0
 		CString sInputs;
 		
-		for( unsigned x = 0; x < 32; x++ )
+		for( unsigned x = 0; x < 64; x++ )
 		{
-			// bitwise AND comparison
-			if( !(m_iInputData & (1 << x)) )
+			// bitwise AND sieve - PIUIO is open high
+			if( (m_iInputData & (1 << x)) )
 				continue;
 
 			if( sInputs == "" )
@@ -92,26 +105,23 @@ void InputHandler_Linux_PIUIO::HandleInput()
 				sInputs += ssprintf( ", (1 << %i)", x );
 		}
 
-		SCREENMAN->SystemMessageNoAnimate( sInputs );
-	}
+		if( LOG )
+			LOG->Info( sInputs );
+#endif
 
-	m_iLastInputData = m_iInputData;
-
-// The decompile is unreadable on this. I'm gonna brute-force it with the above.
-#if 0
 	static const int iInputBits[NUM_IO_BUTTONS] = {
 	/* P1 pad - Left, Right, Up, Down */
-	(1 << xx), (1 << xx), (1 << xx), (1 << xx),
+	(1 << 2), (1 << 3), (1 << 0), (1 << 1),
 	/* P1 control - Select, Start, MenuLeft, MenuRight */
-	(1 << xx), (1 << xx), (1 << xx), (1 << xx),
+	(1 << 21), (1 << 20), (1 << 22), (1 << 23),
 
 	/* P2 pad - Left, Right, Up, Down */
-	(1 << xx), (1 << xx), (1 << xx), (1 << xx),
+	(1 << 18), (1 << 19), (1 << 16), (1 << 17),
 	/* P2 control - Select, Start, MenuLeft, MenuRight */
-	(1 << xx), (1 << xx), (1 << xx), (1 << xx),
+	(1 << 5), (1 << 4), (1 << 6), (1 << 7),
 
 	/* General - Service button, Coin event */
-	(1 << xx), (1 << xx), };
+	(1 << 9), (1 << 18), };
 
 	InputDevice id = DEVICE_PIUIO;
 
@@ -123,36 +133,15 @@ void InputHandler_Linux_PIUIO::HandleInput()
 		if( InputThread.IsCreated() )
 			di.ts.Touch();
 
-		ButtonPressed( di, !( m_iInputData & iInputBits[iButton]);
+		ButtonPressed( di, !(m_iInputData & iInputBits[iButton]) );
 	}
-#endif // 0
 }
 
 /* Requires "LightsDriver=ext" */
 void InputHandler_Linux_PIUIO::UpdateLights()
 {
-	/* CONFIRMED BYTES
-	 * ---------------
-	 *
-	 * Cabinet Lighting:
-	 *
-	 * Upper-left:	(????)			LL marquee:	(1 << 24)
-	 * Upper-right:	(1 << 23)		LR marquee:	(1 << 25)
-	 * Bass lights:	(1 << 10)
-
-	 * P1 lighting:
-	 *
-	 * P1-Left:	????			P1-Right:	????
-	 * P1-Up:	????			P1-Down:	????
-
-	 * P2 lighting:
-	 * 
-	 * P2-Left:	(1 << 4)		P2-Right:	(1 << 5)
-	 * P2-Up:	(1 << 2)		P2-Down:	(1 << 3)
-	 */
-
 	static const int iCabinetBits[NUM_CABINET_LIGHTS] = 
-	{ (1 << 26), (1 << 23), (1 << 24), (1 << 25), 0, 0, (1 << 10), (1 << 10) };
+	{ (1 << 23), (1 << 26), (1 << 25), (1 << 24), 0, 0, (1 << 10), (1 << 10) };
 
 	static const int iPadBits[2][4] = 
 	{

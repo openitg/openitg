@@ -159,8 +159,9 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 
 		CHECKPOINT;
 		// ugly and will most likely cause a crash
-		// you're right, it does -- Vyhd
-		// sDevInterfaceList[components[0]].push_back(components[1]);
+
+		/* XXX: Until this is fixed, we do NOT have GetUSBDeviceList! */
+		//sDevInterfaceList[components[0]].push_back(components[1]);
 		CHECKPOINT;
 
 	}

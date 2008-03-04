@@ -71,7 +71,7 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 	{
 		"dance",
 		"ITGIO|PIUIO",
-		"ITGIO|PIUIO",
+		"ITG input device",
 		{
 			/* Player 1 */
 			{ 0, IO_P1_LEFT,	DANCE_BUTTON_LEFT,		false },
@@ -411,6 +411,7 @@ void InputMapper::AutoMapJoysticksForCurrentGame()
 
 			CString sDriverRegex = mapping.szDriverRegex;
 			Regex regex( sDriverRegex );
+			LOG->Warn( "sDriverRegex: %s, sDescription: %s", sDriverRegex.c_str(), sDescription.c_str() );
 			if( !regex.Compare(sDescription) )
 				continue;	// driver names don't match
 

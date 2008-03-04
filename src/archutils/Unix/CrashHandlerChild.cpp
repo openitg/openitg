@@ -269,12 +269,16 @@ static void child_process()
 	sPath = g_pCrashHandlerArgv0;
 	splitpath( sPath, sDir, sFile, sExt );
 
-	CString sCrashInfoPath = sDir + "Stats";
+	CString sCrashInfoPath = sDir + "stats";
 	
 	time_t seconds;
 	seconds = time( NULL );
-	
-	sCrashInfoPath += ssprintf( "/crashlog-%ld.txt" , seconds ); // Timestamped!
+
+#ifdef ITG_ARCADE	
+	sCrashInfoPath = ssprintf( "/stats/crashinfo-%ld.txt" , seconds ); // Timestamped!
+#else
+	sCrashInfoPath = ssprintf( "Data/crashinfo-%ld.txt" , seconds );
+#endif
 
 	FILE *CrashDump = fopen( sCrashInfoPath, "w+" );
 	if(CrashDump == NULL)

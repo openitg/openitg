@@ -161,6 +161,17 @@ void InputHandler_Linux_PIUIO::HandleInput()
 	}
 }
 
+CString SensorDescriptions[] = {"right", "left", "bottom", "top"};
+
+CString GetSensorDescription(int bits) {
+	if (bits == 0) return "";
+	CStringArray retSensors;
+	for(int i = 0; i < 3; i++) {
+		if (bits & (1 << i)) retSensors.push_back(SensorDescriptions[i]);
+	}
+	return join(", ", retSensors);
+}
+
 /* Requires "LightsDriver=ext" */
 void InputHandler_Linux_PIUIO::UpdateLights()
 {

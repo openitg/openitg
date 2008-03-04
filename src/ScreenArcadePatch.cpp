@@ -65,7 +65,6 @@ void ScreenArcadePatch::Init()
 
 	m_Status.SetText( THEME->GetMetric("ScreenArcadePatch","IntroText") );
 	m_Patch.SetText( "Please insert a USB Card containing an update." );
-	m_textHelp->SetText( "THIS IS A TEST LOL" );
 
 	this->AddChild( &m_Status );
 	this->AddChild( &m_Patch );
@@ -195,7 +194,7 @@ bool ScreenArcadePatch::MountCards()
 	sFullDir = sDir + "ITG 2 *.itg";
 	
 	// Finally mount the card
-	if( MEMCARDMAN->MountCard( pn, -1 ) )
+	if( MEMCARDMAN->MountCard( pn, 3600 ) )
 		return true;
 	else {
 		m_Status.SetText( ssprintf( "Error mounting Player %d's card!" , pn + 1 ) );
@@ -398,6 +397,8 @@ bool ScreenArcadePatch::CopyPatchContents()
 				continue;
 
 			LOG->Trace("ScreenArcadePatch::CopyPatchContents(): copying %s", sPath.c_str());
+			m_Status.SetText( ssprintf("copying %s", sPath.c_str()) );
+			SCREENMAN->Draw();
 			RageFileBasic *fCopySrc;
 			RageFile fCopyDest;
 			fCopySrc = rfdZip->Open( sPath, RageFile::READ, iErr );

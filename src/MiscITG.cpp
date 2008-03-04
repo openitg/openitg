@@ -228,7 +228,7 @@ LuaFunction_NoArgs( GetNumIOErrors	, 0 ); // Call the number of I/O Errors [Scre
 LuaFunction_NoArgs( GetNumMachineScores, GetNumMachineScores() ); // Call the machine score count [ScreenArcadeDiagnostics]
 // added by infamouspat
 LuaFunction_NoArgs( GetSerialNumber, GetSerialNumber() ); // returns serial from page 9 on dongle
-LuaFunction_NoArgs( GetInputType, g_sInputType ); // grabs from RageInput's global variable
+LuaFunction_NoArgs( GetInputType, CString(g_sInputType) ); // grabs from RageInput's global variable
 LuaFunction_NoArgs( HubIsConnected, HubIsConnected() ); // well, is it?
 
 

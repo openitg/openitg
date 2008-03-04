@@ -11,7 +11,8 @@ bool PIUIO::Matches( int idVendor, int idProduct ) const
 	return false;
 }
 
-bool PIUIO::Read( uint32_t *pData )
+/* Perhaps uint64_t will fix our problem? */
+bool PIUIO::Read( uint64_t *pData )
 {
 	int iResult;
 

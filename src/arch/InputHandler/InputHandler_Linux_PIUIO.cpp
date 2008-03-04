@@ -81,6 +81,7 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 
 void InputHandler_Linux_PIUIO::HandleInput()
 {
+#if 0
 	if( m_iInputData != 0 && ( m_iInputData != m_iLastInputData ) )
 	{
 		LOG->Info( "Input: %i", m_iInputData );
@@ -89,8 +90,9 @@ void InputHandler_Linux_PIUIO::HandleInput()
 	m_iLastInputData;
 
 	return;
-
-#if 0
+#endif
+	if( m_iInputData != 0 && ( m_iInputData != m_iLastInputData ) )
+	{
 		CString sInputs;
 		
 		for( unsigned x = 0; x < 64; x++ )
@@ -107,21 +109,47 @@ void InputHandler_Linux_PIUIO::HandleInput()
 
 		if( LOG )
 			LOG->Info( sInputs );
-#endif
+	}
+	
+	return;
 
 	static const int iInputBits[NUM_IO_BUTTONS] = {
-	/* P1 pad - Left, Right, Up, Down */
-	(1 << 2), (1 << 3), (1 << 0), (1 << 1),
-	/* P1 control - Select, Start, MenuLeft, MenuRight */
+	/* Player 1 */	
+	//Left arrow, left/right/up/down sensors:
+	(1 << 2), // + (1 << x) + (1 << x) + (1 << x),
+
+	// Right arrow, left/right/up/down sensors:
+	(1 << 3), // + (1 << x) + (1 << x) + (1 << x),
+	
+	// Up arrow, left/right/up/down sensors:
+	(1 << 0), // + (1 << x) + (1 << x) + (1 << x),
+	
+	// Down arrow, left/right/up/down sensors:
+	(1 << 1), // + (1 << x) + (1 << x) + (1 << x),
+
+	// Select, Start, MenuLeft, MenuRight
 	(1 << 21), (1 << 20), (1 << 22), (1 << 23),
 
-	/* P2 pad - Left, Right, Up, Down */
-	(1 << 18), (1 << 19), (1 << 16), (1 << 17),
-	/* P2 control - Select, Start, MenuLeft, MenuRight */
+	/* Player 2 */
+	// Left arrow, left/right/up/down sensors:
+	(1 << 18), // + (1 << x) + (1 << x) + (1 << x),
+
+	// Right arrow, left/right/up/down sensors:
+	(1 << 19), // + (1 << x) + (1 << x) + (1 << x),
+	
+	// Up arrow, left/right/up/down sensors:
+	(1 << 16), // + (1 << x) + (1 << x) + (1 << x),
+	
+	// Down arrow, left/right/up/down sensors:
+	(1 << 17), // + (1 << x) + (1 << x) + (1 << x),
+
+	// Select, Start, MenuLeft, MenuRight
 	(1 << 5), (1 << 4), (1 << 6), (1 << 7),
 
-	/* General - Service button, Coin event */
-	(1 << 9), (1 << 18), };
+	/* General input */
+	// Service button, Coin event
+	(1 << 9), (1 << 18),
+	};
 
 	InputDevice id = DEVICE_PIUIO;
 

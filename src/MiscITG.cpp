@@ -94,7 +94,7 @@ int GetRevision()
 		return 1;
 	}
 	
-	iRevision = atoi( xml->GetChild("Revision")->m_sValue );
+	int iRevision = atoi( xml->GetChild("Revision")->m_sValue );
 
 	return iRevision;
 }

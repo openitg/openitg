@@ -127,7 +127,7 @@ bool USBDevice::Load(const CString &nDeviceDir, const vector<CString> &interface
 		}
 		else
 		{
-			LOG->Warn("Could not read interface %i for %s:%s", i, m_sDeviceDir.c_str(), m_sInterfaceDeviceDirs[i].c_str() );
+			//LOG->Warn("Could not read interface %i for %s:%s", i, m_sDeviceDir.c_str(), m_sInterfaceDeviceDirs[i].c_str() );
 			iClass = -1;
 		}
 		m_iInterfaceClasses.push_back(iClass);
@@ -157,12 +157,8 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 
 		//LOG->Info("GetUSBDeviceList(): Found USB Device Entry %s", sDirEntry.c_str() );
 
-		CHECKPOINT;
-		// ugly and will most likely cause a crash
-
-		/* XXX: Until this is fixed, we do NOT have GetUSBDeviceList! */
-		//sDevInterfaceList[components[0]].push_back(components[1]);
-		CHECKPOINT;
+		// I win --infamouspat
+		sDevInterfaceList[components[0]].push_back(components[1]);
 
 	}
 

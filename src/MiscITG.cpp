@@ -217,6 +217,7 @@ bool HubIsConnected()
  * this doesn't belong in LuaManager.cpp --infamouspat
  */
 #include "LuaFunctions.h"
+// Added by Matt1360
 LuaFunction_NoArgs( GetProductName	, CString( PRODUCT_NAME ) ); // Return the product's name from ProductInfo.h [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetRevision	, GetRevision() ); // Return current Revision ( ProductInfo.h ) [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetUptime		, SecondsToHHMMSS( RageTimer::GetTimeSinceStart() ) ); // Uptime calling [ScreenArcadeDiagnostics]
@@ -233,7 +234,7 @@ LuaFunction_NoArgs( HubIsConnected, HubIsConnected() ); // well, is it?
 
 /*
  * (c) 2004 Glenn Maynard
- * (c) 2008 Matt1360, Vyhd
+ * (c) 2008 Matt1360, Vyhd, InfamousPat
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

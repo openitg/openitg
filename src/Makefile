@@ -37,12 +37,16 @@ POST_UNINSTALL = :
 build_triplet = i686-pc-linux-gnu
 host_triplet = i686-pc-linux-gnu
 target_triplet = i686-pc-linux-gnu
-bin_PROGRAMS = stepmania$(EXEEXT) $(am__EXEEXT_1)
+bin_PROGRAMS = openitg$(EXEEXT) $(am__EXEEXT_1)
 #noinst_PROGRAMS = $(am__EXEEXT_2)
 am__append_1 = ScreenGameplayMultiplayer.cpp ScreenGameplayMultiplayer.h ScreenSMOnlineLogin.cpp ScreenSMOnlineLogin.h
-am__append_2 = arch/LoadingWindow/LoadingWindow_Gtk.cpp arch/LoadingWindow/LoadingWindow_Gtk.h
-am__append_3 = arch/Sound/RageSoundDriver_OSS.cpp arch/Sound/RageSoundDriver_OSS.h
-am__append_4 = arch/Sound/ALSA9Dynamic.cpp arch/Sound/ALSA9Dynamic.h arch/Sound/ALSA9Functions.h \
+am__append_2 = io/USBDevice.cpp io/USBDevice.h
+#am__append_3 = io/USBDevice_Libusb.cpp io/USBDevice_Libusb.h
+
+#endif HAVE_LIBUSB
+am__append_4 = arch/LoadingWindow/LoadingWindow_Gtk.cpp arch/LoadingWindow/LoadingWindow_Gtk.h
+am__append_5 = arch/Sound/RageSoundDriver_OSS.cpp arch/Sound/RageSoundDriver_OSS.h
+am__append_6 = arch/Sound/ALSA9Dynamic.cpp arch/Sound/ALSA9Dynamic.h arch/Sound/ALSA9Functions.h \
 	 arch/Sound/ALSA9Helpers.cpp arch/Sound/ALSA9Helpers.h \
 	 arch/Sound/RageSoundDriver_ALSA9.cpp arch/Sound/RageSoundDriver_ALSA9.h \
 	 arch/Sound/RageSoundDriver_ALSA9_Software.cpp arch/Sound/RageSoundDriver_ALSA9_Software.h
@@ -50,49 +54,54 @@ am__append_4 = arch/Sound/ALSA9Dynamic.cpp arch/Sound/ALSA9Dynamic.h arch/Sound/
 
 # Add this to AM_CXXFLAGS, not stepmania_CXXFLAGS: that'll cause multiple copies of
 # several sources to be built. We link to this at runtime, so don't add ALSA_LDFLAGS.
-am__append_5 = $(ALSA_CFLAGS)
-am__append_6 = arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h
-#am__append_7 = arch/LoadingWindow/LoadingWindow_SDL.cpp arch/LoadingWindow/LoadingWindow_SDL.h
-#am__append_8 = SDL_utils.cpp SDL_utils.h
+am__append_7 = $(ALSA_CFLAGS)
+am__append_8 = arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h
+#am__append_9 = arch/LoadingWindow/LoadingWindow_SDL.cpp arch/LoadingWindow/LoadingWindow_SDL.h
+#am__append_10 = SDL_utils.cpp SDL_utils.h
 #InputHandler_SDL depends on LowLevelWindow_SDL
-##am__append_9 = arch/InputHandler/InputHandler_SDL.cpp arch/InputHandler/InputHandler_SDL.h
-##am__append_10 = arch/LowLevelWindow/LowLevelWindow_SDL.cpp arch/LowLevelWindow/LowLevelWindow_SDL.h
+##am__append_11 = arch/InputHandler/InputHandler_SDL.cpp arch/InputHandler/InputHandler_SDL.h
+##am__append_12 = arch/LowLevelWindow/LowLevelWindow_SDL.cpp arch/LowLevelWindow/LowLevelWindow_SDL.h
 
 # InputHandler_X11 depends on LowLevelWindow_X11
-am__append_11 = arch/InputHandler/InputHandler_X11.cpp arch/InputHandler/InputHandler_X11.h
-am__append_12 =  \
+am__append_13 = arch/InputHandler/InputHandler_X11.cpp arch/InputHandler/InputHandler_X11.h
+am__append_14 =  \
 	arch/LowLevelWindow/LowLevelWindow_X11.cpp \
 	arch/LowLevelWindow/LowLevelWindow_X11.h \
 	archutils/Unix/X11Helper.cpp \
 	archutils/Unix/X11Helper.h
 
 # Platform-specific drivers:
-am__append_13 = arch/ArchHooks/ArchHooks_Unix.cpp arch/ArchHooks/ArchHooks_Unix.h
-am__append_14 = arch/Threads/Threads_Pthreads.cpp arch/Threads/Threads_Pthreads.h
-am__append_15 = arch/Lights/LightsDriver_LinuxWeedTech.cpp \
+am__append_15 = arch/ArchHooks/ArchHooks_Unix.cpp arch/ArchHooks/ArchHooks_Unix.h
+am__append_16 = arch/Threads/Threads_Pthreads.cpp arch/Threads/Threads_Pthreads.h
+am__append_17 = arch/Lights/LightsDriver_LinuxWeedTech.cpp \
 	arch/Lights/LightsDriver_LinuxWeedTech.h \
 	arch/Lights/LightsDriver_LinuxParallel.cpp \
 	arch/Lights/LightsDriver_LinuxParallel.h
-am__append_16 = archutils/Unix/AssertionHandler.cpp \
+am__append_18 = archutils/Unix/AssertionHandler.cpp \
 		archutils/Unix/GetSysInfo.cpp archutils/Unix/GetSysInfo.h \
 		archutils/Unix/SignalHandler.cpp archutils/Unix/SignalHandler.h \
 		archutils/Unix/LinuxThreadHelpers.cpp archutils/Unix/LinuxThreadHelpers.h \
 		archutils/Unix/RunningUnderValgrind.cpp archutils/Unix/RunningUnderValgrind.h \
 		archutils/Unix/EmergencyShutdown.cpp archutils/Unix/EmergencyShutdown.h
 
-am__append_17 = archutils/Unix/Backtrace.cpp archutils/Unix/Backtrace.h \
+am__append_19 = archutils/Unix/Backtrace.cpp archutils/Unix/Backtrace.h \
 		archutils/Unix/BacktraceNames.cpp archutils/Unix/BacktraceNames.h \
 		archutils/Unix/CrashHandler.cpp archutils/Unix/CrashHandler.h \
 		archutils/Unix/CrashHandlerChild.cpp archutils/Unix/CrashHandlerInternal.h
 
-am__append_18 = arch/MemoryCard/MemoryCardDriverThreaded_Linux.cpp arch/MemoryCard/MemoryCardDriverThreaded_Linux.h
-am__append_19 = arch/InputHandler/InputHandler_Linux_Joystick.h arch/InputHandler/InputHandler_Linux_Joystick.cpp
-am__append_20 = RageSoundReader_Vorbisfile.cpp RageSoundReader_Vorbisfile.h
-am__append_21 = RageSoundReader_MP3.cpp RageSoundReader_MP3.h
+am__append_20 = arch/MemoryCard/MemoryCardDriverThreaded_Linux.cpp arch/MemoryCard/MemoryCardDriverThreaded_Linux.h
+am__append_21 =  \
+	arch/InputHandler/InputHandler_Linux_Joystick.h \
+	arch/InputHandler/InputHandler_Linux_Joystick.cpp \
+	arch/InputHandler/InputHandler_Linux_PIUIO.h \
+	arch/InputHandler/InputHandler_Linux_PIUIO.cpp
+am__append_22 = RageSoundReader_Vorbisfile.cpp RageSoundReader_Vorbisfile.h
+am__append_23 = RageSoundReader_MP3.cpp RageSoundReader_MP3.h
 
 # Compile NetworkSyncManager even if networking is disabled; it'll stub itself.
-am__append_22 = ezsockets.cpp ezsockets.h
-am__append_23 = GtkModule.so
+am__append_24 = ezsockets.cpp ezsockets.h
+#	$(srcdir)/ffmpeg/lib/libavcodec.a $(srcdir)/ffmpeg/lib/libavformat.a
+am__append_25 = GtkModule.so
 subdir = src
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	$(srcdir)/config.h.in
@@ -109,7 +118,7 @@ am__aclocal_m4_deps = $(top_srcdir)/autoconf/m4/alsa.m4 \
 	$(top_srcdir)/autoconf/m4/zlib.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
-mkinstalldirs = $(install_sh) -d
+mkinstalldirs = $(SHELL) $(top_srcdir)/autoconf/mkinstalldirs
 CONFIG_HEADER = config.h
 CONFIG_CLEAN_FILES =
 am__EXEEXT_1 = GtkModule.so$(EXEEXT)
@@ -126,7 +135,7 @@ am_GtkModule_so_OBJECTS =  \
 GtkModule_so_OBJECTS = $(am_GtkModule_so_OBJECTS)
 am__DEPENDENCIES_1 =
 GtkModule_so_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am__stepmania_SOURCES_DIST = Screen.cpp Screen.h \
+am__openitg_SOURCES_DIST = Screen.cpp Screen.h \
 	ScreenArcadeDiagnostics.cpp ScreenArcadeDiagnostics.h \
 	ScreenArcadePatch.cpp ScreenArcadePatch.h ScreenAttract.cpp \
 	ScreenAttract.h ScreenBookkeeping.cpp ScreenBookkeeping.h \
@@ -218,9 +227,12 @@ am__stepmania_SOURCES_DIST = Screen.cpp Screen.h \
 	Style.cpp Style.h StyleUtil.cpp StyleUtil.h \
 	SubscriptionManager.h StyleInput.h TimingData.cpp TimingData.h \
 	ThemeMetric.h Trail.cpp Trail.h TrailUtil.cpp TrailUtil.h \
-	TitleSubstitution.cpp TitleSubstitution.h IniFile.cpp \
-	IniFile.h MsdFile.cpp MsdFile.h XmlFile.cpp XmlFile.h \
-	StdString.h StepMania.cpp StepMania.h global.cpp global.h \
+	TitleSubstitution.cpp TitleSubstitution.h io/USBDriver.cpp \
+	io/USBDriver.h io/PIUIO.cpp io/PIUIO.h io/ITGIO.cpp io/ITGIO.h \
+	io/USBDevice.cpp io/USBDevice.h io/USBDevice_Libusb.cpp \
+	io/USBDevice_Libusb.h IniFile.cpp IniFile.h MsdFile.cpp \
+	MsdFile.h XmlFile.cpp XmlFile.h StdString.h StepMania.cpp \
+	StepMania.h MiscITG.cpp MiscITG.h global.cpp global.h \
 	SDL_utils.cpp SDL_utils.h arch/LoadingWindow/LoadingWindow.h \
 	arch/LoadingWindow/LoadingWindow_Null.h \
 	arch/LoadingWindow/LoadingWindow_Gtk.cpp \
@@ -253,6 +265,8 @@ am__stepmania_SOURCES_DIST = Screen.cpp Screen.h \
 	arch/InputHandler/InputHandler_X11.h \
 	arch/InputHandler/InputHandler_Linux_Joystick.h \
 	arch/InputHandler/InputHandler_Linux_Joystick.cpp \
+	arch/InputHandler/InputHandler_Linux_PIUIO.h \
+	arch/InputHandler/InputHandler_Linux_PIUIO.cpp \
 	arch/MovieTexture/MovieTexture.cpp \
 	arch/MovieTexture/MovieTexture.h \
 	arch/MovieTexture/MovieTexture_Null.cpp \
@@ -491,7 +505,9 @@ am__objects_2 = Screen.$(OBJEXT) ScreenArcadeDiagnostics.$(OBJEXT) \
 	ScreenTestSound.$(OBJEXT) ScreenTextEntry.$(OBJEXT) \
 	ScreenTitleMenu.$(OBJEXT) ScreenUnlock.$(OBJEXT) \
 	ScreenWithMenuElements.$(OBJEXT) $(am__objects_1)
-am__objects_3 = ActorCommands.$(OBJEXT) Attack.$(OBJEXT) \
+am__objects_3 = USBDevice.$(OBJEXT)
+#am__objects_4 = USBDevice_Libusb.$(OBJEXT)
+am__objects_5 = ActorCommands.$(OBJEXT) Attack.$(OBJEXT) \
 	AutoKeysounds.$(OBJEXT) BackgroundUtil.$(OBJEXT) \
 	BannerCache.$(OBJEXT) CatalogXml.$(OBJEXT) Character.$(OBJEXT) \
 	CodeDetector.$(OBJEXT) Command.$(OBJEXT) \
@@ -519,67 +535,71 @@ am__objects_3 = ActorCommands.$(OBJEXT) Attack.$(OBJEXT) \
 	SongUtil.$(OBJEXT) StageStats.$(OBJEXT) Steps.$(OBJEXT) \
 	StepsUtil.$(OBJEXT) Style.$(OBJEXT) StyleUtil.$(OBJEXT) \
 	TimingData.$(OBJEXT) Trail.$(OBJEXT) TrailUtil.$(OBJEXT) \
-	TitleSubstitution.$(OBJEXT)
-am__objects_4 = IniFile.$(OBJEXT) MsdFile.$(OBJEXT) XmlFile.$(OBJEXT)
-#am__objects_5 = SDL_utils.$(OBJEXT)
-am__objects_6 = StepMania.$(OBJEXT) global.$(OBJEXT) $(am__objects_5)
-am__objects_7 = LoadingWindow_Gtk.$(OBJEXT)
-#am__objects_8 = LoadingWindow_SDL.$(OBJEXT)
-am__objects_9 = $(am__objects_7) $(am__objects_8)
-am__objects_10 = RageSoundDriver_OSS.$(OBJEXT)
-am__objects_11 = ALSA9Dynamic.$(OBJEXT) \
+	TitleSubstitution.$(OBJEXT) USBDriver.$(OBJEXT) \
+	PIUIO.$(OBJEXT) ITGIO.$(OBJEXT) $(am__objects_3) \
+	$(am__objects_4)
+am__objects_6 = IniFile.$(OBJEXT) MsdFile.$(OBJEXT) XmlFile.$(OBJEXT)
+#am__objects_7 = SDL_utils.$(OBJEXT)
+am__objects_8 = StepMania.$(OBJEXT) MiscITG.$(OBJEXT) global.$(OBJEXT) \
+	$(am__objects_7)
+am__objects_9 = LoadingWindow_Gtk.$(OBJEXT)
+#am__objects_10 = LoadingWindow_SDL.$(OBJEXT)
+am__objects_11 = $(am__objects_9) $(am__objects_10)
+am__objects_12 = RageSoundDriver_OSS.$(OBJEXT)
+am__objects_13 = ALSA9Dynamic.$(OBJEXT) \
 	ALSA9Helpers.$(OBJEXT) \
 	RageSoundDriver_ALSA9.$(OBJEXT) \
 	RageSoundDriver_ALSA9_Software.$(OBJEXT)
-am__objects_12 = RageSoundDriver_Null.$(OBJEXT) \
-	RageSoundDriver_Generic_Software.$(OBJEXT) $(am__objects_10) \
-	$(am__objects_11)
-am__objects_13 = ArchHooks_Unix.$(OBJEXT)
-am__objects_14 = ArchHooks.$(OBJEXT) $(am__objects_13)
-##am__objects_15 =  \
+am__objects_14 = RageSoundDriver_Null.$(OBJEXT) \
+	RageSoundDriver_Generic_Software.$(OBJEXT) $(am__objects_12) \
+	$(am__objects_13)
+am__objects_15 = ArchHooks_Unix.$(OBJEXT)
+am__objects_16 = ArchHooks.$(OBJEXT) $(am__objects_15)
+##am__objects_17 =  \
 ##	InputHandler_SDL.$(OBJEXT)
-am__objects_16 = InputHandler_X11.$(OBJEXT)
-am__objects_17 = InputHandler_Linux_Joystick.$(OBJEXT)
-am__objects_18 = InputHandler.$(OBJEXT) \
-	InputHandler_MonkeyKeyboard.$(OBJEXT) $(am__objects_15) \
-	$(am__objects_16) $(am__objects_17)
-am__objects_19 = MovieTexture_FFMpeg.$(OBJEXT)
-am__objects_20 = MovieTexture.$(OBJEXT) MovieTexture_Null.$(OBJEXT) \
-	$(am__objects_19)
-am__objects_21 = LightsDriver_LinuxWeedTech.$(OBJEXT) \
+am__objects_18 = InputHandler_X11.$(OBJEXT)
+am__objects_19 = InputHandler_Linux_Joystick.$(OBJEXT) \
+	InputHandler_Linux_PIUIO.$(OBJEXT)
+am__objects_20 = InputHandler.$(OBJEXT) \
+	InputHandler_MonkeyKeyboard.$(OBJEXT) $(am__objects_17) \
+	$(am__objects_18) $(am__objects_19)
+am__objects_21 = MovieTexture_FFMpeg.$(OBJEXT)
+am__objects_22 = MovieTexture.$(OBJEXT) MovieTexture_Null.$(OBJEXT) \
+	$(am__objects_21)
+am__objects_23 = LightsDriver_LinuxWeedTech.$(OBJEXT) \
 	LightsDriver_LinuxParallel.$(OBJEXT)
-am__objects_22 = LightsDriver_SystemMessage.$(OBJEXT) \
-	LightsDriver_External.$(OBJEXT) $(am__objects_21)
-am__objects_23 = MemoryCardDriverThreaded_Linux.$(OBJEXT)
-am__objects_24 = MemoryCardDriver.$(OBJEXT) $(am__objects_23)
-##am__objects_25 =  \
+am__objects_24 = LightsDriver_SystemMessage.$(OBJEXT) \
+	LightsDriver_External.$(OBJEXT) $(am__objects_23)
+am__objects_25 = MemoryCardDriverThreaded_Linux.$(OBJEXT)
+am__objects_26 = MemoryCardDriver.$(OBJEXT) $(am__objects_25)
+##am__objects_27 =  \
 ##	LowLevelWindow_SDL.$(OBJEXT)
-am__objects_26 = LowLevelWindow_X11.$(OBJEXT) \
+am__objects_28 = LowLevelWindow_X11.$(OBJEXT) \
 	X11Helper.$(OBJEXT)
-am__objects_27 = $(am__objects_25) $(am__objects_26)
-am__objects_28 = AssertionHandler.$(OBJEXT) \
+am__objects_29 = $(am__objects_27) $(am__objects_28)
+am__objects_30 = AssertionHandler.$(OBJEXT) \
 	GetSysInfo.$(OBJEXT) SignalHandler.$(OBJEXT) \
 	LinuxThreadHelpers.$(OBJEXT) \
 	RunningUnderValgrind.$(OBJEXT) \
 	EmergencyShutdown.$(OBJEXT)
-am__objects_29 =  \
+am__objects_31 =  \
 	Backtrace.$(OBJEXT) \
 	BacktraceNames.$(OBJEXT) \
 	CrashHandler.$(OBJEXT) \
 	CrashHandlerChild.$(OBJEXT)
-am__objects_30 = $(am__objects_28) $(am__objects_29)
-am__objects_31 = Dialog.$(OBJEXT)
-am__objects_32 = Threads_Pthreads.$(OBJEXT)
-am__objects_33 = $(am__objects_32)
-am__objects_34 = $(am__objects_9) $(am__objects_12) $(am__objects_14) \
-	$(am__objects_18) $(am__objects_20) $(am__objects_22) \
-	$(am__objects_24) $(am__objects_27) $(am__objects_30) \
-	$(am__objects_31) $(am__objects_33) arch.$(OBJEXT)
-am__objects_35 = BGAnimation.$(OBJEXT) BGAnimationLayer.$(OBJEXT) \
+am__objects_32 = $(am__objects_30) $(am__objects_31)
+am__objects_33 = Dialog.$(OBJEXT)
+am__objects_34 = Threads_Pthreads.$(OBJEXT)
+am__objects_35 = $(am__objects_34)
+am__objects_36 = $(am__objects_11) $(am__objects_14) $(am__objects_16) \
+	$(am__objects_20) $(am__objects_22) $(am__objects_24) \
+	$(am__objects_26) $(am__objects_29) $(am__objects_32) \
+	$(am__objects_33) $(am__objects_35) arch.$(OBJEXT)
+am__objects_37 = BGAnimation.$(OBJEXT) BGAnimationLayer.$(OBJEXT) \
 	Banner.$(OBJEXT) DifficultyIcon.$(OBJEXT) \
 	MeterDisplay.$(OBJEXT) StreamDisplay.$(OBJEXT) \
 	Transition.$(OBJEXT)
-am__objects_36 = ActiveAttackList.$(OBJEXT) BPMDisplay.$(OBJEXT) \
+am__objects_38 = ActiveAttackList.$(OBJEXT) BPMDisplay.$(OBJEXT) \
 	ComboGraph.$(OBJEXT) CourseContentsList.$(OBJEXT) \
 	CourseEntryDisplay.$(OBJEXT) DifficultyDisplay.$(OBJEXT) \
 	DifficultyList.$(OBJEXT) DifficultyMeter.$(OBJEXT) \
@@ -598,7 +618,7 @@ am__objects_36 = ActiveAttackList.$(OBJEXT) BPMDisplay.$(OBJEXT) \
 	ScrollBar.$(OBJEXT) ScrollingList.$(OBJEXT) \
 	SnapDisplay.$(OBJEXT) TextBanner.$(OBJEXT) WheelBase.$(OBJEXT) \
 	WheelItemBase.$(OBJEXT) WheelNotifyIcon.$(OBJEXT)
-am__objects_37 = ArrowEffects.$(OBJEXT) AttackDisplay.$(OBJEXT) \
+am__objects_39 = ArrowEffects.$(OBJEXT) AttackDisplay.$(OBJEXT) \
 	Background.$(OBJEXT) BeginnerHelper.$(OBJEXT) \
 	CombinedLifeMeterTug.$(OBJEXT) Combo.$(OBJEXT) \
 	DancingCharacters.$(OBJEXT) Foreground.$(OBJEXT) \
@@ -614,9 +634,9 @@ am__objects_37 = ArrowEffects.$(OBJEXT) AttackDisplay.$(OBJEXT) \
 	ScoreDisplayLifeTime.$(OBJEXT) ScoreDisplayNormal.$(OBJEXT) \
 	ScoreDisplayOni.$(OBJEXT) ScoreDisplayPercentage.$(OBJEXT) \
 	ScoreDisplayRave.$(OBJEXT)
-am__objects_38 = chartables.$(OBJEXT) get.$(OBJEXT) \
+am__objects_40 = chartables.$(OBJEXT) get.$(OBJEXT) \
 	maketables.$(OBJEXT) pcre.$(OBJEXT) study.$(OBJEXT)
-am__objects_39 = RageFileBasic.$(OBJEXT) RageFile.$(OBJEXT) \
+am__objects_41 = RageFileBasic.$(OBJEXT) RageFile.$(OBJEXT) \
 	RageFileDriver.$(OBJEXT) RageFileManager.$(OBJEXT) \
 	RageFileDriverDirect.$(OBJEXT) \
 	RageFileDriverDirectHelpers.$(OBJEXT) \
@@ -624,12 +644,12 @@ am__objects_39 = RageFileBasic.$(OBJEXT) RageFile.$(OBJEXT) \
 	RageFileDriverDeflate.$(OBJEXT) RageFileDriverSlice.$(OBJEXT) \
 	RageFileDriverTimeout.$(OBJEXT) RageFileDriverCrypt.$(OBJEXT) \
 	RageFileDriverPatch.$(OBJEXT)
-am__objects_40 =  \
+am__objects_42 =  \
 	RageSoundReader_Vorbisfile.$(OBJEXT)
-am__objects_41 = RageSoundReader_MP3.$(OBJEXT)
-am__objects_42 = RageSoundReader_WAV.$(OBJEXT) $(am__objects_40) \
-	$(am__objects_41)
-am__objects_43 = $(am__objects_38) $(am__objects_39) $(am__objects_42) \
+am__objects_43 = RageSoundReader_MP3.$(OBJEXT)
+am__objects_44 = RageSoundReader_WAV.$(OBJEXT) $(am__objects_42) \
+	$(am__objects_43)
+am__objects_45 = $(am__objects_40) $(am__objects_41) $(am__objects_44) \
 	RageBitmapTexture.$(OBJEXT) RageDisplay.$(OBJEXT) \
 	RageDisplay_OGL.$(OBJEXT) RageDisplay_OGL_Extensions.$(OBJEXT) \
 	RageDisplay_Null.$(OBJEXT) RageException.$(OBJEXT) \
@@ -658,13 +678,13 @@ am__objects_43 = $(am__objects_38) $(am__objects_39) $(am__objects_42) \
 	RageUtil_CharConversions.$(OBJEXT) \
 	RageUtil_BackgroundLoader.$(OBJEXT) RageUtil_FileDB.$(OBJEXT) \
 	RageUtil_WorkerThread.$(OBJEXT)
-am__objects_44 = Actor.$(OBJEXT) ActorFrame.$(OBJEXT) \
+am__objects_46 = Actor.$(OBJEXT) ActorFrame.$(OBJEXT) \
 	ActorScroller.$(OBJEXT) ActorUtil.$(OBJEXT) \
 	AutoActor.$(OBJEXT) BitmapText.$(OBJEXT) Model.$(OBJEXT) \
 	ModelManager.$(OBJEXT) ModelTypes.$(OBJEXT) Quad.$(OBJEXT) \
 	RollingNumbers.$(OBJEXT) Sprite.$(OBJEXT)
-am__objects_45 = ezsockets.$(OBJEXT)
-am__objects_46 = AnnouncerManager.$(OBJEXT) Bookkeeper.$(OBJEXT) \
+am__objects_47 = ezsockets.$(OBJEXT)
+am__objects_48 = AnnouncerManager.$(OBJEXT) Bookkeeper.$(OBJEXT) \
 	CryptManager.$(OBJEXT) FontManager.$(OBJEXT) \
 	GameSoundManager.$(OBJEXT) GameManager.$(OBJEXT) \
 	GameState.$(OBJEXT) InputFilter.$(OBJEXT) \
@@ -676,32 +696,32 @@ am__objects_46 = AnnouncerManager.$(OBJEXT) Bookkeeper.$(OBJEXT) \
 	ProfileManager.$(OBJEXT) ScreenManager.$(OBJEXT) \
 	SongManager.$(OBJEXT) StatsManager.$(OBJEXT) \
 	ThemeManager.$(OBJEXT) UnlockManager.$(OBJEXT) \
-	$(am__objects_45)
-am__objects_47 = owerr.$(OBJEXT) ownetu.$(OBJEXT) owllu.$(OBJEXT) \
+	$(am__objects_47)
+am__objects_49 = owerr.$(OBJEXT) ownetu.$(OBJEXT) owllu.$(OBJEXT) \
 	owsesu.$(OBJEXT) owtrnu.$(OBJEXT) crcutil.$(OBJEXT) \
 	ds2480ut.$(OBJEXT) linuxlnk.$(OBJEXT) sha18.$(OBJEXT) \
 	shaib.$(OBJEXT) getkey.$(OBJEXT)
-am__objects_48 = aescrypt.$(OBJEXT) aeskey.$(OBJEXT) aestab.$(OBJEXT) \
+am__objects_50 = aescrypt.$(OBJEXT) aeskey.$(OBJEXT) aestab.$(OBJEXT) \
 	CryptBn.$(OBJEXT) CryptMD5.$(OBJEXT) CryptNoise.$(OBJEXT) \
 	CryptPrime.$(OBJEXT) CryptRSA.$(OBJEXT) CryptRand.$(OBJEXT) \
 	CryptSH512.$(OBJEXT) CryptSHA.$(OBJEXT)
-am__objects_49 = ITG2CryptInterface.$(OBJEXT) algebra.$(OBJEXT) \
+am__objects_51 = ITG2CryptInterface.$(OBJEXT) algebra.$(OBJEXT) \
 	algparam.$(OBJEXT) asn.$(OBJEXT) cryptlib.$(OBJEXT) \
 	files.$(OBJEXT) filters.$(OBJEXT) integer.$(OBJEXT) \
 	iterhash.$(OBJEXT) misc.$(OBJEXT) mqueue.$(OBJEXT) \
 	nbtheory.$(OBJEXT) osrng.$(OBJEXT) pkcspad.$(OBJEXT) \
 	pubkey.$(OBJEXT) queue.$(OBJEXT) rsa.$(OBJEXT) sha.$(OBJEXT) \
 	CryptHelpers.$(OBJEXT)
-am__objects_50 = $(am__objects_2) $(am__objects_3) $(am__objects_4) \
-	$(am__objects_6) $(am__objects_34) $(am__objects_35) \
-	$(am__objects_36) $(am__objects_37) $(am__objects_43) \
-	$(am__objects_44) $(am__objects_46) $(am__objects_47) \
-	$(am__objects_48) $(am__objects_49)
-am_stepmania_OBJECTS = $(am__objects_50)
-stepmania_OBJECTS = $(am_stepmania_OBJECTS)
+am__objects_52 = $(am__objects_2) $(am__objects_5) $(am__objects_6) \
+	$(am__objects_8) $(am__objects_36) $(am__objects_37) \
+	$(am__objects_38) $(am__objects_39) $(am__objects_45) \
+	$(am__objects_46) $(am__objects_48) $(am__objects_49) \
+	$(am__objects_50) $(am__objects_51)
+am_openitg_OBJECTS = $(am__objects_52)
+openitg_OBJECTS = $(am_openitg_OBJECTS)
 am__DEPENDENCIES_2 = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(srcdir)/libresample/libresample.a
-stepmania_DEPENDENCIES = $(am__DEPENDENCIES_2)
+openitg_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am__test_audio_readers_SOURCES_DIST = RageSoundReader_WAV.cpp \
 	RageSoundReader_WAV.h RageSoundReader_Vorbisfile.cpp \
 	RageSoundReader_Vorbisfile.h RageSoundReader_MP3.cpp \
@@ -756,14 +776,14 @@ am__test_audio_readers_SOURCES_DIST = RageSoundReader_WAV.cpp \
 	RageSoundReader_Resample_Good.h RageSoundReader_Chain.cpp \
 	RageSoundReader_Chain.h RageSoundResampler.cpp \
 	RageSoundResampler.h
-am__objects_51 = $(am__objects_30) $(am__objects_38) $(am__objects_39) \
-	$(am__objects_14) $(am__objects_33) $(am__objects_31) \
+am__objects_53 = $(am__objects_32) $(am__objects_40) $(am__objects_41) \
+	$(am__objects_16) $(am__objects_35) $(am__objects_33) \
 	test_misc.$(OBJEXT) IniFile.$(OBJEXT) XmlFile.$(OBJEXT) \
 	DateTime.$(OBJEXT) PrefsManager.$(OBJEXT) Preference.$(OBJEXT) \
 	LuaHelpers.$(OBJEXT) RageException.$(OBJEXT) RageLog.$(OBJEXT) \
 	RageThreads.$(OBJEXT) RageTimer.$(OBJEXT) RageUtil.$(OBJEXT) \
 	RageUtil_FileDB.$(OBJEXT) global.$(OBJEXT)
-am_test_audio_readers_OBJECTS = $(am__objects_42) $(am__objects_51) \
+am_test_audio_readers_OBJECTS = $(am__objects_44) $(am__objects_53) \
 	test_audio_readers.$(OBJEXT) RageSoundUtil.$(OBJEXT) \
 	RageSoundMixBuffer.$(OBJEXT) \
 	RageSoundReader_FileReader.$(OBJEXT) \
@@ -841,9 +861,9 @@ am__test_file_errors_SOURCES_DIST =  \
 	crypto/CryptPrime.h crypto/CryptRSA.cpp crypto/CryptRSA.h \
 	crypto/CryptRand.cpp crypto/CryptRand.h crypto/CryptSH512.cpp \
 	crypto/CryptSH512.h crypto/CryptSHA.cpp crypto/CryptSHA.h
-am_test_file_errors_OBJECTS = $(am__objects_51) \
+am_test_file_errors_OBJECTS = $(am__objects_53) \
 	test_file_errors.$(OBJEXT) MsdFile.$(OBJEXT) XmlFile.$(OBJEXT) \
-	CryptManager.$(OBJEXT) $(am__objects_49) $(am__objects_48)
+	CryptManager.$(OBJEXT) $(am__objects_51) $(am__objects_50)
 test_file_errors_OBJECTS = $(am_test_file_errors_OBJECTS)
 test_file_errors_LDADD = $(LDADD)
 am__test_file_readers_SOURCES_DIST =  \
@@ -888,7 +908,7 @@ am__test_file_readers_SOURCES_DIST =  \
 	RageThreads.cpp RageTimer.cpp RageTimer.h RageUtil.cpp \
 	RageUtil_FileDB.cpp RageUtil_FileDB.h global.cpp global.h \
 	tests/test_file_readers.cpp
-am_test_file_readers_OBJECTS = $(am__objects_51) \
+am_test_file_readers_OBJECTS = $(am__objects_53) \
 	test_file_readers.$(OBJEXT)
 test_file_readers_OBJECTS = $(am_test_file_readers_OBJECTS)
 test_file_readers_LDADD = $(LDADD)
@@ -933,7 +953,7 @@ am__test_threads_SOURCES_DIST = archutils/Unix/AssertionHandler.cpp \
 	RageThreads.cpp RageTimer.cpp RageTimer.h RageUtil.cpp \
 	RageUtil_FileDB.cpp RageUtil_FileDB.h global.cpp global.h \
 	tests/test_threads.cpp
-am_test_threads_OBJECTS = $(am__objects_51) test_threads.$(OBJEXT)
+am_test_threads_OBJECTS = $(am__objects_53) test_threads.$(OBJEXT)
 test_threads_OBJECTS = $(am_test_threads_OBJECTS)
 test_threads_LDADD = $(LDADD)
 am__test_timing_data_SOURCES_DIST =  \
@@ -978,7 +998,7 @@ am__test_timing_data_SOURCES_DIST =  \
 	RageThreads.cpp RageTimer.cpp RageTimer.h RageUtil.cpp \
 	RageUtil_FileDB.cpp RageUtil_FileDB.h global.cpp global.h \
 	tests/test_timing_data.cpp TimingData.cpp TimingData.h
-am_test_timing_data_OBJECTS = $(am__objects_51) \
+am_test_timing_data_OBJECTS = $(am__objects_53) \
 	test_timing_data.$(OBJEXT) TimingData.$(OBJEXT)
 test_timing_data_OBJECTS = $(am_test_timing_data_OBJECTS)
 test_timing_data_LDADD = $(LDADD)
@@ -994,12 +1014,12 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(GtkModule_so_SOURCES) $(stepmania_SOURCES) \
+SOURCES = $(GtkModule_so_SOURCES) $(openitg_SOURCES) \
 	$(test_audio_readers_SOURCES) $(test_file_errors_SOURCES) \
 	$(test_file_readers_SOURCES) $(test_threads_SOURCES) \
 	$(test_timing_data_SOURCES)
 DIST_SOURCES = $(am__GtkModule_so_SOURCES_DIST) \
-	$(am__stepmania_SOURCES_DIST) \
+	$(am__openitg_SOURCES_DIST) \
 	$(am__test_audio_readers_SOURCES_DIST) \
 	$(am__test_file_errors_SOURCES_DIST) \
 	$(am__test_file_readers_SOURCES_DIST) \
@@ -1008,25 +1028,25 @@ DIST_SOURCES = $(am__GtkModule_so_SOURCES_DIST) \
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /storage/games/stepmania/ITG2AC/autoconf/missing --run aclocal-1.9
+ACLOCAL = ${SHELL} /root/src/autoconf/missing --run aclocal-1.9
 ALSA_CFLAGS = 
 ALSA_LIBS = -lasound
 AMDEP_FALSE = #
 AMDEP_TRUE = 
-AMTAR = ${SHELL} /storage/games/stepmania/ITG2AC/autoconf/missing --run tar
+AMTAR = ${SHELL} /root/src/autoconf/missing --run tar
 AUDIO_LIBS =  -lvorbisfile -lvorbis -logg -lmad
-AUTOCONF = ${SHELL} /storage/games/stepmania/ITG2AC/autoconf/missing --run autoconf
-AUTOHEADER = ${SHELL} /storage/games/stepmania/ITG2AC/autoconf/missing --run autoheader
-AUTOMAKE = ${SHELL} /storage/games/stepmania/ITG2AC/autoconf/missing --run automake-1.9
+AUTOCONF = ${SHELL} /root/src/autoconf/missing --run autoconf
+AUTOHEADER = ${SHELL} /root/src/autoconf/missing --run autoheader
+AUTOMAKE = ${SHELL} /root/src/autoconf/missing --run automake-1.9
 AWK = mawk
 BUILD_TESTS_FALSE = 
 BUILD_TESTS_TRUE = #
-CC = gcc
+CC = gcc-3.4
 CCDEPMODE = depmode=gcc3
 CFLAGS = -Wall -W -Wno-unused -Wno-switch -O3
-CPP = gcc -E
+CPP = gcc-3.4 -E
 CPPFLAGS = 
-CXX = g++
+CXX = g++-3.4
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -Wall -W -Wno-unused -Wno-switch -O3
 CYGPATH_W = echo
@@ -1035,9 +1055,10 @@ DEPDIR = .deps
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
-EGREP = grep -E
+EGREP = /bin/grep -E
 EXEEXT = 
-GTK_CFLAGS = -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include  
+GREP = /bin/grep
+GTK_CFLAGS = -I/usr/include/gtk-2.0 -I/usr/lib/gtk-2.0/include -I/usr/include/atk-1.0 -I/usr/include/cairo -I/usr/include/pango-1.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng12  
 GTK_LIBS = -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lm -lpangocairo-1.0 -lfontconfig -lXext -lXrender -lXinerama -lXi -lXrandr -lXcursor -lXfixes -lpango-1.0 -lcairo -lX11 -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0  
 HAVE_ALSA_FALSE = #
 HAVE_ALSA_TRUE = 
@@ -1059,10 +1080,14 @@ INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
+ITG_ARCADE_FALSE = @ITG_ARCADE_FALSE@
+ITG_ARCADE_TRUE = @ITG_ARCADE_TRUE@
 LDFLAGS =  -rdynamic
 LIBICONV = 
 LIBOBJS = 
-LIBS = -lavformat -lavcodec  -lpng -lz -lm -ljpeg -lz $(LUA_LIBS) -lpthread
+
+#if HAVE_LIBUSB
+LIBS = -lavformat -lavcodec  -lpng -lz -lm -ljpeg -lz $(LUA_LIBS) -lpthread -lusb
 LINUX_FALSE = #
 LINUX_TRUE = 
 LTLIBICONV = 
@@ -1073,7 +1098,7 @@ LUA_LIBS = /usr/lib/liblualib50.a /usr/lib/liblua50.a
 MAINT = #
 MAINTAINER_MODE_FALSE = 
 MAINTAINER_MODE_TRUE = #
-MAKEINFO = ${SHELL} /storage/games/stepmania/ITG2AC/autoconf/missing --run makeinfo
+MAKEINFO = ${SHELL} /root/src/autoconf/missing --run makeinfo
 OBJEXT = o
 PACKAGE = StepMania
 PACKAGE_BUGREPORT = 
@@ -1098,11 +1123,10 @@ VERSION = 3.001
 WITHOUT_NETWORKING_FALSE = 
 WITHOUT_NETWORKING_TRUE = #
 XCFLAGS = 
-XLIBS = -L/usr/X11R6/lib -lX11 -lXtst -lGL -lGLU
-ac_ct_CC = gcc
-ac_ct_CXX = g++
-ac_ct_RANLIB = ranlib
-ac_ct_STRIP = 
+XLIBS =  -lXtst -lGL -lGLU
+XMKMF = 
+ac_ct_CC = gcc-3.4
+ac_ct_CXX = 
 am__fastdepCC_FALSE = #
 am__fastdepCC_TRUE = 
 am__fastdepCXX_FALSE = #
@@ -1118,24 +1142,31 @@ build_alias =
 build_cpu = i686
 build_os = linux-gnu
 build_vendor = pc
-datadir = ${prefix}/share
+datadir = ${datarootdir}
+datarootdir = ${prefix}/share
+docdir = ${datarootdir}/doc/${PACKAGE}
+dvidir = ${docdir}
 exec_prefix = ${prefix}
 host = i686-pc-linux-gnu
 host_alias = 
 host_cpu = i686
 host_os = linux-gnu
 host_vendor = pc
+htmldir = ${docdir}
 includedir = ${prefix}/include
-infodir = ${prefix}/info
-install_sh = /storage/games/stepmania/ITG2AC/autoconf/install-sh
+infodir = ${datarootdir}/info
+install_sh = /root/src/autoconf/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
+localedir = ${datarootdir}/locale
 localstatedir = ${prefix}/var
-mandir = ${prefix}/man
+mandir = ${datarootdir}/man
 mkdir_p = mkdir -p --
 oldincludedir = /usr/include
+pdfdir = ${docdir}
 prefix = /usr/local
 program_transform_name = s,x,x,
+psdir = ${docdir}
 sbindir = ${exec_prefix}/sbin
 sharedstatedir = ${prefix}/com
 sysconfdir = ${prefix}/etc
@@ -1160,7 +1191,7 @@ AM_LDFLAGS =
 
 # Relax inlining; the default of 600 takes way too long to compile and
 # generates enormous output.
-AM_CXXFLAGS = -finline-limit=300 $(XCFLAGS) $(am__append_5)
+AM_CXXFLAGS = -finline-limit=300 $(XCFLAGS) $(am__append_7)
 AM_CFLAGS = 
 Screens = Screen.cpp Screen.h ScreenArcadeDiagnostics.cpp \
 	ScreenArcadeDiagnostics.h ScreenArcadePatch.cpp \
@@ -1215,84 +1246,91 @@ Screens = Screen.cpp Screen.h ScreenArcadeDiagnostics.cpp \
 	ScreenTitleMenu.cpp ScreenTitleMenu.h ScreenUnlock.cpp \
 	ScreenUnlock.h ScreenWithMenuElements.cpp \
 	ScreenWithMenuElements.h $(am__append_1)
-DataStructures = \
-ActorCommands.cpp ActorCommands.h Attack.cpp Attack.h AutoKeysounds.cpp AutoKeysounds.h \
-BackgroundUtil.cpp BackgroundUtil.h \
-BannerCache.cpp BannerCache.h CatalogXml.cpp CatalogXml.h \
-Character.cpp Character.h \
-CodeDetector.cpp CodeDetector.h \
-Command.cpp Command.h \
-CommonMetrics.cpp CommonMetrics.h \
-Difficulty.cpp Difficulty.h EnumHelper.cpp EnumHelper.h Course.cpp Course.h \
-CourseUtil.cpp CourseUtil.h DateTime.cpp DateTime.h Font.cpp Font.h FontCharAliases.cpp FontCharAliases.h \
-FontCharmaps.cpp FontCharmaps.h Game.cpp Game.h GameCommand.cpp GameCommand.h \
-GameConstantsAndTypes.cpp GameConstantsAndTypes.h \
-GameInput.cpp GameInput.h Grade.cpp Grade.h HighScore.cpp HighScore.h Inventory.cpp Inventory.h LuaFunctions.h \
-LuaReference.cpp LuaReference.h \
-LyricsLoader.cpp LyricsLoader.h MenuInput.h \
-NoteData.cpp NoteData.h NoteDataUtil.cpp NoteDataUtil.h NoteDataWithScoring.cpp NoteDataWithScoring.h \
-NoteFieldPositioning.cpp NoteFieldPositioning.h NoteTypes.cpp NoteTypes.h NotesLoader.cpp NotesLoader.h \
-NotesLoaderBMS.cpp NotesLoaderBMS.h NotesLoaderDWI.cpp NotesLoaderDWI.h NotesLoaderKSF.cpp NotesLoaderKSF.h \
-NotesLoaderSM.cpp NotesLoaderSM.h NotesWriterDWI.cpp NotesWriterDWI.h NotesWriterSM.cpp NotesWriterSM.h \
-OptionRowHandler.cpp OptionRowHandler.h \
-PlayerAI.cpp PlayerAI.h PlayerNumber.cpp PlayerNumber.h PlayerOptions.cpp PlayerOptions.h \
-PlayerStageStats.cpp PlayerStageStats.h \
-PlayerState.cpp PlayerState.h Preference.cpp Preference.h Profile.cpp Profile.h \
-RandomSample.cpp RandomSample.h RadarValues.cpp RadarValues.h \
-RoomWheel.cpp RoomWheel.h ScreenDimensions.h ScreenDimensions.cpp \
-ScoreKeeper.h ScoreKeeperMAX2.cpp ScoreKeeperMAX2.h \
-ScoreKeeperRave.cpp ScoreKeeperRave.h Song.cpp song.h SongCacheIndex.cpp SongCacheIndex.h \
-SongOptions.cpp SongOptions.h SongUtil.cpp SongUtil.h StageStats.cpp StageStats.h Steps.cpp Steps.h \
-StepsUtil.cpp StepsUtil.h Style.cpp Style.h StyleUtil.cpp StyleUtil.h \
-SubscriptionManager.h \
-StyleInput.h TimingData.cpp TimingData.h \
-ThemeMetric.h \
-Trail.cpp Trail.h TrailUtil.cpp TrailUtil.h TitleSubstitution.cpp TitleSubstitution.h
 
+#Make sure any dependencies on these data structure are wrapped.
+DataStructures = ActorCommands.cpp ActorCommands.h Attack.cpp Attack.h \
+	AutoKeysounds.cpp AutoKeysounds.h BackgroundUtil.cpp \
+	BackgroundUtil.h BannerCache.cpp BannerCache.h CatalogXml.cpp \
+	CatalogXml.h Character.cpp Character.h CodeDetector.cpp \
+	CodeDetector.h Command.cpp Command.h CommonMetrics.cpp \
+	CommonMetrics.h Difficulty.cpp Difficulty.h EnumHelper.cpp \
+	EnumHelper.h Course.cpp Course.h CourseUtil.cpp CourseUtil.h \
+	DateTime.cpp DateTime.h Font.cpp Font.h FontCharAliases.cpp \
+	FontCharAliases.h FontCharmaps.cpp FontCharmaps.h Game.cpp \
+	Game.h GameCommand.cpp GameCommand.h GameConstantsAndTypes.cpp \
+	GameConstantsAndTypes.h GameInput.cpp GameInput.h Grade.cpp \
+	Grade.h HighScore.cpp HighScore.h Inventory.cpp Inventory.h \
+	LuaFunctions.h LuaReference.cpp LuaReference.h \
+	LyricsLoader.cpp LyricsLoader.h MenuInput.h NoteData.cpp \
+	NoteData.h NoteDataUtil.cpp NoteDataUtil.h \
+	NoteDataWithScoring.cpp NoteDataWithScoring.h \
+	NoteFieldPositioning.cpp NoteFieldPositioning.h NoteTypes.cpp \
+	NoteTypes.h NotesLoader.cpp NotesLoader.h NotesLoaderBMS.cpp \
+	NotesLoaderBMS.h NotesLoaderDWI.cpp NotesLoaderDWI.h \
+	NotesLoaderKSF.cpp NotesLoaderKSF.h NotesLoaderSM.cpp \
+	NotesLoaderSM.h NotesWriterDWI.cpp NotesWriterDWI.h \
+	NotesWriterSM.cpp NotesWriterSM.h OptionRowHandler.cpp \
+	OptionRowHandler.h PlayerAI.cpp PlayerAI.h PlayerNumber.cpp \
+	PlayerNumber.h PlayerOptions.cpp PlayerOptions.h \
+	PlayerStageStats.cpp PlayerStageStats.h PlayerState.cpp \
+	PlayerState.h Preference.cpp Preference.h Profile.cpp \
+	Profile.h RandomSample.cpp RandomSample.h RadarValues.cpp \
+	RadarValues.h RoomWheel.cpp RoomWheel.h ScreenDimensions.h \
+	ScreenDimensions.cpp ScoreKeeper.h ScoreKeeperMAX2.cpp \
+	ScoreKeeperMAX2.h ScoreKeeperRave.cpp ScoreKeeperRave.h \
+	Song.cpp song.h SongCacheIndex.cpp SongCacheIndex.h \
+	SongOptions.cpp SongOptions.h SongUtil.cpp SongUtil.h \
+	StageStats.cpp StageStats.h Steps.cpp Steps.h StepsUtil.cpp \
+	StepsUtil.h Style.cpp Style.h StyleUtil.cpp StyleUtil.h \
+	SubscriptionManager.h StyleInput.h TimingData.cpp TimingData.h \
+	ThemeMetric.h Trail.cpp Trail.h TrailUtil.cpp TrailUtil.h \
+	TitleSubstitution.cpp TitleSubstitution.h io/USBDriver.cpp \
+	io/USBDriver.h io/PIUIO.cpp io/PIUIO.h io/ITGIO.cpp io/ITGIO.h \
+	$(am__append_2) $(am__append_3)
 FileTypes = IniFile.cpp IniFile.h \
 		MsdFile.cpp MsdFile.h \
 		XmlFile.cpp XmlFile.h
 
-StepMania = StdString.h StepMania.cpp StepMania.h global.cpp global.h \
-	$(am__append_8)
+StepMania = StdString.h StepMania.cpp StepMania.h MiscITG.cpp \
+	MiscITG.h global.cpp global.h $(am__append_10)
 LoadingWindow = arch/LoadingWindow/LoadingWindow.h \
-	arch/LoadingWindow/LoadingWindow_Null.h $(am__append_2) \
-	$(am__append_7)
+	arch/LoadingWindow/LoadingWindow_Null.h $(am__append_4) \
+	$(am__append_9)
 Sound = arch/Sound/RageSoundDriver.h \
 	arch/Sound/RageSoundDriver_Null.cpp \
 	arch/Sound/RageSoundDriver_Null.h \
 	arch/Sound/RageSoundDriver_Generic_Software.cpp \
-	arch/Sound/RageSoundDriver_Generic_Software.h $(am__append_3) \
-	$(am__append_4)
+	arch/Sound/RageSoundDriver_Generic_Software.h $(am__append_5) \
+	$(am__append_6)
 ArchHooks = arch/ArchHooks/ArchHooks.cpp arch/ArchHooks/ArchHooks.h \
-	$(am__append_13)
+	$(am__append_15)
 InputHandler = arch/InputHandler/InputHandler.cpp \
 	arch/InputHandler/InputHandler.h \
 	arch/InputHandler/InputHandler_MonkeyKeyboard.cpp \
 	arch/InputHandler/InputHandler_MonkeyKeyboard.h \
-	$(am__append_9) $(am__append_11) $(am__append_19)
+	$(am__append_11) $(am__append_13) $(am__append_21)
 MovieTexture = arch/MovieTexture/MovieTexture.cpp \
 	arch/MovieTexture/MovieTexture.h \
 	arch/MovieTexture/MovieTexture_Null.cpp \
-	arch/MovieTexture/MovieTexture_Null.h $(am__append_6)
+	arch/MovieTexture/MovieTexture_Null.h $(am__append_8)
 Lights = arch/Lights/LightsDriver.h \
 	arch/Lights/LightsDriver_SystemMessage.cpp \
 	arch/Lights/LightsDriver_SystemMessage.h \
 	arch/Lights/LightsDriver_External.cpp \
-	arch/Lights/LightsDriver_External.h $(am__append_15)
+	arch/Lights/LightsDriver_External.h $(am__append_17)
 MemoryCard = arch/MemoryCard/MemoryCardDriver.cpp \
-	arch/MemoryCard/MemoryCardDriver.h $(am__append_18)
-LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.h $(am__append_10) \
-	$(am__append_12)
-ArchUtils = $(am__append_16) $(am__append_17)
+	arch/MemoryCard/MemoryCardDriver.h $(am__append_20)
+LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.h $(am__append_12) \
+	$(am__append_14)
+ArchUtils = $(am__append_18) $(am__append_19)
 Dialog = arch/Dialog/Dialog.cpp arch/Dialog/Dialog.h arch/Dialog/DialogDriver.h
-Threads = arch/Threads/Threads.h $(am__append_14)
+Threads = arch/Threads/Threads.h $(am__append_16)
 Arch = $(LoadingWindow) $(Sound) $(ArchHooks) $(InputHandler) $(MovieTexture) \
 	   $(Lights) $(MemoryCard) $(LowLevelWindow) $(ArchUtils) $(Dialog) $(Threads) \
 	   arch/arch.h arch/arch.cpp arch/arch_default.h arch/arch_platform.h
 
 RageSoundFileReaders = RageSoundReader_WAV.cpp RageSoundReader_WAV.h \
-	$(am__append_20) $(am__append_21)
+	$(am__append_22) $(am__append_23)
 ActorsInGameplayAndMenus = \
 BGAnimation.cpp BGAnimation.h BGAnimationLayer.cpp BGAnimationLayer.h Banner.cpp Banner.h \
 DifficultyIcon.cpp DifficultyIcon.h \
@@ -1398,7 +1436,7 @@ GlobalSingletons = AnnouncerManager.cpp AnnouncerManager.h \
 	ProfileManager.cpp ProfileManager.h ScreenManager.cpp \
 	ScreenManager.h SongManager.cpp SongManager.h StatsManager.cpp \
 	StatsManager.h ThemeManager.cpp ThemeManager.h \
-	UnlockManager.cpp UnlockManager.h $(am__append_22)
+	UnlockManager.cpp UnlockManager.h $(am__append_24)
 ibutton = \
 ibutton/owerr.c ibutton/ownetu.c ibutton/ownet.h ibutton/owllu.c \
 ibutton/owsesu.c ibutton/owtrnu.c ibutton/owfile.h ibutton/crcutil.c \
@@ -1446,8 +1484,8 @@ main_LDADD = \
 		  $(XLIBS) \
 		  $(srcdir)/libresample/libresample.a
 
-stepmania_SOURCES = $(main_SOURCES)
-stepmania_LDADD = $(main_LDADD)
+openitg_SOURCES = $(main_SOURCES)
+openitg_LDADD = $(main_LDADD)
 GtkModule_so_LDFLAGS = -rdynamic -shared
 GtkModule_so_CPPFLAGS = $(GTK_CFLAGS) -fPIC
 GtkModule_so_LDADD = $(GTK_LIBS)
@@ -1592,9 +1630,9 @@ clean-noinstPROGRAMS:
 GtkModule.so$(EXEEXT): $(GtkModule_so_OBJECTS) $(GtkModule_so_DEPENDENCIES) 
 	@rm -f GtkModule.so$(EXEEXT)
 	$(CXXLINK) $(GtkModule_so_LDFLAGS) $(GtkModule_so_OBJECTS) $(GtkModule_so_LDADD) $(LIBS)
-stepmania$(EXEEXT): $(stepmania_OBJECTS) $(stepmania_DEPENDENCIES) 
-	@rm -f stepmania$(EXEEXT)
-	$(CXXLINK) $(stepmania_LDFLAGS) $(stepmania_OBJECTS) $(stepmania_LDADD) $(LIBS)
+openitg$(EXEEXT): $(openitg_OBJECTS) $(openitg_DEPENDENCIES) 
+	@rm -f openitg$(EXEEXT)
+	$(CXXLINK) $(openitg_LDFLAGS) $(openitg_OBJECTS) $(openitg_LDADD) $(LIBS)
 test_audio_readers$(EXEEXT): $(test_audio_readers_OBJECTS) $(test_audio_readers_DEPENDENCIES) 
 	@rm -f test_audio_readers$(EXEEXT)
 	$(CXXLINK) $(test_audio_readers_LDFLAGS) $(test_audio_readers_OBJECTS) $(test_audio_readers_LDADD) $(LIBS)
@@ -1713,10 +1751,12 @@ include ./$(DEPDIR)/HighScore.Po
 include ./$(DEPDIR)/HoldGhostArrow.Po
 include ./$(DEPDIR)/HoldJudgment.Po
 include ./$(DEPDIR)/ITG2CryptInterface.Po
+include ./$(DEPDIR)/ITGIO.Po
 include ./$(DEPDIR)/IniFile.Po
 include ./$(DEPDIR)/InputFilter.Po
 include ./$(DEPDIR)/InputHandler.Po
 include ./$(DEPDIR)/InputHandler_Linux_Joystick.Po
+include ./$(DEPDIR)/InputHandler_Linux_PIUIO.Po
 include ./$(DEPDIR)/InputHandler_MonkeyKeyboard.Po
 include ./$(DEPDIR)/InputHandler_SDL.Po
 include ./$(DEPDIR)/InputHandler_X11.Po
@@ -1749,6 +1789,7 @@ include ./$(DEPDIR)/MemoryCardManager.Po
 include ./$(DEPDIR)/MenuTimer.Po
 include ./$(DEPDIR)/MessageManager.Po
 include ./$(DEPDIR)/MeterDisplay.Po
+include ./$(DEPDIR)/MiscITG.Po
 include ./$(DEPDIR)/ModeSwitcher.Po
 include ./$(DEPDIR)/Model.Po
 include ./$(DEPDIR)/ModelManager.Po
@@ -1784,6 +1825,7 @@ include ./$(DEPDIR)/OptionIconRow.Po
 include ./$(DEPDIR)/OptionRow.Po
 include ./$(DEPDIR)/OptionRowHandler.Po
 include ./$(DEPDIR)/OptionsCursor.Po
+include ./$(DEPDIR)/PIUIO.Po
 include ./$(DEPDIR)/PaneDisplay.Po
 include ./$(DEPDIR)/PercentageDisplay.Po
 include ./$(DEPDIR)/Player.Po
@@ -1981,6 +2023,9 @@ include ./$(DEPDIR)/TitleSubstitution.Po
 include ./$(DEPDIR)/Trail.Po
 include ./$(DEPDIR)/TrailUtil.Po
 include ./$(DEPDIR)/Transition.Po
+include ./$(DEPDIR)/USBDevice.Po
+include ./$(DEPDIR)/USBDevice_Libusb.Po
+include ./$(DEPDIR)/USBDriver.Po
 include ./$(DEPDIR)/UnlockManager.Po
 include ./$(DEPDIR)/WheelBase.Po
 include ./$(DEPDIR)/WheelItemBase.Po
@@ -2327,6 +2372,76 @@ GtkModule_so-LoadingWindow_GtkModule.obj: arch/LoadingWindow/LoadingWindow_GtkMo
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(GtkModule_so_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o GtkModule_so-LoadingWindow_GtkModule.obj `if test -f 'arch/LoadingWindow/LoadingWindow_GtkModule.cpp'; then $(CYGPATH_W) 'arch/LoadingWindow/LoadingWindow_GtkModule.cpp'; else $(CYGPATH_W) '$(srcdir)/arch/LoadingWindow/LoadingWindow_GtkModule.cpp'; fi`
 
+USBDriver.o: io/USBDriver.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT USBDriver.o -MD -MP -MF "$(DEPDIR)/USBDriver.Tpo" -c -o USBDriver.o `test -f 'io/USBDriver.cpp' || echo '$(srcdir)/'`io/USBDriver.cpp; \
+	then mv -f "$(DEPDIR)/USBDriver.Tpo" "$(DEPDIR)/USBDriver.Po"; else rm -f "$(DEPDIR)/USBDriver.Tpo"; exit 1; fi
+#	source='io/USBDriver.cpp' object='USBDriver.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o USBDriver.o `test -f 'io/USBDriver.cpp' || echo '$(srcdir)/'`io/USBDriver.cpp
+
+USBDriver.obj: io/USBDriver.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT USBDriver.obj -MD -MP -MF "$(DEPDIR)/USBDriver.Tpo" -c -o USBDriver.obj `if test -f 'io/USBDriver.cpp'; then $(CYGPATH_W) 'io/USBDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/io/USBDriver.cpp'; fi`; \
+	then mv -f "$(DEPDIR)/USBDriver.Tpo" "$(DEPDIR)/USBDriver.Po"; else rm -f "$(DEPDIR)/USBDriver.Tpo"; exit 1; fi
+#	source='io/USBDriver.cpp' object='USBDriver.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o USBDriver.obj `if test -f 'io/USBDriver.cpp'; then $(CYGPATH_W) 'io/USBDriver.cpp'; else $(CYGPATH_W) '$(srcdir)/io/USBDriver.cpp'; fi`
+
+PIUIO.o: io/PIUIO.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PIUIO.o -MD -MP -MF "$(DEPDIR)/PIUIO.Tpo" -c -o PIUIO.o `test -f 'io/PIUIO.cpp' || echo '$(srcdir)/'`io/PIUIO.cpp; \
+	then mv -f "$(DEPDIR)/PIUIO.Tpo" "$(DEPDIR)/PIUIO.Po"; else rm -f "$(DEPDIR)/PIUIO.Tpo"; exit 1; fi
+#	source='io/PIUIO.cpp' object='PIUIO.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PIUIO.o `test -f 'io/PIUIO.cpp' || echo '$(srcdir)/'`io/PIUIO.cpp
+
+PIUIO.obj: io/PIUIO.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT PIUIO.obj -MD -MP -MF "$(DEPDIR)/PIUIO.Tpo" -c -o PIUIO.obj `if test -f 'io/PIUIO.cpp'; then $(CYGPATH_W) 'io/PIUIO.cpp'; else $(CYGPATH_W) '$(srcdir)/io/PIUIO.cpp'; fi`; \
+	then mv -f "$(DEPDIR)/PIUIO.Tpo" "$(DEPDIR)/PIUIO.Po"; else rm -f "$(DEPDIR)/PIUIO.Tpo"; exit 1; fi
+#	source='io/PIUIO.cpp' object='PIUIO.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o PIUIO.obj `if test -f 'io/PIUIO.cpp'; then $(CYGPATH_W) 'io/PIUIO.cpp'; else $(CYGPATH_W) '$(srcdir)/io/PIUIO.cpp'; fi`
+
+ITGIO.o: io/ITGIO.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ITGIO.o -MD -MP -MF "$(DEPDIR)/ITGIO.Tpo" -c -o ITGIO.o `test -f 'io/ITGIO.cpp' || echo '$(srcdir)/'`io/ITGIO.cpp; \
+	then mv -f "$(DEPDIR)/ITGIO.Tpo" "$(DEPDIR)/ITGIO.Po"; else rm -f "$(DEPDIR)/ITGIO.Tpo"; exit 1; fi
+#	source='io/ITGIO.cpp' object='ITGIO.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ITGIO.o `test -f 'io/ITGIO.cpp' || echo '$(srcdir)/'`io/ITGIO.cpp
+
+ITGIO.obj: io/ITGIO.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ITGIO.obj -MD -MP -MF "$(DEPDIR)/ITGIO.Tpo" -c -o ITGIO.obj `if test -f 'io/ITGIO.cpp'; then $(CYGPATH_W) 'io/ITGIO.cpp'; else $(CYGPATH_W) '$(srcdir)/io/ITGIO.cpp'; fi`; \
+	then mv -f "$(DEPDIR)/ITGIO.Tpo" "$(DEPDIR)/ITGIO.Po"; else rm -f "$(DEPDIR)/ITGIO.Tpo"; exit 1; fi
+#	source='io/ITGIO.cpp' object='ITGIO.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ITGIO.obj `if test -f 'io/ITGIO.cpp'; then $(CYGPATH_W) 'io/ITGIO.cpp'; else $(CYGPATH_W) '$(srcdir)/io/ITGIO.cpp'; fi`
+
+USBDevice.o: io/USBDevice.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT USBDevice.o -MD -MP -MF "$(DEPDIR)/USBDevice.Tpo" -c -o USBDevice.o `test -f 'io/USBDevice.cpp' || echo '$(srcdir)/'`io/USBDevice.cpp; \
+	then mv -f "$(DEPDIR)/USBDevice.Tpo" "$(DEPDIR)/USBDevice.Po"; else rm -f "$(DEPDIR)/USBDevice.Tpo"; exit 1; fi
+#	source='io/USBDevice.cpp' object='USBDevice.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o USBDevice.o `test -f 'io/USBDevice.cpp' || echo '$(srcdir)/'`io/USBDevice.cpp
+
+USBDevice.obj: io/USBDevice.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT USBDevice.obj -MD -MP -MF "$(DEPDIR)/USBDevice.Tpo" -c -o USBDevice.obj `if test -f 'io/USBDevice.cpp'; then $(CYGPATH_W) 'io/USBDevice.cpp'; else $(CYGPATH_W) '$(srcdir)/io/USBDevice.cpp'; fi`; \
+	then mv -f "$(DEPDIR)/USBDevice.Tpo" "$(DEPDIR)/USBDevice.Po"; else rm -f "$(DEPDIR)/USBDevice.Tpo"; exit 1; fi
+#	source='io/USBDevice.cpp' object='USBDevice.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o USBDevice.obj `if test -f 'io/USBDevice.cpp'; then $(CYGPATH_W) 'io/USBDevice.cpp'; else $(CYGPATH_W) '$(srcdir)/io/USBDevice.cpp'; fi`
+
+USBDevice_Libusb.o: io/USBDevice_Libusb.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT USBDevice_Libusb.o -MD -MP -MF "$(DEPDIR)/USBDevice_Libusb.Tpo" -c -o USBDevice_Libusb.o `test -f 'io/USBDevice_Libusb.cpp' || echo '$(srcdir)/'`io/USBDevice_Libusb.cpp; \
+	then mv -f "$(DEPDIR)/USBDevice_Libusb.Tpo" "$(DEPDIR)/USBDevice_Libusb.Po"; else rm -f "$(DEPDIR)/USBDevice_Libusb.Tpo"; exit 1; fi
+#	source='io/USBDevice_Libusb.cpp' object='USBDevice_Libusb.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o USBDevice_Libusb.o `test -f 'io/USBDevice_Libusb.cpp' || echo '$(srcdir)/'`io/USBDevice_Libusb.cpp
+
+USBDevice_Libusb.obj: io/USBDevice_Libusb.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT USBDevice_Libusb.obj -MD -MP -MF "$(DEPDIR)/USBDevice_Libusb.Tpo" -c -o USBDevice_Libusb.obj `if test -f 'io/USBDevice_Libusb.cpp'; then $(CYGPATH_W) 'io/USBDevice_Libusb.cpp'; else $(CYGPATH_W) '$(srcdir)/io/USBDevice_Libusb.cpp'; fi`; \
+	then mv -f "$(DEPDIR)/USBDevice_Libusb.Tpo" "$(DEPDIR)/USBDevice_Libusb.Po"; else rm -f "$(DEPDIR)/USBDevice_Libusb.Tpo"; exit 1; fi
+#	source='io/USBDevice_Libusb.cpp' object='USBDevice_Libusb.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o USBDevice_Libusb.obj `if test -f 'io/USBDevice_Libusb.cpp'; then $(CYGPATH_W) 'io/USBDevice_Libusb.cpp'; else $(CYGPATH_W) '$(srcdir)/io/USBDevice_Libusb.cpp'; fi`
+
 LoadingWindow_Gtk.o: arch/LoadingWindow/LoadingWindow_Gtk.cpp
 	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT LoadingWindow_Gtk.o -MD -MP -MF "$(DEPDIR)/LoadingWindow_Gtk.Tpo" -c -o LoadingWindow_Gtk.o `test -f 'arch/LoadingWindow/LoadingWindow_Gtk.cpp' || echo '$(srcdir)/'`arch/LoadingWindow/LoadingWindow_Gtk.cpp; \
 	then mv -f "$(DEPDIR)/LoadingWindow_Gtk.Tpo" "$(DEPDIR)/LoadingWindow_Gtk.Po"; else rm -f "$(DEPDIR)/LoadingWindow_Gtk.Tpo"; exit 1; fi
@@ -2550,6 +2665,20 @@ InputHandler_Linux_Joystick.obj: arch/InputHandler/InputHandler_Linux_Joystick.c
 #	source='arch/InputHandler/InputHandler_Linux_Joystick.cpp' object='InputHandler_Linux_Joystick.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o InputHandler_Linux_Joystick.obj `if test -f 'arch/InputHandler/InputHandler_Linux_Joystick.cpp'; then $(CYGPATH_W) 'arch/InputHandler/InputHandler_Linux_Joystick.cpp'; else $(CYGPATH_W) '$(srcdir)/arch/InputHandler/InputHandler_Linux_Joystick.cpp'; fi`
+
+InputHandler_Linux_PIUIO.o: arch/InputHandler/InputHandler_Linux_PIUIO.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT InputHandler_Linux_PIUIO.o -MD -MP -MF "$(DEPDIR)/InputHandler_Linux_PIUIO.Tpo" -c -o InputHandler_Linux_PIUIO.o `test -f 'arch/InputHandler/InputHandler_Linux_PIUIO.cpp' || echo '$(srcdir)/'`arch/InputHandler/InputHandler_Linux_PIUIO.cpp; \
+	then mv -f "$(DEPDIR)/InputHandler_Linux_PIUIO.Tpo" "$(DEPDIR)/InputHandler_Linux_PIUIO.Po"; else rm -f "$(DEPDIR)/InputHandler_Linux_PIUIO.Tpo"; exit 1; fi
+#	source='arch/InputHandler/InputHandler_Linux_PIUIO.cpp' object='InputHandler_Linux_PIUIO.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o InputHandler_Linux_PIUIO.o `test -f 'arch/InputHandler/InputHandler_Linux_PIUIO.cpp' || echo '$(srcdir)/'`arch/InputHandler/InputHandler_Linux_PIUIO.cpp
+
+InputHandler_Linux_PIUIO.obj: arch/InputHandler/InputHandler_Linux_PIUIO.cpp
+	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT InputHandler_Linux_PIUIO.obj -MD -MP -MF "$(DEPDIR)/InputHandler_Linux_PIUIO.Tpo" -c -o InputHandler_Linux_PIUIO.obj `if test -f 'arch/InputHandler/InputHandler_Linux_PIUIO.cpp'; then $(CYGPATH_W) 'arch/InputHandler/InputHandler_Linux_PIUIO.cpp'; else $(CYGPATH_W) '$(srcdir)/arch/InputHandler/InputHandler_Linux_PIUIO.cpp'; fi`; \
+	then mv -f "$(DEPDIR)/InputHandler_Linux_PIUIO.Tpo" "$(DEPDIR)/InputHandler_Linux_PIUIO.Po"; else rm -f "$(DEPDIR)/InputHandler_Linux_PIUIO.Tpo"; exit 1; fi
+#	source='arch/InputHandler/InputHandler_Linux_PIUIO.cpp' object='InputHandler_Linux_PIUIO.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o InputHandler_Linux_PIUIO.obj `if test -f 'arch/InputHandler/InputHandler_Linux_PIUIO.cpp'; then $(CYGPATH_W) 'arch/InputHandler/InputHandler_Linux_PIUIO.cpp'; else $(CYGPATH_W) '$(srcdir)/arch/InputHandler/InputHandler_Linux_PIUIO.cpp'; fi`
 
 MovieTexture.o: arch/MovieTexture/MovieTexture.cpp
 	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT MovieTexture.o -MD -MP -MF "$(DEPDIR)/MovieTexture.Tpo" -c -o MovieTexture.o `test -f 'arch/MovieTexture/MovieTexture.cpp' || echo '$(srcdir)/'`arch/MovieTexture/MovieTexture.cpp; \

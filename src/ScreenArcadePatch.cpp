@@ -195,7 +195,7 @@ bool ScreenArcadePatch::MountCards()
 	sFullDir = sDir + "ITG 2 *.itg";
 	
 	// Finally mount the card
-	if( MEMCARDMAN->MountCard( pn ) )
+	if( MEMCARDMAN->MountCard( pn, -1 ) )
 		return true;
 	else {
 		m_Status.SetText( ssprintf( "Error mounting Player %d's card!" , pn + 1 ) );

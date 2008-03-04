@@ -9,20 +9,28 @@
 #include "SongManager.h"
 #include "ProductInfo.h"
 
+/* Include dongle support if we're going to use it...
+ * Maybe we should set a HAVE_DONGLE directive? */
 #ifdef ITG_ARCADE
-#include "io/USBDevice.h"
 extern "C" {
 #include "ibutton/ownet.h"
-#include "ibutton/shaib.h"
+#include "ibutton/shaib.h" 
 }
-#else
-#include "io/USBDevice_Libusb.h"
 #endif
 
+// See where to look for all this stuff
+// "Stats" is mounted to "Data" in the VFS for non-arcade
 #ifdef ITG_ARCADE
 #define STATS_DIR_PATH CString("/rootfs/stats/")
 #else
 #define STATS_DIR_PATH CString("Data/")
+#endif
+
+// set our USBDevice based on operating system
+#if defined(UNIX)
+#include "io/USBDevice.h"
+#else
+#include "io/USBDevice_Libusb.h"
 #endif
 
 extern CString g_sInputType;
@@ -62,37 +70,31 @@ int GetRevision()
 	xml->Clear();
 	xml->m_sName = "patch";
 	
-	bool bLoaded = false;
-
 	// Check for the file existing
 	if( !IsAFile(sPath) )
 	{
-		bLoaded = false;
 		LOG->Warn( "There is no patch file (patch.xml)" );
+		SAFE_DELETE( xml ); 
+		return 1;
 	}
 	
 	// Make sure you can read it
 	if( !xml->LoadFromFile(sPath) )
 	{
-		bLoaded = false;
 		LOG->Warn( "patch.xml unloadable" );
+		SAFE_DELETE( xml ); 
+		return 1;
 	}
 	
 	// Check the node <Revision>x</Revision>
 	if( !xml->GetChild( "Revision" ) )
 	{
-		bLoaded = false;
 		LOG->Warn( "Revision node missing! (patch.xml)" );
+		SAFE_DELETE( xml ); 
+		return 1;
 	}
 	
-	/* Default, if nothing's loaded */
-	int iRevision = 1;
-
-	if( bLoaded )
-		iRevision = atoi( xml->GetChild("Revision")->m_sValue );
-
-	/* Can't forget about this! Remember to SAFE_DELETE 'new' objects. */
-	SAFE_DELETE( xml ); 
+	iRevision = atoi( xml->GetChild("Revision")->m_sValue );
 
 	return iRevision;
 }

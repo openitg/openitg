@@ -2,12 +2,14 @@
 #include "RageLog.h"
 #include "RageException.h"
 #include "RageUtil.h"
+#include "RageInput.h" // for g_sInputType
 
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h" // needed for g_LightsState
 #include "InputHandler_Linux_PIUIO.h"
 
 LightsState g_LightsState;
+extern CString g_sInputType;
 
 InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 {
@@ -27,6 +29,8 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 		/* We can't accept input, so why bother? */
 		sm_crash( "Failed to connect to PIUIO board." );
 	}
+
+	g_sInputType = "PIUIO";
 }
 
 InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()
@@ -77,6 +81,7 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 
 void InputHandler_Linux_PIUIO::HandleInput()
 {
+/* Enable as needed for raw input.. */
 #if 0
 	if( m_iInputData != 0 && ( m_iInputData != m_iLastInputData ) )
 	{
@@ -87,6 +92,9 @@ void InputHandler_Linux_PIUIO::HandleInput()
 
 	return;
 #endif
+
+/* Enable as needed for input logging... */
+#if 1
 	if( m_iInputData != 0 && ( m_iInputData != m_iLastInputData ) )
 	{
 		CString sInputs;
@@ -106,8 +114,8 @@ void InputHandler_Linux_PIUIO::HandleInput()
 		if( LOG )
 			LOG->Info( sInputs );
 	}
-	
 	return;
+#endif	
 
 	static const uint64_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 */	
@@ -144,7 +152,7 @@ void InputHandler_Linux_PIUIO::HandleInput()
 
 	/* General input */
 	// Service button, Coin event
-	(1 << 9), (1 << 18),
+	(1 << 9), (1 << 20) // (1 << 20) should be P1 start, won't trigger
 	};
 
 	InputDevice id = DEVICE_PIUIO;

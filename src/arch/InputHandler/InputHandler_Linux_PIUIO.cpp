@@ -3,9 +3,6 @@
 #include "RageException.h"
 #include "RageUtil.h"
 
-#include "InputMapper.h" // temp
-
-#include "ScreenManager.h" // for SCREENMAN->SystemMessageNoAnimate
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h" // needed for g_LightsState
 #include "InputHandler_Linux_PIUIO.h"
@@ -30,9 +27,6 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 		/* We can't accept input, so why bother? */
 		sm_crash( "Failed to connect to PIUIO board." );
 	}
-
-	/* Until ScreenArcadeStart is implemented... */
-	//INPUTMAPPER->AutoMapJoysticksForCurrentGame();
 }
 
 InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()
@@ -75,7 +69,9 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 		IOBoard.Read( &m_iInputData );
 		HandleInput();
 
-		usleep( 10000 ); // avoid unnecessary lag during testing
+		// give up 0.01 sec per read for other events -
+		// this may need adjusting for sync/lag fixing
+		usleep( 10000 );
 	}
 }
 
@@ -113,34 +109,34 @@ void InputHandler_Linux_PIUIO::HandleInput()
 	
 	return;
 
-	static const int iInputBits[NUM_IO_BUTTONS] = {
+	static const uint64_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 */	
-	//Left arrow, left/right/up/down sensors:
+	//Left arrow, left/right/up/down sensors
 	(1 << 2), // + (1 << x) + (1 << x) + (1 << x),
 
-	// Right arrow, left/right/up/down sensors:
+	// Right arrow, left/right/up/down sensors
 	(1 << 3), // + (1 << x) + (1 << x) + (1 << x),
 	
-	// Up arrow, left/right/up/down sensors:
+	// Up arrow, left/right/up/down sensors
 	(1 << 0), // + (1 << x) + (1 << x) + (1 << x),
 	
-	// Down arrow, left/right/up/down sensors:
+	// Down arrow, left/right/up/down sensors
 	(1 << 1), // + (1 << x) + (1 << x) + (1 << x),
 
 	// Select, Start, MenuLeft, MenuRight
 	(1 << 21), (1 << 20), (1 << 22), (1 << 23),
 
 	/* Player 2 */
-	// Left arrow, left/right/up/down sensors:
+	// Left arrow, left/right/up/down sensors
 	(1 << 18), // + (1 << x) + (1 << x) + (1 << x),
 
-	// Right arrow, left/right/up/down sensors:
+	// Right arrow, left/right/up/down sensors
 	(1 << 19), // + (1 << x) + (1 << x) + (1 << x),
 	
-	// Up arrow, left/right/up/down sensors:
+	// Up arrow, left/right/up/down sensors
 	(1 << 16), // + (1 << x) + (1 << x) + (1 << x),
 	
-	// Down arrow, left/right/up/down sensors:
+	// Down arrow, left/right/up/down sensors
 	(1 << 17), // + (1 << x) + (1 << x) + (1 << x),
 
 	// Select, Start, MenuLeft, MenuRight
@@ -168,10 +164,10 @@ void InputHandler_Linux_PIUIO::HandleInput()
 /* Requires "LightsDriver=ext" */
 void InputHandler_Linux_PIUIO::UpdateLights()
 {
-	static const int iCabinetBits[NUM_CABINET_LIGHTS] = 
+	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] = 
 	{ (1 << 23), (1 << 26), (1 << 25), (1 << 24), 0, 0, (1 << 10), (1 << 10) };
 
-	static const int iPadBits[2][4] = 
+	static const uint32_t iPadBits[2][4] = 
 	{
 		{ (1 << 20), (1 << 21), (1 << 18), (1 << 19) },	/* Player 1 */
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
@@ -196,9 +192,6 @@ void InputHandler_Linux_PIUIO::UpdateLights()
 		LOG->Trace( "UpdateLights: %u", m_iLightData );
 
 	m_iLastLightData = m_iLightData;
-
-	// lights updating isn't too important...leave a lot of process time.
-	usleep( 10000 );
 }
 
 /*

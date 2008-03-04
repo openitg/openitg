@@ -1065,15 +1065,34 @@ int main(int argc, char* argv[])
 #ifdef ITG_ARCADE
 	if ( IsAFile("/rootfs/stats/patch/patch.zip") )
 	{
+		LOG->Info("VFS: mounting patch.zip");
 		FILEMAN->Mount( "patch", "/stats/patch", "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
+	}
+	else
+	{
+		LOG->Trace("VFS: No patch file found");
 	}
 #else
 	if ( IsAFile("Data/patch/patch.zip") )
 	{
+		LOG->Info("VFS: mounting patch.zip");
 		FILEMAN->Mount( "patch", "Data/patch", "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
+	else
+	{
+		LOG->Trace("VFS: No patch file found");
+	}
+#endif
+
+#if 0
+	LOG->Trace("======= MOUNTPOINTS =========");
+	vector<RageFileManager::DriverLocation> mymounts;
+	FILEMAN->GetLoadedDrivers(mymounts);
+	for (int i = 0; i < mymounts.size(); i++)
+		LOG->Trace("%s ..... %s ..... %s", mymounts[i].Type.c_str(), mymounts[i].Root.c_str(), mymounts[i].MountPoint.c_str() );
+	LOG->Trace("=============================");
 #endif
 
 	/* One of the above filesystems might contain files that affect preferences, eg Data/Static.ini.

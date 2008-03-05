@@ -66,6 +66,7 @@
 #include "NetworkSyncManager.h"
 #include "MessageManager.h"
 #include "StatsManager.h"
+#include "io/ITGIO.h" // for I/O error reporting
 
 #if defined(XBOX)
 #include "Archutils/Xbox/VirtualMemory.h"
@@ -78,10 +79,6 @@
 #if defined(UNIX)
 #include <sys/reboot.h>
 #include <cerrno>
-#endif
-
-#ifdef HAVE_LIBUSB
-#include "io/ITGIO.h"
 #endif
 
 #define ZIPS_DIR "Packages/"
@@ -1546,12 +1543,11 @@ static void GameLoop()
 
 		/* XXX: sLastInputError factors into this, but I'm too
 		 * tired to figure it out at this point in time. -- Vyhd */
-#ifdef HAVE_LIBUSB
 		if( ITGIO::m_sInputError != "" )
-			SCREENMAN->SystemMessageNoAnimate( ITGIO::m_sInputError );
-		else
-			SCREENMAN->HideSystemMessage();
-#endif
+		{
+			SCREENMAN->SystemMessage( ITGIO::m_sInputError );
+			ITGIO::m_sInputError = "";
+		}
 
 		float fDeltaTime = timer.GetDeltaTime();
 

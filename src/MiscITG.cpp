@@ -8,6 +8,7 @@
 #include "RageTimer.h"
 #include "SongManager.h"
 #include "ProductInfo.h"
+#include "io/ITGIO.h"
 
 /* Include dongle support if we're going to use it...
  * Maybe we should set a HAVE_DONGLE directive? */
@@ -226,7 +227,7 @@ LuaFunction_NoArgs( GetUptime		, SecondsToHHMMSS( RageTimer::GetTimeSinceStart()
 LuaFunction_NoArgs( GetIP		, GetIP() ); // Calling the IP [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumCrashLogs	, GetNumCrashLogs() ); // Count the crashlogs [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumMachineEdits	, GetNumMachineEdits() ); // Count the machine edits [ScreenArcadeDiagnostics]
-LuaFunction_NoArgs( GetNumIOErrors	, 0 ); // Call the number of I/O Errors [ScreenArcadeDiagnostics]
+LuaFunction_NoArgs( GetNumIOErrors	, ITGIO::m_iInputErrorCount ); // Call the number of I/O Errors [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumMachineScores, GetNumMachineScores() ); // Call the machine score count [ScreenArcadeDiagnostics]
 // added by infamouspat
 LuaFunction_NoArgs( GetSerialNumber, GetSerialNumber() ); // returns serial from page 9 on dongle

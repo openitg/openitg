@@ -30,6 +30,7 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 		sm_crash( "Failed to connect to PIUIO board." );
 	}
 
+	/* Mark the input type, for theme purposes */
 	g_sInputType = "PIUIO";
 }
 
@@ -114,45 +115,45 @@ void InputHandler_Linux_PIUIO::HandleInput()
 		if( LOG )
 			LOG->Info( sInputs );
 	}
-	return;
+//	return;
 #endif	
 
 	static const uint64_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 */	
-	//Left arrow, left/right/up/down sensors
-	(1 << 2), // + (1 << x) + (1 << x) + (1 << x),
+	//Left arrow
+	(1 << 2) + (1 << 34),
 
-	// Right arrow, left/right/up/down sensors
-	(1 << 3), // + (1 << x) + (1 << x) + (1 << x),
+	// Right arrow
+	(1 << 3) + (1 << 35),
 	
-	// Up arrow, left/right/up/down sensors
-	(1 << 0), // + (1 << x) + (1 << x) + (1 << x),
+	// Up arrow
+	(1 << 0) + (1 << 32),
 	
-	// Down arrow, left/right/up/down sensors
-	(1 << 1), // + (1 << x) + (1 << x) + (1 << x),
-
-	// Select, Start, MenuLeft, MenuRight
-	(1 << 21), (1 << 20), (1 << 22), (1 << 23),
-
-	/* Player 2 */
-	// Left arrow, left/right/up/down sensors
-	(1 << 18), // + (1 << x) + (1 << x) + (1 << x),
-
-	// Right arrow, left/right/up/down sensors
-	(1 << 19), // + (1 << x) + (1 << x) + (1 << x),
-	
-	// Up arrow, left/right/up/down sensors
-	(1 << 16), // + (1 << x) + (1 << x) + (1 << x),
-	
-	// Down arrow, left/right/up/down sensors
-	(1 << 17), // + (1 << x) + (1 << x) + (1 << x),
+	// Down arrow
+	(1 << 1) + (1 << 33),
 
 	// Select, Start, MenuLeft, MenuRight
 	(1 << 5), (1 << 4), (1 << 6), (1 << 7),
 
+	/* Player 2 */
+	// Left arrow
+	(1 << 18) + (1 << 50),
+
+	// Right arrow
+	(1 << 19) + (1 << 51),
+	
+	// Up arrow
+	(1 << 16) + (1 << 48),
+	
+	// Down arrow
+	(1 << 17) + (1 << 49),
+
+	// Select, Start, MenuLeft, MenuRight
+	(1 << 21), (1 << 20), (1 << 22), (1 << 23),
+
 	/* General input */
 	// Service button, Coin event
-	(1 << 9), (1 << 20) // (1 << 20) should be P1 start, won't trigger
+	(1 << 9), (1 << 5)
 	};
 
 	InputDevice id = DEVICE_PIUIO;

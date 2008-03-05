@@ -411,7 +411,6 @@ void InputMapper::AutoMapJoysticksForCurrentGame()
 
 			CString sDriverRegex = mapping.szDriverRegex;
 			Regex regex( sDriverRegex );
-			LOG->Warn( "sDriverRegex: %s, sDescription: %s", sDriverRegex.c_str(), sDescription.c_str() );
 			if( !regex.Compare(sDescription) )
 				continue;	// driver names don't match
 

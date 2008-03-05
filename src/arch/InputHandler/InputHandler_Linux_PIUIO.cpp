@@ -121,33 +121,25 @@ void InputHandler_Linux_PIUIO::HandleInput()
 	static const uint64_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 */	
 	//Left arrow
-	(1 << 2) + (1 << 34),
-
+	(1 << 2),
 	// Right arrow
-	(1 << 3) + (1 << 35),
-	
+	(1 << 3),
 	// Up arrow
-	(1 << 0) + (1 << 32),
-	
+	(1 << 0),
 	// Down arrow
-	(1 << 1) + (1 << 33),
-
+	(1 << 1),
 	// Select, Start, MenuLeft, MenuRight
 	(1 << 5), (1 << 4), (1 << 6), (1 << 7),
 
 	/* Player 2 */
 	// Left arrow
-	(1 << 18) + (1 << 50),
-
+	(1 << 18),
 	// Right arrow
-	(1 << 19) + (1 << 51),
-	
+	(1 << 19),
 	// Up arrow
-	(1 << 16) + (1 << 48),
-	
+	(1 << 16),
 	// Down arrow
-	(1 << 17) + (1 << 49),
-
+	(1 << 17),
 	// Select, Start, MenuLeft, MenuRight
 	(1 << 21), (1 << 20), (1 << 22), (1 << 23),
 
@@ -189,6 +181,7 @@ void InputHandler_Linux_PIUIO::UpdateLights()
 
 	static const uint32_t iPadBits[2][4] = 
 	{
+		/* Lights are 
 		{ (1 << 20), (1 << 21), (1 << 18), (1 << 19) },	/* Player 1 */
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
@@ -208,8 +201,10 @@ void InputHandler_Linux_PIUIO::UpdateLights()
 				m_iLightData |= iPadBits[gc][gb];
 
 	/* Debugging purposes */
-	if( m_iLastLightData != m_iLightData )
-		LOG->Trace( "UpdateLights: %u", m_iLightData );
+	CString sBits;
+
+	for( int x = 0; x < 32; x++ )
+		sBits += (m_iLightData & (1 << (32-x))) ? "1" : "0";
 
 	m_iLastLightData = m_iLightData;
 }

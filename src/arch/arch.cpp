@@ -54,7 +54,7 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
 #ifdef USE_INPUT_HANDLER_LINUX_PIUIO
 		if(!s->CompareNoCase("PIUIO") )		ret = new InputHandler_Linux_PIUIO;
 #endif
-#ifdef USE_INPUT_HANDLER_LINUX_IOW_NOTIMPL
+#ifdef USE_INPUT_HANDLER_LINUX_IOW
 		if(!s->CompareNoCase("IOW") )		ret = new InputHandler_IOW;
 #endif
 
@@ -67,7 +67,6 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
 
 	// Always add
 	Add.push_back(new InputHandler_MonkeyKeyboard);
-
 }
 
 #include "Lights/Selector_LightsDriver.h"

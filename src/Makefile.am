@@ -224,8 +224,9 @@ MemoryCard += arch/MemoryCard/MemoryCardDriverThreaded_Linux.cpp arch/MemoryCard
 InputHandler +=	arch/InputHandler/InputHandler_Linux_Joystick.h arch/InputHandler/InputHandler_Linux_Joystick.cpp
 
 InputHandler += arch/InputHandler/InputHandler_Linux_PIUIO.h \
-		arch/InputHandler/InputHandler_Linux_PIUIO.cpp
-
+		arch/InputHandler/InputHandler_Linux_PIUIO.cpp \
+		arch/InputHandler/InputHandler_Linux_Iow.h \
+		arch/InputHandler/InputHandler_Linux_Iow.cpp
 endif
 
 Arch = $(LoadingWindow) $(Sound) $(ArchHooks) $(InputHandler) $(MovieTexture) \

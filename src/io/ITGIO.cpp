@@ -25,7 +25,7 @@ bool ITGIO::Read( u_int32_t *pData )
 	{
 		/* XXX: I hate magic values. What do these mean? -- Vyhd */
 		iResult = usb_control_msg(m_pHandle, 161, 1, 256, 0, (char *)pData, 4, 1000);
-		if( iResult == 8 ) // all data read
+		if( iResult == 4 ) // all data read
 			break;
 
 		// all data not read
@@ -44,7 +44,7 @@ bool ITGIO::Write( u_int32_t iData )
 	{
 		iResult = usb_control_msg(m_pHandle, 33, 9, 512, 0, (char *)&iData, 4, 1000 );
 		
-		if( iResult == 8 )
+		if( iResult == 4 ) // all data read
 			break;
 		
 		Reconnect();
@@ -69,6 +69,7 @@ void ITGIO::Reconnect()
 
 	Close();
 
+	// attempt to reconnect every 0.1 seconds
 	while( !Open() )
 		usleep(100000);
 

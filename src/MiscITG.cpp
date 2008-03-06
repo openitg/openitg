@@ -42,7 +42,7 @@ int GetNumCrashLogs()
 	CStringArray aLogs;
 	
 	// Get them all.
-	GetDirListing( STATS_DIR_PATH + "crashlog-*.txt" , aLogs );
+	GetDirListing( STATS_DIR_PATH + "crashinfo-*.txt" , aLogs );
 	
 	return aLogs.size();
 }

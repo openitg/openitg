@@ -15,8 +15,6 @@ public:
 
 };
 
-extern LightsState g_LightsState;
-
 #define USE_LIGHTS_DRIVER_EXTERNAL
 
 #endif

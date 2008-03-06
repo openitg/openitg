@@ -8,7 +8,7 @@
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_Linux_Iow.h"
 
-LightsState g_LightsState;
+extern LightsState g_LightsState;
 extern CString g_sInputType;
 
 InputHandler_Linux_Iow::InputHandler_Linux_Iow()

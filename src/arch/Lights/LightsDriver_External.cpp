@@ -8,6 +8,8 @@
 #include "RageUtil.h"
 #include "LightsDriver_External.h"
 
+LightsState g_LightsState;
+
 LightsDriver_External::LightsDriver_External()
 {
 	ZERO( g_LightsState );

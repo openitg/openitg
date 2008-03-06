@@ -5,10 +5,13 @@
 #include "RageInput.h" // for g_sInputType
 
 #include "LightsManager.h"
-#include "arch/Lights/LightsDriver_External.h" // needed for g_LightsState
+#include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_Linux_PIUIO.h"
 
-LightsState g_LightsState;
+/* grabbed from LightsDriver_External */
+extern LightsState g_LightsState;
+
+/* grabbed from RageInput */
 extern CString g_sInputType;
 
 InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
@@ -82,6 +85,7 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 
 void InputHandler_Linux_PIUIO::HandleInput()
 {
+	uint64_t i = 1; // convenience hack
 /* Enable as needed for raw input.. */
 #if 0
 	if( m_iInputData != 0 && ( m_iInputData != m_iLastInputData ) )
@@ -89,7 +93,7 @@ void InputHandler_Linux_PIUIO::HandleInput()
 		LOG->Info( "Input: %i", m_iInputData );
 	}
 
-	m_iLastInputData;
+	m_iLastInputData = m_iInputData;
 
 	return;
 #endif
@@ -103,7 +107,7 @@ void InputHandler_Linux_PIUIO::HandleInput()
 		for( unsigned x = 0; x < 64; x++ )
 		{
 			// bitwise AND sieve - PIUIO is open high
-			if( (m_iInputData & (1 << x)) )
+			if( (m_iInputData & (i << x)) )
 				continue;
 
 			if( sInputs == "" )
@@ -121,31 +125,31 @@ void InputHandler_Linux_PIUIO::HandleInput()
 	static const uint64_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 */	
 	//Left arrow
-	(1 << 2),
+	(i << 2) + (i << 61),
 	// Right arrow
-	(1 << 3),
+	(i << 3),
 	// Up arrow
-	(1 << 0),
+	(i << 0),
 	// Down arrow
-	(1 << 1),
+	(i << 1),
 	// Select, Start, MenuLeft, MenuRight
-	(1 << 5), (1 << 4), (1 << 6), (1 << 7),
+	(i << 5), (i << 4), (i << 6), (i << 7),
 
 	/* Player 2 */
 	// Left arrow
-	(1 << 18),
+	(i << 18),
 	// Right arrow
-	(1 << 19),
+	(i << 19),
 	// Up arrow
-	(1 << 16),
+	(i << 16),
 	// Down arrow
-	(1 << 17),
+	(i << 17),
 	// Select, Start, MenuLeft, MenuRight
-	(1 << 21), (1 << 20), (1 << 22), (1 << 23),
+	(i << 21), (i << 20), (i << 22), (i << 23),
 
 	/* General input */
 	// Service button, Coin event
-	(1 << 9), (1 << 5)
+	(i << 9), (i << 5)
 	};
 
 	InputDevice id = DEVICE_PIUIO;
@@ -181,7 +185,7 @@ void InputHandler_Linux_PIUIO::UpdateLights()
 
 	static const uint32_t iPadBits[2][4] = 
 	{
-		/* Lights are 
+		/* Lights are Left, Right, Up, Down */
 		{ (1 << 20), (1 << 21), (1 << 18), (1 << 19) },	/* Player 1 */
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};

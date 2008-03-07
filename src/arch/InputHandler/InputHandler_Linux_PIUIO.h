@@ -13,6 +13,7 @@ class InputHandler_Linux_PIUIO: public InputHandler
 {
 public:
 	InputHandler_Linux_PIUIO();
+//	InputHandler_Linux_PIUIO( USBDriver *pDriver );
 	~InputHandler_Linux_PIUIO();
 
 //	for non-threaded input...should we even bother?

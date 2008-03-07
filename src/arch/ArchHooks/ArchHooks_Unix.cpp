@@ -36,17 +36,9 @@ static bool IsFatalSignal( int signal )
 	}
 }
 
-/* The fuck...? This gets called at runtime. I've
- * got no clue what's going on here... -- Vyhd */
 void ArchHooks_Unix::SystemReboot()
 {
-	LOG->Warn( "SystemReboot() called." );
-}
-
-/*
-void ArchHooks_Unix::SystemReboot()
-{
-	if( !(IsAFile("/rootfs/tmp/no-crash-reboot") || IsAFile( "Data/no-reboot")) )
+	if( !(IsAFile("/rootfs/tmp/no-reboot") || IsAFile( "Data/no-reboot")) )
 	{
 		LOG->Warn( "no-reboot not found. Rebooting." );
 
@@ -58,7 +50,6 @@ void ArchHooks_Unix::SystemReboot()
 
 	ExitGame();
 }
-*/
 
 static void DoCleanShutdown( int signal, siginfo_t *si, const ucontext_t *uc )
 {

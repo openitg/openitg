@@ -1,10 +1,11 @@
 #ifndef SCREEN_ARCADE_PATCH_H
 #define SCREEN_ARCADE_PATCH_H
 
-#include "ScreenWithMenuElements.h"
-#include "BitmapText.h"
-#include "RageFile.h"
 #include "RageThreads.h"
+#include "RageFile.h"
+#include "ScreenWithMenuElements.h"
+#include "PlayerNumber.h"
+#include "BitmapText.h"
 
 class ScreenArcadePatch : public ScreenWithMenuElements
 {
@@ -21,38 +22,34 @@ public:
 	virtual void HandleScreenMessage( const ScreenMessage SM );
 	virtual void MenuStart( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn );
-	
-
-	bool bChecking;
-	bool bScanned;
-	BitmapText m_Status;
-	CString m_sSuccessMsg;
-	
 private:
-	int CommitPatch();
-	bool CheckCards();
-	bool MountCards();
-	bool ScanPatch();
-	bool CopyPatch();
-	bool UnmountCards();
-	bool CheckSignature();
-	bool CheckXml();
-	bool CopyPatchContents();
-	//void *UpdatePatchCopyProgress(float fPercent);
+	/* Main patch-checking function */
+	void CheckForPatches();
 
+
+	/* find a card that can be used, load from it */
+	void FindCard();
+	bool LoadFromCard();	
+
+	/* add patches to the member vector to check */
+	bool AddPatches( CString sPattern );
+
+	/* load and verify the patch passed to LoadPatch */
+	bool LoadPatch( CString sPath );
+	bool FinalizePatch();
+
+	bool m_bReboot;
+
+	/* All found patches */
+	CStringArray m_vsPatches;
+	
+	PlayerNumber m_Player;
+	CString m_sCardDir;
+	CString m_sPatchPath;
+	CString m_sSuccessMessage;
+
+	BitmapText m_Status;
 	BitmapText m_Patch;
-
-	PlayerNumber pn;
-	
-	CString Type;
-	CString Root;
-
-	RageFile fPatch;
-	
-	CString sFullDir;
-	CString sDir;
-	CStringArray aPatches;
-	CString sFile;
 };
 
 #endif

@@ -1603,9 +1603,9 @@ bool Song::CheckCustomSong( CString &sError )
 
 	if( Sample == NULL )
 	{
-		LOG->Warn( "Error loading sound from %s: %s", 
-			m_sMusicFile.c_str(), sResult.c_str() );
-		sError = "Error accessing USB drive.";
+		sError = ssprintf( "Error loading song: %s", sResult.c_str() );
+		LOG->Warn( sError );
+
 		delete Sample;
 		return false;
 	}

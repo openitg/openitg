@@ -23,6 +23,10 @@ public:
 	virtual void MenuStart( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn );
 private:
+	/* starts the patch loading thread when called */
+	static int PatchThread_Start( void *p ) { ((ScreenArcadePatch *) p)->CheckForPatches(); return 0; }
+
+
 	/* Main patch-checking function */
 	void CheckForPatches();
 
@@ -39,6 +43,7 @@ private:
 	bool FinalizePatch();
 
 	bool m_bReboot;
+	bool m_bExit;
 
 	/* All found patches */
 	CStringArray m_vsPatches;
@@ -50,6 +55,9 @@ private:
 
 	BitmapText m_Status;
 	BitmapText m_Patch;
+
+	/* The thread that handles the loading/verification, and its shutdown */
+	RageThread m_PatchThread;
 };
 
 #endif

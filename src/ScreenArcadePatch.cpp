@@ -38,7 +38,9 @@
 #define PATCH_DIR CString("Data/")
 #endif
 
-BitmapText *pStatus;
+/* global so the screen and the thread can both access these */
+CString g_sPatch;
+CString g_sStatus;
 
 REGISTER_SCREEN_CLASS( ScreenArcadePatch );
 
@@ -64,6 +66,8 @@ void ScreenArcadePatch::Init()
 {
 	ScreenWithMenuElements::Init();
 
+	m_bExit = false;
+
 	m_Status.LoadFromFont( THEME->GetPathF("ScreenArcadePatch", "text") );
 	m_Patch.LoadFromFont( THEME->GetPathF("ScreenArcadePatch", "text") );
 	
@@ -76,15 +80,14 @@ void ScreenArcadePatch::Init()
 	m_Status.SetText( THEME->GetMetric("ScreenArcadePatch", "IntroText") );
 	m_Patch.SetText( "Please insert a USB Card containing an update." );
 
+	m_PatchThread.SetName( "Patch thread" );
+	/* this does our initial patch checking for us */
+	m_PatchThread.Create( PatchThread_Start, this );
+
 	this->AddChild( &m_Status );
 	this->AddChild( &m_Patch );
 
 	this->SortByDrawOrder();
-
-	pStatus = &m_Patch;
-
-	/* We only want to run this once per screen load */
-	CheckForPatches();
 }
 
 void ScreenArcadePatch::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
@@ -96,6 +99,9 @@ void ScreenArcadePatch::Input( const DeviceInput& DeviceI, const InputEventType 
 
 void ScreenArcadePatch::Update( float fDeltaTime )
 {
+	m_Status.SetText( g_sStatus );
+	m_Patch.SetText( g_sPatch );
+
 	Screen::Update( fDeltaTime );
 }
 
@@ -117,11 +123,14 @@ void ScreenArcadePatch::HandleScreenMessage( const ScreenMessage SM )
 
 void ScreenArcadePatch::MenuStart( PlayerNumber pn )
 {
-	MenuBack(pn);
+	if( m_bExit )
+		MenuBack(pn);
 }
 
 void ScreenArcadePatch::MenuBack( PlayerNumber pn )
 {
+	if( !m_bExit )
+		return;
 	if(!IsTransitioning())
 	{
 		this->PlayCommand( "Off" );
@@ -132,22 +141,21 @@ void ScreenArcadePatch::MenuBack( PlayerNumber pn )
 // lol thanx Vyhd
 void UpdatePatchCopyProgress( float fPercent )
 {
-	LOG->Trace( "UpdatePatchCopyProgress( %f ), BitmapText.GetText() = %s", fPercent , pStatus->GetText().c_str());
-
-	CString sText = ssprintf( "Copying patch (%u%%)\n\n"
-		"Please do not remove the USB Card.", (int)(fPercent) );
-	
-	pStatus->SetText( sText );
-	SCREENMAN->Draw();
+	g_sPatch = ssprintf( "Copying patch (%u%%)\n\nPlease do not remove the USB Card.", (int)(fPercent) );
 }
 
+/* make this all threaded, but only run it once per load.
+ * if anything fails, end early by simply returning. */
 void ScreenArcadePatch::CheckForPatches()
 {
 	FindCard();
 
 	/* false if cards cannot be loaded */
 	if( !LoadFromCard() )
+	{
+		m_bExit = true;
 		return;
+	}
 
 	/* Call once for each directory path we want to find */
 	AddPatches( "ITG 2 *.itg" );
@@ -156,7 +164,8 @@ void ScreenArcadePatch::CheckForPatches()
 	/* Nothing found in any of the above */
 	if( m_vsPatches.size() == 0 )
 	{
-		m_Status.SetText( ssprintf( "No patches found on Player %d's card." , m_Player+1 ) );
+		g_sStatus = ssprintf( "No patches found on Player %d's card." , m_Player+1 );
+		m_bExit = true;
 		return;
 	}
 
@@ -165,16 +174,29 @@ void ScreenArcadePatch::CheckForPatches()
 
 	/* If there are any OpenITG patches, that'll be the one installed.
 	 * Otherwise, it'll be the highest ITG2 revision. */
-	LoadPatch( m_vsPatches[0] );
+	if( !LoadPatch(m_vsPatches[0]) )
+	{
+		m_bExit = true;
+		return;
+	}
+	CHECKPOINT;
 
 	/* We don't need the card to be mounted anymore */
 	if( !FinalizePatch() )
+	{
+		m_bExit = true;
 		return;
+	}
+	CHECKPOINT;
 
 	/* Everything's good. Set our message and be ready to restart. */
-	m_Status.SetText( m_sSuccessMessage );
+	g_sStatus = m_sSuccessMessage;
+	g_sPatch = ""; // clear
+	CHECKPOINT;
+
 	m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextFinished" ) );
 	
+	m_bExit = true;
 	m_bReboot = true;
 }
 
@@ -195,7 +217,7 @@ void ScreenArcadePatch::FindCard()
 	// No cards found - LoadFromCard will catch this, so just set our warnings
 	if( m_Player == PLAYER_INVALID )
 	{
-		m_Patch.SetText( "Please insert a USB Card containing an update." );
+		g_sStatus = "Please insert a USB Card containing an update.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextWaiting" ) );
 	}
 }
@@ -222,7 +244,7 @@ bool ScreenArcadePatch::LoadFromCard()
 	if( MEMCARDMAN->MountCard( m_Player, 3600 ) )
 		return true;
 	else
-		m_Status.SetText( ssprintf( "Error mounting Player %d's card!" , m_Player+1 ) );
+		g_sStatus = ssprintf( "Error mounting Player %d's card!" , m_Player+1 );
 
 	/* fall through */
 	return false;
@@ -251,28 +273,32 @@ bool ScreenArcadePatch::AddPatches( CString sPattern )
 
 bool ScreenArcadePatch::LoadPatch( CString sPath )
 {
+	CHECKPOINT;
 	CString sFile = ssprintf( "%s%s" , m_sCardDir.c_str() , sPath.c_str() );
 	
-	m_Status.SetText( ssprintf( "Patch file found on Player %d's card!" , m_Player+1 ) );
+	g_sStatus = ssprintf( "Patch file found on Player %d's card!" , m_Player+1 );
 	m_textHelp->SetText( sPath.c_str() );
-
-	SCREENMAN->Draw();
 
 #ifdef ITG_ARCADE
 	m_sPatchPath = "/rootfs/tmp/" + sPath;
 #else
 	m_sPatchPath = "Temp/" + sPath;
 #endif
+	CHECKPOINT;
 	if( CopyWithProgress(sFile, m_sPatchPath, &UpdatePatchCopyProgress) )
 	{
-		m_Status.SetText( "Patch copied! Checking..." );
+		CHECKPOINT;
+		g_sStatus = "Patch copied! Checking...";
+		g_sPatch = "";
 	}
 	else
 	{
-		m_Status.SetText( "Patch copying failed! Please re-insert your card and try again." );
+		CHECKPOINT;
+		g_sStatus = "Patch copying failed! Please re-insert your card and try again.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
+	CHECKPOINT;
 
 	/* Check the signature of the newly copied file */
 
@@ -281,32 +307,41 @@ bool ScreenArcadePatch::LoadPatch( CString sPath )
 	CString patchRSA, patchSig, sErr;
 	RageFileBasic *fSig, *fZip;
 
+	CHECKPOINT;
 	RageFileBasic *rf = FILEMAN->Open( m_sPatchPath, RageFile::READ, iErr );
 	filesize = GetFileSizeInBytes( m_sPatchPath );
+	CHECKPOINT;
 
 	/////////// LOLOLOLOLOLOLOL /////////////
 	GetFileContents("Data/Patch.rsa", patchRSA);
 	///////////////////////////////////////////////////////////
 
+	CHECKPOINT;
 	fSig = new RageFileDriverSlice( rf, filesize - 128, 128 );
 
 	if (fSig->Read(patchSig, 128) < 128)
 	{
-		m_Status.SetText( "Patch signature verification failed: unexpected end of file" );
+		CHECKPOINT;
+		g_sStatus = "Patch signature verification failed: unexpected end of file";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
+		CHECKPOINT;
 		return false;
 	}
+	CHECKPOINT;
 
 	fZip = new RageFileDriverSlice( rf, 0, filesize - 128 );
 	
+	CHECKPOINT;
 	if (! CryptHelpers::VerifyFile( *fZip, patchSig, patchRSA, sErr ) )
 	{
-		m_Status.SetText( ssprintf("Patch signature verification failed: %s", sErr.c_str()) );
+		g_sStatus = ssprintf("Patch signature verification failed: %s", sErr.c_str() );
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
+	CHECKPOINT;
 
-	m_Status.SetText( "Patch signature verified :)" );
+	g_sStatus = "Patch signature verified :)";
+	CHECKPOINT;
 
 	return true;
 }
@@ -321,35 +356,45 @@ bool ScreenArcadePatch::FinalizePatch()
 	RageFileBasic *fRoot, *fScl, *fXml;
 	RageFileDriverZip *rfdZip = new RageFileDriverZip;
 	XNode *rNode = new XNode;
+	CHECKPOINT;
 
 	fRoot = FILEMAN->Open( m_sPatchPath, RageFile::READ, iErr );
 	filesize = GetFileSizeInBytes( m_sPatchPath ) - 128;
 	fScl = new RageFileDriverSlice( fRoot, 0, filesize );
+	CHECKPOINT;
 
 	
 	if (! rfdZip->Load(fScl))
 	{
-		m_Status.SetText( "Patch XML data check failed, could not load .itg file" );
+	CHECKPOINT;
+		g_sStatus = "Patch XML data check failed, could not load patch file";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
+	CHECKPOINT;
 		return false;
 	}
+	CHECKPOINT;
 
 	fXml = rfdZip->Open("patch.xml", RageFile::READ, iErr );
 
+	CHECKPOINT;
 	if (fXml == NULL)
 	{
-		m_Status.SetText( "Patch XML data check failed, Could not open patch.xml" );
+	CHECKPOINT;
+		g_sStatus = "Patch XML data check failed, Could not open patch.xml";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
+	CHECKPOINT;
 		return false;
 	}
 
+	CHECKPOINT;
 	rNode->m_sName = "Patch";
 	rNode->LoadFromFile(*fXml);
+	CHECKPOINT;
 
 	//if (rNode->GetChild("Game")==NULL || rNode->GetChild("Revision")==NULL || rNode->GetChild("Message")==NULL)
 	if ( !rNode->GetChild("Game") || !rNode->GetChild("Revision") || !rNode->GetChild("Message") )
 	{
-		m_Status.SetText( "Cannot proceed update, patch.xml corrupt" );
+		g_sStatus = "Cannot proceed update, patch.xml corrupt";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
@@ -358,7 +403,7 @@ bool ScreenArcadePatch::FinalizePatch()
 
 	if ( sGame != "OpenITG" && sGame != "In The Groove 2" )
 	{
-			m_Status.SetText( ssprintf( "Cannot proceed update, revision is for another game (\"%s\").", rNode->GetChildValue("Game") ) );
+			g_sStatus = ssprintf( "Cannot proceed update, revision is for another game (\"%s\").", rNode->GetChildValue("Game") );
 			m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 			return false;
 	}
@@ -367,7 +412,7 @@ bool ScreenArcadePatch::FinalizePatch()
 
 	if (GetRevision() == iRevNum)
 	{
-		m_Status.SetText( "Cannot proceed update, revision on USB card is the same as the machine revision" );
+		g_sStatus = "Cannot proceed update, revision on USB card is the same as the machine revision.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
@@ -384,7 +429,7 @@ bool ScreenArcadePatch::FinalizePatch()
 
 	if (! rfdZip->Load( m_sPatchPath ) )
 	{
-		m_Status.SetText( "Could not copy patch contents" );
+		g_sStatus = "Could not copy patch contents";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
@@ -416,8 +461,12 @@ bool ScreenArcadePatch::FinalizePatch()
 				continue;
 
 			LOG->Trace("ScreenArcadePatch::CopyPatchContents(): copying %s", sPath.c_str());
-			m_Status.SetText( ssprintf("Copying %s", sPath.c_str()) );
-			SCREENMAN->Draw();
+
+			//dunno if this would affect Rage or not
+			CString sCleanPath = sPath;
+			TrimLeft( sCleanPath, "/" );
+
+			g_sPatch = ssprintf("Copying %s", sCleanPath.c_str() );
 			
 			RageFileBasic *fCopySrc = rfdZip->Open( sPath, RageFile::READ, iErr );
 
@@ -427,7 +476,7 @@ bool ScreenArcadePatch::FinalizePatch()
 			if (! FileCopy( *fCopySrc, fCopyDest, sErr, &bReadError ) )
 			{
 				LOG->Warn("Failed to copy file %s", sPath.c_str() );
-				m_Status.SetText( ssprintf("Failed to copy file %s, cannot proceed", sPath.c_str()) );
+				g_sPatch = ssprintf("Failed to copy file %s, cannot proceed", sPath.c_str());
 				return false;
 			}
 

@@ -34,6 +34,7 @@ struct CreditLine
 	const char* text;
 };
 
+/* I guess we'll do something with this later? -- Vyhd */
 static const CreditLine CREDIT_LINES[] = 
 {
 	{1,"STEPMANIA TEAM"},

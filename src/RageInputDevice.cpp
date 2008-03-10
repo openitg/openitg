@@ -134,6 +134,7 @@ static const CString InputDeviceNames[] = {
 	"Pump2",
 	"Midi",
 	"Para1",
+	"Debug",
 	"ITGIO",
 	"PIUIO",
 };
@@ -259,6 +260,79 @@ static const CString IOBoardButtonNames[] = {
 XToString( IOBoardButton, NUM_IO_BUTTONS );
 StringToX( IOBoardButton );
 
+static const CString BitButtonNames[] = {
+	"Bit 64",
+	"Bit 63",
+	"Bit 62",
+	"Bit 61",
+	"Bit 60",
+	"Bit 59",
+	"Bit 58",
+	"Bit 57",
+	"Bit 56",
+	"Bit 55",
+	"Bit 54",
+	"Bit 53",
+	"Bit 52",
+	"Bit 51",
+	"Bit 50",
+	"Bit 49",
+	"Bit 48",
+	"Bit 47",
+	"Bit 46",
+	"Bit 45",
+	"Bit 44",
+	"Bit 43",
+	"Bit 42",
+	"Bit 41",
+	"Bit 40",
+	"Bit 39",
+	"Bit 38",
+	"Bit 37",
+	"Bit 36",
+	"Bit 35",
+	"Bit 34",
+	"Bit 33",
+
+	"Bit 32",
+	"Bit 31",
+	"Bit 30",
+	"Bit 29",
+	"Bit 28",
+	"Bit 27",
+	"Bit 26",
+	"Bit 25",
+	"Bit 24",
+	"Bit 23",
+	"Bit 22",
+	"Bit 21",
+	"Bit 20",
+	"Bit 19",
+	"Bit 18",
+	"Bit 17",
+
+	"Bit 16",
+	"Bit 15",
+	"Bit 14",
+	"Bit 13",
+	"Bit 12",
+	"Bit 11",
+	"Bit 10",
+	"Bit 9",
+
+	"Bit 8",
+	"Bit 7",
+	"Bit 6",
+	"Bit 5",
+	"Bit 4",
+	"Bit 3",
+	"Bit 2",
+	"Bit 1",
+};
+
+XToString( BitButton, NUM_BIT_BUTTONS );
+StringToX( BitButton );
+
 CString MidiButtonToString( DeviceButton i )
 {
 	return ssprintf( "Midi %d", i );
@@ -296,6 +370,7 @@ CString DeviceButtonToString( InputDevice device, DeviceButton i )
 	case DEVICE_PUMP2:		return PumpPadButtonToString( (PumpPadButton)i );
 	case DEVICE_MIDI:		return MidiButtonToString( i );
 	case DEVICE_PARA1:		return ParaPadButtonToString( (ParaPadButton)i );
+	case DEVICE_DEBUG:		return BitButtonToString( (BitButton)i );
 	case DEVICE_PIUIO:
 	case DEVICE_ITGIO:		return IOBoardButtonToString( (IOBoardButton)i );
 	case DEVICE_NONE:		return "";
@@ -328,6 +403,7 @@ DeviceButton StringToDeviceButton( InputDevice device, const CString& s )
 	case DEVICE_PUMP2:		return (DeviceButton)StringToPumpPadButton( s );
 	case DEVICE_MIDI:		return (DeviceButton)StringToMidiButton( s );
 	case DEVICE_PARA1:		return (DeviceButton)StringToParaPadButton( s );
+	case DEVICE_DEBUG:		return (DeviceButton)StringToBitButton( s );
 	case DEVICE_PIUIO:
 	case DEVICE_ITGIO:		return (DeviceButton)StringToIOBoardButton( s );
 	case DEVICE_NONE:		return DEVICE_BUTTON_INVALID;

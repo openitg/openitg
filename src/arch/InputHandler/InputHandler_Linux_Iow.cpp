@@ -4,6 +4,8 @@
 #include "RageInput.h" // for g_sInputType
 #include "RageException.h" // for sm_crash
 
+#include "PrefsManager.h" // for m_bDebugUSBInput
+
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_Linux_Iow.h"
@@ -67,7 +69,7 @@ void InputHandler_Linux_Iow::InputThreadMain()
 	while( !m_bShutdown )
 	{
 		UpdateLights();
-		IOBoard.Write( m_iLightData );
+		IOBoard.Write( m_iWriteData );
 
 		IOBoard.Read( &m_iInputData );
 		HandleInput();
@@ -81,6 +83,30 @@ void InputHandler_Linux_Iow::InputThreadMain()
 /* Thanks, ITG-IO documentation! <3 */
 void InputHandler_Linux_Iow::HandleInput()
 {
+	uint32_t i = 1; // convenience hack
+
+	if( PREFSMAN->m_bDebugUSBInput && (m_iInputData != 0) && (m_iInputData != m_iLastInput) )
+	{
+		LOG->Info( "Input: %i", m_iInputData );
+
+		CString sInputs;
+
+		for( unsigned x = 0; x < 32; x++ )
+		{
+			/* the bit we expect isn't in the data */
+			if( !(m_iInputData & (i << x)) )
+				continue;
+
+			if( sInputs == "" )
+				sInputs = ssprintf( "Inputs: (1 << %i)", x );
+			else
+				sInputs += ssprintf( ", (1 << %i)", x );
+		}
+
+		if( LOG )
+			LOG->Info( sInputs );
+	}
+
 	static const uint16_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 - left, right, up, down */
 	(1 << 13), (1 << 12), (1 << 15), (1 << 14),
@@ -127,25 +153,27 @@ void InputHandler_Linux_Iow::UpdateLights()
 		{ (1 << 5), (1 << 4), (1 << 7), (1 << 6) }	/* Player 2 */
 	};
 
-	m_iLastWrite = m_iLightData;
+	m_iLastWrite = m_iWriteData;
 
-	m_iLightData = 0;
+	m_iWriteData = 0;
+
+	/* Something about the coin counter here */
 
 	// update cabinet lighting
 	FOREACH_CabinetLight( cl )
 		if( g_LightsState.m_bCabinetLights[cl] )
-			m_iLightData |= iCabinetBits[cl];
+			m_iWriteData |= iCabinetBits[cl];
 
 	// update the four lights on each pad
 	FOREACH_GameController( gc )
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( g_LightsState.m_bGameButtonLights[gc][gb] )
-				m_iLightData |= iPadBits[gc][gb];
+				m_iWriteData |= iPadBits[gc][gb];
 
 	CString sBits;
 
 	for( int x = 0; x < 16; x++ )
-		sBits += (m_iLightData & (1 << (16-x))) ? "1" : "0";
+		sBits += (m_iWriteData & (1 << (16-x))) ? "1" : "0";
 
 	LOG->Trace( "%s", sBits.c_str() );
 }

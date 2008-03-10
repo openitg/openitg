@@ -38,7 +38,8 @@ float ArrowEffects::GetYOffset( const PlayerState* pPlayerState, int iCol, float
 	 * entirely time spacing (respectively).  Occasionally, we tween between them. */
 	if( pPlayerState->m_CurrentPlayerOptions.m_fTimeSpacing != 1.0f )
 	{
-		float fSongBeat = GAMESTATE->m_fSongBeat;
+		/* offset by VisualDelayEffect seconds */
+		float fSongBeat = GAMESTATE->m_fSongBeatVisible;
 		float fBeatsUntilStep = fNoteBeat - fSongBeat;
 		float fYOffsetBeatSpacing = fBeatsUntilStep * ARROW_SPACING;
 		fYOffset += fYOffsetBeatSpacing * (1-pPlayerState->m_CurrentPlayerOptions.m_fTimeSpacing);
@@ -46,7 +47,8 @@ float ArrowEffects::GetYOffset( const PlayerState* pPlayerState, int iCol, float
 
 	if( pPlayerState->m_CurrentPlayerOptions.m_fTimeSpacing != 0.0f )
 	{
-		float fSongSeconds = GAMESTATE->m_fMusicSeconds;
+		/* offset by VisualDelaySeconds amount */
+		float fSongSeconds = GAMESTATE->m_fMusicSecondsVisible;
 		float fNoteSeconds = GAMESTATE->m_pCurSong->GetElapsedTimeFromBeat(fNoteBeat);
 		float fSecondsUntilStep = fNoteSeconds - fSongSeconds;
 		float fBPM = pPlayerState->m_CurrentPlayerOptions.m_fScrollBPM;
@@ -308,7 +310,8 @@ float ArrowEffects::GetXPos( const PlayerState* pPlayerState, int iColNum, float
 		fAccelTime /= fDiv;
 		fTotalTime /= fDiv;
 
-		float fBeat = GAMESTATE->m_fSongBeat + fAccelTime;
+		/* offset by VisualDelayEffect seconds */
+		float fBeat = GAMESTATE->m_fSongBeatVisible + fAccelTime;
 		fBeat /= fDiv;
 
 		const bool bEvenBeat = ( int(fBeat) % 2 ) != 0;
@@ -348,7 +351,8 @@ float ArrowEffects::GetRotation( const PlayerState* pPlayerState, float fNoteBea
 {
 	if( pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_DIZZY] != 0 )
 	{
-		const float fSongBeat = GAMESTATE->m_fSongBeat;
+		/* offset by VisualDelayEffect seconds */
+		const float fSongBeat = GAMESTATE->m_fSongBeatVisible;
 		float fDizzyRotation = fNoteBeat - fSongBeat;
 		fDizzyRotation *= pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_DIZZY];
 		fDizzyRotation = fmodf( fDizzyRotation, 2*PI );
@@ -491,7 +495,8 @@ float ArrowEffects::GetBrightness( const PlayerState* pPlayerState, float fNoteB
 	if( GAMESTATE->m_bEditing )
 		return 1;
 
-	float fSongBeat = GAMESTATE->m_fSongBeat;
+	/* offset by VisualDelayEffect seconds */
+	float fSongBeat = GAMESTATE->m_fSongBeatVisible;
 	float fBeatsUntilStep = fNoteBeat - fSongBeat;
 
 	float fBrightness = SCALE( fBeatsUntilStep, 0, -1, 1.f, 0.f );

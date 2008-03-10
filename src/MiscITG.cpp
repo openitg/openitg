@@ -221,18 +221,19 @@ bool HubIsConnected()
  */
 #include "LuaFunctions.h"
 // Added by Matt1360
-LuaFunction_NoArgs( GetProductName	, CString( PRODUCT_NAME ) ); // Return the product's name from ProductInfo.h [ScreenArcadeDiagnostics]
+LuaFunction_NoArgs( GetProductName	, CString( PRODUCT_NAME_VER ) ); // Return the product's name from ProductInfo.h [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetRevision	, GetRevision() ); // Return current Revision ( ProductInfo.h ) [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetUptime		, SecondsToHHMMSS( RageTimer::GetTimeSinceStart() ) ); // Uptime calling [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetIP		, GetIP() ); // Calling the IP [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumCrashLogs	, GetNumCrashLogs() ); // Count the crashlogs [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumMachineEdits	, GetNumMachineEdits() ); // Count the machine edits [ScreenArcadeDiagnostics]
-LuaFunction_NoArgs( GetNumIOErrors	, ITGIO::m_iInputErrorCount ); // Call the number of I/O Errors [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetNumMachineScores, GetNumMachineScores() ); // Call the machine score count [ScreenArcadeDiagnostics]
 // added by infamouspat
 LuaFunction_NoArgs( GetSerialNumber, GetSerialNumber() ); // returns serial from page 9 on dongle
+// added by Vyhd, if it matters that much :P
+LuaFunction_NoArgs( GetNumIOErrors, ITGIO::m_iInputErrorCount ); // Call the number of I/O errors
 LuaFunction_NoArgs( GetInputType, CString(g_sInputType) ); // grabs from RageInput's global variable
-LuaFunction_NoArgs( HubIsConnected, HubIsConnected() ); // well, is it?
+LuaFunction_NoArgs( HubIsConnected, HubIsConnected() );
 
 
 /*

@@ -36,7 +36,6 @@ public:
 
 	enum BackgroundMode { BGMODE_OFF, BGMODE_ANIMATIONS, BGMODE_RANDOMMOVIES, NUM_BackgroundMode };
 	Preference<BackgroundMode>		m_BackgroundMode;
-	Preference<bool>	m_bBrokenBGs;
 	Preference<int>		m_iNumBackgrounds;
 	Preference<float>	m_fBGBrightness;
 	Preference<bool>	m_bHiddenSongs;
@@ -316,6 +315,7 @@ public:
 	Preference<bool>	m_bThreadedInput;
 	Preference<bool>	m_bThreadedMovieDecode;
 	Preference<bool>	m_bScreenTestMode;
+	Preference<bool>	m_bDebugUSBInput;
 	Preference<bool>	m_bDebugLights;
 	Preference<bool>	m_bMonkeyInput;
 	Preference<CString>	m_sMachineName;

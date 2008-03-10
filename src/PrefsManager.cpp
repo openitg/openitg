@@ -73,7 +73,6 @@ PrefsManager::PrefsManager() :
 	m_bShowBanners			( "ShowBanners",			true ),
 
 	m_BackgroundMode		( "BackgroundMode",			BGMODE_ANIMATIONS ),
-	m_bBrokenBGs			( "BrokenBGs",				true ),
 	m_iNumBackgrounds		( "NumBackgrounds",			8 ),
 	m_fBGBrightness			( "BGBrightness",			0.8f ),
 	/* I'd rather get occasional people asking for support for this even though
@@ -303,6 +302,7 @@ PrefsManager::PrefsManager() :
 	m_bThreadedInput				( "ThreadedInput",				true ),
 	m_bThreadedMovieDecode			( "ThreadedMovieDecode",		true ),
 	m_bScreenTestMode				( "ScreenTestMode",				false ),
+	m_bDebugUSBInput				( "DebugUSBInput",		false ),
 	m_bDebugLights					( "DebugLights",				false ),
 	m_bMonkeyInput					( "MonkeyInput",				false ),
 	m_sMachineName					( "MachineName",				"" ),

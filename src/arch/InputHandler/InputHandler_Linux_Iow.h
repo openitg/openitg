@@ -26,7 +26,7 @@ private:
 	uint32_t m_iInputData;
 	uint32_t m_iLastInput;
 
-	uint32_t m_iLightData;
+	uint32_t m_iWriteData;
 	uint32_t m_iLastWrite;
 
 	static int InputThread_Start( void *p );

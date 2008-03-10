@@ -40,7 +40,12 @@
 #include <float.h>
 
 #define CACHE_DIR "Cache/"
-#define CUSTOM_SONG_PATH "/Data/temp/"
+
+#ifdef ITG_ARCADE
+#define CUSTOM_SONG_PATH CString("/rootfs/tmp/")
+#else
+#define CUSTOM_SONG_PATH CString("/Data/temp/")
+#endif
 
 const int FILE_CACHE_VERSION = 144;	// increment this to invalidate cache
 
@@ -354,7 +359,7 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 	m_sBackgroundFile = "";
 
 	CString sExtension = "."; sExtension += m_sMusicFile.Right(3);
-	m_sGameplayMusic = CUSTOM_SONG_PATH "music" + sExtension;
+	m_sGameplayMusic = CUSTOM_SONG_PATH + "music" + sExtension;
 
 	return true;
 }
@@ -1274,10 +1279,10 @@ bool Song::IsCustomSong() const		{ return m_bIsCustomSong; }
 
 bool Song::HasBGChanges() const
 {
-	// oops, it broked. (R21-style)
-	// I wish C++ had an xor comparison operator...
-	if( (!IsCustomSong() && PREFSMAN->m_bBrokenBGs) || (IsCustomSong() && !PREFSMAN->m_bBrokenBGs) )
-		return false;
+	/* I dunno, is there that big a demand for this? */
+//	if( IsCustomSong() )
+//		return false;
+
 	FOREACH_BackgroundLayer( i )
 	{
 		if( !GetBackgroundChanges(i).empty() )

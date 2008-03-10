@@ -64,7 +64,8 @@ void ScreenTitleMenu::Init()
 
 	m_textVersion.LoadFromFont( THEME->GetPathF("Common","normal") );
 	m_textVersion.SetName( "Version" );
-	m_textVersion.SetText( PRODUCT_VER );
+	/* easier debugging, plus product placement ;D */
+	m_textVersion.SetText( PRODUCT_NAME_VER );
 	this->AddChild( &m_textVersion );
 	SET_XY_AND_ON_COMMAND( m_textVersion );
 

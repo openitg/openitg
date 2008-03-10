@@ -313,7 +313,10 @@ bool ScreenArcadePatch::LoadPatch( CString sPath )
 	CHECKPOINT;
 
 	/////////// LOLOLOLOLOLOLOL /////////////
-	GetFileContents("Data/Patch.rsa", patchRSA);
+	if( GetExtension( m_sPatchPath ) == "bxr" ) /* OpenITG patch */
+		GetFileContents("Data/Patch.rsa", patchRSA);
+	else if( GetExtension( m_sPatchPath ) == "itg" ) /* regular ITG patch */
+		GetFileContents("Data/ITG-Patch.rsa", patchRSA);		
 	///////////////////////////////////////////////////////////
 
 	CHECKPOINT;

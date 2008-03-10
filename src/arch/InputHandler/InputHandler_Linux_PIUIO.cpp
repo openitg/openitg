@@ -4,6 +4,8 @@
 #include "RageUtil.h"
 #include "RageInput.h" // for g_sInputType
 
+#include "PrefsManager.h" // for m_bDebugUSBInput
+
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_Linux_PIUIO.h"
@@ -75,6 +77,8 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 
 		/* Get the data and send it to RageInput */
 		IOBoard.Read( &m_iInputData );
+		/* PIUIO opens high - for more logical processing, invert it */
+		m_iInputData = ~m_iInputData;
 		HandleInput();
 
 		// give up 0.01 sec per read for other events -
@@ -86,28 +90,18 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 void InputHandler_Linux_PIUIO::HandleInput()
 {
 	uint64_t i = 1; // convenience hack
-/* Enable as needed for raw input.. */
-#if 0
-	if( m_iInputData != 0 && ( m_iInputData != m_iLastInputData ) )
+
+	/* If they asked for it... */
+	if( PREFSMAN->m_bDebugUSBInput && (m_iInputData != 0) && (m_iInputData != m_iLastInputData) )
 	{
-		LOG->Info( "Input: %i", m_iInputData );
-	}
+		LOG->Info( "Input: %llu", m_iInputData );
 
-	m_iLastInputData = m_iInputData;
-
-	return;
-#endif
-
-/* Enable as needed for input logging... */
-#if 1
-	if( m_iInputData != 0 && ( m_iInputData != m_iLastInputData ) )
-	{
 		CString sInputs;
 		
 		for( unsigned x = 0; x < 64; x++ )
 		{
-			// bitwise AND sieve - PIUIO is open high
-			if( (m_iInputData & (i << x)) )
+			/* the bit we expect isn't in the data */
+			if( !(m_iInputData & (i << x)) )
 				continue;
 
 			if( sInputs == "" )
@@ -119,13 +113,11 @@ void InputHandler_Linux_PIUIO::HandleInput()
 		if( LOG )
 			LOG->Info( sInputs );
 	}
-//	return;
-#endif	
 
 	static const uint64_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 */	
 	//Left arrow
-	(i << 2) + (i << 61),
+	(i << 2),
 	// Right arrow
 	(i << 3),
 	// Up arrow
@@ -162,18 +154,28 @@ void InputHandler_Linux_PIUIO::HandleInput()
 		if( InputThread.IsCreated() )
 			di.ts.Touch();
 
-		ButtonPressed( di, !(m_iInputData & iInputBits[iButton]) );
+		/* Is the button we're looking for flagged in the input data? */
+		ButtonPressed( di, m_iInputData & iInputBits[iButton] );
 	}
+
+	/* assign our last input */
+	m_iLastInputData = m_iInputData;
 }
 
-CString SensorDescriptions[] = {"right", "left", "bottom", "top"};
+/* not yet implemented */
+CString SensorDescriptions[] = { "right", "left", "bottom", "top" };
 
-CString GetSensorDescription(int bits) {
-	if (bits == 0) return "";
+/* not yet implemented */
+CString GetSensorDescription( int iBits )
+{
+	if ( iBits == 0 )
+		return "";
+
 	CStringArray retSensors;
-	for(int i = 0; i < 3; i++) {
-		if (bits & (1 << i)) retSensors.push_back(SensorDescriptions[i]);
-	}
+	for( int i = 0; i < 3; i++ )
+		if ( iBits & (1 << i) )
+			retSensors.push_back(SensorDescriptions[i]);
+
 	return join(", ", retSensors);
 }
 
@@ -210,6 +212,7 @@ void InputHandler_Linux_PIUIO::UpdateLights()
 	for( int x = 0; x < 32; x++ )
 		sBits += (m_iLightData & (1 << (32-x))) ? "1" : "0";
 
+	/* assign the last output data */
 	m_iLastLightData = m_iLightData;
 }
 

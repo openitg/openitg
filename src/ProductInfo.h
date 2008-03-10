@@ -4,7 +4,6 @@
 #define PRODUCT_INFO_H
 
 #include "config.h" // for ITG_ARCADE
-
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"
 #elif defined(XBOX)
@@ -21,7 +20,7 @@
 #define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER
 
 /* A central location from which we can update crash handler data... */
-#define CRASH_REPORT_URL "http://boxorroxors.net/forum/viewtopic.php?t=657"
+#define CRASH_REPORT_URL "http://boxorroxors.net/forum/viewtopic.php?t=713"
 
 #endif
 

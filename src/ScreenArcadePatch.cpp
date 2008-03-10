@@ -66,7 +66,10 @@ void ScreenArcadePatch::Init()
 {
 	ScreenWithMenuElements::Init();
 
+	// HACK: needed to prevent early exits
 	m_bExit = false;
+	g_sPatch = "";
+	g_sStatus = "";
 
 	m_Status.LoadFromFont( THEME->GetPathF("ScreenArcadePatch", "text") );
 	m_Patch.LoadFromFont( THEME->GetPathF("ScreenArcadePatch", "text") );
@@ -294,7 +297,8 @@ bool ScreenArcadePatch::LoadPatch( CString sPath )
 	else
 	{
 		CHECKPOINT;
-		g_sStatus = "Patch copying failed! Please re-insert your card and try again.";
+		/* This generally fails because OpenITG doesn't have access to Data. -- Vyhd */
+		g_sStatus = "Patch copying failed!\nPlease check your permissions and try again.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
@@ -325,7 +329,7 @@ bool ScreenArcadePatch::LoadPatch( CString sPath )
 	if (fSig->Read(patchSig, 128) < 128)
 	{
 		CHECKPOINT;
-		g_sStatus = "Patch signature verification failed: unexpected end of file";
+		g_sStatus = "Patch signature verification failed:\nunexpected end of file.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		CHECKPOINT;
 		return false;
@@ -337,7 +341,7 @@ bool ScreenArcadePatch::LoadPatch( CString sPath )
 	CHECKPOINT;
 	if (! CryptHelpers::VerifyFile( *fZip, patchSig, patchRSA, sErr ) )
 	{
-		g_sStatus = ssprintf("Patch signature verification failed: %s", sErr.c_str() );
+		g_sStatus = ssprintf("Patch signature verification failed:\n%s", sErr.c_str() );
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
@@ -370,7 +374,7 @@ bool ScreenArcadePatch::FinalizePatch()
 	if (! rfdZip->Load(fScl))
 	{
 	CHECKPOINT;
-		g_sStatus = "Patch XML data check failed, could not load patch file";
+		g_sStatus = "Patch XML data check failed, could not load patch file.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 	CHECKPOINT;
 		return false;
@@ -383,7 +387,7 @@ bool ScreenArcadePatch::FinalizePatch()
 	if (fXml == NULL)
 	{
 	CHECKPOINT;
-		g_sStatus = "Patch XML data check failed, Could not open patch.xml";
+		g_sStatus = "Patch XML data check failed, Could not open patch.xml.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 	CHECKPOINT;
 		return false;
@@ -397,16 +401,17 @@ bool ScreenArcadePatch::FinalizePatch()
 	//if (rNode->GetChild("Game")==NULL || rNode->GetChild("Revision")==NULL || rNode->GetChild("Message")==NULL)
 	if ( !rNode->GetChild("Game") || !rNode->GetChild("Revision") || !rNode->GetChild("Message") )
 	{
-		g_sStatus = "Cannot proceed update, patch.xml corrupt";
+		g_sStatus = "Cannot proceed update, patch.xml corrupt.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
 
 	CString sGame = rNode->GetChildValue("Game");
 
+	/* accept patches for either */
 	if ( sGame != "OpenITG" && sGame != "In The Groove 2" )
 	{
-			g_sStatus = ssprintf( "Cannot proceed update, revision is for another game (\"%s\").", rNode->GetChildValue("Game") );
+			g_sStatus = ssprintf( "Cannot proceed update, revision is for another game\n(\"%s\").", rNode->GetChildValue("Game") );
 			m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 			return false;
 	}
@@ -415,7 +420,7 @@ bool ScreenArcadePatch::FinalizePatch()
 
 	if (GetRevision() == iRevNum)
 	{
-		g_sStatus = "Cannot proceed update, revision on USB card is the same as the machine revision.";
+		g_sStatus = "Cannot proceed update, revision on USB card\nis the same as the machine revision.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}
@@ -432,7 +437,7 @@ bool ScreenArcadePatch::FinalizePatch()
 
 	if (! rfdZip->Load( m_sPatchPath ) )
 	{
-		g_sStatus = "Could not copy patch contents";
+		g_sStatus = "Could not copy patch contents.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}

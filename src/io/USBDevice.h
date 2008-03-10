@@ -52,7 +52,7 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList);
 #endif /* IO_USBDEVICE_H */
 
 /*
- * (c) 2005 Glenn Maynard reimplemented by nice people @ BoXoRRoXoRs
+ * (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

@@ -115,12 +115,14 @@ LIBS += -lusb
 #Make sure any dependencies on these data structure are wrapped.
 DataStructures += io/USBDriver.cpp io/USBDriver.h \
 		  io/PIUIO.cpp io/PIUIO.h \
-		  io/ITGIO.cpp io/ITGIO.h
+		  io/ITGIO.cpp io/ITGIO.h \
+		  io/USBDevice.h
 
+# these both use the same .h file
 if LINUX
-DataStructures += io/USBDevice.cpp io/USBDevice.h
+DataStructures += io/USBDevice.cpp
 else
-DataStructures += io/USBDevice_Libusb.cpp io/USBDevice_Libusb.h
+DataStructures += io/USBDevice_Libusb.cpp
 endif
 
 if HAVE_GTK

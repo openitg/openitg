@@ -237,8 +237,7 @@ LuaFunction_NoArgs( HubIsConnected, HubIsConnected() );
 
 
 /*
- * (c) 2004 Glenn Maynard
- * (c) 2008 Matt1360, Vyhd, InfamousPat
+ * (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

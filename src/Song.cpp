@@ -1687,6 +1687,7 @@ LUA_REGISTER_CLASS( Song )
 
 /*
  * (c) 2001-2004 Chris Danford, Glenn Maynard
+ * (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

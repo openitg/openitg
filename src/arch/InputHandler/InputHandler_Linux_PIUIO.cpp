@@ -31,8 +31,8 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 	}
 	else
 	{
-		/* We can't accept input, so why bother? */
-		sm_crash( "Failed to connect to PIUIO board." );
+		LOG->Warn( "OpenITG could not establish a connection with PIUIO." );
+		return;
 	}
 
 	/* Mark the input type, for theme purposes */

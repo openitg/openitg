@@ -27,7 +27,8 @@ InputHandler_Linux_Iow::InputHandler_Linux_Iow()
 	}
 	else
 	{
-		sm_crash( "Could not open ITGIO board." );
+//		sm_crash( "Could not open ITGIO board." );
+		LOG->Warn( "OpenITG could not establish a connection with ITGIO." );
 	}
 
 	g_sInputType = "ITGIO";

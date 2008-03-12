@@ -59,6 +59,8 @@ void Profile::InitEditableData()
 	m_sDisplayName = "";	
 	m_sLastUsedHighScoreName = "";
 	m_iWeightPounds = 0;
+	/* opt-in policy */
+	m_bUseCatalog = false;
 }
 
 CString Profile::MakeGuid()
@@ -892,6 +894,7 @@ void Profile::SaveEditableDataToDir( CString sDir ) const
 	ini.SetValue( "Editable", "DisplayName",			m_sDisplayName );
 	ini.SetValue( "Editable", "LastUsedHighScoreName",	m_sLastUsedHighScoreName );
 	ini.SetValue( "Editable", "WeightPounds",			m_iWeightPounds );
+	ini.SetValue( "Editable", "UseCatalogXML",		m_bUseCatalog );
 
 	ini.WriteFile( sDir + EDITABLE_INI );
 }
@@ -1046,6 +1049,8 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	ini.GetValue("Editable","DisplayName",				m_sDisplayName);
 	ini.GetValue("Editable","LastUsedHighScoreName",	m_sLastUsedHighScoreName);
 	ini.GetValue("Editable","WeightPounds",				m_iWeightPounds);
+	ini.GetValue("Editable","UseCatalogXML",		m_bUseCatalog );
+
 
 	// This is data that the user can change, so we have to validate it.
 	wstring wstr = CStringToWstring(m_sDisplayName);
@@ -1481,8 +1486,16 @@ void Profile::SaveStatsWebPageToDir( CString sDir ) const
 	ASSERT( PROFILEMAN );
 
 	FileCopy( THEME->GetPathO("Profile",STATS_XSL), sDir+STATS_XSL );
-	FileCopy( THEME->GetPathO("Profile",CATALOG_XSL), sDir+CATALOG_XSL );
 	FileCopy( THEME->GetPathO("Profile",COMMON_XSL), sDir+COMMON_XSL );
+
+	/* don't save the rest if the user hasn't chosen it */
+	if( !m_bUseCatalog )
+	{
+		LOG->Trace( "Not using catalog. Skipping catalog file copying." );
+		return;
+	}
+
+	FileCopy( THEME->GetPathO("Profile",CATALOG_XSL), sDir+CATALOG_XSL );
 	FileCopy( CATALOG_XML_FILE, sDir+CATALOG_XML );
 }
 

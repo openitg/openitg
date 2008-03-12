@@ -1,7 +1,6 @@
 #ifndef IO_PIUIO_H
 #define IO_PIUIO_H
 
-#include <usb.h>
 #include "USBDriver.h"
 
 class PIUIO: public USBDriver

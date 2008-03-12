@@ -2,8 +2,6 @@
 
 #include "global.h"
 
-#include <sys/io.h>
-
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "LightsDriver_External.h"

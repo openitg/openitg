@@ -4,7 +4,12 @@
 #include "RageLog.h"
 #include <cstdlib>
 #include <map>
+
+#if defined(UNIX)
 #include <usb.h>
+#elif defined(_MSC_VER) && !defined(_XBOX)
+#pragma comment(lib, "libusb.lib")
+#endif
 
 static CString sClassDescriptions[] =
 {

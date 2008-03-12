@@ -13,12 +13,7 @@
 #include "RageInput.h"
 #include "ActorUtil.h"
 #include "ActorFrame.h" // We need this to call PlayCommand,Refresh and update the uptime.
-
-#if defined(UNIX)
 #include "io/USBDevice.h"
-#else
-#include "io/USBDevice_Libusb.h"
-#endif
 
 REGISTER_SCREEN_CLASS( ScreenArcadeDiagnostics );
 

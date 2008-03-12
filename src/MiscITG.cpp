@@ -9,6 +9,7 @@
 #include "SongManager.h"
 #include "ProductInfo.h"
 #include "io/ITGIO.h"
+#include "io/USBDevice.h"
 
 /* Include dongle support if we're going to use it...
  * Maybe we should set a HAVE_DONGLE directive? */
@@ -25,13 +26,6 @@ extern "C" {
 #define STATS_DIR_PATH CString("/rootfs/stats/")
 #else
 #define STATS_DIR_PATH CString("Data/")
-#endif
-
-// set our USBDevice based on operating system
-#if defined(UNIX)
-#include "io/USBDevice.h"
-#else
-#include "io/USBDevice_Libusb.h"
 #endif
 
 extern CString g_sInputType;

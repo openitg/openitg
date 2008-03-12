@@ -20,6 +20,11 @@
 #pragma comment(lib, "winmm.lib") // for timeGetTime
 #endif
 
+/* Workaround for 'undefined' problem */
+#ifndef EWX_FORCEIFHUNG
+#define EWX_FORCEIFHUNG 0x10
+#endif
+
 ArchHooks_Win32::ArchHooks_Win32()
 {
 	SetUnhandledExceptionFilter(CrashHandler);
@@ -165,7 +170,7 @@ void ArchHooks_Win32::SystemReboot()
 {
 	return; // pretend there's nothing here right now -- we'll enable if needed
 
-	if( IsAFile( "/Data/no-reboot" )
+	if( IsAFile("/Data/no-reboot") )
 		return;
 
 	/* Reboot, kill any hung processes, "Application Maintenance: Planned" */

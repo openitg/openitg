@@ -1,12 +1,18 @@
 #include "global.h"
 #include "io/USBDriver.h"
 #include "RageLog.h"
+
+#if defined(UNIX)
 #include <usb.h>
+#elif defined(_MSC_VER) && !defined(_XBOX)
+#pragma comment(lib, "libusb.lib")
+#endif
 
 USBDriver::USBDriver() { m_pHandle = NULL; }
 
 USBDriver::~USBDriver() { Close(); }
 
+/* XXX: is this even used? */
 struct usb_device *USBDriver::FindDevice( usb_bus *usb_busses )
 {
 	LOG->Trace( "USBDriver::FindDevice()." );

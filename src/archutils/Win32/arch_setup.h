@@ -47,6 +47,8 @@ void my_usleep( unsigned long usec );
 #define usleep my_usleep
 
 /* Missing stdint types: */
+#include "stdint.h"
+/* No longer needed:
 typedef signed char int8_t;
 typedef unsigned char uint8_t;
 typedef signed short int16_t;
@@ -54,7 +56,7 @@ typedef unsigned short uint16_t;
 typedef int int32_t;
 typedef unsigned int uint32_t;
 typedef __int64 int64_t;
-typedef unsigned __int64 uint64_t;
+typedef unsigned __int64 uint64_t; */
 static inline int64_t llabs( int64_t i ) { return i >= 0? i: -i; }
 
 #if defined(_MSC_VER)
@@ -82,7 +84,8 @@ static inline int64_t llabs( int64_t i ) { return i >= 0? i: -i; }
 #define NEED_TRUNCF
 #define NEED_ROUNDF
 #define NEED_STRTOF
-#define MISSING_STDINT_H
+//our cross-platform stdint covers us here
+//#define MISSING_STDINT_H
 
 inline int lrintf( float f )
 {
@@ -155,6 +158,7 @@ inline uint16_t ArchSwap16( uint16_t n )
 
 /*
  * (c) 2002-2004 Glenn Maynard
+ * (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

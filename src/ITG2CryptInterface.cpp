@@ -5,8 +5,18 @@
 #include "crypto/CryptSH512.h"
 #include "ITG2CryptInterface.h"
 #include "ibutton/getkey.h"
-#include <fcntl.h>
 #include <cstdio>
+
+/* Windows compatibility layer...really ugly. :( */
+#if defined(UNIX)
+#include <fcntl.h>
+#elif defined(WIN32)
+#include <io.h>
+#define O_RDONLY 0x0000 // attempting _O_RDONLY returns "undeclared identifier"
+#define open(a,b) _open(a,b)
+#define read(a,b,c) _read(a,b,c)
+#define lseek(a,b,c) _lseek(a,b,c)
+#endif
 
 crypt_file *ITG2CryptInterface::crypt_open(CString name, CString secret)
 {

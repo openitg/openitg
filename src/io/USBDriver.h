@@ -1,9 +1,11 @@
 #ifndef INPUT_HANDLER_USBDRIVER_H
 #define INPUT_HANDLER_USBDRIVER_H
 
-extern "C" {
+#if defined(UNIX)
 #include <usb.h>
-}
+#elif defined(_MSC_VER) && !defined(_XBOX)
+#pragma comment(lib, "libusb.lib")
+#endif
 
 // USBDriver is not a subclass of InputHandler ;P
 //  --infamouspat

@@ -1,7 +1,6 @@
 #ifndef IO_ITGIO_H
 #define IO_ITGIO_H
 
-#include <usb.h>
 #include "USBDriver.h"
 
 class ITGIO: public USBDriver

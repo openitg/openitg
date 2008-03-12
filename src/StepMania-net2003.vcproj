@@ -259,6 +259,18 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="Screen.h">
 			</File>
 			<File
+				RelativePath="ScreenArcadeDiagnostics.cpp">
+			</File>
+			<File
+				RelativePath="ScreenArcadeDiagnostics.h">
+			</File>
+			<File
+				RelativePath="ScreenArcadePatch.cpp">
+			</File>
+			<File
+				RelativePath="ScreenArcadePatch.h">
+			</File>
+			<File
 				RelativePath="ScreenAttract.cpp">
 			</File>
 			<File
@@ -827,6 +839,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="LyricsLoader.h">
 			</File>
 			<File
+				RelativePath="MiscITG.cpp">
+			</File>
+			<File
+				RelativePath="MiscITG.h">
+			</File>
+			<File
 				RelativePath="MenuInput.h">
 			</File>
 			<File
@@ -1066,6 +1084,30 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			<File
 				RelativePath="TrailUtil.h">
 			</File>
+			<File
+				RelativePath="io\USBDriver.cpp">
+			</File>
+			<File
+				RelativePath="io\USBDriver.h">
+			</File>
+			<File
+				RelativePath="io\PIUIO.cpp">
+			</File>
+			<File
+				RelativePath="io\PIUIO.h">
+			</File>
+			<File
+				RelativePath="io\ITGIO.cpp">
+			</File>
+			<File
+				RelativePath="io\ITGIO.h">
+			</File>
+			<File
+				RelativePath="io\USBDevice_Libusb.cpp">
+			</File>
+			<File
+				RelativePath="io\USBDevice.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="File Types"
@@ -1228,6 +1270,18 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.h">
 					</File>
 					<File
+						RelativePath="arch\InputHandler\InputHandler_Linux_PIUIO.cpp">
+					</File>
+					<File
+						RelativePath="arch\InputHandler\InputHandler_Linux_PIUIO.h">
+					</File>
+					<File
+						RelativePath="arch\InputHandler\InputHandler_Linux_Iow.cpp">
+					</File>
+					<File
+						RelativePath="arch\InputHandler\InputHandler_Linux_Iow.h">
+					</File>
+					<File
 						RelativePath="arch\InputHandler\InputHandler_Win32_Para.cpp">
 					</File>
 					<File
@@ -1313,6 +1367,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					</File>
 					<File
 						RelativePath="arch\Lights\LightsDriver_Win32Parallel.h">
+					</File>
+					<File
+						RelativePath="arch\Lights\LightsDriver_External.cpp">
+					</File>
+					<File
+						RelativePath="arch\Lights\LightsDriver_External.h">
 					</File>
 				</Filter>
 				<Filter
@@ -1473,12 +1533,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="BGAnimationLayer.h">
-			</File>
-			<File
-				RelativePath="ConditionalBGA.cpp">
-			</File>
-			<File
-				RelativePath="ConditionalBGA.h">
 			</File>
 			<File
 				RelativePath="DifficultyIcon.cpp">
@@ -1783,12 +1837,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="BeginnerHelper.h">
 			</File>
 			<File
-				RelativePath="CharacterHead.cpp">
-			</File>
-			<File
-				RelativePath="CharacterHead.h">
-			</File>
-			<File
 				RelativePath="CombinedLifeMeter.h">
 			</File>
 			<File
@@ -2027,6 +2075,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="RageFileDriver.h">
 			</File>
 			<File
+				RelativePath="RageFileDriverCrypt.cpp">
+			</File>
+			<File
+				RelativePath="RageFileDriverCrypt.h">
+			</File>
+			<File
 				RelativePath="RageFileDriverDeflate.cpp">
 			</File>
 			<File
@@ -2049,6 +2103,9 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="RageFileDriverMemory.h">
+			</File>
+			<File
+				RelativePath="RageFileDriverPatch.cpp">
 			</File>
 			<File
 				RelativePath="RageFileDriverSlice.cpp">
@@ -2617,6 +2674,21 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			Name="Crypto"
 			Filter="">
 			<File
+				RelativePath="crypto\aescrypt.c">
+			</File>
+			<File
+				RelativePath="crypto\aeskey.c">
+			</File>
+			<File
+				RelativePath="crypto\aestab.c">
+			</File>
+			<File
+				RelativePath="crypto\aesopt.h">
+			</File>
+			<File
+				RelativePath="crypto\aes.h">
+			</File>
+			<File
 				RelativePath="crypto\CryptBn.cpp">
 			</File>
 			<File
@@ -2670,6 +2742,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			<Filter
 				Name="crypto++"
 				Filter="">
+				<File
+					RelativePath="ITG2CryptInterface.cpp">
+				</File>
+				<File
+					RelativePath="ITG2CryptInterface.h">
+				</File>
 				<File
 					RelativePath="crypto51\algebra.cpp">
 				</File>

@@ -1488,8 +1488,9 @@ void Profile::SaveStatsWebPageToDir( CString sDir ) const
 	FileCopy( THEME->GetPathO("Profile",STATS_XSL), sDir+STATS_XSL );
 	FileCopy( THEME->GetPathO("Profile",COMMON_XSL), sDir+COMMON_XSL );
 
-	/* don't save the rest if the user hasn't chosen it */
-	if( !m_bUseCatalog )
+	/* don't save the rest if the user hasn't chosen it,
+	 * but do save it for machines */
+	if( !m_bUseCatalog && !IsMachine() )
 	{
 		LOG->Trace( "Not using catalog. Skipping catalog file copying." );
 		return;

@@ -29,9 +29,6 @@
 #include "RageUtil.h"		// I need this for copying the patch
 #include "RageFile.h"		// For the .itg extraction
 
-#include <sys/stat.h>
-#include <sys/reboot.h>
-
 #ifdef ITG_ARCADE
 #define PATCH_DIR CString("/stats/")
 #else

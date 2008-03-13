@@ -1,29 +1,34 @@
 #include "global.h"
-#include "io/USBDriver.h"
 #include "RageLog.h"
+#include "io/USBDriver.h"
 
-#if defined(UNIX)
 #include <usb.h>
-#elif defined(_MSC_VER) && !defined(_XBOX)
-#pragma comment(lib, "libusb.lib")
-#endif
 
-USBDriver::USBDriver() { m_pHandle = NULL; }
+USBDriver::USBDriver()
+{
+	m_pHandle = NULL;
+}
 
-USBDriver::~USBDriver() { Close(); }
+USBDriver::~USBDriver()
+{
+	Close();
+}
+
+/* sorry, but...Visual C++ wants it this way. */
+bool USBDriver::Matches( int idVendor, int idProduct ) const
+{
+	return false;
+}
 
 /* XXX: is this even used? */
-struct usb_device *USBDriver::FindDevice( usb_bus *usb_busses )
+struct usb_device *USBDriver::FindDevice()
 {
 	LOG->Trace( "USBDriver::FindDevice()." );
 
-	for( usb_bus *bus = usb_busses; bus; bus = bus->next )
+	for( usb_bus *bus = usb_get_busses(); bus; bus = bus->next )
 		for( struct usb_device *dev = bus->devices; dev; dev = dev->next )
 			if( Matches(dev->descriptor.idVendor, dev->descriptor.idProduct) )
-			{
-				LOG->Trace( "FindDevice() got a match." );
 				return dev;
-			}
 
 	// fall through
 	LOG->Trace( "FindDevice() found no matches." );
@@ -62,10 +67,10 @@ bool USBDriver::Open()
 		return false;
 	}
 	
-	if( !usb_busses )
+	if( !usb_get_busses() )
 		return false;
 
-	for (usb_bus *bus = usb_busses; bus; bus = bus->next)
+	for (usb_bus *bus = usb_get_busses(); bus; bus = bus->next)
 	{
 		for (struct usb_device *dev = bus->devices; dev; dev = dev->next)
 		{

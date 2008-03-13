@@ -64,6 +64,11 @@ bool USBDevice::GetInterfaceProperty( const CString &sProperty, const unsigned i
 	return GetFileContents( sTargetFile, out, true );
 }
 
+CString USBDevice::GetDeviceDir()
+{
+	return m_sDeviceDir;
+}
+
 bool USBDevice::IsHub()
 {
 	for (unsigned i = 0; i < m_iInterfaceClasses.size(); i++)

@@ -12,6 +12,8 @@
 // XXX: we probably need to move this to arch or archutils in preparation for windows portability
 //           --infamouspat
 
+// I concur. I'll work on this for alpha 4. -- Vyhd
+
 /* A class we can use to characterize all USB devices on the system */
 class USBDevice
 {
@@ -20,6 +22,7 @@ public:
 	~USBDevice();
 
 	bool Load(const CString &nDeviceDir, const vector<CString> &interfaces);
+	bool Load(struct usb_device *dev );
 
 	bool GetDeviceProperty( const CString &sProperty, CString &out );
 	bool GetInterfaceProperty( const CString &sProperty, const unsigned iInterface, CString &out);
@@ -30,7 +33,8 @@ public:
 	int GetIdProduct() { return m_iIdProduct; }
 	int GetMaxPower() { return m_iMaxPower; }
 
-	CString GetDeviceDir() { return m_sDeviceDir; }
+	/* This can't be inlined - Libusb has a more complex implementation */
+	CString GetDeviceDir();
 
 	bool IsHub();
 	bool IsITGIO();
@@ -41,6 +45,9 @@ private:
 	int m_iIdProduct;
 	int m_iMaxPower;
 	CString m_sDeviceDir;
+
+	/* USBDevice.cpp doesn't use this, but USBDevice_Libusb.cpp does. */
+	struct usb_device *m_Device;
 
 	vector<CString> m_sInterfaceDeviceDirs;
 	vector<unsigned> m_iInterfaceClasses;

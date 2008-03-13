@@ -1,15 +1,12 @@
 #include "global.h"
-#include "io/USBDevice.h"
 #include "RageUtil.h"
 #include "RageLog.h"
+#include "io/USBDevice.h"
+
 #include <cstdlib>
 #include <map>
-
-#if defined(UNIX)
 #include <usb.h>
-#elif defined(_MSC_VER) && !defined(_XBOX)
-#pragma comment(lib, "libusb.lib")
-#endif
+
 
 static CString sClassDescriptions[] =
 {
@@ -209,7 +206,7 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 	CHECKPOINT_M( "Device created" );
 
 	/* get all devices on the system */
-	for( struct usb_bus *bus = usb_busses; bus; bus = bus->next )
+	for( struct usb_bus *bus = usb_get_busses(); bus; bus = bus->next )
 	{
 		if( bus->root_dev )
 			vDevices.push_back( *bus->root_dev );

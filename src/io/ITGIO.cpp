@@ -17,7 +17,7 @@ bool ITGIO::Matches( int idVendor, int idProduct ) const
 	return false;
 }
 
-bool ITGIO::Read( u_int32_t *pData )
+bool ITGIO::Read( uint32_t *pData )
 {
 	int iResult;
 
@@ -36,7 +36,7 @@ bool ITGIO::Read( u_int32_t *pData )
 	return true;
 }
 
-bool ITGIO::Write( u_int32_t iData )
+bool ITGIO::Write( uint32_t iData )
 {
 	int iResult;
 

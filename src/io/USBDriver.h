@@ -1,14 +1,8 @@
 #ifndef INPUT_HANDLER_USBDRIVER_H
 #define INPUT_HANDLER_USBDRIVER_H
 
-#if defined(UNIX)
 #include <usb.h>
-#elif defined(_MSC_VER) && !defined(_XBOX)
-#pragma comment(lib, "libusb.lib")
-#endif
 
-// USBDriver is not a subclass of InputHandler ;P
-//  --infamouspat
 class USBDriver
 {
 public:
@@ -19,9 +13,9 @@ public:
 	void Close();
 
 protected:
-	struct usb_device *FindDevice(usb_bus*);
+	struct usb_device *FindDevice();
 
-	virtual bool Matches(int idVendor, int idProduct) const = 0;
+	virtual bool Matches(int idVendor, int idProduct) const;
 
 	usb_dev_handle *m_pHandle;
 	int m_iInterfaceNum;

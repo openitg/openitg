@@ -2,7 +2,11 @@
 #include "RageLog.h"
 #include "io/USBDriver.h"
 
+#ifdef WIN32
+#include "libusb/usb.h"
+#else
 #include <usb.h>
+#endif
 
 USBDriver::USBDriver()
 {

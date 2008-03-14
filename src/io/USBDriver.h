@@ -1,7 +1,11 @@
 #ifndef INPUT_HANDLER_USBDRIVER_H
 #define INPUT_HANDLER_USBDRIVER_H
 
+#ifdef WIN32
+#include "libusb/usb.h"
+#else
 #include <usb.h>
+#endif
 
 class USBDriver
 {

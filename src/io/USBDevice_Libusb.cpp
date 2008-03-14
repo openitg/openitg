@@ -5,7 +5,11 @@
 
 #include <cstdlib>
 #include <map>
+#ifdef WIN32
+#include "libusb/usb.h"
+#else
 #include <usb.h>
+#endif
 
 
 static CString sClassDescriptions[] =
@@ -70,6 +74,7 @@ CString USBDevice::GetDescription()
 /* Ugly... */
 bool USBDevice::GetDeviceProperty( const CString &sProperty, CString &sOut )
 {
+	LOG->Trace("USBDevice::GetDeviceProperty(): %s", sProperty.c_str());
 	if( sProperty == "idVendor" )
 		sOut = ssprintf( "%x", m_Device->descriptor.idVendor );
 	else if( sProperty == "idProduct" )
@@ -145,6 +150,11 @@ bool USBDevice::Load( struct usb_device *dev )
 		return false;
 	}
 
+	
+	/* Irrelevant USB objects... */
+	/* if( m_iIdVendor == 0 || m_iIdProduct == 0 )
+		return false; */
+
 	CString buf;
 
 	if( GetDeviceProperty("idVendor", buf) )
@@ -169,9 +179,6 @@ bool USBDevice::Load( struct usb_device *dev )
 		return false;
 	}
 
-	/* Irrelevant USB objects... */
-	if( m_iIdVendor == 0 || m_iIdProduct == 0 )
-		return false;
 
 	for (int i = 0; i < m_Device->config->interface->num_altsetting; i++)
 	{
@@ -235,6 +242,8 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 	{
 		CHECKPOINT_M( ssprintf( "Assigning device %i of %i", i, vDevices.size()) );
 		USBDevice newDev;
+
+		if (vDevices[i].descriptor.idVendor == 0 || vDevices[i].descriptor.idProduct == 0) continue;
 
 		LOG->Trace( "Attempting to load from idVendor %x, idProduct %x",
 			vDevices[i].descriptor.idVendor, 

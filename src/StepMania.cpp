@@ -1158,10 +1158,8 @@ int main(int argc, char* argv[])
 	SONGMAN->InitAll( loading_window );		// this takes a long time
 	CRYPTMAN	= new CryptManager;	// need to do this before ProfileMan
 	MEMCARDMAN	= new MemoryCardManager;
-	LOG->Trace("//PROFILEMAN CHECKPOINT 1");
 	PROFILEMAN	= new ProfileManager;
 	PROFILEMAN->Init();				// must load after SONGMAN
-	LOG->Trace("//PROFILEMAN CHECKPOINT 2");
 	UNLOCKMAN	= new UnlockManager;
 	
 	{

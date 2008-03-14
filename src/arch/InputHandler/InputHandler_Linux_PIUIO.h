@@ -3,7 +3,11 @@
 
 /*  I've heard bad things about portability relating to stdint.  /
 /   If you run into any problems, let me know. - Vyhd		 */
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <stdint.h>
+#endif
 
 #include "InputHandler.h"
 #include "RageThreads.h"

@@ -1138,21 +1138,6 @@ int main(int argc, char* argv[])
 	/* Set up the theme and announcer, and switch to the last game type. */
 	ReadGamePrefsFromDisk( true );
 
-	{
-		CString sSection = "Preferences";
-		GetCommandlineArgument( "Type", &sSection );
-		THEME->LoadPreferencesFromSection( sSection );
-	}
-
-	{
-		/* Now that THEME is loaded, load the icon for the current theme into the
-		 * loading window. */
-		CString sError;
-		RageSurface *pIcon = RageSurfaceUtils::LoadFile( THEME->GetPathG( "Common", "window icon" ), sError );
-		if( pIcon )
-			loading_window->SetIcon( pIcon );
-		delete pIcon;
-	}
 
 	if( PREFSMAN->m_iSoundWriteAhead )
 		LOG->Info( "Sound writeahead has been overridden to %i", PREFSMAN->m_iSoundWriteAhead.Get() );
@@ -1173,9 +1158,27 @@ int main(int argc, char* argv[])
 	SONGMAN->InitAll( loading_window );		// this takes a long time
 	CRYPTMAN	= new CryptManager;	// need to do this before ProfileMan
 	MEMCARDMAN	= new MemoryCardManager;
+	LOG->Trace("//PROFILEMAN CHECKPOINT 1");
 	PROFILEMAN	= new ProfileManager;
 	PROFILEMAN->Init();				// must load after SONGMAN
+	LOG->Trace("//PROFILEMAN CHECKPOINT 2");
 	UNLOCKMAN	= new UnlockManager;
+	
+	{
+		CString sSection = "Preferences";
+		GetCommandlineArgument( "Type", &sSection );
+		THEME->LoadPreferencesFromSection( sSection );
+	}
+
+	{
+		/* Now that THEME is loaded, load the icon for the current theme into the
+		 * loading window. */
+		CString sError;
+		RageSurface *pIcon = RageSurfaceUtils::LoadFile( THEME->GetPathG( "Common", "window icon" ), sError );
+		if( pIcon )
+			loading_window->SetIcon( pIcon );
+		delete pIcon;
+	}
 
 	/* This shouldn't need to be here; if it's taking long enough that this is
 	 * even visible, we should be fixing it, not showing a progress display. */

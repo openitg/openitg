@@ -128,10 +128,11 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 &quot;$(intdir)\verstub.obj&quot;"
+				AdditionalDependencies="libusb.lib"
 				OutputFile="../Program/StepMania.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="&quot;C:\openitg-src\src\libusb&quot;"
 				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib"
 				ProgramDatabaseFile="../Release/StepMania.pdb"
 				GenerateMapFile="TRUE"
@@ -299,6 +300,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="ScreenCredits.h">
+			</File>
+			<File
+				RelativePath=".\ScreenDebugOverlay.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenDebugOverlay.h">
 			</File>
 			<File
 				RelativePath="ScreenDemonstration.cpp">
@@ -604,6 +611,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="ScreenStage.h">
 			</File>
 			<File
+				RelativePath=".\ScreenSyncOverlay.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenSyncOverlay.h">
+			</File>
+			<File
 				RelativePath="ScreenSystemLayer.cpp">
 			</File>
 			<File
@@ -684,6 +697,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="AutoKeysounds.h">
+			</File>
+			<File
+				RelativePath=".\BackgroundUtil.cpp">
+			</File>
+			<File
+				RelativePath=".\BackgroundUtil.h">
 			</File>
 			<File
 				RelativePath="BannerCache.cpp">
@@ -815,6 +834,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="Inventory.h">
 			</File>
 			<File
+				RelativePath="io\ITGIO.cpp">
+			</File>
+			<File
+				RelativePath="io\ITGIO.h">
+			</File>
+			<File
 				RelativePath="LuaBinding.h">
 			</File>
 			<File
@@ -833,13 +858,13 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="LyricsLoader.h">
 			</File>
 			<File
+				RelativePath="MenuInput.h">
+			</File>
+			<File
 				RelativePath="MiscITG.cpp">
 			</File>
 			<File
 				RelativePath="MiscITG.h">
-			</File>
-			<File
-				RelativePath="MenuInput.h">
 			</File>
 			<File
 				RelativePath="NoteData.cpp">
@@ -918,6 +943,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="OptionRowHandler.h">
+			</File>
+			<File
+				RelativePath="io\PIUIO.cpp">
+			</File>
+			<File
+				RelativePath="io\PIUIO.h">
 			</File>
 			<File
 				RelativePath="PlayerAI.cpp">
@@ -1079,28 +1110,16 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="TrailUtil.h">
 			</File>
 			<File
-				RelativePath="io\USBDriver.cpp">
-			</File>
-			<File
-				RelativePath="io\USBDriver.h">
-			</File>
-			<File
-				RelativePath="io\PIUIO.cpp">
-			</File>
-			<File
-				RelativePath="io\PIUIO.h">
-			</File>
-			<File
-				RelativePath="io\ITGIO.cpp">
-			</File>
-			<File
-				RelativePath="io\ITGIO.h">
+				RelativePath="io\USBDevice.h">
 			</File>
 			<File
 				RelativePath="io\USBDevice_Libusb.cpp">
 			</File>
 			<File
-				RelativePath="io\USBDevice.h">
+				RelativePath="io\USBDriver.cpp">
+			</File>
+			<File
+				RelativePath="io\USBDriver.h">
 			</File>
 		</Filter>
 		<Filter
@@ -1258,10 +1277,10 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 						RelativePath="arch\InputHandler\InputHandler_DirectInputHelper.h">
 					</File>
 					<File
-						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.cpp">
+						RelativePath="arch\InputHandler\InputHandler_Linux_Iow.cpp">
 					</File>
 					<File
-						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.h">
+						RelativePath="arch\InputHandler\InputHandler_Linux_Iow.h">
 					</File>
 					<File
 						RelativePath="arch\InputHandler\InputHandler_Linux_PIUIO.cpp">
@@ -1270,28 +1289,10 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 						RelativePath="arch\InputHandler\InputHandler_Linux_PIUIO.h">
 					</File>
 					<File
-						RelativePath="arch\InputHandler\InputHandler_Linux_Iow.cpp">
+						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.cpp">
 					</File>
 					<File
-						RelativePath="arch\InputHandler\InputHandler_Linux_Iow.h">
-					</File>
-					<File
-						RelativePath="arch\InputHandler\InputHandler_Win32_Para.cpp">
-					</File>
-					<File
-						RelativePath="arch\InputHandler\InputHandler_Win32_Para.h">
-					</File>
-					<File
-						RelativePath="arch\InputHandler\InputHandler_Win32_Pump.cpp">
-					</File>
-					<File
-						RelativePath="arch\InputHandler\InputHandler_Win32_Pump.h">
-					</File>
-					<File
-						RelativePath="arch\InputHandler\InputHandler_Win32_MIDI.cpp">
-					</File>
-					<File
-						RelativePath="arch\InputHandler\InputHandler_Win32_MIDI.h">
+						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.h">
 					</File>
 				</Filter>
 				<Filter
@@ -1348,6 +1349,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 						RelativePath="arch\Lights\LightsDriver.h">
 					</File>
 					<File
+						RelativePath="arch\Lights\LightsDriver_External.cpp">
+					</File>
+					<File
+						RelativePath="arch\Lights\LightsDriver_External.h">
+					</File>
+					<File
 						RelativePath="arch\Lights\LightsDriver_Null.h">
 					</File>
 					<File
@@ -1361,12 +1368,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					</File>
 					<File
 						RelativePath="arch\Lights\LightsDriver_Win32Parallel.h">
-					</File>
-					<File
-						RelativePath="arch\Lights\LightsDriver_External.cpp">
-					</File>
-					<File
-						RelativePath="arch\Lights\LightsDriver_External.h">
 					</File>
 				</Filter>
 				<Filter
@@ -2668,19 +2669,19 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			Name="Crypto"
 			Filter="">
 			<File
+				RelativePath="crypto\aes.h">
+			</File>
+			<File
 				RelativePath="crypto\aescrypt.c">
 			</File>
 			<File
 				RelativePath="crypto\aeskey.c">
 			</File>
 			<File
-				RelativePath="crypto\aestab.c">
-			</File>
-			<File
 				RelativePath="crypto\aesopt.h">
 			</File>
 			<File
-				RelativePath="crypto\aes.h">
+				RelativePath="crypto\aestab.c">
 			</File>
 			<File
 				RelativePath="crypto\CryptBn.cpp">
@@ -2737,12 +2738,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				Name="crypto++"
 				Filter="">
 				<File
-					RelativePath="ITG2CryptInterface.cpp">
-				</File>
-				<File
-					RelativePath="ITG2CryptInterface.h">
-				</File>
-				<File
 					RelativePath="crypto51\algebra.cpp">
 				</File>
 				<File
@@ -2798,6 +2793,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				</File>
 				<File
 					RelativePath="crypto51\iterhash.h">
+				</File>
+				<File
+					RelativePath="ITG2CryptInterface.cpp">
+				</File>
+				<File
+					RelativePath="ITG2CryptInterface.h">
 				</File>
 				<File
 					RelativePath="crypto51\misc.cpp">
@@ -2881,6 +2882,58 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					RelativePath="crypto51\words.h">
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="iButton"
+			Filter="">
+			<File
+				RelativePath=".\ibutton\crcutil.c">
+			</File>
+			<File
+				RelativePath=".\ibutton\ds2480.h">
+			</File>
+			<File
+				RelativePath=".\ibutton\ds2480ut.c">
+			</File>
+			<File
+				RelativePath=".\ibutton\getkey.cpp">
+			</File>
+			<File
+				RelativePath=".\ibutton\getkey.h">
+			</File>
+			<File
+				RelativePath=".\ibutton\owerr.c">
+			</File>
+			<File
+				RelativePath=".\ibutton\owfile.h">
+			</File>
+			<File
+				RelativePath=".\ibutton\owllu.c">
+			</File>
+			<File
+				RelativePath=".\ibutton\ownet.h">
+			</File>
+			<File
+				RelativePath=".\ibutton\ownetu.c">
+			</File>
+			<File
+				RelativePath=".\ibutton\owsesu.c">
+			</File>
+			<File
+				RelativePath=".\ibutton\owtrnu.c">
+			</File>
+			<File
+				RelativePath=".\ibutton\sha18.c">
+			</File>
+			<File
+				RelativePath=".\ibutton\shaib.c">
+			</File>
+			<File
+				RelativePath=".\ibutton\shaib.h">
+			</File>
+			<File
+				RelativePath=".\ibutton\win32lnk.c">
+			</File>
 		</Filter>
 		<File
 			RelativePath="archutils\Win32\DialogCrashHeader.bmp">

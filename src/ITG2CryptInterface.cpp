@@ -11,8 +11,9 @@
 #if defined(UNIX)
 #include <fcntl.h>
 #elif defined(WIN32)
+#include <fcntl.h>
 #include <io.h>
-#define O_RDONLY 0x0000 // attempting _O_RDONLY returns "undeclared identifier"
+//#define O_RDONLY 0x0000 // attempting _O_RDONLY returns "undeclared identifier"
 #define open(a,b) _open(a,b)
 #define read(a,b,c) _read(a,b,c)
 #define lseek(a,b,c) _lseek(a,b,c)
@@ -25,7 +26,12 @@ crypt_file *ITG2CryptInterface::crypt_open(CString name, CString secret)
 	unsigned char *subkey, verifyblock[16];
 	size_t got, subkeysize;
 	unsigned char *SHABuffer, *AESKey, plaintext[16], AESSHABuffer[64];
+#ifdef WIN32
+	newfile->fd = open(name.c_str(), O_RDONLY | O_BINARY);
+#else
 	newfile->fd = open(name.c_str(), O_RDONLY);
+#endif
+
 	if (newfile->fd == -1)
 	{
 		LOG->Warn("ITG2CryptInterface: Could not open %s: %s", name.c_str(), strerror(errno));

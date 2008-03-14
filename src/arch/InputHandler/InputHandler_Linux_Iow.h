@@ -1,7 +1,11 @@
 #ifndef INPUT_HANDLER_LINUX_IOW_H
 #define INPUT_HANDLER_LINUX_IOW_H
 
+#ifdef WIN32
+#include <windows.h>
+#else
 #include <stdint.h>
+#endif
 
 #include "InputHandler.h"
 #include "RageThreads.h"

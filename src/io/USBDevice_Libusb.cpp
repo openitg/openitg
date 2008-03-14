@@ -23,9 +23,9 @@ static CString sClassDescriptions[] =
 	"Data" // 10?  Shows up for my Motorola Razr
 };
 
-USBDevice::USBDevice() {}
+//USBDevice::USBDevice() {}
 
-USBDevice::~USBDevice() {}
+//USBDevice::~USBDevice() {}
 
 /* This isn't as easy to do with libusb as it is with Unix/Linux.
  * Format, from what I can tell:

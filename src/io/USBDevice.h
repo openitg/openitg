@@ -18,8 +18,8 @@
 class USBDevice
 {
 public:
-	USBDevice();
-	~USBDevice();
+//	USBDevice();
+//	~USBDevice();
 
 	bool Load(const CString &nDeviceDir, const vector<CString> &interfaces);
 	bool Load(struct usb_device *dev );

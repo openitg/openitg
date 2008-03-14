@@ -3,7 +3,9 @@
 #ifndef PRODUCT_INFO_H
 #define PRODUCT_INFO_H
 
+#ifdef LINUX
 #include "config.h" // for ITG_ARCADE
+#endif
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"
 #elif defined(XBOX)

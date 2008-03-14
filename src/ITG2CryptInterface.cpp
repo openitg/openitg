@@ -67,8 +67,8 @@ crypt_file *ITG2CryptInterface::crypt_open(CString name, CString secret)
 	}
 	
 	subkey = new unsigned char[subkeysize];
-	
-	if ((got = read(newfile->fd, subkey, subkeysize) < subkeysize))
+
+	if ((got = read(newfile->fd, subkey, subkeysize)) < subkeysize)
 	{
 		LOG->Warn("ITG2CryptInterface: %s: subkey: expected %i, got %i", name.c_str(), subkeysize, got);
 		return NULL;
@@ -109,6 +109,7 @@ crypt_file *ITG2CryptInterface::crypt_open(CString name, CString secret)
 		memcpy(cAESKey, AESKey, 24);
 		ITG2CryptInterface::KnownKeys[name.c_str()] = cAESKey;
 	}
+	delete subkey;
 
 	aes_decrypt_key(AESKey, 24, newfile->ctx);
 	aes_decrypt(verifyblock, plaintext, newfile->ctx);

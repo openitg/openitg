@@ -22,9 +22,9 @@ static CString sClassDescriptions[] = {
 	"Hub", // 9
 	"Data" }; // 10?  Shows up for my Motorola Razr
 
-USBDevice::USBDevice() {}
+//USBDevice::USBDevice() {}
 
-USBDevice::~USBDevice() {}
+//USBDevice::~USBDevice() {}
 
 CString USBDevice::GetClassDescription( unsigned iClass )
 {

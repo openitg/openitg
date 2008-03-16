@@ -9,30 +9,6 @@
 #include "arch/Dialog/Dialog.h"
 #include "Foreach.h"
 
-//All for the updates....Wow
-#include "ProductInfo.h"
-#include "ezsockets.h"
-#include "RageFileManager.h"
-#include "PrefsManager.h"
-#include "MemoryCardManager.h"
-#include "ProfileManager.h"
-#include "Foreach.h" // I almost forgot!
-#include "ScreenManager.h"
-
-#include "SongManager.h" // To check the Edit Count on the machine [ScreenArcadeDiagnostics]
-
-#include "XmlFile.h" // I need this, for checking the Revision [ScreenArcadeDiagnostics]
-
-// If you need this, uncomment it. - Vyhd
-#if 0
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <ifaddrs.h> // Hayy, now I can get an IP! [ScreenArcadeDiagnostics]
-
-#include <csetjmp>
-#include <cassert>
-#endif
-
 LuaManager *LUA = NULL;
 static LuaFunctionList *g_LuaFunctions = NULL;
 

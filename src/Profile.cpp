@@ -1098,6 +1098,7 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 	pNode->GetChildValue( "TotalMines",						m_iTotalMines );
 	pNode->GetChildValue( "TotalHands",						m_iTotalHands );
 
+	if( IsMachine() )
 	{
 		CString sData;
 		if( pNode->GetChildValue( "Data", sData ) )

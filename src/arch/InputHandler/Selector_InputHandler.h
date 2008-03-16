@@ -8,8 +8,11 @@
 #include "InputHandler_DirectInput.h"
 #endif
 
-#ifdef HAVE_LINUXKERNEL
+/* EXPERIMENTAL: allow access to PIUIO and Iow for all */
 #include "InputHandler_Linux_PIUIO.h"
+#include "InputHandler_Linux_Iow.h"
+
+#ifdef HAVE_LINUXKERNEL
 #include "InputHandler_Linux_Joystick.h"
 // XXX: Useless! Depends on SDL, which we'd use for input if it was available!
 // #include "InputHandler_Linux_tty.h"

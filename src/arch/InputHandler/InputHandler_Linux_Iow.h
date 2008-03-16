@@ -23,6 +23,7 @@ public:
 private:
 	ITGIO IOBoard;
 	RageThread InputThread;
+	RageThread LightsThread;
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;

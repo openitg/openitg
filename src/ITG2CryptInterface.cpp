@@ -13,7 +13,6 @@
 #elif defined(WIN32)
 #include <fcntl.h>
 #include <io.h>
-//#define O_RDONLY 0x0000 // attempting _O_RDONLY returns "undeclared identifier"
 #define open(a,b) _open(a,b)
 #define read(a,b,c) _read(a,b,c)
 #define lseek(a,b,c) _lseek(a,b,c)

@@ -2,10 +2,7 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "RageInput.h" // for g_sInputType
-#include "RageException.h" // for sm_crash
-
 #include "PrefsManager.h" // for m_bDebugUSBInput
-
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_Linux_Iow.h"
@@ -17,36 +14,34 @@ InputHandler_Linux_Iow::InputHandler_Linux_Iow()
 {
 	m_bShutdown = false;
 
-	if( IOBoard.Open() )
+	if( !IOBoard.Open() )
 	{
-		LOG->Trace( "Opened ITGIO board." );
-		m_bFoundDevice = true;
-
-		InputThread.SetName( "Iow thread" );
-		InputThread.Create( InputThread_Start, this );
-	}
-	else
-	{
-//		sm_crash( "Could not open ITGIO board." );
 		LOG->Warn( "OpenITG could not establish a connection with ITGIO." );
+		return;
 	}
+
+	LOG->Trace( "Opened ITGIO board." );
+	m_bFoundDevice = true;
+
+	InputThread.SetName( "Iow thread" );
+	InputThread.Create( InputThread_Start, this );
 
 	g_sInputType = "ITGIO";
 }
 
 InputHandler_Linux_Iow::~InputHandler_Linux_Iow()
 {
-	if( InputThread.IsCreated() )
-	{
-		m_bShutdown = true;
-		LOG->Trace( "Shutting down Iow thread..." );
-		InputThread.Wait();
-		LOG->Trace( "Iow thread shut down" );
-	}
-	
-	/* Reset all lights to off */
-	IOBoard.Write( 0 );
+	if( !InputThread.IsCreated() )
+		return;
 
+	m_bShutdown = true;
+
+	LOG->Trace( "Shutting down Iow thread..." );
+	InputThread.Wait();
+	LOG->Trace( "Iow thread shut down" );
+
+	/* Reset all lights to off and close it */
+	IOBoard.Write( 0 );
 	IOBoard.Close();
 }
 

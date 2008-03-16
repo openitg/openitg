@@ -1,6 +1,5 @@
 #include "global.h"
 #include "RageLog.h"
-#include "RageException.h"
 #include "RageUtil.h"
 #include "RageInput.h" // for g_sInputType
 
@@ -21,19 +20,17 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 	m_bShutdown = false;
 
 	// device found and set
-	if( IOBoard.Open() )
-	{
-		LOG->Trace( "Opened PIUIO board." );
-		m_bFoundDevice = true;
-
-		InputThread.SetName( "PIUIO thread" );
-		InputThread.Create( InputThread_Start, this );
-	}
-	else
+	if( !IOBoard.Open() )
 	{
 		LOG->Warn( "OpenITG could not establish a connection with PIUIO." );
 		return;
 	}
+
+	LOG->Trace( "Opened PIUIO board." );
+	m_bFoundDevice = true;
+
+	InputThread.SetName( "PIUIO thread" );
+	InputThread.Create( InputThread_Start, this );
 
 	/* Mark the input type, for theme purposes */
 	g_sInputType = "PIUIO";

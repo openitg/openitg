@@ -2669,19 +2669,19 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			Name="Crypto"
 			Filter="">
 			<File
-				RelativePath="crypto\aes.h">
+				RelativePath="aes\aes.h">
 			</File>
 			<File
-				RelativePath="crypto\aescrypt.c">
+				RelativePath="aes\aescrypt.c">
 			</File>
 			<File
-				RelativePath="crypto\aeskey.c">
+				RelativePath="aes\aeskey.c">
 			</File>
 			<File
-				RelativePath="crypto\aesopt.h">
+				RelativePath="aes\aesopt.h">
 			</File>
 			<File
-				RelativePath="crypto\aestab.c">
+				RelativePath="aes\aestab.c">
 			</File>
 			<File
 				RelativePath="crypto\CryptBn.cpp">

@@ -357,8 +357,10 @@ ibutton/owsesu.c ibutton/owtrnu.c ibutton/owfile.h ibutton/crcutil.c \
 ibutton/ds2480ut.c ibutton/ds2480.h ibutton/linuxlnk.c ibutton/sha18.c \
 ibutton/shaib.c ibutton/shaib.h ibutton/getkey.cpp ibutton/getkey.h
 
+aes = \
+aes/aescrypt.c aes/aeskey.c aes/aestab.c aes/aesopt.h aes/aes.h
+
 crypto = \
-crypto/aescrypt.c crypto/aeskey.c crypto/aestab.c crypto/aesopt.h crypto/aes.h \
 crypto/CryptBn.cpp crypto/CryptBn.h crypto/CryptMD5.cpp crypto/CryptMD5.h crypto/CryptNoise.cpp \
 crypto/CryptPrime.cpp crypto/CryptPrime.h crypto/CryptRSA.cpp crypto/CryptRSA.h \
 crypto/CryptRand.cpp crypto/CryptRand.h crypto/CryptSH512.cpp crypto/CryptSH512.h \
@@ -389,6 +391,7 @@ main_SOURCES = $(Screens) \
 		$(Actors) \
 		$(GlobalSingletons) \
 		$(ibutton) \
+		$(aes) \
 		$(crypto) \
 		$(cryptopp)
 

@@ -1,5 +1,5 @@
 #define __STDC_CONSTANT_MACROS
-#include <stdint.h>
+//#include <stdint.h>
 #include "global.h"
 #include "MovieTexture_FFMpeg.h"
 

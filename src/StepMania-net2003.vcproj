@@ -1295,6 +1295,24 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.h">
 					</File>
 					<File
+						RelativePath=".\arch\InputHandler\InputHandler_Win32_MIDI.cpp">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_Win32_MIDI.h">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_Win32_Para.cpp">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_Win32_Para.h">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_Win32_Pump.cpp">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_Win32_Pump.h">
+					</File>
+					<File
 						RelativePath=".\arch\InputHandler\Selector_InputHandler.h">
 					</File>
 				</Filter>

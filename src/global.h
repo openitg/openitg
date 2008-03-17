@@ -49,6 +49,9 @@
 /* And vector: */
 #include <vector>
 
+#ifdef WIN32
+#define MISSING_STDINT_H
+#endif
 #if !defined(MISSING_STDINT_H) /* need to define int64_t if so */
 #include <stdint.h>
 #endif

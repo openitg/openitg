@@ -788,7 +788,7 @@ static void DoSave()
 	seconds = time( NULL );
 	
 	char sCrashLog[32];
-	sprintf( sCrashLog, "../Stats/crashlog-%ld.txt", seconds );
+	sprintf( sCrashLog, "crashlog-%ld.txt", seconds );
 
 	SpliceProgramPath(szModName2, sizeof szModName2, sCrashLog);
 

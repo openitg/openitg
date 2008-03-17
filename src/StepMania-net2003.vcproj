@@ -1294,6 +1294,9 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					<File
 						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.h">
 					</File>
+					<File
+						RelativePath=".\arch\InputHandler\Selector_InputHandler.h">
+					</File>
 				</Filter>
 				<Filter
 					Name="MovieTexture"

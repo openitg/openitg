@@ -7,11 +7,7 @@
 #include "PIUIO.h"
 #include "ITGIO.h"
 
-#ifdef WIN32
-#include "libusb/usb.h"
-#else
 #include <usb.h>
-#endif
 
 // XXX: we probably need to move this to arch or archutils in preparation for windows portability
 //           --infamouspat

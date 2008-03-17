@@ -5,11 +5,7 @@
 
 #include <cstdlib>
 #include <map>
-#ifdef WIN32
-#include "libusb/usb.h"
-#else
 #include <usb.h>
-#endif
 
 
 static CString sClassDescriptions[] =

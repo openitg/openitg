@@ -31,7 +31,7 @@ private:
 };
 
 /* WindowsFileIO - Windows USB I/O */
-class USBDevice
+class USBDeviceWin32
 {
 public:
 	int GetPadEvent();

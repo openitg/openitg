@@ -12,7 +12,7 @@ InputHandler_Win32_Para::InputHandler_Win32_Para()
 	shutdown = false;
 	const int para_usb_vid = 0x0507, para_usb_pid = 0x0409;
 
-	dev = new USBDevice;
+	dev = new USBDeviceWin32;
 
 	bool FoundOnePad = false;
 	if( dev->Open(para_usb_vid, para_usb_pid, sizeof(long), 0) )

@@ -4,7 +4,7 @@
 #include "InputHandler.h"
 #include "RageThreads.h"
 
-class USBDevice;
+class USBDeviceWin32;
 class InputHandler_Win32_Para: public InputHandler
 {
 public:
@@ -14,7 +14,7 @@ public:
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 
 private:
-	USBDevice *dev;
+	USBDeviceWin32 *dev;
 	RageThread InputThread;
 	bool shutdown;
 

@@ -49,7 +49,7 @@ static CString GetUSBDevicePath (int num)
 }
 
 
-bool USBDevice::Open(int VID, int PID, int blocksize, int num)
+bool USBDeviceWin32::Open(int VID, int PID, int blocksize, int num)
 {
     DWORD index = 0;
 
@@ -85,13 +85,13 @@ bool USBDevice::Open(int VID, int PID, int blocksize, int num)
     return false;
 }
 
-bool USBDevice::IsOpen() const
+bool USBDeviceWin32::IsOpen() const
 {
 	return io.IsOpen();
 }
 
 
-int USBDevice::GetPadEvent()
+int USBDeviceWin32::GetPadEvent()
 {
 	if(!IsOpen())
 		return -1;

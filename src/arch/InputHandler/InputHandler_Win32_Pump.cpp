@@ -12,7 +12,7 @@ InputHandler_Win32_Pump::InputHandler_Win32_Pump()
 	m_bShutdown = false;
 	const int pump_usb_vid = 0x0d2f, pump_usb_pid = 0x0001;
 
-	m_pDevice = new USBDevice[NUM_PUMPS];
+	m_pDevice = new USBDeviceWin32[NUM_PUMPS];
 
 	bool bFoundOnePad = false;
 	for( int i = 0; i < NUM_PUMPS; ++i )

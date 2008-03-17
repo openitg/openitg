@@ -2,6 +2,7 @@
 #include "RageDisplay.h"
 #include "RageDisplay_D3D.h"
 #include "D3D8.h"
+#include "dxerr9.h"
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "RageTimer.h"
@@ -42,9 +43,10 @@
 
 CString GetErrorString( HRESULT hr )
 {
-	char szError[1024] = "";
-	D3DXGetErrorString( hr, szError, sizeof(szError) );
-	return szError;
+	//char szError[1024] = DXGetErrorString8( hr );
+	const char *szError = DXGetErrorString9( hr );
+	//D3DXGetErrorString( hr, szError, sizeof(szError) );
+	return CString(szError);
 }
 
 

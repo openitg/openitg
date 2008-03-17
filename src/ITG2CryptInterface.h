@@ -2,7 +2,7 @@
 #define ITG2_CRYPT_INTERFACE_H
 
 #include <cerrno>
-#include "crypto/aes.h"
+#include "aes/aes.h"
 #include "StdString.h"
 #include <map>
 

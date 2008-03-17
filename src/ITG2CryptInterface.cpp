@@ -1,7 +1,7 @@
 #include "global.h"
 #include "RageException.h"
 #include "RageLog.h"
-#include "crypto/aes.h"
+#include "aes/aes.h"
 #include "crypto/CryptSH512.h"
 #include "ITG2CryptInterface.h"
 #include "ibutton/getkey.h"

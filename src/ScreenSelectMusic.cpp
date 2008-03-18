@@ -1322,6 +1322,10 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 			// accept as valid only if it's a machine song, or if the file checks out.
 			if( m_MusicWheel.GetSelectedSong()->IsCustomSong() ) // a song we need to test
 			{
+				// playing the preview while attempting to copy the song from USB = bad
+				//    --infamouspat
+				SOUND->StopMusic();
+
 				// if false and no time, set a random song.
 				if( (int)m_MenuTimer->GetSeconds() == 0 )
 				{

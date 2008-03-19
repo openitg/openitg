@@ -315,6 +315,9 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="ScreenDemonstration.h">
 			</File>
 			<File
+				RelativePath=".\ScreenDimensions.cpp">
+			</File>
+			<File
 				RelativePath="ScreenDimensions.h">
 			</File>
 			<File
@@ -1019,9 +1022,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="ScoreKeeperRave.h">
-			</File>
-			<File
-				RelativePath="ScreenDimensions.cpp">
 			</File>
 			<File
 				RelativePath=".\Song.cpp">

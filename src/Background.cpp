@@ -378,8 +378,9 @@ bool BackgroundImpl::Layer::CreateBackground( const Song *pSong, const Backgroun
 
 
 	// Set Lua color globals
-	LUA->SetGlobal( ssprintf("Color%d",1), bd.m_sColor1.empty() ? "1,1,1,1" : bd.m_sColor1 );
-	LUA->SetGlobal( ssprintf("Color%d",2), bd.m_sColor2.empty() ? "1,1,1,1" : bd.m_sColor2 );
+	// EXPERIMENT: fix "Color1 as boolean" error?
+	LUA->SetGlobal( ssprintf("Color%d",1), bd.m_sColor1.empty() ? CString("1,1,1,1") : bd.m_sColor1 );
+	LUA->SetGlobal( ssprintf("Color%d",2), bd.m_sColor2.empty() ? CString("1,1,1,1") : bd.m_sColor2 );
 
 
 	// Resolve the effect file.

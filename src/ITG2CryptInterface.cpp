@@ -7,6 +7,9 @@
 #include "ibutton/getkey.h"
 #include <cstdio>
 
+/* courtesy of random.org. -- Vyhd */
+#define DEFAULT_AES_KEY "65487573252940086457044055343188392138734144585"
+
 /* Windows compatibility layer...really ugly. :( */
 #if defined(UNIX)
 #include <fcntl.h>

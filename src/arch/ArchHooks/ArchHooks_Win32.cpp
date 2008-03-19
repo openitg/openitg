@@ -168,7 +168,9 @@ void ArchHooks_Win32::RestartProgram()
 /* Necessary? Is there anything RestartProgram can't do that this can? */
 void ArchHooks_Win32::SystemReboot()
 {
-	return; // pretend there's nothing here right now -- we'll enable if needed
+	EndGame();
+
+	return; // pretend there's nothing else here right now -- we'll enable if needed
 
 	if( IsAFile("/Data/no-reboot") )
 		return;

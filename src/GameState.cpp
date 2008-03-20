@@ -728,7 +728,12 @@ void GameState::UpdateSongPosition( float fPositionSeconds, const TimingData &ti
 	m_fMusicSecondsVisible = fPositionSeconds - PREFSMAN->m_fVisualDelaySeconds;
 	
 	float fThrowAway; bool bThrowAway;
-	timing.GetBeatAndBPSFromElapsedTime( m_fMusicSecondsVisible, m_fSongBeatVisible, fThrowAway, bThrowAway );
+
+	// EXPERIMENT: fix for "edit mode doesn't work" error?
+	if( !m_bEditing )
+		timing.GetBeatAndBPSFromElapsedTime( m_fMusicSecondsVisible, m_fSongBeatVisible, fThrowAway, bThrowAway );
+	else
+		timing.GetBeatAndBPSFromElapsedTime( m_fMusicSeconds, m_fSongBeat, fThrowAway, bThrowAway );
 
 	Actor::SetBGMTime( m_fMusicSecondsVisible, m_fSongBeatVisible );
 //	Actor::SetBGMTime( fPositionSeconds, m_fSongBeat );

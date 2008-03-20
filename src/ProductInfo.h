@@ -17,7 +17,7 @@
 
 // Don't forget to also change ProductInfo.inc!
 #define PRODUCT_NAME "OpenITG"
-#define PRODUCT_VER "alpha 3"
+#define PRODUCT_VER "alpha 4"
 
 #define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER
 

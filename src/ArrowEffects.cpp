@@ -39,7 +39,11 @@ float ArrowEffects::GetYOffset( const PlayerState* pPlayerState, int iCol, float
 	if( pPlayerState->m_CurrentPlayerOptions.m_fTimeSpacing != 1.0f )
 	{
 		/* offset by VisualDelayEffect seconds */
-		float fSongBeat = GAMESTATE->m_fSongBeatVisible;
+		float fSongBeat;
+		if( GAMESTATE->m_bEditing )
+			fSongBeat = GAMESTATE->m_fSongBeat;
+		else
+			fSongBeat = GAMESTATE->m_fSongBeatVisible;
 		float fBeatsUntilStep = fNoteBeat - fSongBeat;
 		float fYOffsetBeatSpacing = fBeatsUntilStep * ARROW_SPACING;
 		fYOffset += fYOffsetBeatSpacing * (1-pPlayerState->m_CurrentPlayerOptions.m_fTimeSpacing);
@@ -48,7 +52,11 @@ float ArrowEffects::GetYOffset( const PlayerState* pPlayerState, int iCol, float
 	if( pPlayerState->m_CurrentPlayerOptions.m_fTimeSpacing != 0.0f )
 	{
 		/* offset by VisualDelaySeconds amount */
-		float fSongSeconds = GAMESTATE->m_fMusicSecondsVisible;
+		float fSongSeconds;
+		if( !GAMESTATE->m_bEditing )
+			fSongSeconds = GAMESTATE->m_fMusicSecondsVisible;
+		else
+			fSongSeconds = GAMESTATE->m_fMusicSeconds;
 		float fNoteSeconds = GAMESTATE->m_pCurSong->GetElapsedTimeFromBeat(fNoteBeat);
 		float fSecondsUntilStep = fNoteSeconds - fSongSeconds;
 		float fBPM = pPlayerState->m_CurrentPlayerOptions.m_fScrollBPM;
@@ -311,7 +319,11 @@ float ArrowEffects::GetXPos( const PlayerState* pPlayerState, int iColNum, float
 		fTotalTime /= fDiv;
 
 		/* offset by VisualDelayEffect seconds */
-		float fBeat = GAMESTATE->m_fSongBeatVisible + fAccelTime;
+		float fBeat;
+		if( !GAMESTATE->m_bEditing )
+			fBeat = GAMESTATE->m_fSongBeatVisible + fAccelTime;
+		else
+			fBeat = GAMESTATE->m_fSongBeat + fAccelTime;
 		fBeat /= fDiv;
 
 		const bool bEvenBeat = ( int(fBeat) % 2 ) != 0;

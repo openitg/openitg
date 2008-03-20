@@ -6,6 +6,7 @@
 #include "PrefsManager.h"
 #include "StepMania.h"
 #include "ProductInfo.h"
+#include "GameState.h"
 
 #include "archutils/win32/AppInstance.h"
 #include "archutils/win32/crash.h"
@@ -168,7 +169,7 @@ void ArchHooks_Win32::RestartProgram()
 /* Necessary? Is there anything RestartProgram can't do that this can? */
 void ArchHooks_Win32::SystemReboot()
 {
-	EndGame();
+	GAMESTATE->EndGame();
 
 	return; // pretend there's nothing else here right now -- we'll enable if needed
 

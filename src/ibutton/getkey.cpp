@@ -13,8 +13,11 @@ int getKey(const uchar *subkey, uchar *output) {
 
 	memcpy(firstDataPage, subkey, 32);
 	
-	// XXX: this looks suspiciously non-portable.
+#ifdef WIN32
+	if ((copr.portnum = owAcquireEx("COM1")) == -1) {
+#else
 	if ((copr.portnum = owAcquireEx("/dev/ttyS0")) == -1) {
+#endif
 		LOG->Warn("getKey(): failed to acquire port.\n");
 		return -1;
 	}

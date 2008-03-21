@@ -266,9 +266,12 @@ void RageFileManager::MountInitialFilesystems()
 	if( Root == "" && !stat( InitialWorkingDirectory + "/Songs", &st ) && st.st_mode&S_IFDIR )
 		Root = InitialWorkingDirectory;
 
+
 #ifdef ITG_ARCADE
 	RageFileManager::Mount( "dir", "/stats", "/Data" );
-	RageFileManager::Mount( "kry", "/itgdata", "/CryptPackages" );
+	// do not overlap /CryptPackages, that's already declared in StepMania.cpp, keep to /Packages
+	//    --infamouspat
+	RageFileManager::Mount( "kry", "/itgdata", "/Packages" );
 #else
 	RageFileManager::Mount( "kry", Root + "/CryptPackages", "/CryptPackages" );
 	/* This mounts everything else, including Data, etc. */

@@ -1,14 +1,12 @@
 /* More-or-less in order of priority. */
 
 /* Bug fixing */
--Fix the Win32 "Color1 is boolean" LUA parsing error (done?)
 
 /* Minor feature additions */
 -Implement "InputDebounceTime"
 -Implement "CustomSongPreviews" (keep drive mounted during SSM)
 -Fix "Banner custom doesn't always show in ScreenRanking" bug
 -Implement "hold to enter operator menu" function
--Implement Windows dongle functions (just compile win32lnk?)
 
 /* Major feature additions */
 -Implement "lifebar graph shows FFC/FEC"

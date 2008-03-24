@@ -65,8 +65,8 @@ void ScreenArcadePatch::Init()
 
 	// HACK: needed to prevent early exits
 	m_bExit = false;
-	g_sPatch = "";
 	g_sStatus = "";
+	g_sPatch = THEME->GetMetric("ScreenArcadePatch", "IntroText");
 
 	m_Status.LoadFromFont( THEME->GetPathF("ScreenArcadePatch", "text") );
 	m_Patch.LoadFromFont( THEME->GetPathF("ScreenArcadePatch", "text") );

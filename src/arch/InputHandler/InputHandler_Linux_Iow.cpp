@@ -68,6 +68,10 @@ void InputHandler_Linux_Iow::InputThreadMain()
 		IOBoard.Write( m_iWriteData );
 
 		IOBoard.Read( &m_iInputData );
+
+		if( PREFSMAN->m_bITGIOBitFlip )
+			m_iInputData = ~m_iInputData;
+
 		HandleInput();
 
 		// give up 0.01 sec for other events -
@@ -79,15 +83,16 @@ void InputHandler_Linux_Iow::InputThreadMain()
 /* Thanks, ITG-IO documentation! <3 */
 void InputHandler_Linux_Iow::HandleInput()
 {
-	uint32_t i = 1; // convenience hack
+	uint16_t i = 1; // convenience hack
 
 	if( PREFSMAN->m_bDebugUSBInput && (m_iInputData != 0) && (m_iInputData != m_iLastInput) )
 	{
-		LOG->Info( "Input: %i", m_iInputData );
+		if( LOG )
+			LOG->Info( "Input: %i", m_iInputData );
 
 		CString sInputs;
 
-		for( unsigned x = 0; x < 32; x++ )
+		for( unsigned x = 0; x < 16; x++ )
 		{
 			/* the bit we expect isn't in the data */
 			if( !(m_iInputData & (i << x)) )
@@ -165,11 +170,4 @@ void InputHandler_Linux_Iow::UpdateLights()
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( g_LightsState.m_bGameButtonLights[gc][gb] )
 				m_iWriteData |= iPadBits[gc][gb];
-
-	CString sBits;
-
-	for( int x = 0; x < 16; x++ )
-		sBits += (m_iWriteData & (1 << (16-x))) ? "1" : "0";
-
-	LOG->Trace( "%s", sBits.c_str() );
 }

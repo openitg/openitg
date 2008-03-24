@@ -11,8 +11,8 @@ public:
 //	all in one place. It's not important right now, though. - Vyhd
 //	static bool DeviceMatches( int idVendor, int idProduct );
 
-	bool Read( uint32_t *pData );
-	bool Write( uint32_t iData );
+	bool Read( uint16_t *pData );
+	bool Write( uint16_t iData );
 
 	/* Globally accessible. */
 	static int m_iInputErrorCount;

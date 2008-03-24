@@ -102,6 +102,7 @@ public:
 
 	CString m_sGuid;
 	map<CString,CString> m_sDefaultModifiers;
+	vector<CString> m_sPlayerAdditionalModifiers;
 	SortOrder m_SortOrder;
 	Difficulty m_LastDifficulty;
 	CourseDifficulty m_LastCourseDifficulty;

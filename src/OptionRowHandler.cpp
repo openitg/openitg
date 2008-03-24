@@ -19,6 +19,8 @@
 #include "ScreenManager.h"
 #include "GameSoundManager.h"
 #include "CommonMetrics.h"
+#include "ProfileManager.h"
+#include "PlayerNumber.h"
 
 #define ENTRY(s)					THEME->GetMetric ("ScreenOptionsMaster",s)
 #define ENTRY_MODE(s,i)				THEME->GetMetric ("ScreenOptionsMaster",ssprintf("%s,%i",(s).c_str(),(i+1)))
@@ -140,6 +142,9 @@ public:
 			if( mc.m_sName == "" )
 				RageException::Throw( "List \"%s\", col %i has no name", sParam.c_str(), col );
 
+			if (sParam == "Speed")
+				LOG->Trace("mc.m_sName = %s", mc.m_sName.c_str());
+
 			if( !mc.IsPlayable() )
 			{
 				LOG->Trace( "\"%s\" is not playable.", sParam.c_str() );
@@ -151,6 +156,36 @@ public:
 			CString sName = mc.m_sName;
 			CString sChoice = mc.m_sName;
 			defOut.choices.push_back( sChoice );
+		}
+
+		// OpenITG hack: load player-defined speed mods
+		if (sParam == "Speed")
+		{
+			PlayerNumber pn;
+			FOREACH_EnabledPlayer( pn )
+			{
+				Profile *pProf = PROFILEMAN->GetProfile(pn);
+				if (pProf == NULL) continue;
+				if (pProf->m_sPlayerAdditionalModifiers.size() == 0)
+				{
+					LOG->Trace("OptionRowHandler: player #%d (\"%s\") not using default mods", pn+1, pProf->GetDisplayName().c_str());
+				}
+				for (int i = 0; i < pProf->m_sPlayerAdditionalModifiers.size(); i++)
+				{
+					GameCommand mc;
+					CString playerMod = pProf->m_sPlayerAdditionalModifiers[i];
+					// XXX: dangerous, sanitize the input --infamouspat
+					LOG->Trace("OptionRowHandler: playernumber %d, mod %s", pn, playerMod.c_str());
+					mc.Load( 0, ParseCommands(CString("mod,")+playerMod+";name,"+playerMod) );
+					if( !mc.IsPlayable() )
+					{
+						LOG->Trace( "Additional mod \"%s\" is not playable.", sParam.c_str() );
+						continue;
+					}
+					ListEntries.push_back(mc);
+					defOut.choices.push_back(mc.m_sName);
+				}
+			}
 		}
 	}
 	void ImportOption( const OptionRowDefinition &def, const vector<PlayerNumber> &vpns, vector<bool> vbSelectedOut[NUM_PLAYERS] ) const

@@ -42,8 +42,19 @@ void OptionRow::PrepareItemText( CString &s ) const
 	if( s == EXIT_NAME )								bTheme = true;
 	if( THEME_ITEMS && m_RowDef.m_bAllowThemeItems )	bTheme = true;
 
-	if( bTheme ) 
-		s = THEME_OPTION_ITEM( s, false ); 
+	if( bTheme )
+	{
+		if (m_RowDef.name != "Speed")
+			s = THEME_OPTION_ITEM( s, false ); 
+		else
+			// very hacky: we assume an ITG-related theme, so we assume a uniform way of determining
+			// the display of speed mods.  Very non-standard, but allows for flexibility of changing the options
+			//     --infamouspat
+		{
+			CHECKPOINT_M(s);
+			s = THEME_OPTION_ITEM( s, true );
+		}
+	}
 	if( CAPITALIZE_ALL_OPTION_NAMES )
 		s.MakeUpper(); 
 }
@@ -312,7 +323,9 @@ void OptionRow::AfterImportOptions()
 
 			bt->LoadFromFont( THEME->GetPathF(m_sType,"item") );
 			CString sText = (iChoiceInRowWithFocus==-1) ? "" : m_RowDef.choices[iChoiceInRowWithFocus];
+			// ugly hack for Speed mods --infamouspat
 			PrepareItemText( sText );
+
 			bt->SetText( sText );
 			bt->RunCommands( ITEMS_ON_COMMAND );
 			bt->SetShadowLength( 0 );

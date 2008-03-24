@@ -23,6 +23,8 @@
 #include "CatalogXml.h"
 #include "Bookkeeper.h"
 #include "Game.h"
+#include "GameCommand.h"
+#include "GameState.h"
 
 //
 // Old file versions for backward compatibility
@@ -58,6 +60,7 @@ void Profile::InitEditableData()
 {
 	m_sDisplayName = "";	
 	m_sLastUsedHighScoreName = "";
+
 	m_iWeightPounds = 0;
 	/* opt-in policy */
 	m_bUseCatalog = false;
@@ -895,6 +898,7 @@ void Profile::SaveEditableDataToDir( CString sDir ) const
 	ini.SetValue( "Editable", "LastUsedHighScoreName",	m_sLastUsedHighScoreName );
 	ini.SetValue( "Editable", "WeightPounds",			m_iWeightPounds );
 	ini.SetValue( "Editable", "UseCatalogXML",		m_bUseCatalog );
+	ini.SetValue( "Editable", "AdditionalSpeedMods",	join(", ", m_sPlayerAdditionalModifiers));
 
 	ini.WriteFile( sDir + EDITABLE_INI );
 }
@@ -1051,6 +1055,32 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	ini.GetValue("Editable","WeightPounds",				m_iWeightPounds);
 	ini.GetValue("Editable","UseCatalogXML",		m_bUseCatalog );
 
+	CString sAdditionalSpeedBuf;
+	vector<CString> sASBCandidates;
+	if (ini.GetValue("Editable","AdditionalSpeedMods", sAdditionalSpeedBuf))
+	{
+		split(sAdditionalSpeedBuf, ",", sASBCandidates, true);
+		set<CString> sASBCNonDup;
+		for (unsigned i = 0; i < sASBCandidates.size(); i++)
+			sASBCNonDup.insert(sASBCandidates[i]);
+	
+		set<CString>::iterator iter;
+		for( iter = sASBCNonDup.begin(); iter != sASBCNonDup.end(); iter++ )
+		{
+			CString candidate = *iter;
+			TrimLeft(candidate);
+			TrimRight(candidate);
+			Regex mult("^([0-9]+(\\.[0-9]+)?)x$");
+			Regex constmod("^C[0-9]{1,4}$");
+			//
+			// XXX: ToDo: sanitize the input better --infamouspat
+			//
+			if (mult.Compare(candidate) || constmod.Compare(candidate)) m_sPlayerAdditionalModifiers.push_back(candidate);
+			LOG->Trace("Editable.ini: added custom speed mod %s", candidate.c_str());
+		}
+	}
+	CHECKPOINT_M("AdditionalSpeedMods end");
+
 
 	// This is data that the user can change, so we have to validate it.
 	wstring wstr = CStringToWstring(m_sDisplayName);
@@ -1116,12 +1146,47 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 	}
 
 	{
+		vector<CString> sPossibleSpeedMods, sDefaultMods;
 		const XNode* pDefaultModifiers = pNode->GetChild("DefaultModifiers");
 		if( pDefaultModifiers )
 		{
 			FOREACH_CONST_Child( pDefaultModifiers, game_type )
 			{
 				m_sDefaultModifiers[game_type->m_sName] = game_type->m_sValue;
+			}
+			// is "Speed" the only OptionRow for scroll speeds?
+			if (! IsMachine() )
+			{
+				CHECKPOINT_M("CustomSpeedMod check 1");
+				int iSpeedLineCount = THEME->GetMetricI("ScreenOptionsMaster", "Speed");
+				for (int i = 1; i <= iSpeedLineCount; i++)
+				{
+					GameCommand gc;
+					gc.Load( 0, ParseCommands(THEME->GetMetric("ScreenOptionsMaster", ssprintf("Speed,%d",i))) );
+					sPossibleSpeedMods.push_back(gc.m_sName);
+				}
+				for (unsigned i = 0; i < m_sPlayerAdditionalModifiers.size(); i++)
+				{
+					sPossibleSpeedMods.push_back(m_sPlayerAdditionalModifiers[i]);
+				}
+				CHECKPOINT_M("CustomSpeedMod check 2");
+				for (unsigned i = 0; i < sPossibleSpeedMods.size(); i++)
+				{
+					LOG->Trace("sPossibleSpeedMods[%d]: %s", i, sPossibleSpeedMods[i].c_str());
+				}
+				CHECKPOINT_M("CustomSpeedMod check 3");
+				split(m_sDefaultModifiers[GAMESTATE->GetCurrentGame()->m_szName], ", ", sDefaultMods);
+				bool found = false;
+				for (unsigned i = 0; i < sPossibleSpeedMods.size(); i++)
+				{
+					if (sDefaultMods[0] == sPossibleSpeedMods[i]) found = true;
+				}
+				if (!found)
+				{
+					LOG->Warn("Speed mod %s does not exist in the list of possible speed mods, using default...", sDefaultMods[0].c_str());
+					m_sDefaultModifiers[GAMESTATE->GetCurrentGame()->m_szName] = PREFSMAN->m_sDefaultModifiers.ToString();
+				}
+				CHECKPOINT_M("CustomSpeedMod check final");
 			}
 		}
 	}

@@ -1337,7 +1337,7 @@ void InsertCredit()
 bool HandleGlobalInputs( DeviceInput DeviceI, InputEventType type, GameInput GameI, MenuInput MenuI, StyleInput StyleI )
 {
 	/* None of the globals keys act on types other than FIRST_PRESS */
-	if( type != IET_FIRST_PRESS ) 
+	if( type != IET_FIRST_PRESS && MenuI.button != MENU_BUTTON_OPERATOR) 
 		return false;
 
 	switch( MenuI.button )
@@ -1347,7 +1347,13 @@ bool HandleGlobalInputs( DeviceInput DeviceI, InputEventType type, GameInput Gam
 		/* Global operator key, to get quick access to the options menu. Don't
 		 * do this if we're on a "system menu", which includes the editor
 		 * (to prevent quitting without storing changes). */
-		if( SCREENMAN->GetTopScreen()->GetScreenType() != system_menu )
+		/*bOperatorSeq = false;
+		while (!bOperatorSeq)
+		{
+			m_OperatorTimer.SetZero();
+			bOperatorSeq = true;
+		} */
+		if( SCREENMAN->GetTopScreen()->GetScreenType() != system_menu && (type==IET_SLOW_REPEAT||type==IET_FAST_REPEAT))
 		{
 			SCREENMAN->DeletePreparedScreens();
 			SCREENMAN->SystemMessage( "Service switch pressed" );

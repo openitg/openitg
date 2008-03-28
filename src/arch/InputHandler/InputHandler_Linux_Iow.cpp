@@ -24,6 +24,7 @@ InputHandler_Linux_Iow::InputHandler_Linux_Iow()
 	m_bFoundDevice = true;
 
 	InputThread.SetName( "Iow thread" );
+	LightsThread.SetName( "Iow lights thread" );
 	InputThread.Create( InputThread_Start, this );
 
 	g_sInputType = "ITGIO";
@@ -36,9 +37,15 @@ InputHandler_Linux_Iow::~InputHandler_Linux_Iow()
 
 	m_bShutdown = true;
 
-	LOG->Trace( "Shutting down Iow thread..." );
-	InputThread.Wait();
-	LOG->Trace( "Iow thread shut down" );
+	LOG->Trace( "Shutting down Iow threads..." );
+
+	if( InputThread.IsCreated() )
+		InputThread.Wait();
+
+	if( LightsThread.IsCreated() )
+		LightsThread.Wait();
+
+	LOG->Trace( "Iow threads shut down" );
 
 	/* Reset all lights to off and close it */
 	IOBoard.Write( 0 );
@@ -60,19 +67,35 @@ int InputHandler_Linux_Iow::InputThread_Start( void *p )
 	return 0;
 }
 
+int InputHandler_Linux_Iow::LightThread_Start( void *p )
+{
+	((InputHandler_Linux_Iow *) p)->LightThreadMain();
+	return 0;
+}
+
 void InputHandler_Linux_Iow::InputThreadMain()
 {
 	while( !m_bShutdown )
 	{
-		UpdateLights();
-		IOBoard.Write( m_iWriteData );
-
 		IOBoard.Read( &m_iInputData );
 
 		if( PREFSMAN->m_bITGIOBitFlip )
 			m_iInputData = ~m_iInputData;
 
 		HandleInput();
+
+		// give up 0.005 sec for other events -
+		// this may need adjusting for lag/offsets
+		usleep( 5000 );
+	}
+}
+
+void InputHandler_Linux_Iow::LightThreadMain()
+{
+	while( !m_bShutdown )
+	{
+		UpdateLights();
+		IOBoard.Write( m_iWriteData );
 
 		// give up 0.01 sec for other events -
 		// this may need adjusting for lag/offsets

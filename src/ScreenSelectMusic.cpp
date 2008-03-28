@@ -356,6 +356,16 @@ void ScreenSelectMusic::Init()
 	TweenOnScreen();
 
 	this->SortByDrawOrder();
+
+	/* At least for right now, we need the card mounted for previews */
+	if( PREFSMAN->m_bCustomSongPreviews )
+	{
+		FOREACH_PlayerNumber( pn )
+		{
+			MEMCARDMAN->UnmountCard( pn );
+			MEMCARDMAN->MountCard( pn, 600 );
+		}
+	}
 }
 
 
@@ -363,6 +373,10 @@ ScreenSelectMusic::~ScreenSelectMusic()
 {
 	LOG->Trace( "ScreenSelectMusic::~ScreenSelectMusic()" );
 	BANNERCACHE->Undemand();
+	
+	if( PREFSMAN->m_bCustomSongPreviews )
+		FOREACH_EnabledPlayer( pn )
+			MEMCARDMAN->UnmountCard( pn );
 
 }
 
@@ -1256,7 +1270,8 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 
 	// whoever owns the song we're reading, mount their card.
 	// timeout is high so slow, but valid, loads don't get interrupted
-	MEMCARDMAN->MountCard( pSong->m_SongOwner, 20 );
+	if( !PREFSMAN->m_bCustomSongPreviews )
+		MEMCARDMAN->MountCard( pSong->m_SongOwner, 20 );
 	
 	// now, verify the song internally since we can read the data now
 	CString sError;
@@ -1281,14 +1296,16 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 		GAMESTATE->m_pCurSong->m_sGameplayMusic, &UpdateLoadProgress );
 
 		if( !bCopied ) // failed
-			SCREENMAN->SystemMessage( "Error accessing USB drive." );
+			SCREENMAN->SystemMessage( "Copying error. Check your permissions." );
 	}
 
 	// ...and unmount, now that we're done.
-	MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
+	if( !PREFSMAN->m_bCustomSongPreviews )
+		MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
 
 	// EXPERIMENT: fix input-killing bug
 	INPUTFILTER->Reset();
+	INPUTFILTER->Update( 0 );
 
 	SCREENMAN->HideOverlayMessage();
 
@@ -1326,7 +1343,8 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 				//    --infamouspat
 				SOUND->StopMusic();
 
-				// if false and no time, set a random song.
+				// if false and no time, set a random song that isn't a custom - those could fail
+				// we may improve on this behaviour later.
 				if( (int)m_MenuTimer->GetSeconds() == 0 )
 				{
 					m_MusicWheel.StartRandom();
@@ -1745,7 +1763,13 @@ void ScreenSelectMusic::AfterMusicChange()
 	case TYPE_SONG:
 	case TYPE_PORTAL:
 		{
-			m_sSampleMusicToPlay = pSong->GetMusicPath();
+			// UGLY: grab the path to _silent.ogg so timing
+			// data still runs - it'll only run if we play audio
+			if( pSong->IsCustomSong() && !PREFSMAN->m_bCustomSongPreviews )
+				m_sSampleMusicToPlay = THEME->GetPathS( "", "_silent" );
+			else
+				m_sSampleMusicToPlay = pSong->GetMusicPath();
+
 			m_pSampleMusicTimingData = &pSong->m_Timing;
 			m_fSampleStartSeconds = pSong->m_fMusicSampleStartSeconds;
 			m_fSampleLengthSeconds = pSong->m_fMusicSampleLengthSeconds;
@@ -1757,9 +1781,11 @@ void ScreenSelectMusic::AfterMusicChange()
 			StepsUtil::RemoveLockedSteps( pSong, m_vpSteps );
 			StepsUtil::SortNotesArrayByDifficulty( m_vpSteps );
 
-			// if it's a custom, load the banner.
+			// if it's a custom, load the 'edit' banner.
+			/* Please note: displaying banners if CustomSongPreviews
+			 * is for testing only and is not intended behaviour. */
 			if ( PREFSMAN->m_bShowBanners )
-				if( pSong->IsCustomSong() )
+				if( pSong->IsCustomSong() && !PREFSMAN->m_bCustomSongPreviews )
 					g_sBannerPath = THEME->GetPathG("Banner","custom");
 				else
 					g_sBannerPath = pSong->GetBannerPath();

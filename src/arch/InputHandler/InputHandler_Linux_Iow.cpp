@@ -67,9 +67,9 @@ int InputHandler_Linux_Iow::InputThread_Start( void *p )
 	return 0;
 }
 
-int InputHandler_Linux_Iow::LightThread_Start( void *p )
+int InputHandler_Linux_Iow::LightsThread_Start( void *p )
 {
-	((InputHandler_Linux_Iow *) p)->LightThreadMain();
+	((InputHandler_Linux_Iow *) p)->LightsThreadMain();
 	return 0;
 }
 
@@ -90,7 +90,7 @@ void InputHandler_Linux_Iow::InputThreadMain()
 	}
 }
 
-void InputHandler_Linux_Iow::LightThreadMain()
+void InputHandler_Linux_Iow::LightsThreadMain()
 {
 	while( !m_bShutdown )
 	{

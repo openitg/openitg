@@ -35,10 +35,12 @@ private:
 	uint16_t m_iLastWrite;
 
 	static int InputThread_Start( void *p );
+	static int LightsThread_Start( void *p );
 
 	void InputThreadMain();
-	void HandleInput();
+	void LightsThreadMain();
 
+	void HandleInput();
 	// allow this driver to update lights with "ext"
 	void UpdateLights();
 };

@@ -19,6 +19,9 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 {
 	m_bShutdown = false;
 
+	/* Mark the input type, for theme purposes */
+	g_sInputType = "PIUIO";
+
 	// device found and set
 	if( !IOBoard.Open() )
 	{
@@ -32,8 +35,6 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 	InputThread.SetName( "PIUIO thread" );
 	InputThread.Create( InputThread_Start, this );
 
-	/* Mark the input type, for theme purposes */
-	g_sInputType = "PIUIO";
 }
 
 InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()

@@ -84,14 +84,14 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, IO_P1_MENU_RIGHT,	DANCE_BUTTON_MENURIGHT,		false },
 
 			/* Player 2 */
-			{ 1, IO_P2_LEFT,	DANCE_BUTTON_LEFT,		false },
-			{ 1, IO_P2_RIGHT,	DANCE_BUTTON_RIGHT,		false },
-			{ 1, IO_P2_UP,		DANCE_BUTTON_UP,		false },
-			{ 1, IO_P2_DOWN,	DANCE_BUTTON_DOWN,		false },
-			{ 1, IO_P2_SELECT,	DANCE_BUTTON_SELECT,		false },
-			{ 1, IO_P2_START,	DANCE_BUTTON_START,		false },
-			{ 1, IO_P2_MENU_LEFT,	DANCE_BUTTON_MENULEFT,		false },
-			{ 1, IO_P2_MENU_RIGHT,	DANCE_BUTTON_MENURIGHT,		false },
+			{ 1, IO_P2_LEFT,	DANCE_BUTTON_LEFT,		true },
+			{ 1, IO_P2_RIGHT,	DANCE_BUTTON_RIGHT,		true },
+			{ 1, IO_P2_UP,		DANCE_BUTTON_UP,		true },
+			{ 1, IO_P2_DOWN,	DANCE_BUTTON_DOWN,		true },
+			{ 1, IO_P2_SELECT,	DANCE_BUTTON_SELECT,		true },
+			{ 1, IO_P2_START,	DANCE_BUTTON_START,		true },
+			{ 1, IO_P2_MENU_LEFT,	DANCE_BUTTON_MENULEFT,		true },
+			{ 1, IO_P2_MENU_RIGHT,	DANCE_BUTTON_MENURIGHT,		true },
 
 			/* Other controls */
 			

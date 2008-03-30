@@ -1,7 +1,6 @@
 /* More-or-less in order of priority. */
 
 /* Bug fixing */
-Make ITGIO map the 2P buttons to player 2 instead of player 1
 Make "g_sInputType" and "GetInputType()" work properly
 
 /* Minor feature additions */

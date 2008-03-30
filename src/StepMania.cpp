@@ -296,7 +296,6 @@ void ResetGame()
 	}
 	SaveGamePrefsToDisk();
 
-
 	//
 	// update last seen joysticks
 	//

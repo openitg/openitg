@@ -28,11 +28,11 @@ private:
 	bool m_bFoundDevice;
 	bool m_bShutdown;
 
-	uint16_t m_iInputData;
-	uint16_t m_iLastInput;
+	uint32_t m_iInputData;
+	uint32_t m_iLastInput;
 
-	uint16_t m_iWriteData;
-	uint16_t m_iLastWrite;
+	uint32_t m_iWriteData;
+	uint32_t m_iLastWrite;
 
 	static int InputThread_Start( void *p );
 	static int LightsThread_Start( void *p );

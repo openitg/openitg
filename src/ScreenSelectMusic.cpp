@@ -1305,7 +1305,7 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 
 	// EXPERIMENT: fix input-killing bug
 	INPUTFILTER->Reset();
-	INPUTFILTER->Update( 0 );
+	INPUTFILTER->Update( 1 );
 
 	SCREENMAN->HideOverlayMessage();
 

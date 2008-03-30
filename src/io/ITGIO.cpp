@@ -17,15 +17,15 @@ bool ITGIO::Matches( int idVendor, int idProduct ) const
 	return false;
 }
 
-bool ITGIO::Read( uint16_t *pData )
+bool ITGIO::Read( uint32_t *pData )
 {
 	int iResult;
 
 	while( 1 )
 	{
 		/* XXX: I hate magic values. What do these mean? -- Vyhd */
-		iResult = usb_control_msg(m_pHandle, 161, 1, 256, 0, (char *)pData, 2, 1000);
-		if( iResult == 2 ) // all data read
+		iResult = usb_control_msg(m_pHandle, 161, 1, 256, 0, (char *)pData, 4, 1000);
+		if( iResult == 4 ) // all data read
 			break;
 
 		// all data not read
@@ -36,15 +36,15 @@ bool ITGIO::Read( uint16_t *pData )
 	return true;
 }
 
-bool ITGIO::Write( uint16_t iData )
+bool ITGIO::Write( uint32_t iData )
 {
 	int iResult;
 
 	while( 1 )
 	{
-		iResult = usb_control_msg(m_pHandle, 33, 9, 512, 0, (char *)&iData, 2, 1000 );
-		
-		if( iResult == 2 ) // all data read
+		iResult = usb_control_msg(m_pHandle, 33, 9, 512, 0, (char *)&iData, 4, 1000 );
+	
+		if( iResult == 4 ) // all data read
 			break;
 		
 		Reconnect();
@@ -55,6 +55,7 @@ bool ITGIO::Write( uint16_t iData )
 
 void ITGIO::Reconnect()
 {
+	LOG->Warn( "Attempting to reconnect ITGIO" );
 	//if( ??? )
 	//	m_sInputError = "I/O timeout";
 	

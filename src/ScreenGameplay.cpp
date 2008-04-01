@@ -1256,6 +1256,14 @@ void ScreenGameplay::UpdateSongPosition( float fDeltaTime )
 	RageTimer tm;
 	const float fSeconds = m_pSoundMusic->GetPositionSeconds( NULL, &tm );
 	const float fAdjust = SOUND->GetFrameTimingAdjustment( fDeltaTime );
+	unsigned iSecondsTotal = (int)(fSeconds + fAdjust);
+	if (iSecondsTotal > PREFSMAN->m_iCustomMaxSeconds)
+	{
+                //m_DancingState = STATE_OUTRO;
+                m_pSoundMusic->StopPlaying();
+                m_soundAssistTick.StopPlaying(); /* Stop any queued assist ticks. */
+		m_SongFinished.StartTransitioning( SM_NotesEnded );
+	}
 	GAMESTATE->UpdateSongPosition( fSeconds+fAdjust, GAMESTATE->m_pCurSong->m_Timing, tm+fAdjust );
 }
 

@@ -7,13 +7,12 @@ Make "g_sInputType" and "GetInputType()" work properly
 
 /* Minor feature additions */
 -Color percentages in Versus to show who's ahead
--Implement R23-like custom song cutoff, optional
 -Implement "CustomSongPreviews" (keep drive mounted during SSM)
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
 -Implement "InputDebounceTime"
--Implement "hold to enter operator menu" function
 
 /* Major feature additions */
 -Implement custom courses from USB drive
 -Implement "lifebar graph shows FFC/FEC"
 -Improve code behind ITG2's beginner helper
+

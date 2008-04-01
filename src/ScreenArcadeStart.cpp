@@ -30,8 +30,8 @@
 /* InputHandler loading */
 #include "RageInput.h"
 #include "InputMapper.h"
-#include "arch/InputHandler/InputHandler_Linux_ITGIO.h"
-#include "arch/InputHandler/InputHandler_Linux_PIUIO.h"
+#include "arch/InputHandler/InputHandler_Iow.h"
+#include "arch/InputHandler/InputHandler_PIUIO.h"
 
 #define NEXT_SCREEN	THEME->GetMetric( m_sName, "NextScreen" );
 
@@ -119,8 +119,6 @@ bool ScreenArcadeStart::Refresh( CString &sMessage )
 {
 	vector<USBDevice> vDevices;
 	GetUSBDeviceList( vDevices );
-
-	
 }
 
 bool ScreenArcadeStart::LoadHandler( CString &sMessage )
@@ -141,6 +139,7 @@ bool ScreenArcadeStart::LoadHandler( CString &sMessage )
 	if( !pDriver->Open() )
 	{	
 		sMessage = "The input/lights controller could not be initialized.\n\nPlease consult the service manual.";
+
 		delete pDriver;
 		return false;
 	}
@@ -149,9 +148,9 @@ bool ScreenArcadeStart::LoadHandler( CString &sMessage )
 	delete pDriver;
 
 	if( bIsKit )
-		INPUTMAN->AddHandler( new InputHandler_Linux_Iow );
+		INPUTMAN->AddHandler( new InputHandler_Iow );
 	else
-		INPUTMAN->AddHandler( new InputHandler_Linux_PIUIO );
+		INPUTMAN->AddHandler( new InputHandler_PIUIO );
 
 	LOG->Trace( "Remapping joysticks after loading driver." );
 

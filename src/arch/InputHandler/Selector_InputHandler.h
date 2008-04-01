@@ -8,9 +8,9 @@
 #include "InputHandler_DirectInput.h"
 #endif
 
-/* EXPERIMENTAL: allow access to PIUIO and Iow for all */
-#include "InputHandler_Linux_PIUIO.h"
-#include "InputHandler_Linux_Iow.h"
+// These are confirmed cross-platform
+#include "InputHandler_Iow.h"
+#include "InputHandler_PIUIO.h"
 
 #ifdef HAVE_LINUXKERNEL
 #include "InputHandler_Linux_Joystick.h"
@@ -36,11 +36,6 @@
 #ifdef HAVE_XBOX
 #include "InputHandler_Xbox.h"
 #endif
-
-//our PIUIO isn't tested portable.
-//#ifndef HAVE_DARWIN
-//#include "InputHandler_PIUIO.h"
-//#endif
 
 #endif // header
 

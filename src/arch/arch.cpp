@@ -51,13 +51,12 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
 #ifdef USE_INPUT_HANDLER_XBOX
 		if(!s->CompareNoCase("Xbox") )		ret = new InputHandler_Xbox;
 #endif
-#ifdef USE_INPUT_HANDLER_LINUX_PIUIO
-		if(!s->CompareNoCase("PIUIO") )		ret = new InputHandler_Linux_PIUIO;
+#ifdef USE_INPUT_HANDLER_PIUIO
+		if(!s->CompareNoCase("PIUIO") )		ret = new InputHandler_PIUIO;
 #endif
-#ifdef USE_INPUT_HANDLER_LINUX_IOW
-		if(!s->CompareNoCase("IOW") )		ret = new InputHandler_Linux_Iow;
+#ifdef USE_INPUT_HANDLER_IOW
+		if(!s->CompareNoCase("IOW") )		ret = new InputHandler_Iow;
 #endif
-
 
 		if( ret == NULL )
 			LOG->Warn( "Unknown input handler name: %s", s->c_str() );

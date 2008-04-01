@@ -1278,16 +1278,16 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 						RelativePath="arch\InputHandler\InputHandler_DirectInputHelper.h">
 					</File>
 					<File
-						RelativePath="arch\InputHandler\InputHandler_Linux_Iow.cpp">
+						RelativePath="arch\InputHandler\InputHandler_Iow.cpp">
 					</File>
 					<File
-						RelativePath="arch\InputHandler\InputHandler_Linux_Iow.h">
+						RelativePath="arch\InputHandler\InputHandler_Iow.h">
 					</File>
 					<File
-						RelativePath="arch\InputHandler\InputHandler_Linux_PIUIO.cpp">
+						RelativePath="arch\InputHandler\InputHandler_PIUIO.cpp">
 					</File>
 					<File
-						RelativePath="arch\InputHandler\InputHandler_Linux_PIUIO.h">
+						RelativePath="arch\InputHandler\InputHandler_PIUIO.h">
 					</File>
 					<File
 						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.cpp">

@@ -154,6 +154,12 @@ ArchHooks = arch/ArchHooks/ArchHooks.cpp arch/ArchHooks/ArchHooks.h
 InputHandler = arch/InputHandler/InputHandler.cpp arch/InputHandler/InputHandler.h \
 		arch/InputHandler/InputHandler_MonkeyKeyboard.cpp arch/InputHandler/InputHandler_MonkeyKeyboard.h
 
+# Add the arcade input drivers
+InputHandler += arch/InputHandler/InputHandler_PIUIO.h \
+		arch/InputHandler/InputHandler_PIUIO.cpp \
+		arch/InputHandler/InputHandler_Iow.h \
+		arch/InputHandler/InputHandler_Iow.cpp
+
 MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture.h \
 		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h
 
@@ -218,11 +224,6 @@ endif
 if LINUX
 MemoryCard += arch/MemoryCard/MemoryCardDriverThreaded_Linux.cpp arch/MemoryCard/MemoryCardDriverThreaded_Linux.h
 InputHandler +=	arch/InputHandler/InputHandler_Linux_Joystick.h arch/InputHandler/InputHandler_Linux_Joystick.cpp
-
-InputHandler += arch/InputHandler/InputHandler_Linux_PIUIO.h \
-		arch/InputHandler/InputHandler_Linux_PIUIO.cpp \
-		arch/InputHandler/InputHandler_Linux_Iow.h \
-		arch/InputHandler/InputHandler_Linux_Iow.cpp
 endif
 
 Arch = $(LoadingWindow) $(Sound) $(ArchHooks) $(InputHandler) $(MovieTexture) \

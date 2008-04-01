@@ -26,9 +26,9 @@ InputHandler_Linux_Iow::InputHandler_Linux_Iow()
 	m_bFoundDevice = true;
 
 	InputThread.SetName( "Iow thread" );
-//	LightsThread.SetName( "Iow lights thread" );
+	LightsThread.SetName( "Iow lights thread" );
 	InputThread.Create( InputThread_Start, this );
-//	LightsThread.Create( LightsThread_Start, this );
+	LightsThread.Create( LightsThread_Start, this );
 
 	g_sInputType = "ITGIO";
 }
@@ -48,7 +48,7 @@ InputHandler_Linux_Iow::~InputHandler_Linux_Iow()
 	if( LightsThread.IsCreated() )
 		LightsThread.Wait();
 
-	LOG->Trace( "Iow threads shut down" );
+	LOG->Trace( "Iow threads shut down." );
 
 	/* Reset all lights to off and close it */
 	IOBoard.Write( 0 );
@@ -97,20 +97,23 @@ void InputHandler_Linux_Iow::InputThreadMain()
 
 void InputHandler_Linux_Iow::LightsThreadMain()
 {
-/*
 	while( !m_bShutdown )
 	{
+		UpdateLights();
+		// TEST: Do we need to re-write input?
+		IOBoard.Write( m_iWriteData );
+//		IOBoard.Write( m_iInputData | m_iWriteData );
+
 		// give up 0.01 sec for other events -
-		// this may need adjusting for lag/offsets
+		// lights aren't as vital as input.
 		usleep( 10000 );
 	}
-*/
 }
 
-/* Thanks, ITG-IO documentation. ):< */
 void InputHandler_Linux_Iow::HandleInput()
 {
 	uint32_t i = 1; // convenience hack
+
 	static const uint32_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 - left, right, up, down */
 	(i << 18), (i << 19), (i << 16), (i << 17),
@@ -125,10 +128,10 @@ void InputHandler_Linux_Iow::HandleInput()
 	0, (i << 27), (i << 28), (i << 29),
 
 	/* Service, coin insert */
-	// FIXME: Service is obviously wrong
-	(i << 1), (i << 31)	};
+	// XXX: service is untested
+	(i << 30), (i << 31)	};
 
-	if( (m_iInputData != 0) )
+	if( PREFSMAN->m_bDebugUSBInput && (m_iInputData != 0) )
 	{
 		if( LOG )
 			LOG->Info( "Input: %i", m_iInputData );
@@ -138,7 +141,6 @@ void InputHandler_Linux_Iow::HandleInput()
 		for( unsigned x = 0; x < 32; x++ )
 		{
 			/* the bit we expect isn't in the data */
-//			if( (m_iInputData & (i << x)) )
 			if( !(m_iInputData & (i << x)) )
 				continue;
 
@@ -168,19 +170,26 @@ void InputHandler_Linux_Iow::HandleInput()
 /* Requires "LightsDriver=ext" */
 void InputHandler_Linux_Iow::UpdateLights()
 {
-	/* FIXME: none of these are tested, and it's likely none are right. */
+	/* To do:
+	 - Does Iow crash if lights never change? [possible Write() problem]
+	 - See if this can accidentally set input states
+	 - Brute force lights values [(start with (1 << 15) to (1 << 0)]
+	*/
+
+	// We don't know these anyway...no loss wiping them.
+	// TEST: does the input problem occur if we write all 0s?
 	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] = {
 	/* Upper-left, upper-right, lower-left, lower-right marquee */
-	(1 << 24), (1 << 26), (1 << 25), (1 << 27),
+	0, 0, 0, 0,
 
 	/* P1 select, P2 select, both bass */
-	(1 << 29), (1 << 28), (1 << 31), (1 << 31) };
+	0, 0, 0, 0	};
 
 	static const uint32_t iPadBits[2][4] =
 	{
 		/* Left, right, up, down */
-		{ (1 << 17), (1 << 16), (1 << 19), (1 << 18) },	/* Player 1 */
-		{ (1 << 21), (1 << 20), (1 << 23), (1 << 22) }	/* Player 2 */
+		{ 0, 0, 0, 0 }, /* Player 1 */
+		{ 0, 0, 0, 0 }, /* Player 2 */
 	};
 
 	m_iLastWrite = m_iWriteData;
@@ -199,4 +208,7 @@ void InputHandler_Linux_Iow::UpdateLights()
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( g_LightsState.m_bGameButtonLights[gc][gb] )
 				m_iWriteData |= iPadBits[gc][gb];
+
+	if( m_iWriteData != m_iLastWrite )
+		LOG->Trace( "Iow lights: setting %i", m_iWriteData );
 }

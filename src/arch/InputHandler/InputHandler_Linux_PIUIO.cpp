@@ -112,6 +112,7 @@ void InputHandler_Linux_PIUIO::HandleInput()
 			LOG->Info( sInputs );
 	}
 
+	// FIXME: these are for the right sensors only!
 	static const uint64_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 */	
 	//Left arrow

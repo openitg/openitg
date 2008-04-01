@@ -11,11 +11,11 @@
 #include "RageThreads.h"
 #include "io/ITGIO.h"
 
-class InputHandler_Linux_Iow: public InputHandler
+class InputHandler_Iow: public InputHandler
 {
 public:
-	InputHandler_Linux_Iow();
-	~InputHandler_Linux_Iow();
+	InputHandler_Iow();
+	~InputHandler_Iow();
 
 //	for non-threaded input...should we even bother?
 //	void Update( float fDeltaTime );

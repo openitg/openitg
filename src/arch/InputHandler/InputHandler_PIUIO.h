@@ -13,12 +13,12 @@
 #include "RageThreads.h"
 #include "io/PIUIO.h"
 
-class InputHandler_Linux_PIUIO: public InputHandler
+class InputHandler_PIUIO: public InputHandler
 {
 public:
-	InputHandler_Linux_PIUIO();
-//	InputHandler_Linux_PIUIO( USBDriver *pDriver );
-	~InputHandler_Linux_PIUIO();
+	InputHandler_PIUIO();
+//	InputHandler_PIUIO( USBDriver *pDriver );
+	~InputHandler_PIUIO();
 
 //	for non-threaded input...should we even bother?
 //	void Update( float fDeltaTime );

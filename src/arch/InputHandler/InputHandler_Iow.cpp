@@ -5,14 +5,14 @@
 #include "PrefsManager.h" // for m_bDebugUSBInput
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
-#include "InputHandler_Linux_Iow.h"
+#include "InputHandler_Iow.h"
 
 extern LightsState g_LightsState;
 extern CString g_sInputType;
 
 // Iow lights thread is disabled for now: causes major, major input problems
 
-InputHandler_Linux_Iow::InputHandler_Linux_Iow()
+InputHandler_Iow::InputHandler_Iow()
 {
 	m_bShutdown = false;
 
@@ -33,7 +33,7 @@ InputHandler_Linux_Iow::InputHandler_Linux_Iow()
 	g_sInputType = "ITGIO";
 }
 
-InputHandler_Linux_Iow::~InputHandler_Linux_Iow()
+InputHandler_Iow::~InputHandler_Iow()
 {
 	if( !InputThread.IsCreated() )
 		return;
@@ -55,7 +55,7 @@ InputHandler_Linux_Iow::~InputHandler_Linux_Iow()
 	IOBoard.Close();
 }
 
-void InputHandler_Linux_Iow::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )
+void InputHandler_Iow::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )
 {
 	if( m_bFoundDevice )
 	{
@@ -64,19 +64,19 @@ void InputHandler_Linux_Iow::GetDevicesAndDescriptions( vector<InputDevice>& vDe
 	}
 }
 
-int InputHandler_Linux_Iow::InputThread_Start( void *p )
+int InputHandler_Iow::InputThread_Start( void *p )
 {
-	((InputHandler_Linux_Iow *) p)->InputThreadMain();
+	((InputHandler_Iow *) p)->InputThreadMain();
 	return 0;
 }
 
-int InputHandler_Linux_Iow::LightsThread_Start( void *p )
+int InputHandler_Iow::LightsThread_Start( void *p )
 {
-	((InputHandler_Linux_Iow *) p)->LightsThreadMain();
+	((InputHandler_Iow *) p)->LightsThreadMain();
 	return 0;
 }
 
-void InputHandler_Linux_Iow::InputThreadMain()
+void InputHandler_Iow::InputThreadMain()
 {
 	while( !m_bShutdown )
 	{
@@ -95,7 +95,7 @@ void InputHandler_Linux_Iow::InputThreadMain()
 	}
 }
 
-void InputHandler_Linux_Iow::LightsThreadMain()
+void InputHandler_Iow::LightsThreadMain()
 {
 	while( !m_bShutdown )
 	{
@@ -110,7 +110,7 @@ void InputHandler_Linux_Iow::LightsThreadMain()
 	}
 }
 
-void InputHandler_Linux_Iow::HandleInput()
+void InputHandler_Iow::HandleInput()
 {
 	uint32_t i = 1; // convenience hack
 
@@ -168,7 +168,7 @@ void InputHandler_Linux_Iow::HandleInput()
 }
 
 /* Requires "LightsDriver=ext" */
-void InputHandler_Linux_Iow::UpdateLights()
+void InputHandler_Iow::UpdateLights()
 {
 	/* To do:
 	 - Does Iow crash if lights never change? [possible Write() problem]

@@ -7,7 +7,7 @@
 
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
-#include "InputHandler_Linux_PIUIO.h"
+#include "InputHandler_PIUIO.h"
 
 /* grabbed from LightsDriver_External */
 extern LightsState g_LightsState;
@@ -15,7 +15,7 @@ extern LightsState g_LightsState;
 /* grabbed from RageInput */
 extern CString g_sInputType;
 
-InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
+InputHandler_PIUIO::InputHandler_PIUIO()
 {
 	m_bShutdown = false;
 
@@ -37,7 +37,7 @@ InputHandler_Linux_PIUIO::InputHandler_Linux_PIUIO()
 
 }
 
-InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()
+InputHandler_PIUIO::~InputHandler_PIUIO()
 {
 	if( InputThread.IsCreated() )
 	{
@@ -50,7 +50,7 @@ InputHandler_Linux_PIUIO::~InputHandler_Linux_PIUIO()
 	IOBoard.Close();
 }
 
-void InputHandler_Linux_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )
+void InputHandler_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )
 {
 	if( m_bFoundDevice )
 	{
@@ -59,13 +59,13 @@ void InputHandler_Linux_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& v
 	}
 }
 
-int InputHandler_Linux_PIUIO::InputThread_Start( void *p )
+int InputHandler_PIUIO::InputThread_Start( void *p )
 {
-	((InputHandler_Linux_PIUIO *) p)->InputThreadMain();
+	((InputHandler_PIUIO *) p)->InputThreadMain();
 	return 0;
 }
 
-void InputHandler_Linux_PIUIO::InputThreadMain()
+void InputHandler_PIUIO::InputThreadMain()
 {
 	while( !m_bShutdown )
 	{
@@ -85,7 +85,7 @@ void InputHandler_Linux_PIUIO::InputThreadMain()
 	}
 }
 
-void InputHandler_Linux_PIUIO::HandleInput()
+void InputHandler_PIUIO::HandleInput()
 {
 	uint64_t i = 1; // convenience hack
 
@@ -179,7 +179,7 @@ CString GetSensorDescription( int iBits )
 }
 
 /* Requires "LightsDriver=ext" */
-void InputHandler_Linux_PIUIO::UpdateLights()
+void InputHandler_PIUIO::UpdateLights()
 {
 	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] = 
 	{ (1 << 23), (1 << 26), (1 << 25), (1 << 24), 0, 0, (1 << 10), (1 << 10) };

@@ -1257,7 +1257,7 @@ void ScreenGameplay::UpdateSongPosition( float fDeltaTime )
 	const float fSeconds = m_pSoundMusic->GetPositionSeconds( NULL, &tm );
 	const float fAdjust = SOUND->GetFrameTimingAdjustment( fDeltaTime );
 	unsigned iSecondsTotal = (int)(fSeconds + fAdjust);
-	if (iSecondsTotal > PREFSMAN->m_iCustomMaxSeconds)
+	if (PREFSMAN->m_iCustomMaxSeconds != 0 && iSecondsTotal > PREFSMAN->m_iCustomMaxSeconds)
 	{
                 //m_DancingState = STATE_OUTRO;
                 m_pSoundMusic->StopPlaying();

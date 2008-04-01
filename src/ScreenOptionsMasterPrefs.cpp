@@ -310,8 +310,7 @@ MOVE( UnlockSystem,			PREFSMAN->m_bUseUnlockSystem );
 MOVE( SongEdits,		PREFSMAN->m_bCustomSongs );
 static void CustomMaxSeconds( int &sel, bool ToSel, const ConfOption *pConfOption )
 {
-	// maybe the last mapping should be -1 --infamouspat
-	const int mapping[] = { 90, 105, 120, 135, 150, 165, 180, 210, 240, 270, 300, 330, 360, 420, 480, 560, 9999999 };
+	const int mapping[] = { 90, 105, 120, 135, 150, 165, 180, 210, 240, 270, 300, 330, 360, 420, 480, 560, 0 };
 	MoveMap( sel, PREFSMAN->m_iCustomMaxSeconds, ToSel, mapping, ARRAYSIZE(mapping) );
 }
 //MOVE( CustomMaxSeconds,		PREFSMAN->m_iCustomMaxSeconds );

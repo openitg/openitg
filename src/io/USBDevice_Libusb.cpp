@@ -70,7 +70,7 @@ CString USBDevice::GetDescription()
 /* Ugly... */
 bool USBDevice::GetDeviceProperty( const CString &sProperty, CString &sOut )
 {
-	LOG->Trace("USBDevice::GetDeviceProperty(): %s", sProperty.c_str());
+	//LOG->Trace("USBDevice::GetDeviceProperty(): %s", sProperty.c_str());
 	if( sProperty == "idVendor" )
 		sOut = ssprintf( "%x", m_Device->descriptor.idVendor );
 	else if( sProperty == "idProduct" )
@@ -201,12 +201,12 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 	usb_find_busses();
 	usb_find_devices();
 	
-	CHECKPOINT_M( "USB initiated" );
+	//CHECKPOINT_M( "USB initiated" );
 
 	vector<struct usb_device> vDevices;
 	vector<CString>	vDeviceDirs;
 
-	CHECKPOINT_M( "Device created" );
+	//CHECKPOINT_M( "Device created" );
 
 	/* get all devices on the system */
 	for( struct usb_bus *bus = usb_get_busses(); bus; bus = bus->next )
@@ -217,7 +217,7 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 			for( struct usb_device *dev = bus->devices; dev; dev->next )
 				vDevices.push_back( *dev );
 
-		CHECKPOINT_M( ssprintf( "%i devices set", vDevices.size()) );
+		//CHECKPOINT_M( ssprintf( "%i devices set", vDevices.size()) );
 	}
 
 	/* get their children - in other cases, this could be an accidental
@@ -230,25 +230,25 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 			if( vDevices[i].children[j] )
 				vDevices.push_back( *vDevices[i].children[j] );
 
-			CHECKPOINT_M( ssprintf("Child %i on %i set", j, i) );
+			//CHECKPOINT_M( ssprintf("Child %i on %i set", j, i) );
 		}
 	}
 
 	for( unsigned i = 0; i < vDevices.size(); i++ )
 	{
-		CHECKPOINT_M( ssprintf( "Assigning device %i of %i", i, vDevices.size()) );
+		//CHECKPOINT_M( ssprintf( "Assigning device %i of %i", i, vDevices.size()) );
 		USBDevice newDev;
 
 		if (vDevices[i].descriptor.idVendor == 0 || vDevices[i].descriptor.idProduct == 0) continue;
 
-		LOG->Trace( "Attempting to load from idVendor %x, idProduct %x",
-			vDevices[i].descriptor.idVendor, 
-			vDevices[i].descriptor.idProduct );
+		//LOG->Trace( "Attempting to load from idVendor %x, idProduct %x",
+			//vDevices[i].descriptor.idVendor, 
+			//vDevices[i].descriptor.idProduct );
 
 		if ( newDev.Load( &vDevices[i] ) )
 		{
 			pDevList.push_back( newDev );
-			CHECKPOINT_M( ssprintf( "Device %i of %i assigned", i, vDevices.size()) );
+			//CHECKPOINT_M( ssprintf( "Device %i of %i assigned", i, vDevices.size()) );
 		}
 		else
 		{

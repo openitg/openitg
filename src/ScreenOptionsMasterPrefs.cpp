@@ -308,6 +308,14 @@ MOVE( AllowExtraStage,		PREFSMAN->m_bAllowExtraStage );
 //MOVE( PickExtraStage,		PREFSMAN->m_bPickExtraStage );
 MOVE( UnlockSystem,			PREFSMAN->m_bUseUnlockSystem );
 MOVE( SongEdits,		PREFSMAN->m_bCustomSongs );
+static void CustomMaxSeconds( int &sel, bool ToSel, const ConfOption *pConfOption )
+{
+	// maybe the last mapping should be -1 --infamouspat
+	const int mapping[] = { 90, 105, 120, 135, 150, 165, 180, 210, 240, 270, 300, 330, 360, 420, 480, 560, 9999999 };
+	MoveMap( sel, PREFSMAN->m_iCustomMaxSeconds, ToSel, mapping, ARRAYSIZE(mapping) );
+}
+//MOVE( CustomMaxSeconds,		PREFSMAN->m_iCustomMaxSeconds );
+
 
 static void MarvelousTiming( int &sel, bool ToSel, const ConfOption *pConfOption )
 {
@@ -566,6 +574,9 @@ static void InitializeConfOptions()
 //	ADD( ConfOption( "PickExtraStage",				PickExtraStage,		"OFF","ON" ) );
 	ADD( ConfOption( "UnlockSystem",				UnlockSystem,		"OFF","ON" ) );
 	ADD( ConfOption( "SongEdits",					SongEdits,		"OFF", "ON" ) );
+	ADD( ConfOption( "CustomMaxSeconds",				CustomMaxSeconds,	"1:30", "1:45", "2:00", "2:15", "2:30", "2:45", "3:00",
+													"3:30", "4:00", "4:30", "5:00", "5:30",
+													"6:00", "7:00", "10:00", "UNLIMITED" ) );
 
 	/* Machine options */
 	ADD( ConfOption( "MenuTimer",					MovePref,			"OFF","ON" ) );

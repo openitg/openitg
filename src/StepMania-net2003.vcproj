@@ -128,13 +128,13 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386 &quot;$(intdir)\verstub.obj&quot; /FORCE:MULTIPLE"
-				AdditionalDependencies="libusb.lib dxerr9.lib d3dx9.lib"
+				AdditionalOptions="/MACHINE:I386 &quot;$(intdir)\verstub.obj&quot;"
+				AdditionalDependencies="libusb.lib"
 				OutputFile="../Program/StepMania.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;C:\openitg-src\src\libusb\lib\msvc&quot;"
-				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;d3dx8.lib"
+				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
+				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib"
 				ProgramDatabaseFile="../Release/StepMania.pdb"
 				GenerateMapFile="TRUE"
 				MapFileName="$(IntDir)\$(TargetName).map"
@@ -535,6 +535,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="ScreenSandbox.h">
+			</File>
+			<File
+				RelativePath=".\ScreenSaveSync.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenSaveSync.h">
 			</File>
 			<File
 				RelativePath="ScreenSelect.cpp">
@@ -1284,16 +1290,16 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 						RelativePath="arch\InputHandler\InputHandler_Iow.h">
 					</File>
 					<File
-						RelativePath="arch\InputHandler\InputHandler_PIUIO.cpp">
-					</File>
-					<File
-						RelativePath="arch\InputHandler\InputHandler_PIUIO.h">
-					</File>
-					<File
 						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.cpp">
 					</File>
 					<File
 						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.h">
+					</File>
+					<File
+						RelativePath="arch\InputHandler\InputHandler_PIUIO.cpp">
+					</File>
+					<File
+						RelativePath="arch\InputHandler\InputHandler_PIUIO.h">
 					</File>
 					<File
 						RelativePath=".\arch\InputHandler\InputHandler_Win32_MIDI.cpp">

@@ -357,6 +357,7 @@ void ScreenSelectMusic::Init()
 
 	this->SortByDrawOrder();
 
+#ifndef WIN32
 	/* At least for right now, we need the card mounted for previews */
 	if( PREFSMAN->m_bCustomSongPreviews )
 	{
@@ -366,6 +367,7 @@ void ScreenSelectMusic::Init()
 			MEMCARDMAN->MountCard( pn, 600 );
 		}
 	}
+#endif
 }
 
 
@@ -374,9 +376,11 @@ ScreenSelectMusic::~ScreenSelectMusic()
 	LOG->Trace( "ScreenSelectMusic::~ScreenSelectMusic()" );
 	BANNERCACHE->Undemand();
 	
+#ifndef WIN32
 	if( PREFSMAN->m_bCustomSongPreviews )
 		FOREACH_EnabledPlayer( pn )
 			MEMCARDMAN->UnmountCard( pn );
+#endif
 
 }
 
@@ -755,6 +759,7 @@ void ScreenSelectMusic::Update( float fDeltaTime )
 	m_bgOptionsOut.Update( fDeltaTime );
 	m_bgNoOptionsOut.Update( fDeltaTime );
 	m_sprOptionsMessage.Update( fDeltaTime );
+	//SCREENMAN->SystemMessageNoAnimate( ssprintf("IsTransitioning(): %s", IsTransitioning() ? "true" : "false") );
 
 	CheckBackgroundRequests();
 }
@@ -800,7 +805,7 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 		SCREENMAN->PlayStartSound();
 		
 		m_bGoToOptions = true;
-		g_bGoToOptions = false; // fix no-input-accepted problem
+		//g_bGoToOptions = false; // fix no-input-accepted problem
 		m_sprOptionsMessage.SetState( 1 );
 
 
@@ -1270,8 +1275,10 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 
 	// whoever owns the song we're reading, mount their card.
 	// timeout is high so slow, but valid, loads don't get interrupted
+#ifndef WIN32
 	if( !PREFSMAN->m_bCustomSongPreviews )
 		MEMCARDMAN->MountCard( pSong->m_SongOwner, 20 );
+#endif
 	
 	// now, verify the song internally since we can read the data now
 	CString sError;
@@ -1296,12 +1303,17 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 		GAMESTATE->m_pCurSong->m_sGameplayMusic, &UpdateLoadProgress );
 
 		if( !bCopied ) // failed
+		{
 			SCREENMAN->SystemMessage( "Copying error. Check your permissions." );
+			MEMCARDMAN->UnPauseMountingThread();
+		}
 	}
 
 	// ...and unmount, now that we're done.
+#ifndef WIN32
 	if( !PREFSMAN->m_bCustomSongPreviews )
 		MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
+#endif
 
 	// EXPERIMENT: fix input-killing bug
 	INPUTFILTER->Reset();
@@ -1353,7 +1365,7 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 				}
 				else
 					m_bMadeChoice = ValidateCustomSong( m_MusicWheel.GetSelectedSong() );
-					if (!m_bMadeChoice) m_bGoToOptions = false;
+					if (!m_bMadeChoice) g_bGoToOptions = false;
 			}
 			else
 				m_bMadeChoice = true;

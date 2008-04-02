@@ -291,7 +291,7 @@ void RageFileManager::MountInitialFilesystems()
 	CString Dir = join( "/", parts.begin(), parts.end()-1 );
 
 	/* XXX: how are directories going to be arranged on a Windows arcade machine? */
-	//RageFileManager::Mount( "kry", Dir + "/CryptPackages", "/CryptPackages" );
+	RageFileManager::Mount( "kry", Dir + "/CryptPackages", "/CryptPackages" );
 	RageFileManager::Mount( "dir", Dir, "/" );
 
 #elif defined(DARWIN)

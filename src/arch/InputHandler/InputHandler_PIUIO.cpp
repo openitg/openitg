@@ -71,12 +71,7 @@ void InputHandler_PIUIO::InputThreadMain()
 	{
 		/* Figure out the lights and write them */
 		UpdateLights();
-		IOBoard.Write( m_iLightData );
 
-		/* Get the data and send it to RageInput */
-		IOBoard.Read( &m_iInputData );
-		/* PIUIO opens high - for more logical processing, invert it */
-		m_iInputData = ~m_iInputData;
 		HandleInput();
 
 		// give up 0.01 sec per read for other events -
@@ -85,20 +80,60 @@ void InputHandler_PIUIO::InputThreadMain()
 	}
 }
 
+static CString ShortArrayToBin( unsigned short arr[4] )
+{
+	CString result;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 63; j >= 0; j--)
+		{
+			if (arr[i] & (1 << j))
+			{
+				result += "1";
+			}
+			else
+			{
+				result += "0";
+			}
+		}
+		result += "\n";
+	}
+}
+
 void InputHandler_PIUIO::HandleInput()
 {
 	uint64_t i = 1; // convenience hack
+	bool bInputIsZero = FALSE, bInputChanged = FALSE;
+	uint32_t iNewLightData = 0;
+
+	for (uint32_t j = 0; j < 4; j++) {
+		iNewLightData = m_iLightData & 0xfffcfffc;
+		iNewLightData |= (j | (j << 32));
+		IOBoard.Write( iNewLightData );
+		/* Get the data and send it to RageInput */
+		IOBoard.Read( &(m_iInputData[j]) );
+		/* PIUIO opens high - for more logical processing, invert it */
+		m_iInputData[j] = ~m_iInputData[j];
+	}
+
+	for (int j = 0; j < 4; j++)
+	{
+		if (m_iInputData[0] != 0) bInputIsZero = TRUE;
+		if (m_iInputData[0] != m_iLastInputData[0]) bInputChanged = TRUE;
+	}
 
 	/* If they asked for it... */
-	if( PREFSMAN->m_bDebugUSBInput && (m_iInputData != 0) && (m_iInputData != m_iLastInputData) )
+	if( PREFSMAN->m_bDebugUSBInput && !bInputIsZero && bInputChanged) )
 	{
-		LOG->Info( "Input: %llu", m_iInputData );
+		LOG->Info( "Input: %s", ShortArrayToBin(m_iInputData).c_str() );
 
+		if (SCREENMAN) SCREENMAN->SystemMessageNoAnimate(ShortArrayToBin(m_iInputData));
+
+		/*
 		CString sInputs;
 		
 		for( unsigned x = 0; x < 64; x++ )
 		{
-			/* the bit we expect isn't in the data */
 			if( !(m_iInputData & (i << x)) )
 				continue;
 
@@ -110,6 +145,13 @@ void InputHandler_PIUIO::HandleInput()
 
 		if( LOG )
 			LOG->Info( sInputs );
+		*/
+	}
+
+	uint64_t iInputBitField = 0;
+	for (int j = 0; j < 4; j++)
+	{
+		iInputBitField |= m_iInputData[j];
 	}
 
 	// FIXME: these are for the right sensors only!
@@ -154,11 +196,12 @@ void InputHandler_PIUIO::HandleInput()
 			di.ts.Touch();
 
 		/* Is the button we're looking for flagged in the input data? */
-		ButtonPressed( di, m_iInputData & iInputBits[iButton] );
+		ButtonPressed( di, iInputBitField & iInputBits[iButton] );
 	}
 
 	/* assign our last input */
-	m_iLastInputData = m_iInputData;
+	for (int j = 0; j < 4; j++)
+		m_iLastInputData[j] = m_iInputData[j];
 }
 
 /* not yet implemented */

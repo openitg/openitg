@@ -30,8 +30,8 @@ private:
 	bool m_bFoundDevice;
 	bool m_bShutdown;
 
-	uint64_t m_iInputData;
-	uint64_t m_iLastInputData;
+	uint64_t m_iInputData[4];
+	uint64_t m_iLastInputData[4];
 
 	uint32_t m_iLightData;
 	uint32_t m_iLastLightData;

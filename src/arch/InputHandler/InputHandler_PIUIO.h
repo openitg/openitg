@@ -45,7 +45,7 @@ private:
 	void UpdateLights();
 };
 
-#define USE_INPUT_HANDLER_LINUX_PIUIO
+#define USE_INPUT_HANDLER_PIUIO
 
 #endif
 

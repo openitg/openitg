@@ -105,7 +105,7 @@ static CString ShortArrayToBin( uint64_t arr[4] )
 void InputHandler_PIUIO::HandleInput()
 {
 	uint64_t i = 1; // convenience hack
-	bool bInputIsZero = false, bInputChanged = true;
+	bool bInputIsZero = false, bInputChanged = false;
 	uint32_t iNewLightData = 0;
 
 	for (uint64_t j = 0; j < 4; j++) {
@@ -120,14 +120,14 @@ void InputHandler_PIUIO::HandleInput()
 
 	for (int j = 0; j < 4; j++)
 	{
-		if (m_iInputData[0] != 0) bInputIsZero = true;;
-		if (m_iInputData[0] != m_iLastInputData[0]) bInputChanged = true;
+		if (m_iInputData[j] != 0) bInputIsZero = true;;
+		if (m_iInputData[j] != m_iLastInputData[j]) bInputChanged = true;
 	}
 
 	/* If they asked for it... */
-	if( PREFSMAN->m_bDebugUSBInput && !bInputIsZero && bInputChanged)
+	if( /*PREFSMAN->m_bDebugUSBInput &&*/ !bInputIsZero && bInputChanged)
 	{
-		LOG->Info( "Input: %s", ShortArrayToBin(m_iInputData).c_str() );
+		LOG->Trace( "Input: %s", ShortArrayToBin(m_iInputData).c_str() );
 
 		if (SCREENMAN) SCREENMAN->SystemMessageNoAnimate(ShortArrayToBin(m_iInputData));
 

@@ -45,7 +45,7 @@ private:
 	void UpdateLights();
 };
 
-#define USE_INPUT_HANDLER_LINUX_IOW
+#define USE_INPUT_HANDLER_IOW
 
 #endif
 

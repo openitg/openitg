@@ -4,6 +4,7 @@
 #include "RageInput.h" // for g_sInputType
 
 #include "PrefsManager.h" // for m_bDebugUSBInput
+#include "ScreenManager.h"
 
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
@@ -80,7 +81,7 @@ void InputHandler_PIUIO::InputThreadMain()
 	}
 }
 
-static CString ShortArrayToBin( unsigned short arr[4] )
+static CString ShortArrayToBin( uint64_t arr[4] )
 {
 	CString result;
 	for (int i = 0; i < 4; i++)
@@ -98,15 +99,16 @@ static CString ShortArrayToBin( unsigned short arr[4] )
 		}
 		result += "\n";
 	}
+	return result;
 }
 
 void InputHandler_PIUIO::HandleInput()
 {
 	uint64_t i = 1; // convenience hack
-	bool bInputIsZero = FALSE, bInputChanged = FALSE;
+	bool bInputIsZero = false, bInputChanged = true;
 	uint32_t iNewLightData = 0;
 
-	for (uint32_t j = 0; j < 4; j++) {
+	for (uint64_t j = 0; j < 4; j++) {
 		iNewLightData = m_iLightData & 0xfffcfffc;
 		iNewLightData |= (j | (j << 32));
 		IOBoard.Write( iNewLightData );
@@ -118,12 +120,12 @@ void InputHandler_PIUIO::HandleInput()
 
 	for (int j = 0; j < 4; j++)
 	{
-		if (m_iInputData[0] != 0) bInputIsZero = TRUE;
-		if (m_iInputData[0] != m_iLastInputData[0]) bInputChanged = TRUE;
+		if (m_iInputData[0] != 0) bInputIsZero = true;;
+		if (m_iInputData[0] != m_iLastInputData[0]) bInputChanged = true;
 	}
 
 	/* If they asked for it... */
-	if( PREFSMAN->m_bDebugUSBInput && !bInputIsZero && bInputChanged) )
+	if( PREFSMAN->m_bDebugUSBInput && !bInputIsZero && bInputChanged)
 	{
 		LOG->Info( "Input: %s", ShortArrayToBin(m_iInputData).c_str() );
 

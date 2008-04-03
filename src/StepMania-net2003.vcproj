@@ -107,7 +107,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".;vorbis;libjpeg;&quot;lua-5.0\include&quot;;libusb\include"
-				PreprocessorDefinitions="WIN32,NDEBUG,_WINDOWS,WINDOWS,RELEASE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WINDOWS;RELEASE;ITG_ARCADE"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				ExceptionHandling="FALSE"

@@ -155,7 +155,11 @@ CString GetSerialNumber()
 	CString sNewSerial;
 	uchar spBuf[32];
 
+#ifdef WIN32
+	if ( (copr.portnum = owAcquireEx("COM1")) == -1 )
+#else
 	if ( (copr.portnum = owAcquireEx("/dev/ttyS0")) == -1 )
+#endif
 	{
 		LOG->Warn("Failed to get machine serial, unable to acquire port");
 		return "????????";

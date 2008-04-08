@@ -73,10 +73,10 @@ void InputHandler_PIUIO::InputThreadMain()
 		/* Figure out the lights and write them */
 		UpdateLights();
 
+		/* Find our sensors, report to RageInput */
 		HandleInput();
 
-		// give up 0.01 sec per read for other events -
-		// this may need adjusting for sync/lag fixing
+		/* adjustable for lag - causes less accurate reading */
 		usleep( 0 );
 	}
 }
@@ -90,13 +90,9 @@ static CString ShortArrayToBin( uint64_t arr[4] )
 		for (int j = 63; j >= 0; j--)
 		{
 			if (arr[i] & (one << j))
-			{
 				result += "1";
-			}
 			else
-			{
 				result += "0";
-			}
 		}
 		result += "\n";
 	}
@@ -104,13 +100,10 @@ static CString ShortArrayToBin( uint64_t arr[4] )
 }
 
 // P1: right left bottom top, P2: right left bottom top
-int sensor_bits[19];
+int sensor_bits[12];
 
-
-/* not yet implemented */
 static CString SensorDescriptions[] = { "right", "left", "bottom", "top" };
 
-/* not yet implemented */
 static CString GetSensorDescription( int iBits )
 {
 	if ( iBits == 0 )
@@ -127,27 +120,36 @@ static CString GetSensorDescription( int iBits )
 void InputHandler_PIUIO::HandleInput()
 {
 	uint64_t i = 1; // convenience hack
-	bool bInputIsNonZero = false, bInputChanged = false;
+
 	uint32_t iNewLightData = 0;
 
-	for (unsigned j = 0; j < 19; j++) sensor_bits[j] = 0;
+	bool bInputIsNonZero = false, bInputChanged = false;
 
-	for (uint64_t j = 0; j < 4; j++) {
+	// reset
+	for (unsigned j = 0; j < 19; j++)
+		sensor_bits[j] = 0;
+
+	for (uint64_t j = 0; j < 4; j++)
+	{
 		iNewLightData = m_iLightData & 0xfffcfffc;
 		iNewLightData |= (j | (j << 16));
+
 		IOBoard.Write( iNewLightData );
+
 		/* Get the data and send it to RageInput */
 		IOBoard.Read( &(m_iInputData[j]) );
+
 		/* PIUIO opens high - for more logical processing, invert it */
 		m_iInputData[j] = ~m_iInputData[j];
 
-		// P1 left right up down
+		/* Toggle sensor bits - Left, Right, Up, Down */
+		// P1
 		if (m_iInputData[j] & (i << 2)) sensor_bits[0] |= (i << j);
 		if (m_iInputData[j] & (i << 3)) sensor_bits[1] |= (i << j);
 		if (m_iInputData[j] & (i << 0)) sensor_bits[2] |= (i << j);
 		if (m_iInputData[j] & (i << 1)) sensor_bits[3] |= (i << j);
 
-		// P2 left right up down
+		// P2
 		if (m_iInputData[j] & (i << 18)) sensor_bits[8] |= (i << j);
 		if (m_iInputData[j] & (i << 19)) sensor_bits[9] |= (i << j);
 		if (m_iInputData[j] & (i << 16)) sensor_bits[10] |= (i << j);
@@ -163,9 +165,11 @@ void InputHandler_PIUIO::HandleInput()
 	/* If they asked for it... */
 	if( PREFSMAN->m_bDebugUSBInput)
 	{
-		if (bInputIsNonZero && bInputChanged) LOG->Trace( "Input: %s", ShortArrayToBin(m_iInputData).c_str() );
+		if ( bInputIsNonZero && bInputChanged )
+			LOG->Trace( "Input: %s", ShortArrayToBin(m_iInputData).c_str() );
 
-		if (SCREENMAN) SCREENMAN->SystemMessageNoAnimate(ShortArrayToBin(m_iInputData));
+		if( SCREENMAN )
+			SCREENMAN->SystemMessageNoAnimate(ShortArrayToBin(m_iInputData));
 
 		/*
 		CString sInputs;
@@ -187,45 +191,36 @@ void InputHandler_PIUIO::HandleInput()
 	}
 
 	uint64_t iInputBitField = 0;
+
 	for (int j = 0; j < 4; j++)
-	{
 		iInputBitField |= m_iInputData[j];
-	}
 
 	InputDevice id = DEVICE_PIUIO;
 
-	// FIXME: these are for the right sensors only!
 	// XXX fixed 4/7/08.  Game.  Set.  Match.  --infamouspat
+	// ITT history :D  -- vyhd
+
 	static const uint64_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 */	
-	//Left arrow
-	(i << 2),
-	// Right arrow
-	(i << 3),
-	// Up arrow
-	(i << 0),
-	// Down arrow
-	(i << 1),
+	//Left, right, up, down arrows
+	(i << 2), (i << 3), (i << 0), (i << 1),
+
 	// Select, Start, MenuLeft, MenuRight
 	(i << 5), (i << 4), (i << 6), (i << 7),
 
 	/* Player 2 */
-	// Left arrow
-	(i << 18),
-	// Right arrow
-	(i << 19),
-	// Up arrow
-	(i << 16),
-	// Down arrow
-	(i << 17),
+	// Left, right, up, down arrows
+	(i << 18), (i << 19), (i << 16), (i << 17),
+
 	// Select, Start, MenuLeft, MenuRight
 	(i << 21), (i << 20), (i << 22), (i << 23),
 
 	/* General input */
 	// Service button, Coin event
-	(i << 9), (i << 14), (i << 10)
+	(i << 9) | (i << 14), (i << 10)
 	};
 
+	/* Actually handle the input now */
 	for( int iButton = 0; iButton < NUM_IO_BUTTONS; iButton++ )
 	{
 		DeviceInput di(id, iButton);
@@ -234,10 +229,9 @@ void InputHandler_PIUIO::HandleInput()
 		if( InputThread.IsCreated() )
 			di.ts.Touch();
 
+		/* Set a description of detected sensors to the arrows */
 		if (iButton < 4 || (iButton > 7 && iButton < 12))
-		{
 			INPUTFILTER->SetButtonComment(di, GetSensorDescription(sensor_bits[iButton]));
-		}
 
 		/* Is the button we're looking for flagged in the input data? */
 		ButtonPressed( di, iInputBitField & iInputBits[iButton] );
@@ -253,11 +247,17 @@ void InputHandler_PIUIO::HandleInput()
 void InputHandler_PIUIO::UpdateLights()
 {
 	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] = 
-	{ (1 << 23), (1 << 26), (1 << 25), (1 << 24), 0, 0, (1 << 10), (1 << 10) };
+	{
+		/* UL, UR, LL, LR marquee lights */
+		(1 << 23), (1 << 26), (1 << 25), (1 << 24),
+
+		/* selection buttons (not used), bass lights */
+		0, 0, (1 << 10), (1 << 10)
+	};
 
 	static const uint32_t iPadBits[2][4] = 
 	{
-		/* Lights are Left, Right, Up, Down */
+		/* Left, Right, Up, Down */
 		{ (1 << 20), (1 << 21), (1 << 18), (1 << 19) },	/* Player 1 */
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
@@ -275,15 +275,6 @@ void InputHandler_PIUIO::UpdateLights()
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( g_LightsState.m_bGameButtonLights[gc][gb] )
 				m_iLightData |= iPadBits[gc][gb];
-
-	/* Debugging purposes */
-	CString sBits;
-
-	for( int x = 0; x < 32; x++ )
-		sBits += (m_iLightData & (1 << (32-x))) ? "1" : "0";
-
-	/* assign the last output data */
-	m_iLastLightData = m_iLightData;
 }
 
 /*

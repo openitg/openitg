@@ -254,7 +254,7 @@ static const CString IOBoardButtonNames[] = {
 	"P2-MenuLeft",
 	"P2-MenuRight",
 
-	"Service", "Service",
+	"Service",
 	"Coin",
 };
 XToString( IOBoardButton, NUM_IO_BUTTONS );

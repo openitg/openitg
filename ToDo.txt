@@ -1,13 +1,10 @@
 /* More-or-less in order of priority. */
 
 /* Bug fixing */
-Fix up PIUIO mappings and figure out left/bottom/top sensors
-Make "g_sInputType" and "GetInputType()" work properly
 -Fix "Banner custom doesn't always show in ScreenRanking" bug
 
 /* Minor feature additions */
 -Color percentages in Versus to show who's ahead
--Implement "CustomSongPreviews" (keep drive mounted during SSM)
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
 -Implement "InputDebounceTime"
 

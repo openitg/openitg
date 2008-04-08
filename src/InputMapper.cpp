@@ -96,7 +96,6 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			/* Other controls */
 			
 			{ 0, IO_OPERATOR_MENU,	DANCE_BUTTON_OPERATOR,		false },
-			{ 0, IO_OPERATOR_MENU2, DANCE_BUTTON_OPERATOR,	false },
 			{ 0, IO_INSERT_COIN,	DANCE_BUTTON_COIN,		false },
 			END_MARKER
 		}

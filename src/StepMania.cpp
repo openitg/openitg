@@ -1035,10 +1035,6 @@ int main(int argc, char* argv[])
 	}
 	MountTreeOfZips( ZIPS_DIR );
 
-//#ifndef ITG_ARCADE
-	FILEMAN->Mount( "kry", "CryptPackages", "/CryptPackages" );
-//#endif
-
 	// TODO: soft-code this!
 	{
 		CStringArray dzips;
@@ -1072,6 +1068,7 @@ int main(int argc, char* argv[])
 #else
 		FILEMAN->Mount( "patch", "/stats/patch", "/Patch" );
 #endif
+	}
 #else
 	if ( IsAFile("Data/patch/patch.zip") )
 	{
@@ -1215,9 +1212,6 @@ int main(int argc, char* argv[])
 	 * this after loading songs. */
 	if( ChangeAppPri() )
 		HOOKS->BoostPriority();
-
-	THEME->SwitchThemeAndLanguage("default", "english");
-	THEME->SwitchThemeAndLanguage("arcade", "english");
 
 	ResetGame();
 	SCREENMAN->SetNewScreen( INITIAL_SCREEN );

@@ -161,7 +161,32 @@ public:
 		// OpenITG hack: load player-defined speed mods
 		if (sParam == "Speed")
 		{
-			PlayerNumber pn;
+			set<CString> additionalSet;
+			FOREACH_EnabledPlayer( pn )
+			{
+				Profile *pProf = PROFILEMAN->GetProfile(pn);
+				if (pProf == NULL) continue;
+				if (pProf->m_sPlayerAdditionalModifiers.size() == 0)
+				{
+					LOG->Trace("OptionRowHandler: player #%d (\"%s\") not using default mods", pn+1, pProf->GetDisplayName().c_str());
+				}
+				FOREACH_CONST(CString, pProf->m_sPlayerAdditionalModifiers, mod)
+					additionalSet.insert(*mod);
+			}
+			FOREACHS_CONST( CString, additionalSet, addit_mod )
+			{
+				GameCommand mc;
+				mc.Load( 0, ParseCommands(CString("mod,")+*addit_mod+";name,"+*addit_mod) );
+				if ( !mc.IsPlayable() )
+				{
+					LOG->Trace( "Additional mod \"%s\" is not playable.", addit_mod->c_str() );
+					continue;
+				}
+				ListEntries.push_back(mc);
+				defOut.choices.push_back(mc.m_sName);
+			}
+
+			/*
 			FOREACH_EnabledPlayer( pn )
 			{
 				Profile *pProf = PROFILEMAN->GetProfile(pn);
@@ -186,6 +211,7 @@ public:
 					defOut.choices.push_back(mc.m_sName);
 				}
 			}
+			*/
 		}
 	}
 	void ImportOption( const OptionRowDefinition &def, const vector<PlayerNumber> &vpns, vector<bool> vbSelectedOut[NUM_PLAYERS] ) const

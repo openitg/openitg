@@ -218,7 +218,18 @@ static void ChangeToDirOfExecutable( CString argv0 )
 	/* Set the CWD.  Any effects of this is platform-specific; most files are read and
 	 * written through RageFile.  See also RageFileManager::RageFileManager. */
 #if defined(_WINDOWS)
-	chdir( DirOfExecutable + "/.." );
+	vector<CString> dirs;
+	split(DirOfExecutable, "/", dirs, false);
+
+	if (dirs.size() >= 2 && 
+		!dirs[dirs.size()-2].CompareNoCase("Data") &&
+		!dirs[dirs.size()-1].CompareNoCase("patch"))
+	{
+		//RageException::Throw(DirOfExecutable + "/../..");
+		chdir( DirOfExecutable + "/../.." );
+	}
+	else
+		chdir( DirOfExecutable + "/.." );
 #elif defined(DARWIN)
 	chdir(DirOfExecutable + "/../../..");
 #endif
@@ -290,7 +301,14 @@ void RageFileManager::MountInitialFilesystems()
 
 	CString Dir = join( "/", parts.begin(), parts.end()-1 );
 
+
 	/* XXX: how are directories going to be arranged on a Windows arcade machine? */
+	if (parts.size() > 2 &&
+		!parts[parts.size() - 2].CompareNoCase("Data") &&
+		!parts[parts.size() - 1].CompareNoCase("patch"))
+	{
+		Dir = join( "/", parts.begin(), parts.end()-2 );
+	}
 	RageFileManager::Mount( "kry", Dir + "/CryptPackages", "/CryptPackages" );
 	RageFileManager::Mount( "dir", Dir, "/" );
 

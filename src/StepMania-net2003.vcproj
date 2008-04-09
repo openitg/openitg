@@ -43,12 +43,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 &quot;$(intdir)\verstub.obj&quot; /FORCE:MULTIPLE"
-				AdditionalDependencies="libusb.lib d3dx9.lib dxerr9.lib"
+				AdditionalDependencies="libusb.lib"
 				OutputFile="../Program/StepMania-debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;C:\openitg-src\src\libusb\lib\msvc&quot;"
-				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;d3dx8.lib"
+				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="../Debug/StepMania-debug.pdb"
 				GenerateMapFile="TRUE"
@@ -103,11 +103,11 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				GlobalOptimizations="TRUE"
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="TRUE"
-				FavorSizeOrSpeed="2"
-				OptimizeForProcessor="2"
+				FavorSizeOrSpeed="1"
+				OptimizeForProcessor="3"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".;vorbis;libjpeg;&quot;lua-5.0\include&quot;;libusb\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WINDOWS;RELEASE;ITG_ARCADE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WINDOWS;RELEASE"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				ExceptionHandling="FALSE"
@@ -116,7 +116,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				EnableFunctionLevelLinking="FALSE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="global.h"
-				PrecompiledHeaderFile="$(IntDir)/StepMania.pch"
+				PrecompiledHeaderFile="$(IntDir)/OpenITG.pch"
 				AssemblerListingLocation=".\../Release/"
 				ObjectFile=".\../Release/"
 				ProgramDataBaseFileName=".\../Release/"
@@ -130,12 +130,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 &quot;$(intdir)\verstub.obj&quot;"
 				AdditionalDependencies="libusb.lib"
-				OutputFile="../Program/StepMania.exe"
+				OutputFile="../Program/OpenITG.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
-				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib"
-				ProgramDatabaseFile="../Release/StepMania.pdb"
+				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
+				ProgramDatabaseFile="../Release/OpenITG.pdb"
 				GenerateMapFile="TRUE"
 				MapFileName="$(IntDir)\$(TargetName).map"
 				MapExports="TRUE"
@@ -149,7 +149,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				TypeLibraryName=".\../StepMania.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\StepMania.vdi&quot;"/>
+				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\OpenITG.vdi&quot;"/>
 			<Tool
 				Name="VCPreBuildEventTool"
 				CommandLine="archutils\Win32\verinc
@@ -271,6 +271,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="ScreenArcadePatch.h">
+			</File>
+			<File
+				RelativePath=".\ScreenArcadeStart.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenArcadeStart.h">
 			</File>
 			<File
 				RelativePath="ScreenAttract.cpp">

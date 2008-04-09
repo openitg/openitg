@@ -11,6 +11,7 @@ int GetIP();
 int GetRevision();
 
 CString GetSerialNumber();
+bool HubIsConnected();
 
 bool HubIsConnected();
 

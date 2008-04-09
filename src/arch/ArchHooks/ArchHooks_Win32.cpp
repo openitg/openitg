@@ -171,7 +171,9 @@ void ArchHooks_Win32::SystemReboot()
 {
 	GAMESTATE->EndGame();
 
+#ifndef ITG_ARCADE
 	return; // pretend there's nothing else here right now -- we'll enable if needed
+#endif
 
 	if( IsAFile("/Data/no-reboot") )
 		return;

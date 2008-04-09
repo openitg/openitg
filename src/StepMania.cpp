@@ -1059,16 +1059,19 @@ int main(int argc, char* argv[])
 	 * efficient, but it is much more readable. -- Vyhd */
 
 #ifdef ITG_ARCADE
+#ifdef WIN32
+	if ( IsAFile("Data/patch/patch.zip") )
+#else
 	if ( IsAFile("/rootfs/stats/patch/patch.zip") )
+#endif
 	{
 		LOG->Info("VFS: mounting patch.zip");
+#ifdef WIN32
+		
+		FILEMAN->Mount( "patch", "/Data/patch", "/Patch" );
+#else
 		FILEMAN->Mount( "patch", "/stats/patch", "/Patch" );
-		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
-	}
-	else
-	{
-		LOG->Trace("VFS: No patch file found");
-	}
+#endif
 #else
 	if ( IsAFile("Data/patch/patch.zip") )
 	{
@@ -1212,6 +1215,9 @@ int main(int argc, char* argv[])
 	 * this after loading songs. */
 	if( ChangeAppPri() )
 		HOOKS->BoostPriority();
+
+	THEME->SwitchThemeAndLanguage("default", "english");
+	THEME->SwitchThemeAndLanguage("arcade", "english");
 
 	ResetGame();
 	SCREENMAN->SetNewScreen( INITIAL_SCREEN );

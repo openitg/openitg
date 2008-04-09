@@ -36,6 +36,7 @@ static Preference<CString> g_sMemoryCardProfileImportSubdirs( "MemoryCardProfile
 
 ProfileManager::ProfileManager()
 {
+	LOG->Trace( "ProfileManager::ProfileManager()" );
 }
 
 ProfileManager::~ProfileManager()

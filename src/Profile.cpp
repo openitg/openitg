@@ -1055,28 +1055,34 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	ini.GetValue("Editable","WeightPounds",				m_iWeightPounds);
 	ini.GetValue("Editable","UseCatalogXML",		m_bUseCatalog );
 
+	m_sPlayerAdditionalModifiers.clear();
+
 	CString sAdditionalSpeedBuf;
 	vector<CString> sASBCandidates;
 	if (ini.GetValue("Editable","AdditionalSpeedMods", sAdditionalSpeedBuf))
 	{
 		split(sAdditionalSpeedBuf, ",", sASBCandidates, true);
 		set<CString> sASBCNonDup;
-		for (unsigned i = 0; i < sASBCandidates.size(); i++)
-			sASBCNonDup.insert(sASBCandidates[i]);
+		FOREACH_CONST(CString, sASBCandidates, cand)
+		{
+			CString sCand = *cand;
+			TrimLeft(sCand);
+			TrimRight(sCand);
+			sASBCNonDup.insert(sCand);
+		}
 	
-		set<CString>::iterator iter;
-		for( iter = sASBCNonDup.begin(); iter != sASBCNonDup.end(); iter++ )
+		FOREACHS_CONST(CString, sASBCNonDup, iter)
 		{
 			CString candidate = *iter;
 			TrimLeft(candidate);
 			TrimRight(candidate);
 			Regex mult("^([0-9]+(\\.[0-9]+)?)x$");
 			Regex constmod("^C[0-9]{1,4}$");
-			//
-			// XXX: ToDo: sanitize the input better --infamouspat
-			//
-			if (mult.Compare(candidate) || constmod.Compare(candidate)) m_sPlayerAdditionalModifiers.push_back(candidate);
-			LOG->Trace("Editable.ini: added custom speed mod %s", candidate.c_str());
+			if (mult.Compare(candidate) || constmod.Compare(candidate))
+			{
+				m_sPlayerAdditionalModifiers.push_back(candidate);
+				LOG->Trace("Editable.ini: added custom speed mod %s", candidate.c_str());
+			}
 		}
 	}
 	CHECKPOINT_M("AdditionalSpeedMods end");

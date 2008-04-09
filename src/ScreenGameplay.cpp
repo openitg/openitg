@@ -1123,6 +1123,7 @@ float ScreenGameplay::StartPlayingSong(float MinTimeToNotes, float MinTimeToMusi
 	/* XXX: We want the first beat *in use*, so we don't delay needlessly. */
 	const float fFirstBeat = GAMESTATE->m_pCurSong->m_fFirstBeat;
 	const float fFirstSecond = GAMESTATE->m_pCurSong->GetElapsedTimeFromBeat( fFirstBeat );
+	m_bSongIsCustom = GAMESTATE->m_pCurSong->m_bIsCustomSong;
 	float fStartSecond = fFirstSecond - MinTimeToNotes;
 
 	fStartSecond = min(fStartSecond, -MinTimeToMusic);
@@ -1257,7 +1258,7 @@ void ScreenGameplay::UpdateSongPosition( float fDeltaTime )
 	const float fSeconds = m_pSoundMusic->GetPositionSeconds( NULL, &tm );
 	const float fAdjust = SOUND->GetFrameTimingAdjustment( fDeltaTime );
 	unsigned iSecondsTotal = (int)(fSeconds + fAdjust);
-	if (PREFSMAN->m_iCustomMaxSeconds != 0 && iSecondsTotal > PREFSMAN->m_iCustomMaxSeconds)
+	if (m_bSongIsCustom && PREFSMAN->m_iCustomMaxSeconds > 0 && iSecondsTotal > PREFSMAN->m_iCustomMaxSeconds)
 	{
                 //m_DancingState = STATE_OUTRO;
                 m_pSoundMusic->StopPlaying();

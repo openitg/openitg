@@ -5,29 +5,30 @@
 #define SCREEN_ARCADE_START_H
 
 #include "ScreenWithMenuElements.h"
+#include "RageTimer.h"
 #include "BitmapText.h"
 
 class ScreenArcadeStart : public ScreenWithMenuElements
 {
 public:
 	ScreenArcadeStart( CString sName );
-	virtual void Init();
 	virtual ~ScreenArcadeStart();
 
-	virtual void DrawPrimitives();
-	virtual void Update( float fDelta );
-	virtual void Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI );
-	virtual void HandleScreenMessage( const ScreenMessage SM );
+	void Update( float fDeltaTime );
+	void HandleScreenMessage( const ScreenMessage SM );
+	void DrawPrimitives();
 
-	virtual void MenuStart( PlayerNumber pn );
-	virtual void MenuBack( PlayerNumber pn );
+	virtual void Init();
 private:
-	void Refresh();
-	void LoadHandler();
+	bool Refresh();
+	bool LoadHandler();
 
+	RageTimer m_Timer;
 	BitmapText m_Error;
 
-	bool m_bFatalError;
+	bool m_bBoardError;
+	bool m_bUSBError;
+	CString m_sMessage;
 };
 
 #endif

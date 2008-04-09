@@ -2,19 +2,10 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-#include "ScreenArcadeStart.h"
-#include "ScreenManager.h"
 #include "ActorFrame.h"
-
-/* I'd like to include these as needed only */
-//#include "GameState.h"
-//#include "GameSoundManager.h"
-//#include "ThemeManager.h"
-//#include "Game.h"
-//#include "ScreenDimensions.h"
-//#include "GameManager.h"
-//#include "PrefsManager.h"
-//#include "ActorUtil.h"
+#include "ThemeManager.h"
+#include "ScreenManager.h"
+#include "ScreenArcadeStart.h"
 
 /* Serial number functions */
 #include "MiscITG.h"
@@ -33,7 +24,7 @@
 #include "arch/InputHandler/InputHandler_Iow.h"
 #include "arch/InputHandler/InputHandler_PIUIO.h"
 
-#define NEXT_SCREEN	THEME->GetMetric( m_sName, "NextScreen" );
+#define NEXT_SCREEN	THEME->GetMetric( m_sName, "NextScreen" )
 
 REGISTER_SCREEN_CLASS( ScreenArcadeStart );
 
@@ -55,48 +46,38 @@ void ScreenArcadeStart::Init()
 
 	this->SortByDrawOrder();
 
-	CString sError = "";
+	/* are there any errors with loading the I/O board? */
+	m_bBoardError = !LoadHandler();
 
-	if( !LoadHandler(sError) )
-	{
-		m_Error.SetText( sError );
-		return;
-	}
-
-	if( !Refresh(sError) )
-	{
-		m_Error.SetText( sError );
-		return;
-	}
-
-	if( sError.empty() )
-		LOG->Trace( "All OK" );
+	if( !m_bBoardError )
+		m_bUSBError = !Refresh();
 }
 
 ScreenArcadeStart::~ScreenArcadeStart()
 {
 	LOG->Trace( "ScreenArcadeStart::~ScreenArcadeStart()" );
-
-	if( m_bFatalError )
-		HOOKS->SystemReboot();
 }
 
 void ScreenArcadeStart::Update( float fDeltaTime )
 {
 	Screen::Update( fDeltaTime );
-}
 
-void ScreenArcadeStart::DrawPrimitives()
-{
-	Screen::DrawPrimitives();
-}
+	if( m_bFirstUpdate )
+		m_Timer.Touch();
 
-void ScreenArcadeStart::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
-{
-	if( type != IET_FIRST_PRESS && type != IET_SLOW_REPEAT )
-		return;	// ignore
+	if( !m_bBoardError )
+	{
+		m_bUSBError = !Refresh();
 
-	Screen::Input( DeviceI, type, GameI, MenuI, StyleI );	// default handler
+		// problem was fixed, or we timed out
+		if( !m_bUSBError || m_Timer.Ago() > 10.0f )
+		{
+			this->PlayCommand( "Off" );
+			StartTransitioning( SM_GoToNextScreen );
+		}
+	}
+
+	m_Error.SetText( m_sMessage );
 }
 
 void ScreenArcadeStart::HandleScreenMessage( const ScreenMessage SM )
@@ -105,52 +86,92 @@ void ScreenArcadeStart::HandleScreenMessage( const ScreenMessage SM )
 	{
 	case SM_GoToNextScreen:
 	case SM_GoToPrevScreen:
-		SCREENMAN->SetNewScreen( "ScreenOptionsMenu" );
+		SCREENMAN->SetNewScreen( NEXT_SCREEN );
 		break;
 	}
 }
 
-void ScreenArcadeStart::MenuStart( PlayerNumber pn )
+void ScreenArcadeStart::DrawPrimitives()
 {
-	MenuBack(pn);
+	Screen::DrawPrimitives();
 }
 
-bool ScreenArcadeStart::Refresh( CString &sMessage )
+bool ScreenArcadeStart::Refresh()
+{
+	float fTimer = 10.0f - m_Timer.Ago();
+
+	if( !HubIsConnected() )
+	{
+		m_sMessage = ssprintf(
+			"The memory card hub is not connected.\nPlease consult the service manual for details.\n\n"
+			"Connect the USB hub to continue,\nor wait %.0f seconds for this warning to automatically dismiss.",
+			fTimer );
+		return false;
+	}
+
+	return true;
+}
+
+bool ScreenArcadeStart::LoadHandler()
 {
 	vector<USBDevice> vDevices;
 	GetUSBDeviceList( vDevices );
-}
 
-bool ScreenArcadeStart::LoadHandler( CString &sMessage )
-{
+	// this makes it so much easier to keep track of. --Vyhd
+	enum Board { BOARD_NONE, BOARD_ITGIO, BOARD_PIUIO };
+
+	Board iBoard = BOARD_NONE;
+	
+	for( unsigned i = 0; i < vDevices.size(); i++ )
+	{
+		if( vDevices[i].IsITGIO() )
+			iBoard = BOARD_ITGIO;
+		else if( vDevices[i].IsPIUIO() )
+			iBoard = BOARD_PIUIO;
+
+		// early abort if we found something
+		if( iBoard != BOARD_NONE )
+			break;
+	}
+
 	USBDriver *pDriver;
 
-	bIsKit = false;
-	/* Default to PIUIO if this isn't a kit, at least for now */
-	if( IsAFile( "/rootfs/itgdata/K" )
-		bIsKit = true;
-
-	if( bIsKit )
+	if( iBoard == BOARD_ITGIO )
 		pDriver = new ITGIO;
-	else
+	else if( iBoard == BOARD_PIUIO )
 		pDriver = new PIUIO;
-	
+	else
+#ifdef ITG_ARCADE
+	{
+		m_sMessage = "The input/lights controller is not connected or is not receiving power.\n\nPlease consult the service manual.";
+		return false;
+	}
+#else
+	{
+		/* HACK: return true if PC, even though it doesn't load. */
+		LOG->Warn( "ScreenArcadeStart: I/O board not found. Continuing anyway..." );
+		return true;
+	}
+#endif
+
 	/* Attempt a connection */
 	if( !pDriver->Open() )
 	{	
-		sMessage = "The input/lights controller could not be initialized.\n\nPlease consult the service manual.";
+		m_sMessage = "The input/lights controller could not be initialized.\n\nPlease consult the service manual.";
 
-		delete pDriver;
+		SAFE_DELETE( pDriver );
 		return false;
 	}
 
 	pDriver->Close();
-	delete pDriver;
+	SAFE_DELETE( pDriver );
 
-	if( bIsKit )
+	if( iBoard == BOARD_ITGIO )
 		INPUTMAN->AddHandler( new InputHandler_Iow );
-	else
+	else if( iBoard == BOARD_PIUIO )
 		INPUTMAN->AddHandler( new InputHandler_PIUIO );
+	else
+		ASSERT(0);
 
 	LOG->Trace( "Remapping joysticks after loading driver." );
 

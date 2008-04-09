@@ -12,6 +12,8 @@ int GetRevision();
 
 CString GetSerialNumber();
 
+bool HubIsConnected();
+
 static CString g_SerialNum;
 
 #endif // MISC_ITG_H

@@ -759,14 +759,14 @@ void ScreenSelectMusic::Update( float fDeltaTime )
 	m_bgOptionsOut.Update( fDeltaTime );
 	m_bgNoOptionsOut.Update( fDeltaTime );
 	m_sprOptionsMessage.Update( fDeltaTime );
-	//SCREENMAN->SystemMessageNoAnimate( ssprintf("IsTransitioning(): %s", IsTransitioning() ? "true" : "false") );
+	SCREENMAN->SystemMessageNoAnimate( ssprintf("g_bGoToOptions: %s", g_bGoToOptions ? "true" : "false") );
 
 	CheckBackgroundRequests();
 }
 
 void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
-//	LOG->Trace( "ScreenSelectMusic::Input()" );
+	//LOG->Info( "ScreenSelectMusic::Input()" );
 
 	// debugging?
 	// I just like being able to see untransliterated titles occasionally.
@@ -803,7 +803,7 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 			return; /* not allowed yet */
 
 		SCREENMAN->PlayStartSound();
-		
+
 		m_bGoToOptions = true;
 		//g_bGoToOptions = false; // fix no-input-accepted problem
 		m_sprOptionsMessage.SetState( 1 );
@@ -1365,7 +1365,7 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 				}
 				else
 					m_bMadeChoice = ValidateCustomSong( m_MusicWheel.GetSelectedSong() );
-					if (!m_bMadeChoice) g_bGoToOptions = false;
+					/* if (!m_bMadeChoice) */ g_bGoToOptions = false;
 			}
 			else
 				m_bMadeChoice = true;

@@ -304,21 +304,19 @@ void ResetGame()
 	INPUTMAN->GetDevicesAndDescriptions(vDevices,vDescriptions);
 	CString sInputDevices = join( ",", vDescriptions );
 
-	// temporarily force remapping each load until ScreenArcadeStart
-	// is implemented or we have some other way to initialise PIUIO
-//	if( PREFSMAN->m_sLastSeenInputDevices.Get() != sInputDevices )
-//	{
-//		LOG->Info( "Input devices changed from '%s' to '%s'.", PREFSMAN->m_sLastSeenInputDevices.Get().c_str(), sInputDevices.c_str() );
+	if( PREFSMAN->m_sLastSeenInputDevices.Get() != sInputDevices )
+	{
+		LOG->Info( "Input devices changed from '%s' to '%s'.", PREFSMAN->m_sLastSeenInputDevices.Get().c_str(), sInputDevices.c_str() );
 
-//		if( PREFSMAN->m_bAutoMapOnJoyChange )
-//		{
+		if( PREFSMAN->m_bAutoMapOnJoyChange )
+		{
 			LOG->Info( "Remapping joysticks." );
 			INPUTMAPPER->AutoMapJoysticksForCurrentGame();
 			INPUTMAPPER->SaveMappingsToDisk();
-//		}
+		}
 
 		PREFSMAN->m_sLastSeenInputDevices.Set( sInputDevices );
-//	}
+	}
 }
 
 static void GameLoop();

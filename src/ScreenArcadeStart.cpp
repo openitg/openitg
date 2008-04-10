@@ -176,7 +176,7 @@ bool ScreenArcadeStart::LoadHandler()
 	LOG->Trace( "Remapping joysticks after loading driver." );
 
 	INPUTMAPPER->AutoMapJoysticksForCurrentGame();
-	INPUTMAPPER->SaveMappingsToDisk();		
+	INPUTMAPPER->SaveMappingsToDisk();
 
 	return true;
 }

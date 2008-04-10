@@ -115,6 +115,7 @@ void Song::Reset()
 
 void Song::AddBackgroundChange( BackgroundLayer iLayer, BackgroundChange seg )
 {
+	if (m_bIsCustomSong) return;
 	// Delete old background change at this start beat, if any.
 	FOREACH( BackgroundChange, GetBackgroundChanges(iLayer), bgc )
 	{

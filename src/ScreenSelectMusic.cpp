@@ -759,7 +759,7 @@ void ScreenSelectMusic::Update( float fDeltaTime )
 	m_bgOptionsOut.Update( fDeltaTime );
 	m_bgNoOptionsOut.Update( fDeltaTime );
 	m_sprOptionsMessage.Update( fDeltaTime );
-	SCREENMAN->SystemMessageNoAnimate( ssprintf("g_bGoToOptions: %s", g_bGoToOptions ? "true" : "false") );
+	//SCREENMAN->SystemMessageNoAnimate( ssprintf("g_bGoToOptions: %s", g_bGoToOptions ? "true" : "false") );
 
 	CheckBackgroundRequests();
 }

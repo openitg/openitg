@@ -52,7 +52,7 @@ const CString LANGUAGES_SUBDIR = "Languages/";
 const CString BASE_LANGUAGE = "english";
 const CString THEMES_DIR  = "Themes/";
 const CString METRICS_FILE = "metrics.ini";
-
+const CString THEME_INFO_FILE = "ThemeInfo.ini";
 
 struct Theme
 {
@@ -150,6 +150,34 @@ void ThemeManager::GetThemeNames( CStringArray& AddTo )
 	}
 }
 
+void ThemeManager::GetDisplayableThemeNames( CStringArray& AddTo )
+{
+	GetDirListing( THEMES_DIR + "*", AddTo, true );
+
+	if (AddTo.size() == 0) return;
+	CStringArray::iterator i = AddTo.begin();
+	while (i != AddTo.end())
+	{
+		if ( *i == "CVS" || !IsThemeSelectable(*i) )
+		{
+			AddTo.erase(i, i+1);
+		}
+		i++;
+	}
+	if ( *i == "CVS" || !IsThemeSelectable(*i) )
+	{
+		AddTo.erase(i, i+1);
+	}
+}
+
+bool ThemeManager::IsThemeSelectable( const CString &sThemeName )
+{
+	LOG->Info("IsThemeSelectable(): %s", sThemeName.c_str() );
+	if ( !sThemeName.CompareNoCase("fallback") || !sThemeName.CompareNoCase("default") )
+		return false;
+	return true;
+}
+
 bool ThemeManager::DoesThemeExist( const CString &sThemeName )
 {
 	CStringArray asThemeNames;	
@@ -204,6 +232,8 @@ void ThemeManager::LoadThemeRecursive( deque<Theme> &theme, const CString &sThem
 	t.sThemeName = sThemeName;
 	t.iniMetrics->ReadFile( GetMetricsIniPath(sThemeName) );
 	t.iniMetrics->ReadFile( GetLanguageIniPath(sThemeName,BASE_LANGUAGE) );
+	if ( IsAFile(GetThemeInfoIniPath(sThemeName)) )
+		t.iniMetrics->ReadFile( GetThemeInfoIniPath(sThemeName) );
 	if( m_sCurLanguage.CompareNoCase(BASE_LANGUAGE) )
 		t.iniMetrics->ReadFile( GetLanguageIniPath(sThemeName,m_sCurLanguage) );
 
@@ -594,6 +624,11 @@ try_element_again:
 CString ThemeManager::GetMetricsIniPath( const CString &sThemeName )
 {
 	return GetThemeDirFromName( sThemeName ) + METRICS_FILE;
+}
+
+CString ThemeManager::GetThemeInfoIniPath( const CString &sThemeName )
+{
+	return GetThemeDirFromName( sThemeName ) + THEME_INFO_FILE;
 }
 
 bool ThemeManager::HasMetric( const CString &sClassName, const CString &sValueName )

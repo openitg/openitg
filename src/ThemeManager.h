@@ -37,6 +37,7 @@ public:
 	~ThemeManager();
 
 	void GetThemeNames( CStringArray& AddTo );
+	void GetDisplayableThemeNames( CStringArray& AddTo );
 	bool DoesThemeExist( const CString &sThemeName );
 	void GetLanguages( CStringArray& AddTo );
 	bool DoesLanguageExist( const CString &sLanguage );
@@ -44,6 +45,7 @@ public:
 	void UpdateLuaGlobals();
 	CString GetCurThemeName() const { return m_sCurThemeName; };
 	bool IsThemeLoaded() const { return !m_sCurThemeName.empty(); };
+	bool IsThemeSelectable( const CString &sThemeName );
 	CString GetCurLanguage() const { return m_sCurLanguage; };
 	CString GetCurThemeDir() const { return GetThemeDirFromName(m_sCurThemeName); };
 	void NextTheme();
@@ -113,6 +115,7 @@ protected:
 	static CString GetThemeDirFromName( const CString &sThemeName );
 	CString GetElementDir( const CString &sThemeName );
 	static CString GetMetricsIniPath( const CString &sThemeName );
+	static CString GetThemeInfoIniPath( const CString &sThemeName );
 	static void GetLanguagesForTheme( const CString &sThemeName, CStringArray& asLanguagesOut );
 	static CString GetLanguageIniPath( const CString &sThemeName, const CString &sLanguage );
 

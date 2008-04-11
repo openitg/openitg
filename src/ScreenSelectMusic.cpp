@@ -366,6 +366,7 @@ void ScreenSelectMusic::Init()
 			MEMCARDMAN->UnmountCard( pn );
 			MEMCARDMAN->MountCard( pn, 600 );
 		}
+		MEMCARDMAN->PauseMountingThread( 600 );
 	}
 #endif
 }
@@ -377,6 +378,7 @@ ScreenSelectMusic::~ScreenSelectMusic()
 	BANNERCACHE->Undemand();
 	
 #ifndef WIN32
+	MEMCARDMAN->PauseMountingThread( 600 );
 	if( PREFSMAN->m_bCustomSongPreviews )
 		FOREACH_EnabledPlayer( pn )
 			MEMCARDMAN->UnmountCard( pn );
@@ -1277,7 +1279,13 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 	// timeout is high so slow, but valid, loads don't get interrupted
 #ifndef WIN32
 	if( !PREFSMAN->m_bCustomSongPreviews )
+	{
 		MEMCARDMAN->MountCard( pSong->m_SongOwner, 20 );
+	}
+	else
+	{
+		MEMCARDMAN->PauseMountingThread( 600 );
+	}
 #endif
 	
 	// now, verify the song internally since we can read the data now
@@ -1305,7 +1313,6 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 		if( !bCopied ) // failed
 		{
 			SCREENMAN->SystemMessage( "Copying error. Check your permissions." );
-			MEMCARDMAN->UnPauseMountingThread();
 		}
 	}
 
@@ -1313,6 +1320,8 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 #ifndef WIN32
 	if( !PREFSMAN->m_bCustomSongPreviews )
 		MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
+	//else
+		//MEMCARDMAN->PauseMountingThread( 600 );
 #endif
 
 	// EXPERIMENT: fix input-killing bug

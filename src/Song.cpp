@@ -26,6 +26,7 @@
 #include "UnlockManager.h"
 #include "BackgroundUtil.h"
 #include "PlayerNumber.h"
+#include "ThemeManager.h"
 
 #include "NotesLoaderSM.h"
 #include "NotesLoaderDWI.h"
@@ -133,12 +134,14 @@ void Song::AddBackgroundChange( BackgroundLayer iLayer, BackgroundChange seg )
 
 void Song::AddForegroundChange( BackgroundChange seg )
 {
+	if (m_bIsCustomSong) return;
 	GetForegroundChanges().push_back( seg );
 	BackgroundUtil::SortBackgroundChangesArray( GetForegroundChanges() );
 }
 
 void Song::AddLyricSegment( LyricSegment seg )
 {
+	if (m_bIsCustomSong) return;
 	m_LyricSegments.push_back( seg );
 }
 
@@ -356,7 +359,7 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 	}
 
 	// these won't load anyway -  don't bother
-	m_sBannerFile = "";
+	m_sBannerFile = THEME->GetPathG( "banner", "custom" );
 	m_sBackgroundFile = "";
 
 	CString sExtension = "."; sExtension += m_sMusicFile.Right(3);

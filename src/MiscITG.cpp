@@ -22,7 +22,7 @@ extern "C" {
 
 // See where to look for all this stuff
 // "Stats" is mounted to "Data" in the VFS for non-arcade
-#ifdef ITG_ARCADE
+#if defined(ITG_ARCADE) && !defined(WIN32)
 #define STATS_DIR_PATH CString("/rootfs/stats/")
 #else
 #define STATS_DIR_PATH CString("Data/")
@@ -196,6 +196,15 @@ bool HubIsConnected()
 	return false;
 }
 
+// stupid workaround
+CString GetInputType()
+{
+	CString sType = g_sInputType;
+	LOG->Trace( "GetInputType() == %s", sType.c_str() );
+	if (!sType.CompareNoCase("null")) return "";
+	return sType;
+}
+
 /*
  * [ScreenArcadeDiagnostics]
  *
@@ -230,7 +239,7 @@ LuaFunction_NoArgs( GetNumMachineScores, GetNumMachineScores() ); // Call the ma
 LuaFunction_NoArgs( GetSerialNumber, GetSerialNumber() ); // returns serial from page 9 on dongle
 // added by Vyhd, if it matters that much :P
 LuaFunction_NoArgs( GetNumIOErrors, ITGIO::m_iInputErrorCount ); // Call the number of I/O errors
-LuaFunction_NoArgs( GetInputType, CString(g_sInputType) ); // grabs from RageInput's global variable
+LuaFunction_NoArgs( GetInputType, GetInputType() ); // grabs from RageInput's global variable
 LuaFunction_NoArgs( HubIsConnected, HubIsConnected() );
 
 

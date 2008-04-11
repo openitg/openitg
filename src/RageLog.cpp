@@ -53,8 +53,13 @@ RageLog* LOG;		// global and accessable from anywhere in the program
  * map/unmap, using any mechanism to generate unique IDs. */
 map<CString, CString> LogMaps;
 
+#ifdef ITG_ARCADE
+#define LOG_PATH	"Data/log.txt"
+#define INFO_PATH	"Data/info.txt"
+#else
 #define LOG_PATH	"log.txt"
 #define INFO_PATH	"info.txt"
+#endif
 
 static RageFile *g_fileLog, *g_fileInfo;
 

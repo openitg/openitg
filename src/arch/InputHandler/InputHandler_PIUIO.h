@@ -30,8 +30,12 @@ private:
 	bool m_bFoundDevice;
 	bool m_bShutdown;
 
-	uint64_t m_iInputData[4];
-	uint64_t m_iLastInputData[4];
+	/* one uint32_t per sensor set */
+	uint32_t m_iInputData[4];
+	uint32_t m_iLastInputData[4];
+
+	/* combination of the above */
+	uint32_t m_iInputBitField;
 
 	uint32_t m_iLightData;
 	uint32_t m_iLastLightData;

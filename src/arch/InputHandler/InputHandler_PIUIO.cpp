@@ -16,6 +16,10 @@ extern LightsState g_LightsState;
 /* grabbed from RageInput */
 extern CString g_sInputType;
 
+const unsigned NUM_SENSORS = 12;
+
+/* XXX: this could be cleaner. */
+
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
 	m_bShutdown = false;
@@ -81,13 +85,13 @@ void InputHandler_PIUIO::InputThreadMain()
 	}
 }
 
-static CString ShortArrayToBin( uint64_t arr[4] )
+static CString ShortArrayToBin( uint32_t arr[4] )
 {
 	CString result;
-	uint64_t one = 1;
+	uint32_t one = 1;
 	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 63; j >= 0; j--)
+		for (int j = 31; j >= 0; j--)
 		{
 			if (arr[i] & (one << j))
 				result += "1";
@@ -100,7 +104,7 @@ static CString ShortArrayToBin( uint64_t arr[4] )
 }
 
 // P1: right left bottom top, P2: right left bottom top
-int sensor_bits[12];
+int sensor_bits[NUM_SENSORS];
 
 static CString SensorDescriptions[] = { "right", "left", "bottom", "top" };
 
@@ -116,20 +120,59 @@ static CString GetSensorDescription( int iBits )
 
 	return join(", ", retSensors);
 }
-
+// XXX fixed 4/7/08.  Game.  Set.  Match.  --infamouspat
+// ITT history :D  -- vyhd
 void InputHandler_PIUIO::HandleInput()
 {
-	uint64_t i = 1; // convenience hack
+	uint32_t i = 1; // convenience hack
+
+	/* Easy to access if needed --Vyhd */
+	static const uint32_t iInputBits[NUM_IO_BUTTONS] =
+	{
+		/* Player 1 */
+		//Left, right, up, down arrows
+		(i << 2), (i << 3), (i << 0), (i << 1),
+
+		// Select, Start, MenuLeft, MenuRight
+		(i << 5), (i << 4), (i << 6), (i << 7),
+
+		/* Player 2 */
+		// Left, right, up, down arrows
+		(i << 18), (i << 19), (i << 16), (i << 17),
+
+		// Select, Start, MenuLeft, MenuRight
+		(i << 21), (i << 20), (i << 22), (i << 23),
+
+		/* General input */
+		// Service button, Coin event
+		(i << 9) | (i << 14), (i << 10)
+	};
 
 	uint32_t iNewLightData = 0;
 
 	bool bInputIsNonZero = false, bInputChanged = false;
 
 	// reset
-	for (unsigned j = 0; j < 19; j++)
+	for (unsigned j = 0; j < NUM_SENSORS; j++)
 		sensor_bits[j] = 0;
 
-	for (uint64_t j = 0; j < 4; j++)
+	/* Explanation of this logic:
+	 * ==========================
+	 * Output bits 15-16 and 31-32 tell PIUIO which
+	 * sensor set to report from when we read input.
+	 *
+	 * We AND out these bits, so they're guaranteed 0, then write
+	 * the number we want for this read (re-writing the lights state).
+	 *
+	 * After this is written, we read the input into our input
+	 * data array, add the sensor bits read into an array used to
+	 * show which sensors are being pressed, and combine the data.
+	 *
+	 * The resultant iInputBitField, combined from four reads, is 
+	 * finally used to report input when compared against the maps.
+	 */
+
+	for (uint32_t j = 0; j < 4; j++)
 	{
 		iNewLightData = m_iLightData & 0xfffcfffc;
 		iNewLightData |= (j | (j << 16));
@@ -144,6 +187,12 @@ void InputHandler_PIUIO::HandleInput()
 
 		/* Toggle sensor bits - Left, Right, Up, Down */
 		// P1
+		/* Don't read past the P2 arrows */
+//		for( int k; k <= IO_P2_DOWN; k++ )
+//		{
+			if ( m_i
+//			if ( m_iInputData[j] & iInputBits[k] )
+//				sensor_bits[k] |= (i << j);
 		if (m_iInputData[j] & (i << 2)) sensor_bits[0] |= (i << j);
 		if (m_iInputData[j] & (i << 3)) sensor_bits[1] |= (i << j);
 		if (m_iInputData[j] & (i << 0)) sensor_bits[2] |= (i << j);
@@ -190,35 +239,12 @@ void InputHandler_PIUIO::HandleInput()
 		*/
 	}
 
-	uint64_t iInputBitField = 0;
+	uint32_t iInputBitField = 0;
 
 	for (int j = 0; j < 4; j++)
 		iInputBitField |= m_iInputData[j];
 
 	InputDevice id = DEVICE_PIUIO;
-
-	// XXX fixed 4/7/08.  Game.  Set.  Match.  --infamouspat
-	// ITT history :D  -- vyhd
-
-	static const uint64_t iInputBits[NUM_IO_BUTTONS] = {
-	/* Player 1 */	
-	//Left, right, up, down arrows
-	(i << 2), (i << 3), (i << 0), (i << 1),
-
-	// Select, Start, MenuLeft, MenuRight
-	(i << 5), (i << 4), (i << 6), (i << 7),
-
-	/* Player 2 */
-	// Left, right, up, down arrows
-	(i << 18), (i << 19), (i << 16), (i << 17),
-
-	// Select, Start, MenuLeft, MenuRight
-	(i << 21), (i << 20), (i << 22), (i << 23),
-
-	/* General input */
-	// Service button, Coin event
-	(i << 9) | (i << 14), (i << 10)
-	};
 
 	/* Actually handle the input now */
 	for( int iButton = 0; iButton < NUM_IO_BUTTONS; iButton++ )

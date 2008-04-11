@@ -1053,6 +1053,9 @@ int main(int argc, char* argv[])
 	 * efficient, but it is much more readable. -- Vyhd */
 
 #ifdef ITG_ARCADE
+
+
+
 #ifdef WIN32
 	if ( IsAFile("Data/patch/patch.zip") )
 #else
@@ -1066,7 +1069,11 @@ int main(int argc, char* argv[])
 #else
 		FILEMAN->Mount( "patch", "/stats/patch", "/Patch" );
 #endif
+		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
+
+
+
 #else
 	if ( IsAFile("Data/patch/patch.zip") )
 	{
@@ -1080,13 +1087,13 @@ int main(int argc, char* argv[])
 	}
 #endif
 
-#if 0
-	LOG->Trace("======= MOUNTPOINTS =========");
+#if 1
+	LOG->Info("======= MOUNTPOINTS =========");
 	vector<RageFileManager::DriverLocation> mymounts;
 	FILEMAN->GetLoadedDrivers(mymounts);
 	for (int i = 0; i < mymounts.size(); i++)
-		LOG->Trace("%s ..... %s ..... %s", mymounts[i].Type.c_str(), mymounts[i].Root.c_str(), mymounts[i].MountPoint.c_str() );
-	LOG->Trace("=============================");
+		LOG->Info("%s ..... %s ..... %s", mymounts[i].Type.c_str(), mymounts[i].Root.c_str(), mymounts[i].MountPoint.c_str() );
+	LOG->Info("=============================");
 #endif
 
 	/* One of the above filesystems might contain files that affect preferences, eg Data/Static.ini.

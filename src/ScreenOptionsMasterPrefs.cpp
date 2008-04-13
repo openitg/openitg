@@ -15,6 +15,7 @@
 #include "Game.h"
 #include "Foreach.h"
 #include "GameConstantsAndTypes.h"
+#include "RageLog.h"
 
 static void GetDefaultModifiers( PlayerOptions &po, SongOptions &so )
 {
@@ -179,7 +180,7 @@ static void Language( int &sel, bool ToSel, const ConfOption *pConfOption )
 
 static void ThemeChoices( CStringArray &out )
 {
-	THEME->GetThemeNames( out );
+	THEME->GetDisplayableThemeNames( out );
 }
 
 static void Theme( int &sel, bool ToSel, const ConfOption *pConfOption )
@@ -313,8 +314,6 @@ static void CustomMaxSeconds( int &sel, bool ToSel, const ConfOption *pConfOptio
 	const int mapping[] = { 90, 105, 120, 135, 150, 165, 180, 210, 240, 270, 300, 330, 360, 420, 480, 560, 0 };
 	MoveMap( sel, PREFSMAN->m_iCustomMaxSeconds, ToSel, mapping, ARRAYSIZE(mapping) );
 }
-//MOVE( CustomMaxSeconds,		PREFSMAN->m_iCustomMaxSeconds );
-
 
 static void MarvelousTiming( int &sel, bool ToSel, const ConfOption *pConfOption )
 {

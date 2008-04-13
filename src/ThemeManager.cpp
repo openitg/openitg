@@ -150,26 +150,27 @@ void ThemeManager::GetThemeNames( CStringArray& AddTo )
 	}
 }
 
+// FYI: GetThemeNames() apparently has a bug which makes the iteration neglect account
+//   for the last element in AddTo when removing "CVS".  This is ok
+//   for the original GetThemeNames because "CVS" will most likely
+//   not be the last directory entry, however we need account for every
+//   theme available, even the last one.  This is why "fallback" kept appearing
+//   in the theme switcher mod.  --infamouspat
 void ThemeManager::GetDisplayableThemeNames( CStringArray& AddTo )
 {
-	GetDirListing( THEMES_DIR + "*", AddTo, true );
-
-	if (AddTo.size() == 0) return;
-	CStringArray::iterator i = AddTo.begin();
-	while (i != AddTo.end())
+	vector<CString> candidates;
+	GetThemeNames( candidates );
+	FOREACH_CONST( CString, candidates, cand )
 	{
-		if ( *i == "CVS" || !IsThemeSelectable(*i) )
-		{
-			AddTo.erase(i, i+1);
-		}
-		i++;
+		if ( IsThemeSelectable(*cand) ) AddTo.push_back(*cand);
 	}
-	if ( *i == "CVS" || !IsThemeSelectable(*i) )
-	{
-		AddTo.erase(i, i+1);
-	}
+	
 }
 
+// also, I'm assuming "Default" wants to be removed too because, in ITG's theme setup,
+//  if "Default" is called over "arcade", diagnostics and machine update will not work.
+//  Themers should also keep that in the back of their mind when making an ITG2AC-based theme.
+//   --infamouspat
 bool ThemeManager::IsThemeSelectable( const CString &sThemeName )
 {
 	LOG->Info("IsThemeSelectable(): %s", sThemeName.c_str() );

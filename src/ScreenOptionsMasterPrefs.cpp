@@ -308,12 +308,18 @@ MOVE( EasterEggs,			PREFSMAN->m_bEasterEggs );
 MOVE( AllowExtraStage,		PREFSMAN->m_bAllowExtraStage );
 //MOVE( PickExtraStage,		PREFSMAN->m_bPickExtraStage );
 MOVE( UnlockSystem,			PREFSMAN->m_bUseUnlockSystem );
+
+
 MOVE( SongEdits,		PREFSMAN->m_bCustomSongs );
+
 static void CustomMaxSeconds( int &sel, bool ToSel, const ConfOption *pConfOption )
 {
-	const int mapping[] = { 90, 105, 120, 135, 150, 165, 180, 210, 240, 270, 300, 330, 360, 420, 480, 560, 0 };
+	const int mapping[] = { 90, 105, 120, 135, 150, 165, 180, 210, 240, 270, 300, 330, 360, 420, 600, 0 };
 	MoveMap( sel, PREFSMAN->m_iCustomMaxSeconds, ToSel, mapping, ARRAYSIZE(mapping) );
 }
+
+
+
 
 static void MarvelousTiming( int &sel, bool ToSel, const ConfOption *pConfOption )
 {

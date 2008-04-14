@@ -1374,7 +1374,8 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 				}
 				else
 					m_bMadeChoice = ValidateCustomSong( m_MusicWheel.GetSelectedSong() );
-					/* if (!m_bMadeChoice) */ g_bGoToOptions = false;
+					if (m_bMadeChoice) m_bGoToOptions = false;
+					g_bGoToOptions = false;
 			}
 			else
 				m_bMadeChoice = true;

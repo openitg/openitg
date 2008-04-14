@@ -1,0 +1,30 @@
+These are all the awesome people who were involved in making this project just
+as awesome as they are.
+
+Lead Developer:
+ - Vyhd
+
+Assistant Developers:
+ - infamouspat
+ - Matt1360
+
+Network Manager:
+ - Matt1360
+
+Testers:
+ - GRIM657
+ - mDaWg
+ - Darklink
+ - Beaver Valley Mall
+ - Rhythmatic.net/ITGFreak.com
+ - Boxorroxors.net
+
+additional credits (in terms of source additions):
+ - PIUIO/ITGIO hardware support: Vyhd, infamouspat
+ - RageFileDriverCrypt: infamouspat
+ - USB r21-like custom song system: Vyhd
+ - Miscellaneous ITG theme bindings: Matt1360
+ - Patch system: Matt1360, infamouspat, Vyhd
+ - ScreenArcadeStart: Vyhd
+ - Diagnostics: Vyhd, infamouspat
+ - Win32 portability: infamouspat

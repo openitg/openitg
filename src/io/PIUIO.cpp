@@ -33,6 +33,27 @@ bool PIUIO::Read( uint64_t *pData )
 	return true;
 }
 
+bool PIUIO::Read( uint32_t *pData )
+{
+	int iResult;
+
+	while( 1 )
+	{
+		iResult = usb_control_msg(m_pHandle, 192, 174, 0, 0, (char *)pData, 8, 10000);
+		if( iResult == 8 ) // all data read
+			break;
+
+		// all data not read
+		LOG->Trace( "Device error: %s", usb_strerror() );
+		Close();
+	
+		while( !Open() )
+			usleep( 100000 );
+	}
+
+	return true;
+}
+
 bool PIUIO::Write( uint32_t iData )
 {
 	int iResult;

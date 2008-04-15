@@ -11,13 +11,13 @@
 
 #include "InputHandler.h"
 #include "RageThreads.h"
+#include "RageTimer.h"
 #include "io/PIUIO.h"
 
 class InputHandler_PIUIO: public InputHandler
 {
 public:
 	InputHandler_PIUIO();
-//	InputHandler_PIUIO( USBDriver *pDriver );
 	~InputHandler_PIUIO();
 
 //	for non-threaded input...should we even bother?
@@ -25,24 +25,23 @@ public:
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
 	PIUIO IOBoard;
+	RageTimer m_InputTimer;
 	RageThread InputThread;
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;
+	bool m_bCoinEvent;
 
 	/* one uint32_t per sensor set */
 	uint32_t m_iInputData[4];
 	uint32_t m_iLastInputData[4];
 
-	/* combination of the above */
-	uint32_t m_iInputBitField;
-
 	uint32_t m_iLightData;
 	uint32_t m_iLastLightData;
 
 	static int InputThread_Start( void *p );
-
 	void InputThreadMain();
+
 	void HandleInput();
 
 	// allow this driver to update lights with "ext"

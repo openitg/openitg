@@ -176,9 +176,6 @@ void SongManager::LoadStepManiaSongDir( CString sDir, LoadingWindow *ld )
 	{
 		CString sGroupDirName = arrayGroupDirs[i];
 
-		if( 0 == stricmp( sGroupDirName, "cvs" ) )	// the directory called "CVS"
-			continue;		// ignore it
-
 		SanityCheckGroupDir(sDir+sGroupDirName);
 
 		// Find all Song folders in this group directory
@@ -193,9 +190,6 @@ void SongManager::LoadStepManiaSongDir( CString sDir, LoadingWindow *ld )
 		for( unsigned j=0; j< arraySongDirs.size(); ++j )	// for each song dir
 		{
 			CString sSongDirName = arraySongDirs[j];
-
-			if( 0 == stricmp( Basename(sSongDirName), "cvs" ) )	// the directory called "CVS"
-				continue;		// ignore it
 
 			// this is a song directory.  Load a new song!
 			if( ld )
@@ -653,14 +647,6 @@ void SongManager::InitCoursesFromDisk( LoadingWindow *ld )
 		
 		FOREACH( CString, m_sCourseGroupNames, sCourseGroup )	// for each dir in /Courses/
 		{
-			if( 0 == stricmp( *sCourseGroup, "cvs" ) )	// the directory called "CVS"
-			{
-				vector<CString>::iterator eraseme = sCourseGroup;
-				sCourseGroup--;
-				m_sCourseGroupNames.erase( eraseme );
-				continue;		// ignore it
-			}
-
 			// Find all CRS files in this group directory
 			CStringArray vsCoursePaths;
 			GetDirListing( COURSES_DIR + *sCourseGroup + "/*.crs", vsCoursePaths, false, true );

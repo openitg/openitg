@@ -53,6 +53,9 @@ enum
 	GAME_INVALID,
 };
 
+/* Weird math going on here... */
+//int OFFSET = (int)(((1.33333 - PREFSMAN->m_fDisplayAspectRatio)/3)+0.5f);
+//LOG->Trace( "Calculated pixel offset with ratio %f: %i", PREFSMAN->m_fDisplayAspectRatio, OFFSET );
 
 const int DANCE_COL_SPACING = 64;
 const int PUMP_COL_SPACING = 50;
@@ -65,7 +68,7 @@ const int MANIAX_COL_SPACING = 36;
 const int TECHNO_COL_SPACING = 56;
 const int TECHNO_VERSUS_COL_SPACING = 33;
 const int PNM5_COL_SPACING = 32; 
-const int PNM9_COL_SPACING = 32; 
+const int PNM9_COL_SPACING = 32;
 
 struct {
 	char *name;

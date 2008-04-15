@@ -1,7 +1,9 @@
+/* XXX: this could be cleaner. */
+
 #include "global.h"
 #include "RageLog.h"
-#include "RageUtil.h"
 #include "RageInput.h" // for g_sInputType
+#include "RageUtil.h"
 
 #include "PrefsManager.h" // for m_bDebugUSBInput
 #include "ScreenManager.h"
@@ -17,8 +19,6 @@ extern LightsState g_LightsState;
 extern CString g_sInputType;
 
 const unsigned NUM_SENSORS = 12;
-
-/* XXX: this could be cleaner. */
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
@@ -124,6 +124,7 @@ static CString GetSensorDescription( int iBits )
 // ITT history :D  -- vyhd
 void InputHandler_PIUIO::HandleInput()
 {
+	m_InputTimer.SetZero();
 	uint32_t i = 1; // convenience hack
 
 	/* Easy to access if needed --Vyhd */
@@ -154,7 +155,7 @@ void InputHandler_PIUIO::HandleInput()
 
 	// reset
 	for (unsigned j = 0; j < NUM_SENSORS; j++)
-		sensor_bits[j] = 0;
+		ZERO( sensor_bits );
 
 	/* Explanation of this logic:
 	 * ==========================
@@ -190,7 +191,7 @@ void InputHandler_PIUIO::HandleInput()
 		/* Don't read past the P2 arrows */
 //		for( int k; k <= IO_P2_DOWN; k++ )
 //		{
-			if ( m_i
+//			if ( m_i
 //			if ( m_iInputData[j] & iInputBits[k] )
 //				sensor_bits[k] |= (i << j);
 		if (m_iInputData[j] & (i << 2)) sensor_bits[0] |= (i << j);
@@ -204,6 +205,13 @@ void InputHandler_PIUIO::HandleInput()
 		if (m_iInputData[j] & (i << 16)) sensor_bits[10] |= (i << j);
 		if (m_iInputData[j] & (i << 17)) sensor_bits[11] |= (i << j);
 	}
+
+	/* Handle coin events now */
+	// XXX: probably should have a way to refer to the I/O fields
+	if( m_iInputData[0] & (1 << 10) )
+		m_bCoinEvent = true;
+	if( m_iLastInput[0] & (1 << 10) )
+		m_bCoinEvent = false;
 
 	for (int j = 0; j < 4; j++)
 	{
@@ -266,6 +274,8 @@ void InputHandler_PIUIO::HandleInput()
 	/* assign our last input */
 	for (int j = 0; j < 4; j++)
 		m_iLastInputData[j] = m_iInputData[j];
+
+	LOG->Trace( "PIUIO input completed in %f seconds.", m_InputTimer.GetDeltaTime() );
 }
 
 
@@ -288,6 +298,8 @@ void InputHandler_PIUIO::UpdateLights()
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
+	static const uint32_t iCoinBit = (1 << 30);
+
 	// reset
 	m_iLightData = 0;
 
@@ -301,6 +313,13 @@ void InputHandler_PIUIO::UpdateLights()
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( g_LightsState.m_bGameButtonLights[gc][gb] )
 				m_iLightData |= iPadBits[gc][gb];
+
+	// pulse the coin counter if we have an event
+	if( m_bCoinEvent )
+	{
+		m_iLightData |= iCoinBit;
+		m_bCoinEvent = false;
+	}
 }
 
 /*

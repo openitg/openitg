@@ -11,8 +11,7 @@ bool PIUIO::Matches( int idVendor, int idProduct ) const
 	return false;
 }
 
-/* Perhaps uint64_t will fix our problem? */
-bool PIUIO::Read( uint64_t *pData )
+bool PIUIO::Read( uint32_t *pData )
 {
 	int iResult;
 
@@ -23,7 +22,7 @@ bool PIUIO::Read( uint64_t *pData )
 			break;
 
 		// all data not read
-		LOG->Trace( "Device error: %s", usb_strerror() );
+		LOG->Warn( "PIUIO device error: %s", usb_strerror() );
 		Close();
 	
 		while( !Open() )
@@ -44,7 +43,7 @@ bool PIUIO::Read( uint32_t *pData )
 			break;
 
 		// all data not read
-		LOG->Trace( "Device error: %s", usb_strerror() );
+		LOG->Trace( "PIUIO device error: %s", usb_strerror() );
 		Close();
 	
 		while( !Open() )

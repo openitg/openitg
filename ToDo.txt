@@ -1,12 +1,16 @@
 /* More-or-less in order of priority. */
 
+/* Things to test on the arcade */
+-Do separate coin counters have separate bit mappings?
+
 /* Bug fixing */
 -Fix "Banner custom doesn't always show in ScreenRanking" bug
 
 /* Minor feature additions */
--Color percentages in Versus to show who's ahead
+-Implement ThemeInfo.ini support
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
--Implement "InputDebounceTime"
+-Add "InputDebounceTime" preference
+-Implement colors percentages in Versus to show who's ahead
 
 /* Major feature additions */
 -Implement custom courses from USB drive

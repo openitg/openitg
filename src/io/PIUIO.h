@@ -6,7 +6,6 @@
 class PIUIO: public USBDriver
 {
 public:
-	bool Read( uint64_t *pData );
 	bool Read( uint32_t *pData );
 	bool Write( uint32_t iData );
 

@@ -626,9 +626,6 @@ void GameState::ReloadCharacters()
 		splitpath(as[i], sDummy, sCharName, sDummy);
 		sCharName.MakeLower();
 
-		if( sCharName == "cvs" )	// the directory called "CVS"
-			continue;		// ignore it
-
 		if( sCharName.CompareNoCase("default")==0 )
 			FoundDefault = true;
 

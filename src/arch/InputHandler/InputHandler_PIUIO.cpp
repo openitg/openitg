@@ -297,7 +297,7 @@ void InputHandler_PIUIO::UpdateLights()
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
-	static const uint32_t iCoinBit = (1 << 30);
+	static const uint32_t iCoinBit = (1 << 14);
 
 	// reset
 	m_iLightData = 0;

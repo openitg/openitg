@@ -18,8 +18,8 @@ Global
 		{670745A6-106B-420D-A2A9-D4F89A23986E}.FastDebug.Build.0 = FastDebug|Win32
 		{670745A6-106B-420D-A2A9-D4F89A23986E}.Release.ActiveCfg = Release|Win32
 		{670745A6-106B-420D-A2A9-D4F89A23986E}.Release.Build.0 = Release|Win32
-		{670745A6-106B-420D-A2A9-D4F89A23986E}.Release-Arcade.ActiveCfg = Release|Win32
-		{670745A6-106B-420D-A2A9-D4F89A23986E}.Release-Arcade.Build.0 = Release|Win32
+		{670745A6-106B-420D-A2A9-D4F89A23986E}.Release-Arcade.ActiveCfg = Release-Arcade|Win32
+		{670745A6-106B-420D-A2A9-D4F89A23986E}.Release-Arcade.Build.0 = Release-Arcade|Win32
 		{670745A6-106B-420D-A2A9-D4F89A23986E}.Release-Home.ActiveCfg = Release-Home|Win32
 		{670745A6-106B-420D-A2A9-D4F89A23986E}.Release-Home.Build.0 = Release-Home|Win32
 	EndGlobalSection

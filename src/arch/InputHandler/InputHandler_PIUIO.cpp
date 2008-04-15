@@ -189,11 +189,6 @@ void InputHandler_PIUIO::HandleInput()
 		/* Toggle sensor bits - Left, Right, Up, Down */
 		// P1
 		/* Don't read past the P2 arrows */
-//		for( int k; k <= IO_P2_DOWN; k++ )
-//		{
-//			if ( m_i
-//			if ( m_iInputData[j] & iInputBits[k] )
-//				sensor_bits[k] |= (i << j);
 		if (m_iInputData[j] & (i << 2)) sensor_bits[0] |= (i << j);
 		if (m_iInputData[j] & (i << 3)) sensor_bits[1] |= (i << j);
 		if (m_iInputData[j] & (i << 0)) sensor_bits[2] |= (i << j);
@@ -268,7 +263,11 @@ void InputHandler_PIUIO::HandleInput()
 			INPUTFILTER->SetButtonComment(di, GetSensorDescription(sensor_bits[iButton]));
 
 		/* Is the button we're looking for flagged in the input data? */
-		ButtonPressed( di, iInputBitField & iInputBits[iButton] );
+		if (iButton == 17) /* IO_INSERT_COIN: coin event */
+			ButtonPressed( di, (iInputBitField & iInputBits[iButton]) || m_bCoinEvent );
+		else
+			ButtonPressed( di, iInputBitField & iInputBits[iButton] );
+
 	}
 
 	/* assign our last input */

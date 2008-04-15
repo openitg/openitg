@@ -210,7 +210,7 @@ void InputHandler_PIUIO::HandleInput()
 	// XXX: probably should have a way to refer to the I/O fields
 	if( m_iInputData[0] & (1 << 10) )
 		m_bCoinEvent = true;
-	if( m_iLastInput[0] & (1 << 10) )
+	if( m_iLastInputData[0] & (1 << 10) )
 		m_bCoinEvent = false;
 
 	for (int j = 0; j < 4; j++)

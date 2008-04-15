@@ -150,6 +150,7 @@ bool ScreenArcadeStart::LoadHandler()
 	{
 		/* HACK: return true if PC, even though it doesn't load. */
 		LOG->Warn( "ScreenArcadeStart: I/O board not found. Continuing anyway..." );
+		g_sInputType = "Home";
 		return true;
 	}
 #endif

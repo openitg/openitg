@@ -15,6 +15,7 @@ Testers:
  - GRIM.657
  - mDaWg
  - Darklink
+ - Wanny
  - Beaver Valley Mall
  - Rhythmatic.net/ITGFreak.com
  - Boxorroxors.net

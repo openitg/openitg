@@ -1087,7 +1087,7 @@ int main(int argc, char* argv[])
 	}
 #endif
 
-#if 1
+#if 0
 	LOG->Info("======= MOUNTPOINTS =========");
 	vector<RageFileManager::DriverLocation> mymounts;
 	FILEMAN->GetLoadedDrivers(mymounts);
@@ -1139,9 +1139,14 @@ int main(int argc, char* argv[])
 	ANNOUNCER	= new AnnouncerManager;
 	NOTESKIN	= new NoteSkinManager;
 
+	{
+		CString sSection = "Preferences";
+		GetCommandlineArgument( "Type", &sSection );
+		THEME->LoadPreferencesFromSection( sSection );
+	}
+
 	/* Set up the theme and announcer, and switch to the last game type. */
 	ReadGamePrefsFromDisk( true );
-
 
 	if( PREFSMAN->m_iSoundWriteAhead )
 		LOG->Info( "Sound writeahead has been overridden to %i", PREFSMAN->m_iSoundWriteAhead.Get() );
@@ -1166,11 +1171,7 @@ int main(int argc, char* argv[])
 	PROFILEMAN->Init();				// must load after SONGMAN
 	UNLOCKMAN	= new UnlockManager;
 	
-	{
-		CString sSection = "Preferences";
-		GetCommandlineArgument( "Type", &sSection );
-		THEME->LoadPreferencesFromSection( sSection );
-	}
+
 
 	{
 		/* Now that THEME is loaded, load the icon for the current theme into the

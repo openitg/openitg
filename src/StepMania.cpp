@@ -1065,9 +1065,11 @@ int main(int argc, char* argv[])
 		LOG->Info("VFS: mounting patch.zip");
 #ifdef WIN32
 		
-		FILEMAN->Mount( "patch", "/Data/patch", "/Patch" );
+		FILEMAN->Mount( "patch", "Data/patch", "/Patch" );
+		FILEMAN->Mount( "zip", "Patch/patch.zip", "/", false );
 #else
 		FILEMAN->Mount( "patch", "/stats/patch", "/Patch" );
+		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 #endif
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}

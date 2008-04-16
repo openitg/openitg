@@ -80,6 +80,25 @@ void ScreenArcadeStart::Update( float fDeltaTime )
 	m_Error.SetText( m_sMessage );
 }
 
+void ScreenArcadeStart::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
+{
+	if( type != IET_FIRST_PRESS && type != IET_SLOW_REPEAT )
+		return;	// ignore
+
+	Screen::Input( DeviceI, type, GameI, MenuI, StyleI );	// default handler
+}
+
+void ScreenArcadeStart::MenuStart( PlayerNumber pn )
+{
+	if(!IsTransitioning())
+	{
+		this->PlayCommand( "Off" );
+		// if they can get here through means of keyboard, joystick/JPAC, the hell wid'it
+		g_sInputType = "Self";
+		StartTransitioning( SM_GoToNextScreen );
+	}
+}
+
 void ScreenArcadeStart::HandleScreenMessage( const ScreenMessage SM )
 {
 	switch( SM )

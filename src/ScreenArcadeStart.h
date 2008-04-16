@@ -14,9 +14,13 @@ public:
 	ScreenArcadeStart( CString sName );
 	virtual ~ScreenArcadeStart();
 
-	void Update( float fDeltaTime );
-	void HandleScreenMessage( const ScreenMessage SM );
-	void DrawPrimitives();
+	virtual void Update( float fDeltaTime );
+	virtual void HandleScreenMessage( const ScreenMessage SM );
+	virtual void Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI );
+	virtual void DrawPrimitives();
+
+	// if AC is used on JPAC or joystick
+	virtual void MenuStart( PlayerNumber pn );
 
 	virtual void Init();
 private:

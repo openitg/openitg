@@ -477,6 +477,7 @@ public:
 			lua_pushvalue( L, 2 );
 			pPref->SetFromStack( L );
 		}
+		PREFSMAN->SaveGlobalPrefsToDisk();
 
 		return 0;
 	}

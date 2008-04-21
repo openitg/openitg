@@ -110,6 +110,15 @@ void ScreenArcadeStart::HandleScreenMessage( const ScreenMessage SM )
 	}
 }
 
+void ScreenArcadeStart::MenuStart( PlayerNumber pn )
+{
+	if(!IsTransitioning())
+	{
+		this->PlayCommand( "Off" );
+		StartTransitioning( SM_GoToNextScreen );		
+	}
+}
+
 void ScreenArcadeStart::DrawPrimitives()
 {
 	Screen::DrawPrimitives();

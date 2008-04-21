@@ -103,6 +103,7 @@ void ScreenArcadeStart::MenuStart( PlayerNumber pn )
 {
 	if(!IsTransitioning())
 	{
+		g_sInputType = "Self";
 		this->PlayCommand( "Off" );
 		StartTransitioning( SM_GoToNextScreen );		
 	}
@@ -142,9 +143,15 @@ bool ScreenArcadeStart::LoadHandler()
 	for( unsigned i = 0; i < vDevices.size(); i++ )
 	{
 		if( vDevices[i].IsITGIO() )
+		{
 			iBoard = BOARD_ITGIO;
+			g_sInputType = "ITGIO";
+		}
 		else if( vDevices[i].IsPIUIO() )
+		{
 			iBoard = BOARD_PIUIO;
+			g_sInputType = "PIUIO";
+		}
 
 		// early abort if we found something
 		if( iBoard != BOARD_NONE )

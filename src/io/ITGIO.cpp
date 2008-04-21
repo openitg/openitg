@@ -24,7 +24,7 @@ bool ITGIO::Read( uint32_t *pData )
 	while( 1 )
 	{
 		/* XXX: I hate magic values. What do these mean? -- Vyhd */
-		iResult = usb_control_msg(m_pHandle, 161, 1, 256, 0, (char *)pData, 4, 1000);
+		iResult = usb_control_msg(m_pHandle, 161, 1, 256, m_iInterfaceNum, (char *)pData, 4, 1000 );
 		if( iResult == 4 ) // all data read
 			break;
 
@@ -42,7 +42,9 @@ bool ITGIO::Write( uint32_t iData )
 
 	while( 1 )
 	{
-		iResult = usb_control_msg(m_pHandle, 33, 9, 512, 0, (char *)&iData, 4, 1000 );
+		//iResult = usb_control_msg(m_pHandle, 33, 9, 512, 0, (char *)&iData, 4, 1000 );
+		// how did i not pick this up before?
+		iResult = usb_control_msg(m_pHandle, 33, 9, 512, m_iInterfaceNum, (char *)&iData, 4, 1000 );
 	
 		if( iResult == 4 ) // all data read
 			break;

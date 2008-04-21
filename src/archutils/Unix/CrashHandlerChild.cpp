@@ -379,13 +379,15 @@ static void child_process()
 
 #endif
 
-	/* If /tmp/no-crash-reboot exists, don't reboot on crashing. */
-
+#ifdef ITG_ARCADE
 	struct stat ncr;
 	if ( stat("/tmp/no-crash-reboot", &ncr) != 0 )
+	{
+		sync();
+		sleep(2);
 		reboot(RB_AUTOBOOT);
-	else
-		printf( "Not rebooting. no-crash-reboot found.\n" );
+	}
+#endif
 }
 
 

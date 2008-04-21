@@ -38,16 +38,22 @@ static bool IsFatalSignal( int signal )
 
 void ArchHooks_Unix::SystemReboot()
 {
-	if( !(IsAFile("/rootfs/tmp/no-reboot") || IsAFile( "Data/no-reboot")) )
+	LOG->Trace( "ArchHooks_Unix::SystemReboot()" );
+
+#ifdef ITG_ARCADE
+	if( !IsAFile("/tmp/no-crash-reboot") )
 	{
 		LOG->Warn( "no-reboot not found. Rebooting." );
+
+		/* Important: flush to disk first */
+		sync(); sleep(5);
 
 		if( reboot(RB_AUTOBOOT) != 0 )
 			LOG->Warn( "Could not reboot: %s", strerror(errno) );
 	}
-	else
-		LOG->Warn( "Found a no-reboot file. Exiting instead of rebooting." );
+#endif
 
+	// Should we try to develop a RestartProgram for Unix?
 	ExitGame();
 }
 

@@ -88,17 +88,6 @@ void ScreenArcadeStart::Input( const DeviceInput& DeviceI, const InputEventType 
 	Screen::Input( DeviceI, type, GameI, MenuI, StyleI );	// default handler
 }
 
-void ScreenArcadeStart::MenuStart( PlayerNumber pn )
-{
-	if(!IsTransitioning())
-	{
-		this->PlayCommand( "Off" );
-		// if they can get here through means of keyboard, joystick/JPAC, the hell wid'it
-		g_sInputType = "Self";
-		StartTransitioning( SM_GoToNextScreen );
-	}
-}
-
 void ScreenArcadeStart::HandleScreenMessage( const ScreenMessage SM )
 {
 	switch( SM )

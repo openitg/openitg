@@ -7,7 +7,7 @@ int GetNumCrashLogs();
 int GetNumMachineEdits();
 int GetNumMachineScores();
 
-int GetIP();
+CString GetIP();
 int GetRevision();
 
 CString GetSerialNumber();

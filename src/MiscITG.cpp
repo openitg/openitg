@@ -20,6 +20,16 @@ extern "C" {
 }
 #endif
 
+#ifndef WIN32
+extern "C" {
+#include <ifaddrs.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+}
+#endif
+
 // See where to look for all this stuff
 // "Stats" is mounted to "Data" in the VFS for non-arcade
 #if defined(ITG_ARCADE) && !defined(WIN32)
@@ -51,9 +61,35 @@ int GetNumMachineEdits()
 	return aEdits.size();
 }
 
-int GetIP()
+// XXX: Win32 compatibility
+CString GetIP()
 {
-	return 0;
+#ifndef WIN32
+	struct ifaddrs *ifaces;
+	if (getifaddrs(&ifaces) != 0) return "Network interface error (getifaddrs() failed)";
+
+	CString result = "";
+
+	for ( struct ifaddrs *iface = ifaces; iface; iface = iface->ifa_next )
+	{
+		// 0x1000 = uses broadcast
+		if ((iface->ifa_flags & 0x1000) == 0 || (iface->ifa_addr->sa_family != AF_INET)) continue;
+
+		struct sockaddr_in *sad = NULL;
+		struct sockaddr_in *snm = NULL;
+
+		sad = (struct sockaddr_in *)iface->ifa_addr;
+		snm = (struct sockaddr_in *)iface->ifa_netmask;
+		result += inet_ntoa(((struct sockaddr_in *)sad)->sin_addr);
+		result += CString(", Netmask: ") + inet_ntoa(((struct sockaddr_in *)snm)->sin_addr);
+		freeifaddrs(ifaces);
+		return result;
+	}
+	freeifaddrs(ifaces);
+	return "none";
+#else
+	return "dunno lol";
+#endif
 }
 
 int GetRevision()

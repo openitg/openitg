@@ -331,6 +331,13 @@ void GameState::PlayersFinalized()
 	// apply saved default modifiers if any
 	FOREACH_HumanPlayer( pn )
 	{
+#ifndef WIN32
+		// needed?
+		MEMCARDMAN->PauseMountingThread( 30 );
+		MEMCARDMAN->UnmountCard( pn );
+		//
+#endif
+
 		MEMCARDMAN->MountCard( pn );
 
 		PROFILEMAN->LoadFirstAvailableProfile( pn );	// load full profile

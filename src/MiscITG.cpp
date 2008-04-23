@@ -86,10 +86,12 @@ CString GetIP()
 		return result;
 	}
 	freeifaddrs(ifaces);
-	return "none";
 #else
-	return "dunno lol";
+	// Win32 code goes here
 #endif
+
+	/* fall through */
+	return "Network interface disabled";
 }
 
 int GetRevision()

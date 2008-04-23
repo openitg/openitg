@@ -1,0 +1,115 @@
+OpenITG, alpha 5 (in progress)
+------------------------------
+-Code structure changes:
+    InputHandler_Linux_Iow changed to InputHandler_Iow
+    InputHandler_Linux_PIUIO changed to InputHandler_PIUIO
+-PIUIO changes:
+    Partially added coin counter functionality
+    Added timer for testing input speed
+    Changed input from 64-bit datatype to 32-bit datatype
+-Fixed bugs:
+    Input sometimes locks up after song loading fails
+    Player 2 I/O board input is mapped to Player 1's side
+    PIUIO only reports arrow presses from right sensor
+-Fixed mistakes:
+    "ITGIO" and "PIUIO" were reversed in RageInputDevice
+-Mapping changes:
+    Added working Iow input mappings
+    Added working service/test and coin mappings for PIUIO
+-New preferences:
+    "CustomSongPreviews" - play audio previews of custom songs
+-New USB profile features:
+    "AdditionalSpeedMods" - add specified speed modifiers
+
+OpenITG, alpha 4 (March 21st, 2008)
+-----------------------------------
+-Fixed Win32 bugs:
+    OpenITG hangs/crashes/<bad stuff> when custom songs sample plays
+    Backgrounds are centered on the top left during gameplay
+    (Maybe?) Color1 as boolean LUA parsing error
+-Fixed cross-platform bugs:
+    Editor's stepchart doesn't scroll properly
+-Fixed package mistakes:
+    data.zip causes "Assertion 'm_LockCnt == 0' failed" error
+
+OpenITG, alpha 3 (March 17th, 2008)
+-----------------------------------
+-Mapping changes:
+    Added PIUIO/IOW default mappings
+    Added default keyboard maps for Select (P1 = right Shift, P2 = numpad 0)
+-PrefsManager changes:
+    Removed "BrokenBGs" - binary plays BG scripts from all songs now
+    Added "DebugUSBInput" - output raw and formatted USB data to console
+    Backported "VisualDelaySeconds" on request
+-Fixed bugs:
+    Start sound doesn't play when course is selected
+    Potential memory leak (minor) on SongManager array
+-New Screens:
+    ScreenArcadeStart (unfinished/not implemented in the Makefiles)
+    ScreenArcadeDiagnostics - installation and diagnostic information
+    ScreenArcadePatch - update the game through USB patches
+-New data types:
+    USBDevice - a basic structure for reading USB hardware data
+    USBDriver - an abstracted USB I/O driver based off of libusb
+    ITGIO - a USBDriver specialised for ITG-IO JAMMA kits
+    PIUIO - a USBDriver specialised for ITG2 dedicated cabinet I/O boards
+-New LightsDriver:
+    External ("ext") - makes light data globally available for other drivers
+-New InputHandlers:
+    Linux_PIUIO ("piuio") - partially functional, not very usable
+    Linux_Iow ("iow") - untested, should be fully functional
+-New RageFileDrivers:
+    RFDCrypt - handles AES-encrypted .zip files
+    RFDPatch - handles AES-encrypted patches
+-New USB profile features:
+    Choose to save Catalog files ("UseCatalogXML") - default off
+-New licensed code:
+    -AES encryption/decryption schemes, by Brian Gladman
+    -Public domain iButton SDK from Maxim IC
+-New project files:
+    Patch-OpenITG.rsa - a new Patch verification sig for future OpenITG .bxr patches
+
+OpenITG, alpha 2 (January 27th, 2008)
+---------------------------------------------
+-New preference:
+    BrokenBGs	- Emulate R21-style background handling
+-Some code cleanup
+-Fixed bugs:
+    Windows: all of the weird bugs
+    Wheel changes songs even when Select is held down
+    Group banners do not load properly
+-Unfixed bugs:
+    Cancelling song selection through USB removal causes mount errors
+
+
+OpenITG, alpha 1.1 (December 5th, 2007)
+---------------------------------------------
+-Windows build, many thanks to Sniper257
+-Fixed bugs:
+    Forced random on customs does not select song
+    Bizarre behavior when Tab is held during forced random
+    MAJOR: Gameplay input locks up on some errors
+    MAJOR: Custom song loading crashes on Windows
+-Unfixed bugs:
+    Group banners do not load
+    Cancelling song selection through USB removal causes mount errors
+
+
+OpenITG, alpha 1 (December 2nd, 2007)
+---------------------------------------------
+-Revision 21-style song loading support, starting at PlayersFinalized().
+
+-Settable preferences (defaults in parentheses):
+    CustomMaxSeconds	- Maximum allowed song length (120 seconds)
+    CustomMaxSizeMB	- Maximum allowed song size (5 MB)
+    CustomMaxStepSizeKB	- Maximum allowed SM file size (100 KB)
+    CustomsLoadMax	- Limit amount of songs loaded (50 songs)
+    CustomsLoadTimeout	- Custom song loading timeout (5.00 seconds)
+    SongEdits		- Enable/disable custom songs. (0 [false])
+
+-Significant new code functions:
+    SCREENMAN->OverlayMessage()	  - message overlay on top of screen
+    SCREENMAN->HideOverlayMessage - remove message from screen
+    SONGMAN->LoadPlayerSongs()    - loads songs from a player's profile
+    (RageUtil) CopyWithProgress() - copy a file while sending progress
+				    (fPercent) to a function pointer

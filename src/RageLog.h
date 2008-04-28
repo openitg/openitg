@@ -12,6 +12,7 @@ public:
 	void Trace( const char *fmt, ...) PRINTF(2,3);
 	void Warn( const char *fmt, ...) PRINTF(2,3);
 	void Info( const char *fmt, ...) PRINTF(2,3);
+	void Debug( const char *fmt, ...) PRINTF(2,3);
 	void Flush();
 
 	void MapLog( const CString &key, const char *fmt, ... ) PRINTF(3,4);

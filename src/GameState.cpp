@@ -335,7 +335,6 @@ void GameState::PlayersFinalized()
 		// needed?
 		MEMCARDMAN->PauseMountingThread( 30 );
 		MEMCARDMAN->UnmountCard( pn );
-		//
 #endif
 
 		MEMCARDMAN->MountCard( pn );
@@ -729,20 +728,21 @@ void GameState::UpdateSongPosition( float fPositionSeconds, const TimingData &ti
 	m_fMusicSeconds = fPositionSeconds;
 	m_fLightSongBeat = timing.GetBeatFromElapsedTime( fPositionSeconds + g_fLightsAheadSeconds );
 
-	m_fMusicSecondsVisible = fPositionSeconds - PREFSMAN->m_fVisualDelaySeconds;
-	
-	float fThrowAway; bool bThrowAway;
-
-	// EXPERIMENT: fix for "edit mode doesn't work" error?
-	if( !m_bEditing )
-		timing.GetBeatAndBPSFromElapsedTime( m_fMusicSecondsVisible, m_fSongBeatVisible, fThrowAway, bThrowAway );
+	/* for edit mode, don't compensate - it throws off the animation for some reason. */
+	if( m_bEditing )
+	{
+		m_fMusicSecondsVisible = m_fMusicSeconds;
+		m_fSongBeatVisible = m_fSongBeat;
+	}
 	else
-		timing.GetBeatAndBPSFromElapsedTime( m_fMusicSeconds, m_fSongBeat, fThrowAway, bThrowAway );
+	{
+		m_fMusicSecondsVisible = fPositionSeconds - PREFSMAN->m_fVisualDelaySeconds;
+
+		float fThrowAway; bool bThrowAway;
+		timing.GetBeatAndBPSFromElapsedTime( m_fMusicSecondsVisible, m_fSongBeatVisible, fThrowAway, bThrowAway );
+	}
 
 	Actor::SetBGMTime( m_fMusicSecondsVisible, m_fSongBeatVisible );
-//	Actor::SetBGMTime( fPositionSeconds, m_fSongBeat );
-	
-//	LOG->Trace( "m_fMusicSeconds = %f, m_fSongBeat = %f, m_fCurBPS = %f, m_bFreeze = %f", m_fMusicSeconds, m_fSongBeat, m_fCurBPS, m_bFreeze );
 }
 
 float GameState::GetSongPercent( float beat ) const

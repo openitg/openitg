@@ -171,7 +171,9 @@ CString MonthToString( int iMonthIndex )
 {
 	if( iMonthIndex < 0 || iMonthIndex >= (int) sizeof(MONTH_TO_NAME) )
 		return "";
-	return MONTH_TO_NAME[iMonthIndex];
+
+	/* Must decrement by 1...the array starts at 0. -- Vyhd */
+	return MONTH_TO_NAME[iMonthIndex-1];
 }
 LuaFunction( MonthToString, MonthToString( IArg(1) ) );
 

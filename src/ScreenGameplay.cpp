@@ -84,6 +84,9 @@ AutoScreenMessage( SM_StopHereWeGo )
 
 static Preference<float> g_fNetStartOffset( "NetworkStartOffset",	-3.0 );
 
+// define which steps type we autogen lights from
+const StepsType LIGHTS_AUTOGEN_TYPE = STEPS_TYPE_DANCE_SINGLE;
+
 REGISTER_SCREEN_CLASS( ScreenGameplay );
 ScreenGameplay::ScreenGameplay( CString sName ) : ScreenWithMenuElements(sName)
 {
@@ -1087,8 +1090,13 @@ void ScreenGameplay::LoadLights()
 	if( asDifficulties.size() > 0 )
 		d1 = StringToDifficulty( asDifficulties[0] );
 
-	// One last try.
-	pSteps = GAMESTATE->m_pCurSong->GetClosestNotes( GAMESTATE->GetCurrentStyle()->m_StepsType, d1 );
+	pSteps = GAMESTATE->m_pCurSong->GetClosestNotes( LIGHTS_AUTOGEN_TYPE, d1 );
+
+	// One last try...
+	if( pSteps == NULL )
+		pSteps = GAMESTATE->m_pCurSong->GetClosestNotes( GAMESTATE->GetCurrentStyle()->m_StepsType, d1 );
+
+
 	// If we can't find anything at all, stop.
 	if( pSteps == NULL )
 		return;
@@ -1099,9 +1107,16 @@ void ScreenGameplay::LoadLights()
 	if( asDifficulties.size() > 1 )
 	{
 		Difficulty d2 = StringToDifficulty( asDifficulties[1] );
-		const Steps *pSteps2 = GAMESTATE->m_pCurSong->GetClosestNotes( GAMESTATE->GetCurrentStyle()->m_StepsType, d2 );
-		
-		if( pSteps != NULL && pSteps2 != NULL && pSteps != pSteps2 )
+
+		Steps *pSteps2;
+
+		pSteps2 = GAMESTATE->m_pCurSong->GetClosestNotes( LIGHTS_AUTOGEN_TYPE, d2 );
+
+		if( pSteps2 == NULL )
+			pSteps2 = GAMESTATE->m_pCurSong->GetClosestNotes( GAMESTATE->GetCurrentStyle()->m_StepsType, d2 );
+
+		// this will fail if pSteps2 is NULL - if pSteps were NULL, we would've returned already.
+		if( pSteps != pSteps2 )
 		{
 			NoteData TapNoteData2;
 			pSteps2->GetNoteData( TapNoteData2 );

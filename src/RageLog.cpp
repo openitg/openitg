@@ -75,7 +75,10 @@ enum {
 	WRITE_TO_INFO = 0x01,
 	
 	/* Whether this line should be loud when written to log.txt (warnings). */
-	WRITE_LOUD = 0x02
+	WRITE_LOUD = 0x02,
+
+	/* Display to output regardless of log settings */
+	WRITE_TO_STDOUT = 0x04
 };
 
 RageLog::RageLog()
@@ -213,6 +216,17 @@ void RageLog::Warn( const char *fmt, ...)
     va_end(va);
 
 	Write( WRITE_TO_INFO | WRITE_LOUD, sBuff );
+}
+
+/* Acts like Trace(), but displays even with ShowLogOutput off. */
+void RageLog::Debug( const char *fmt, ...)
+{
+    va_list	va;
+    va_start(va, fmt);
+    CString sBuff = vssprintf( fmt, va );
+    va_end(va);
+
+	Write( WRITE_TO_STDOUT, sBuff );
 }
 
 void RageLog::Write( int where, const CString &line )

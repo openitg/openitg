@@ -807,7 +807,6 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 		SCREENMAN->PlayStartSound();
 
 		m_bGoToOptions = true;
-		//g_bGoToOptions = false; // fix no-input-accepted problem
 		m_sprOptionsMessage.SetState( 1 );
 
 
@@ -860,8 +859,8 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 	case MENU_BUTTON_RIGHT:
 	case MENU_BUTTON_LEFT:
 		{
-			/* If we're rouletting, hands off. */
-			if( m_MusicWheel.IsRouletting() )
+			/* If we're rouletting or locked, hands off. */
+			if( m_MusicWheel.IsRouletting() || m_MusicWheel.WheelIsLocked() )
 				return;
 
 			// Reset the repeat timer when the button is released.

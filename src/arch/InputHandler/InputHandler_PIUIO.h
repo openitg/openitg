@@ -17,7 +17,8 @@
 class InputHandler_PIUIO: public InputHandler
 {
 public:
-	InputHandler_PIUIO();
+	/* If bPumpMode, some mappings change */
+	InputHandler_PIUIO( bool bPumpMode = false );
 	~InputHandler_PIUIO();
 
 //	for non-threaded input...should we even bother?
@@ -31,6 +32,7 @@ private:
 	bool m_bFoundDevice;
 	bool m_bShutdown;
 	bool m_bCoinEvent;
+	bool m_bPumpMode;
 
 	/* one uint32_t per sensor set */
 	uint32_t m_iInputData[4];

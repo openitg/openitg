@@ -1141,14 +1141,21 @@ int main(int argc, char* argv[])
 	ANNOUNCER	= new AnnouncerManager;
 	NOTESKIN	= new NoteSkinManager;
 
-	{
-		CString sSection = "Preferences";
-		GetCommandlineArgument( "Type", &sSection );
-		THEME->LoadPreferencesFromSection( sSection );
-	}
 
 	/* Set up the theme and announcer, and switch to the last game type. */
 	ReadGamePrefsFromDisk( true );
+
+	{
+		CString sSection = "Preferences";
+		IniFile staticIni;
+		GetCommandlineArgument( "Type", &sSection );
+		THEME->LoadPreferencesFromSection( sSection );
+
+
+		// think of it as a bootstrap
+		staticIni.ReadFile( STATIC_INI_PATH );
+		PREFSMAN->ReadGlobalPrefsFromIni( staticIni );
+	}
 
 	if( PREFSMAN->m_iSoundWriteAhead )
 		LOG->Info( "Sound writeahead has been overridden to %i", PREFSMAN->m_iSoundWriteAhead.Get() );
@@ -1172,7 +1179,6 @@ int main(int argc, char* argv[])
 	PROFILEMAN	= new ProfileManager;
 	PROFILEMAN->Init();				// must load after SONGMAN
 	UNLOCKMAN	= new UnlockManager;
-	
 
 
 	{

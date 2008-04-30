@@ -1,8 +1,9 @@
-OpenITG, alpha 5 (in progress)
-------------------------------
+OpenITG, alpha 5 (April 30th, 2008)
+-----------------------------------
 -New screens:
-    ScreenArcadeStart - implemented, functional
+    ScreenArcadeStart - implemented, functional, does stuff
 -Code structure changes:
+    Reboot-on-crash is disabled in non-arcade builds
     Gameplay lights now autogen from dance-single only
     InputHandler_Linux_Iow changed to InputHandler_Iow
     InputHandler_Linux_PIUIO changed to InputHandler_PIUIO
@@ -12,6 +13,7 @@ OpenITG, alpha 5 (in progress)
     Partially added coin counter code (not functional yet)
     Changed input from 64-bit datatype to 32-bit datatype
 -Fixed input bugs:
+    Input always auto-remaps on startup
     Input sometimes locks up after song loading fails
     Player 2 I/O board input is mapped to Player 1's side
     PIUIO only reports arrow presses from right sensor

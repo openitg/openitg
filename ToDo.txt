@@ -9,7 +9,6 @@
 /* Minor feature additions */
 -Implement ThemeInfo.ini support
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
--Add "InputDebounceTime" preference
 -Implement colors percentages in Versus to show who's ahead
 
 /* Major feature additions */

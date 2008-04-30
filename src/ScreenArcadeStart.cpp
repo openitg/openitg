@@ -117,6 +117,7 @@ void ScreenArcadeStart::DrawPrimitives()
 bool ScreenArcadeStart::Refresh()
 {
 	float fTimer = 10.0f - m_Timer.Ago();
+	CLAMP( fTimer, 0.0f, 10.0f);
 
 	if( !HubIsConnected() )
 	{

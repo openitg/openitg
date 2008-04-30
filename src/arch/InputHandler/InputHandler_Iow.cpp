@@ -88,10 +88,6 @@ void InputHandler_Iow::InputThreadMain()
 
 //		UpdateLights();
 //		IOBoard.Write( m_iWriteData );
-
-		// give up 0.008 sec for other events -
-		// this may need adjusting for lag/offsets
-		usleep( 8000 );
 	}
 }
 
@@ -103,10 +99,6 @@ void InputHandler_Iow::LightsThreadMain()
 		// TEST: Do we need to re-write input?
 		IOBoard.Write( m_iWriteData );
 //		IOBoard.Write( m_iInputData | m_iWriteData );
-
-		// give up 0.01 sec for other events -
-		// lights aren't as vital as input.
-		usleep( 10000 );
 	}
 }
 

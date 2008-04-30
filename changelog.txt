@@ -1,5 +1,7 @@
 OpenITG, alpha 5 (in progress)
 ------------------------------
+-New screens:
+    ScreenArcadeStart - implemented, functional
 -Code structure changes:
     Gameplay lights now autogen from dance-single only
     InputHandler_Linux_Iow changed to InputHandler_Iow

@@ -1,7 +1,7 @@
 /* InputFilter - Checks RageInput and generates a list of InputEvents, representing button presses, releases, and repeats. */
 
-#ifndef INPUTFILTER_H
-#define INPUTFILTER_H
+#ifndef INPUT_FILTER_H
+#define INPUT_FILTER_H
 
 #include "RageInputDevice.h"
 
@@ -26,52 +26,54 @@ enum InputEventType
 	IET_LEVEL_CHANGED
 };
 
-struct InputEvent : public DeviceInput
+struct InputEvent
 {
 	InputEvent() { type=IET_FIRST_PRESS; };
-	InputEvent( InputDevice d, int b, InputEventType t ): DeviceInput(d, b) { type=t; };
-	InputEvent( DeviceInput di, InputEventType t ): DeviceInput(di) { type=t; };
 
+	DeviceInput di;
 	InputEventType type;
+
+	/* A list of all buttons that were pressed at the time of this event: */
+	DeviceInputList m_ButtonState;
 };
 
 typedef vector<InputEvent> InputEventArray;
 
 class RageMutex;
+struct ButtonState;
 class InputFilter
 {
-	struct ButtonState
-	{
-		ButtonState() { m_BeingHeld = false; m_fSecsHeld = m_Level = m_LastLevel = 0; }
-		bool m_BeingHeld;
-		CString m_sComment;
-		float m_fSecsHeld;
-		float m_Level, m_LastLevel;
-	};
-	ButtonState m_ButtonState[NUM_INPUT_DEVICES][MAX_DEVICE_BUTTONS];
-
-	InputEventArray queue;
-	RageMutex *queuemutex;
-
 public:
-	void ButtonPressed( DeviceInput di, bool Down );
-	void SetButtonComment( DeviceInput di, const CString &sComment = "" );
+	void ButtonPressed( const DeviceInput &di, bool Down );
+	void SetButtonComment( const DeviceInput &di, const CString &sComment = "" );
 	void ResetDevice( InputDevice dev );
 
 	InputFilter();
 	~InputFilter();
 	void Reset();
-	void Update(float fDeltaTime);
+	void Update( float fDeltaTime );
 
 	void SetRepeatRate( float fSlowDelay, float fSlowRate, float fFastDelay, float fFastRate );
 	void ResetRepeatRate();
-	void ResetKeyRepeat( DeviceInput di );
+	void ResetKeyRepeat( const DeviceInput &di );
+	void RepeatStopKey( const DeviceInput &di );
 
-	bool IsBeingPressed( DeviceInput di );
-	float GetSecsHeld( DeviceInput di );
-	CString GetButtonComment( DeviceInput di ) const;
+	// If aButtonState is NULL, use the last reported state.
+	bool IsBeingPressed( const DeviceInput &di, const DeviceInputList *pButtonState = NULL ) const;
+	float GetSecsHeld( const DeviceInput &di, const DeviceInputList *pButtonState = NULL ) const;
+	float GetLevel( const DeviceInput &di, const DeviceInputList *pButtonState = NULL ) const;
+	CString GetButtonComment( const DeviceInput &di ) const;
 	
-	void GetInputEvents( InputEventArray &array );
+	void GetInputEvents( vector<InputEvent> &aEventOut );
+	void GetPressedButtons( vector<DeviceInput> &array ) const;
+
+private:
+	void CheckButtonChange( ButtonState &bs, DeviceInput di, const RageTimer &now );
+	void ReportButtonChange( const DeviceInput &di, InputEventType t );
+	void MakeButtonStateList( vector<DeviceInput> &aInputOut ) const;
+
+	vector<InputEvent> queue;
+	RageMutex *queuemutex;
 };
 
 

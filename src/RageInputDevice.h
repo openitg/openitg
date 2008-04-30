@@ -452,6 +452,11 @@ public:
 	 * This should be 0 for analog axes within the dead zone. */
 	float level;
 
+	/* Whether this button is pressed.  This is level with a threshold and debouncing
+	 * applied. */
+	bool bDown;
+
+
 	RageTimer ts;
 
 	DeviceInput(): device(DEVICE_NONE), button(-1), level(0), ts(RageZeroTimer) { }
@@ -480,6 +485,8 @@ public:
 
 	bool IsJoystick() const { return DEVICE_JOY1 <= device && device < DEVICE_JOY1+NUM_JOYSTICKS; }
 };
+
+typedef vector<DeviceInput> DeviceInputList;
 
 #endif
 /*

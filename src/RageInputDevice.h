@@ -459,8 +459,8 @@ public:
 
 	RageTimer ts;
 
-	DeviceInput(): device(DEVICE_NONE), button(-1), level(0), ts(RageZeroTimer) { }
-	DeviceInput( InputDevice d, int b, float l=0 ): device(d), button(b), level(l), ts(RageZeroTimer) { }
+	DeviceInput(): device(DEVICE_NONE), button(-1), level(0), bDown(false), ts(RageZeroTimer) { }
+	DeviceInput( InputDevice d, int b, float l=0 ): device(d), button(b), level(l), bDown(l > 0.5f), ts(RageZeroTimer) { }
 	DeviceInput( InputDevice d, int b, float l, const RageTimer &t ):
 		device(d), button(b), level(l), ts(t) { }
 
@@ -474,6 +474,15 @@ public:
 	{
 		return ! operator==( other );
 	}
+
+        bool operator<( const DeviceInput &other ) const
+        {
+                /* Return true if we represent the same button on the same device.  Don't
+                 * compare level or ts. */
+                if( device != other.device )
+                        return device < other.device;
+                return button < other.button;
+        }
 	
 	CString toString();
 	bool fromString( const CString &s );

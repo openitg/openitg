@@ -64,7 +64,7 @@ namespace
 	}
 
 	DeviceInputList g_CurrentState;
-//	set<DeviceInput> g_DisableRepeat;
+	set<DeviceInput> g_DisableRepeat;
 }
 
 /*
@@ -212,8 +212,8 @@ void InputFilter::CheckButtonChange( ButtonState &bs, DeviceInput di, const Rage
 	MakeButtonStateList( g_CurrentState );
 	ReportButtonChange( di, bs.m_bLastReportedHeld? IET_FIRST_PRESS:IET_RELEASE );
 
-//	if( !bs.m_bLastReportedHeld )
-//		g_DisableRepeat.erase( di );
+	if( !bs.m_bLastReportedHeld )
+		g_DisableRepeat.erase( di );
 }
 
 void InputFilter::ReportButtonChange( const DeviceInput &di, InputEventType t )
@@ -283,8 +283,8 @@ void InputFilter::Update( float fDeltaTime )
 		}
 
 		/* If repeats are disabled for this button, skip. */
-//		if( g_DisableRepeat.find(di) != g_DisableRepeat.end() )
-//			continue;
+		if( g_DisableRepeat.find(di) != g_DisableRepeat.end() )
+			continue;
 
 		const float fOldHoldTime = bs.m_fSecsHeld;
 		bs.m_fSecsHeld += fDeltaTime;
@@ -383,7 +383,7 @@ void InputFilter::RepeatStopKey( const DeviceInput &di )
 	if( !bs.m_bLastReportedHeld )
 		return;
 
-//	g_DisableRepeat.insert( di );
+	g_DisableRepeat.insert( di );
 }
 
 void InputFilter::GetInputEvents( vector<InputEvent> &array )

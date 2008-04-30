@@ -1,8 +1,10 @@
 OpenITG, alpha 5 (in progress)
 ------------------------------
 -Code structure changes:
+    Gameplay lights now autogen from dance-single only
     InputHandler_Linux_Iow changed to InputHandler_Iow
     InputHandler_Linux_PIUIO changed to InputHandler_PIUIO
+    InputFilter backported from 4.0, modified a bit
 -PIUIO changes:
     Added timer for testing input speed
     Partially added coin counter code (not functional yet)
@@ -14,16 +16,18 @@ OpenITG, alpha 5 (in progress)
 -Fixed general bugs:
     Edits for Single show on all difficulties
     Some modifiers don't animate in the editor
+    Song wheel can be moved on Chance
     Voltage doesn't calculate correctly (lol, DDR)
 -Fixed mistakes:
     "ITGIO" and "PIUIO" were reversed in RageInputDevice
 -Mapping changes:
-    Added working Iow input mappings
+    Added working Iow input mappings (output is still borked)
     Added working service/test and coin mappings for PIUIO
 -New code functions:
     LOG->Debug() - always displays to stdout, without logging
 -New preferences:
     "CustomSongPreviews" - play audio previews of custom songs
+    "InputDebounceTime" - self-explanatory; smooth out bouncing input
 -New USB profile features:
     "AdditionalSpeedMods" - add specified speed modifiers
 

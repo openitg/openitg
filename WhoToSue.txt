@@ -8,8 +8,9 @@ Assistant Developers:
  - infamouspat
  - Matt1360
 
-Network Manager:
+Network Manager / Webmasters:
  - Matt1360
+ - Zero
 
 Testers:
  - GRIM.657

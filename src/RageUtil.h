@@ -56,22 +56,24 @@ inline bool CLAMP(float &x, float l, float h)
 	return false;
 }
 
-inline void wrap(int &x, int n)
+inline void wrap( int &x, int n )
 {
 	if (x<0)
 		x += ((-x/n)+1)*n;
 	x %= n;
 }
-inline void wrap(unsigned &x, unsigned n)
+inline void wrap( unsigned &x, unsigned n )
 {
 	x %= n;
 }
-inline void wrap(float &x, float n)
+inline void wrap( float &x, float n )
 {
 	if (x<0)
 		x += truncf(((-x/n)+1))*n;
 	x = fmodf(x,n);
 }
+
+inline float fracf( float f ) { return f - truncf(f); }
 
 template<class T>
 void CircularShift( vector<T> &v, int dist )

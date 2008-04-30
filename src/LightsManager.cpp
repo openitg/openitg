@@ -213,13 +213,14 @@ void LightsManager::Update( float fDeltaTime )
 			static float fLastBeat;
 			static int iLight;
 
-			if( fracf(GAMESTATE->m_fLightSongBeat < fracf(fLastBeat) )
+			if( fracf(GAMESTATE->m_fLightSongBeat) < fracf(fLastBeat) )
 			{
 				++iLight;
 				wrap( iLight, 4 );
 			}
 
 			fLastBeat = GAMESTATE->m_fLightSongBeat;
+			int iBeat = iLight;
 
 			switch( iLight )
 #else

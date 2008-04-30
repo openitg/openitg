@@ -4,18 +4,24 @@ OpenITG, alpha 5 (in progress)
     InputHandler_Linux_Iow changed to InputHandler_Iow
     InputHandler_Linux_PIUIO changed to InputHandler_PIUIO
 -PIUIO changes:
-    Partially added coin counter functionality
     Added timer for testing input speed
+    Partially added coin counter code (not functional yet)
     Changed input from 64-bit datatype to 32-bit datatype
--Fixed bugs:
+-Fixed input bugs:
     Input sometimes locks up after song loading fails
     Player 2 I/O board input is mapped to Player 1's side
     PIUIO only reports arrow presses from right sensor
+-Fixed general bugs:
+    Edits for Single show on all difficulties
+    Some modifiers don't animate in the editor
+    Voltage doesn't calculate correctly (lol, DDR)
 -Fixed mistakes:
     "ITGIO" and "PIUIO" were reversed in RageInputDevice
 -Mapping changes:
     Added working Iow input mappings
     Added working service/test and coin mappings for PIUIO
+-New code functions:
+    LOG->Debug() - always displays to stdout, without logging
 -New preferences:
     "CustomSongPreviews" - play audio previews of custom songs
 -New USB profile features:

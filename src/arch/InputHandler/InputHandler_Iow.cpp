@@ -173,7 +173,6 @@ void InputHandler_Iow::UpdateLights()
 	/* To do:
 	 - Does Iow crash if lights never change? [possible Write() problem]
 	 - See if this can accidentally set input states
-	 - Brute force lights values [(start with (1 << 15) to (1 << 0)]
 	*/
 
 	// We don't know these anyway...no loss wiping them.

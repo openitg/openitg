@@ -6,6 +6,14 @@
 #ifdef LINUX
 #include "config.h" // for ITG_ARCADE
 #endif
+
+/* The name of the build and its current version */
+#define PRODUCT_NAME "OpenITG"
+#define PRODUCT_VER "alpha 5 DEV"
+
+/* Build date, in MMDDYYYY - used for serials */
+#define PRODUCT_BUILD_DATE "04292008"
+
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"
 #elif defined(XBOX)
@@ -16,9 +24,6 @@
 #endif
 
 // Don't forget to also change ProductInfo.inc!
-#define PRODUCT_NAME "OpenITG"
-#define PRODUCT_VER "alpha 5 DEV"
-
 #define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER
 
 /* A central location from which we can update crash handler data... */

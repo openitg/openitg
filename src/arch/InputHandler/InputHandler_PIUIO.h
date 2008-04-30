@@ -18,7 +18,7 @@ class InputHandler_PIUIO: public InputHandler
 {
 public:
 	/* If bPumpMode, some mappings change */
-	//InputHandler_PIUIO( bool bPumpMode = false );
+//	InputHandler_PIUIO( bool bPumpMode = false );
 	InputHandler_PIUIO();
 	~InputHandler_PIUIO();
 

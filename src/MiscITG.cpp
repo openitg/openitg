@@ -1,12 +1,13 @@
 #include "global.h"
-#include "XmlFile.h"
-#include "RageUtil.h"
-#include "MiscITG.h"
-#include "ProfileManager.h"
-#include "RageInput.h" /* for g_sInputType */
 #include "RageLog.h"
+#include "RageUtil.h"
 #include "RageTimer.h"
+#include "RageInput.h" /* for g_sInputType */
+#include "ProfileManager.h"
 #include "SongManager.h"
+#include "MiscITG.h"
+
+#include "XmlFile.h"
 #include "ProductInfo.h"
 #include "io/ITGIO.h"
 #include "io/USBDevice.h"
@@ -214,8 +215,40 @@ CString GetSerialNumber()
 	return sNewSerial;
 #endif
 
-	/* Dummy return */
-	return "ITG-C-02242008-529-3";
+	return GenerateDebugSerial();
+}
+
+/* this allows us to use the serial numbers on builds for
+ * more helpful debugging information. PRODUCT_BUILD_DATE
+ * is defined in ProductInfo.h */
+CString GenerateDebugSerial()
+{
+	CString sSerial, sSystem, sBuildType;
+
+	sSerial = "OITG-";
+
+#if defined(WIN32)
+	sSystem = "W"; /* Windows */
+#elif defined(LINUX)
+	sSystem = "L"; /* Unix/Linux */
+#elif defined(DARWIN)
+	sSystem = "M"; /* Mac OS */
+#else
+	sSystem = "U"; /* unknown */
+#endif
+	// "U-04292008-"
+	sSerial += sSystem + "-" + CString(PRODUCT_BUILD_DATE) + "-";
+
+#ifdef ITG_ARCADE
+	sBuildType = "A";
+#else
+	sBuildType = "P";
+#endif
+
+	// "573-A"
+	sSerial += "573-" + sBuildType;
+
+	return sSerial;
 }
 
 bool HubIsConnected()

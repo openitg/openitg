@@ -317,7 +317,6 @@ public:
 	Preference<bool>	m_bThreadedMovieDecode;
 	Preference<bool>	m_bScreenTestMode;
 	Preference<bool>	m_bDebugUSBInput;
-	Preference<bool>	m_bITGIOBitFlip;
 	Preference<bool>	m_bDebugLights;
 	Preference<bool>	m_bMonkeyInput;
 	Preference<CString>	m_sMachineName;

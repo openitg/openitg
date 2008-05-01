@@ -1,3 +1,8 @@
+OpenITG, alpha 6 (in development)
+---------------------------------
+-Code structure changes:
+    Reverted InputFilter - too little gain for too many problems
+
 OpenITG, alpha 5 (April 30th, 2008)
 -----------------------------------
 -New screens:

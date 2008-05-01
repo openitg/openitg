@@ -1,9 +1,0 @@
-[ ] - home user friendly Static.ini
-[ ] - key mapping somewhere in operator menu
-[ ] - display settings somewhere in operator menu
-[ ] - noteskin fixes (code or data fix)
-[ ] - InputDebounceTime implementation
-
--- optional --
-[ ] - Win32 network diagnostics
-[ ] - upgrade kit lights

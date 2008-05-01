@@ -1,17 +1,27 @@
 /* More-or-less in order of priority. */
 
-/* Things to test on the arcade */
--Do separate coin counters have separate bit mappings?
+/* Major bug fixing */
+-Mines are always triggered in gameplay (Windows only?)
+-Edit mode can't scroll, and causes failed asserts
 
-/* Bug fixing */
--Fix "Banner custom doesn't always show in ScreenRanking" bug
+/* Things to test on the arcade */
+-See if separate coin counters have separate bit mappings
+-See if InputFilter has affected ITGIO/PIUIO offset
+
+/* Minor bug fixing */
+-Banner custom doesn't always show in ScreenRanking
+-Menus scroll too fast on repeat
+-Edit mode eats Edit difficulty charts
+-http://boxorroxors.net/forum/viewtopic.php?p=7044#7044 (course bug)
 
 /* Minor feature additions */
+-Add Windows code for network diagnostics
 -Implement ThemeInfo.ini support
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
 -Implement colors percentages in Versus to show who's ahead
 
 /* Major feature additions */
+-Backport or update LowLevelWindow_X11 to include full-screen support
 -Implement custom courses from USB drive
 -Implement "lifebar graph shows FFC/FEC"
 -Improve code behind ITG2's beginner helper

@@ -1466,7 +1466,7 @@ static void HandleInputEvents(float fDeltaTime)
 
 	for( unsigned i=0; i<ieArray.size(); i++ )
 	{
-		DeviceInput DeviceI = ieArray[i].di;
+		DeviceInput DeviceI = (DeviceInput)ieArray[i];
 		InputEventType type = ieArray[i].type;
 		GameInput GameI;
 		MenuInput MenuI;

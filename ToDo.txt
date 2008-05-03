@@ -1,7 +1,6 @@
 /* More-or-less in order of priority. */
 
 /* Major bug fixing */
--Mines are always triggered in gameplay (Windows only?)
 -Edit mode can't scroll, and causes failed asserts
 
 /* Things to test on the arcade */
@@ -10,13 +9,13 @@
 
 /* Minor bug fixing */
 -Banner custom doesn't always show in ScreenRanking
--Menus scroll too fast on repeat
 -Edit mode eats Edit difficulty charts
 -http://boxorroxors.net/forum/viewtopic.php?p=7044#7044 (course bug)
 
 /* Minor feature additions */
+-Re-implement "InputDebounceTime"
+-Include ThemeInfo.ini support
 -Add Windows code for network diagnostics
--Implement ThemeInfo.ini support
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
 -Implement colors percentages in Versus to show who's ahead
 

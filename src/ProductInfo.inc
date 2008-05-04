@@ -2,7 +2,7 @@
 ; Don't forget to also change ProductInfo.h!
 
 !define PRODUCT_NAME "OpenITG"
-!define PRODUCT_VER "alpha 4"
+!define PRODUCT_VER "alpha 6 DEV"
 ; !define PRODUCT_VER "3.9 alpha 23"
 !define PRODUCT_NAME_VER "${PRODUCT_NAME} ${PRODUCT_VER}"
 

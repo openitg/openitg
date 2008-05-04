@@ -27,13 +27,17 @@ public:
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
 	PIUIO IOBoard;
-	RageTimer m_InputTimer;
 	RageThread InputThread;
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;
 	bool m_bCoinEvent;
 	bool m_bPumpMode;
+
+	/* debug code */
+	RageTimer m_InputTimer;
+	unsigned int m_iReadCount;
+	float m_fTotalReadTime;
 
 	/* one uint32_t per sensor set */
 	uint32_t m_iInputData[4];

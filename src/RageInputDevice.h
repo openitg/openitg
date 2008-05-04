@@ -327,83 +327,6 @@ enum IOBoardButton {
 const CString& IOBoardButtonToString( IOBoardButton i );
 IOBoardButton StringToIOBoardButton( const CString& s );
 
-/* This is the position of the bit in a raw input string, for debugging and
- * brute-forcing mappings. Comment out bit ranges as needed. -- Vyhd */
-enum BitButton {
-	BIT_64,
-	BIT_63,
-	BIT_62,
-	BIT_61,
-	BIT_60,
-	BIT_59,
-	BIT_58,
-	BIT_57,
-	BIT_56,
-	BIT_55,
-	BIT_54,
-	BIT_53,
-	BIT_52,
-	BIT_51,
-	BIT_50,
-	BIT_49,
-	BIT_48,
-	BIT_47,
-	BIT_46,
-	BIT_45,
-	BIT_44,
-	BIT_43,
-	BIT_42,
-	BIT_41,
-	BIT_40,
-	BIT_39,
-	BIT_38,
-	BIT_37,
-	BIT_36,
-	BIT_35,
-	BIT_34,
-	BIT_33,
-
-	BIT_32,
-	BIT_31,
-	BIT_30,
-	BIT_29,
-	BIT_28,
-	BIT_27,
-	BIT_26,
-	BIT_25,
-	BIT_24,
-	BIT_23,
-	BIT_22,
-	BIT_21,
-	BIT_20,
-	BIT_19,
-	BIT_18,
-	BIT_17,
-
-	BIT_16,
-	BIT_15,
-	BIT_14,
-	BIT_13,
-	BIT_12,
-	BIT_11,
-	BIT_10,
-	BIT_9,
-	
-	BIT_8,
-	BIT_7,
-	BIT_6,
-	BIT_5,
-	BIT_4,
-	BIT_3,
-	BIT_2,
-	BIT_1,
-	NUM_BIT_BUTTONS,
-	BIT_BUTTON_INVALID,
-};
-const CString& BitButtonToString( BitButton i );
-BitButton StringToBitButton( const CString& s );
-
-
 typedef int DeviceButton;
 //CString DeviceButtonToString( InputDevice device, DeviceButton i );
 //DeviceButton StringToDeviceButton( InputDevice device, const CString& s );
@@ -433,7 +356,6 @@ inline int GetNumDeviceButtons( InputDevice device )
 	case DEVICE_PUMP2:	return NUM_PUMP_PAD_BUTTONS;
 	case DEVICE_MIDI:	return NUM_MIDI_CHANNELS;
 	case DEVICE_PARA1:	return NUM_PARA_PAD_BUTTONS;
-	case DEVICE_DEBUG:	return NUM_BIT_BUTTONS;
 	case DEVICE_PIUIO:
 	case DEVICE_ITGIO:	return NUM_IO_BUTTONS;
 	default:	ASSERT(0);	return 0;

@@ -60,7 +60,7 @@ void InputHandler_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& vDevice
 	if( m_bFoundDevice )
 	{
 		vDevicesOut.push_back( InputDevice(DEVICE_PIUIO) );
-		vDescriptionsOut.push_back( "ITGIO|PIUIO" );
+		vDescriptionsOut.push_back( "PIUIO" );
 	}
 }
 
@@ -79,9 +79,6 @@ void InputHandler_PIUIO::InputThreadMain()
 
 		/* Find our sensors, report to RageInput */
 		HandleInput();
-
-		/* adjustable for lag - causes less accurate reading */
-		usleep( 0 );
 	}
 }
 
@@ -274,7 +271,36 @@ void InputHandler_PIUIO::HandleInput()
 	for (int j = 0; j < 4; j++)
 		m_iLastInputData[j] = m_iInputData[j];
 
-	LOG->Trace( "PIUIO input completed in %f seconds.", m_InputTimer.GetDeltaTime() );
+	/* from here on, it's all debug/timing stuff */
+	if( !PREFSMAN->m_bDebugUSBInput )
+		return;
+
+	/*
+	 * Begin debug code!
+	 */
+
+	float fReadTime = m_InputTimer.GetDeltaTime();
+
+	/* loading latency or something similar - discard */
+	if( fReadTime > 0.1f )
+		return;
+
+	m_fTotalReadTime += fReadTime;
+	m_iReadCount++;
+
+	/* we take the average every 1,000 reads */
+	if( m_iReadCount < 1000 )
+		return;
+
+	/* even if the count is off for some value,
+	 * this will still work as expected. */
+	float fAverage = m_fTotalReadTime / (float)m_iReadCount;
+
+	/* reset */
+	m_iReadCount = 0;
+	m_fTotalReadTime = 0;
+
+	LOG->Info( "PIUIO input time: %f seconds in %i reads.", fAverage, m_iReadCount );
 }
 
 

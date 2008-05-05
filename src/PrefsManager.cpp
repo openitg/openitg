@@ -22,7 +22,7 @@
 PrefsManager*	PREFSMAN = NULL;	// global and accessable from anywhere in our program
 
 const float DEFAULT_SOUND_VOLUME = 1.00f;
-const CString DEFAULT_LIGHTS_DRIVER = "Null";
+const CString DEFAULT_LIGHTS_DRIVER = "ext"; // this is a safe default, so we may as well
 
 //
 // For self-registering prefs

@@ -728,19 +728,11 @@ void GameState::UpdateSongPosition( float fPositionSeconds, const TimingData &ti
 	m_fMusicSeconds = fPositionSeconds;
 	m_fLightSongBeat = timing.GetBeatFromElapsedTime( fPositionSeconds + g_fLightsAheadSeconds );
 
-	/* for edit mode, don't compensate - it throws off the animation for some reason. */
-	if( m_bEditing )
-	{
-		m_fMusicSecondsVisible = m_fMusicSeconds;
-		m_fSongBeatVisible = m_fSongBeat;
-	}
-	else
-	{
-		m_fMusicSecondsVisible = fPositionSeconds - PREFSMAN->m_fVisualDelaySeconds;
+	/* update the Visible values based on the delay */
+	m_fMusicSecondsVisible = fPositionSeconds - PREFSMAN->m_fVisualDelaySeconds;
 
-		float fThrowAway; bool bThrowAway;
-		timing.GetBeatAndBPSFromElapsedTime( m_fMusicSecondsVisible, m_fSongBeatVisible, fThrowAway, bThrowAway );
-	}
+	float fThrowAway; bool bThrowAway;
+	timing.GetBeatAndBPSFromElapsedTime( m_fMusicSecondsVisible, m_fSongBeatVisible, fThrowAway, bThrowAway );
 
 	Actor::SetBGMTime( m_fMusicSecondsVisible, m_fSongBeatVisible );
 }

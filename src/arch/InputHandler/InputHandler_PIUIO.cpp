@@ -37,6 +37,10 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 	LOG->Trace( "Opened PIUIO board." );
 	m_bFoundDevice = true;
 
+	/* warn if "ext" isn't enabled */
+	if( PREFSMAN->GetLightsDriver().Find("ext") == -1 )
+		LOG->Warn( "\"ext\" is not an enabled LightsDriver. The I/O board cannot run lights." );
+
 	InputThread.SetName( "PIUIO thread" );
 	InputThread.Create( InputThread_Start, this );
 

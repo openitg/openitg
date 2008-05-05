@@ -134,7 +134,6 @@ static const CString InputDeviceNames[] = {
 	"Pump2",
 	"Midi",
 	"Para1",
-	"Debug",
 	"PIUIO",
 	"ITGIO",
 };

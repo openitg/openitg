@@ -31,7 +31,6 @@ enum InputDevice {
 	DEVICE_PUMP2,
 	DEVICE_MIDI,
 	DEVICE_PARA1,
-	DEVICE_DEBUG,
 	DEVICE_PIUIO,
 	DEVICE_ITGIO,
 	NUM_INPUT_DEVICES,	// leave this at the end

@@ -877,12 +877,20 @@ void ScreenEdit::UpdateTextInfo()
 void ScreenEdit::DrawPrimitives()
 {
 	// HACK:  Draw using the trailing beat
-	float fSongBeat = GAMESTATE->m_fSongBeat;	// save song beat
-	GAMESTATE->m_fSongBeat = m_fTrailingBeat;	// put trailing beat in effect
+
+	// save song beat
+	float fSongBeat = GAMESTATE->m_fSongBeat;
+	float fSongBeatVisible = GAMESTATE->m_fSongBeatVisible;
+
+	// put trailing beat in effect
+	GAMESTATE->m_fSongBeat = m_fTrailingBeat;
+	GAMESTATE->m_fSongBeatVisible = m_fTrailingBeat;
 
 	ScreenWithMenuElements::DrawPrimitives();
 
-	GAMESTATE->m_fSongBeat = fSongBeat;	// restore real song beat
+	// restore real song beat
+	GAMESTATE->m_fSongBeat = fSongBeat;
+	GAMESTATE->m_fSongBeatVisible = fSongBeatVisible;
 }
 
 void ScreenEdit::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )

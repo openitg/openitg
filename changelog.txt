@@ -4,6 +4,7 @@ OpenITG, alpha 6 (in development)
     Reverted InputFilter - too little gain for too many problems
 -Fixed general bugs:
     Editor doesn't draw properly, causes failed asserts
+    
 
 OpenITG, alpha 5 (April 30th, 2008)
 -----------------------------------
@@ -36,6 +37,7 @@ OpenITG, alpha 5 (April 30th, 2008)
     Added working service/test and coin mappings for PIUIO
 -New code functions:
     LOG->Debug() - always displays to stdout, without logging
+    GetIP() - currently Linux-only, returns IP and subnet
 -New preferences:
     "CustomSongPreviews" - play audio previews of custom songs
     "InputDebounceTime" - self-explanatory; smooth out bouncing input

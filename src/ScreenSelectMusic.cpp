@@ -859,8 +859,8 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 	case MENU_BUTTON_RIGHT:
 	case MENU_BUTTON_LEFT:
 		{
-			/* If we're rouletting or locked, hands off. */
-			if( m_MusicWheel.IsRouletting() || m_MusicWheel.WheelIsLocked() )
+			/* If we're rouletting, hands off. */
+			if( m_MusicWheel.IsRouletting() )
 				return;
 
 			// Reset the repeat timer when the button is released.
@@ -897,10 +897,10 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 					switch( MenuI.button )
 					{
 					case MENU_BUTTON_LEFT:
-						m_MusicWheel.ChangeMusic( -1 );
+						m_MusicWheel.ChangeMusicUnlessLocked( -1 );
 						break;
 					case MENU_BUTTON_RIGHT:
-						m_MusicWheel.ChangeMusic( +1 );
+						m_MusicWheel.ChangeMusicUnlessLocked( +1 );
 						break;
 					}
 				}

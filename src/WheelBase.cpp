@@ -516,6 +516,23 @@ void WheelBase::TweenOffScreenUpdateItems(bool changing_sort)
 	}
 }
 
+void WheelBase::ChangeMusicUnlessLocked( int n )
+{
+	LOG->Debug( "WheelBase::ChangeMusicUnlessLocked(%i)", n );
+	if( m_WheelState == STATE_LOCKED )
+	{
+		if( n )
+		{
+			int iSign = n/abs(n);
+			m_fLockedWheelVelocity = iSign*LOCKED_INITIAL_VELOCITY;
+			m_soundLocked.Play();
+		}
+		return;
+	}
+
+	ChangeMusic( n );
+}
+
 void WheelBase::Move(int n)
 {
 	if(n == m_Moving)

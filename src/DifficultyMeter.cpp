@@ -55,7 +55,7 @@ void DifficultyMeter::Load( const CString &sType )
 	m_iNumFeetInMeter.Load(sType,"NumFeetInMeter");
 	m_iMaxFeetInMeter.Load(sType,"MaxFeetInMeter");
 	m_iGlowIfMeterGreaterThan.Load(sType,"GlowIfMeterGreaterThan");
-	//m_bShowFeet.Load(sType,"ShowFeet");
+	m_bShowFeet.Load(sType,"ShowFeet");
 	m_bShowDifficulty.Load(sType,"ShowDifficulty");
 	m_bShowMeter.Load(sType,"ShowMeter");
 	m_bShowEditDescription.Load(sType,"ShowEditDescription");

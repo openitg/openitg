@@ -8,6 +8,7 @@
 -See if separate coin counters have separate bit mappings
 
 /* Minor bug fixing */
+-If left/right is held and select is pressed, the wheel keeps spinning
 -The next combo after a miss is 1 more than it should be
 -Banner custom doesn't always show in ScreenRanking
 -Edit mode eats Edit difficulty charts

@@ -125,7 +125,7 @@ static CString GetSensorDescription( int iBits )
 // ITT history :D  -- vyhd
 void InputHandler_PIUIO::HandleInput()
 {
-	m_InputTimer.SetZero();
+	m_InputTimer.Touch();
 	uint32_t i = 1; // convenience hack
 
 	/* Easy to access if needed --Vyhd */
@@ -300,13 +300,12 @@ void InputHandler_PIUIO::HandleInput()
 	 * this will still work as expected. */
 	float fAverage = m_fTotalReadTime / (float)m_iReadCount;
 
+	LOG->Info( "PIUIO read average: %f seconds in %i reads. (approx. %i reads per second)", fAverage, m_iReadCount, 1.0f / fAverage );
+
 	/* reset */
 	m_iReadCount = 0;
 	m_fTotalReadTime = 0;
-
-	LOG->Info( "PIUIO input time: %f seconds in %i reads.", fAverage, m_iReadCount );
 }
-
 
 /* Requires "LightsDriver=ext" */
 void InputHandler_PIUIO::UpdateLights()

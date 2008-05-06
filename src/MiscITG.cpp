@@ -271,7 +271,7 @@ bool HubIsConnected()
 CString GetInputType()
 {
 	CString sType = g_sInputType;
-	LOG->Trace( "GetInputType() == %s", sType.c_str() );
+	LOG->Debug( "GetInputType() == %s", sType.c_str() );
 	if (!sType.CompareNoCase("null")) return "";
 	return sType;
 }

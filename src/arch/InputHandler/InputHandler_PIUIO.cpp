@@ -204,10 +204,8 @@ void InputHandler_PIUIO::HandleInput()
 
 	/* Handle coin events now */
 	// XXX: probably should have a way to refer to the I/O fields
-	if( m_iInputData[0] & (1 << 10) )
+	if( m_iInputData[0] & iInputBits[IO_INSERT_COIN] )
 		m_bCoinEvent = true;
-	if( m_iLastInputData[0] & (1 << 10) )
-		m_bCoinEvent = false;
 
 	for (int j = 0; j < 4; j++)
 	{
@@ -264,10 +262,7 @@ void InputHandler_PIUIO::HandleInput()
 			INPUTFILTER->SetButtonComment(di, GetSensorDescription(sensor_bits[iButton]));
 
 		/* Is the button we're looking for flagged in the input data? */
-		if (iButton == 17) /* IO_INSERT_COIN: coin event */
-			ButtonPressed( di, (iInputBitField & iInputBits[iButton]) || m_bCoinEvent );
-		else
-			ButtonPressed( di, iInputBitField & iInputBits[iButton] );
+		ButtonPressed( di, iInputBitField & iInputBits[iButton] );
 
 	}
 
@@ -300,7 +295,7 @@ void InputHandler_PIUIO::HandleInput()
 	 * this will still work as expected. */
 	float fAverage = m_fTotalReadTime / (float)m_iReadCount;
 
-	LOG->Info( "PIUIO read average: %f seconds in %i reads. (approx. %i reads per second)", fAverage, m_iReadCount, 1.0f / fAverage );
+	LOG->Info( "PIUIO read average: %f seconds in %i reads. (approx. %i reads per second)", fAverage, m_iReadCount, (int)(1.0f/fAverage) );
 
 	/* reset */
 	m_iReadCount = 0;
@@ -326,7 +321,7 @@ void InputHandler_PIUIO::UpdateLights()
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
-	static const uint32_t iCoinBit = (1 << 14);
+	static const uint32_t iCoinBit = (1 << 28);
 
 	// reset
 	m_iLightData = 0;
@@ -344,10 +339,7 @@ void InputHandler_PIUIO::UpdateLights()
 
 	// pulse the coin counter if we have an event
 	if( m_bCoinEvent )
-	{
 		m_iLightData |= iCoinBit;
-		m_bCoinEvent = false;
-	}
 }
 
 /*

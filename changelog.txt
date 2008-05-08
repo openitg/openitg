@@ -2,9 +2,10 @@ OpenITG, alpha 6 (in development)
 ---------------------------------
 -Code structure changes:
     Reverted InputFilter - too little gain for too many problems
--Fixed general bugs:
+-Fixed bugs:
+    Repeating menu input error on ScreenSelectMusic
+    Some custom songs end immediately after start
     Editor doesn't draw properly, causes failed asserts
-    
 
 OpenITG, alpha 5 (April 30th, 2008)
 -----------------------------------

@@ -829,8 +829,7 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 
 	LoadHelpText();
 
-	bool bSelectIsPressed =
-		SELECT_MENU_AVAILABLE && INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
+	bool bSelectIsPressed = SELECT_MENU_AVAILABLE && INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
 
 	if( bSelectIsPressed )
 	{
@@ -850,6 +849,8 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 				else
 					m_soundLocked.Play();
 				break;
+			case MENU_BUTTON_SELECT:
+				return; break;
 			}
 		}
 	}
@@ -875,13 +876,13 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 				}
 			}
 
-			if( bSelectIsPressed ) // none of this is relevant right now
-				return;
-			
 			bool bLeftIsDown = false;
 			bool bRightIsDown = false;
 			FOREACH_EnabledPlayer( p )
 			{
+				if( SELECT_MENU_AVAILABLE && INPUTMAPPER->IsButtonDown(MenuInput(p, MENU_BUTTON_SELECT)) )
+					continue;
+
 				bLeftIsDown |= INPUTMAPPER->IsButtonDown( MenuInput(p, MENU_BUTTON_LEFT) );
 				bRightIsDown |= INPUTMAPPER->IsButtonDown( MenuInput(p, MENU_BUTTON_RIGHT) );
 			}
@@ -892,7 +893,7 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 			if( bBothDown || bNeitherDown )
 			{
 				m_MusicWheel.Move( 0 );
-				if( type == IET_FIRST_PRESS )
+				if( type == IET_FIRST_PRESS && !bSelectIsPressed )
 				{
 					switch( MenuI.button )
 					{

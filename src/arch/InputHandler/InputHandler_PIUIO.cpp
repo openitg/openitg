@@ -7,18 +7,19 @@
 
 #include "PrefsManager.h" // for m_bDebugUSBInput
 #include "ScreenManager.h"
-
 #include "LightsManager.h"
+
+#include "Preference.h"
+
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_PIUIO.h"
 
-/* grabbed from LightsDriver_External */
-extern LightsState g_LightsState;
-
-/* grabbed from RageInput */
-extern CString g_sInputType;
+extern LightsState g_LightsState; // from LightsDriver_External
+extern CString g_sInputType; // from RageInput
 
 const unsigned NUM_SENSORS = 12;
+
+Preference<bool>	g_bIOCoinTest( "IOCoinTest", false );
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
@@ -205,7 +206,12 @@ void InputHandler_PIUIO::HandleInput()
 	/* Handle coin events now */
 	// XXX: probably should have a way to refer to the I/O fields
 	if( m_iInputData[0] & iInputBits[IO_INSERT_COIN] )
+	{
+		if( SCREENMAN )
+			SCREENMAN->SystemMessageNoAnimate( "PIUIO detected coin insert." );
+
 		m_bCoinEvent = true;
+	}
 
 	for (int j = 0; j < 4; j++)
 	{
@@ -321,21 +327,30 @@ void InputHandler_PIUIO::UpdateLights()
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
-	static const uint32_t iCoinBit = (1 << 28);
+	int iBit = 0;
+	if( g_bIOCoinTest )
+		iBit = (1 << 10);
+	else
+		iBit = (1 << 28);
+
+	static const uint32_t iCoinBit = iBit;
 
 	// reset
 	m_iLightData = 0;
 
-	// update marquee lights
-	FOREACH_CabinetLight( cl )
-		if( g_LightsState.m_bCabinetLights[cl] )
-			m_iLightData |= iCabinetBits[cl];
+	if( !g_bIOCoinTest )
+	{
+		// update marquee lights
+		FOREACH_CabinetLight( cl )
+			if( g_LightsState.m_bCabinetLights[cl] )
+				m_iLightData |= iCabinetBits[cl];
 
-	// update the four pad lights on both game controllers
-	FOREACH_GameController( gc )
-		FOREACH_ENUM( GameButton, 4, gb )
-			if( g_LightsState.m_bGameButtonLights[gc][gb] )
-				m_iLightData |= iPadBits[gc][gb];
+		// update the four pad lights on both game controllers
+		FOREACH_GameController( gc )
+			FOREACH_ENUM( GameButton, 4, gb )
+				if( g_LightsState.m_bGameButtonLights[gc][gb] )
+					m_iLightData |= iPadBits[gc][gb];
+	}
 
 	// pulse the coin counter if we have an event
 	if( m_bCoinEvent )

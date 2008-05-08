@@ -12,7 +12,7 @@
 #define PRODUCT_VER "alpha 6 DEV"
 
 /* Build date, in MMDDYYYY - used for serials */
-#define PRODUCT_BUILD_DATE "05042008"
+#define PRODUCT_BUILD_DATE "05082008"
 
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"

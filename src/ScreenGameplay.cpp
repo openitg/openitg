@@ -87,6 +87,11 @@ static Preference<float> g_fNetStartOffset( "NetworkStartOffset",	-3.0 );
 // define which steps type we autogen lights from
 const StepsType LIGHTS_AUTOGEN_TYPE = STEPS_TYPE_DANCE_SINGLE;
 
+// set an adjusted limit based off the song allowance
+// XXX: if OpenITG crashes, blame this first.
+const float MAX_CUSTOM_LENGTH = (float)(PREFSMAN->m_iCustomMaxSeconds + 10);
+
+
 REGISTER_SCREEN_CLASS( ScreenGameplay );
 ScreenGameplay::ScreenGameplay( CString sName ) : ScreenWithMenuElements(sName)
 {
@@ -1272,15 +1277,21 @@ void ScreenGameplay::UpdateSongPosition( float fDeltaTime )
 	RageTimer tm;
 	const float fSeconds = m_pSoundMusic->GetPositionSeconds( NULL, &tm );
 	const float fAdjust = SOUND->GetFrameTimingAdjustment( fDeltaTime );
-	unsigned iSecondsTotal = (int)(fSeconds + fAdjust);
-	if (m_bSongIsCustom && PREFSMAN->m_iCustomMaxSeconds > 0 && iSecondsTotal > PREFSMAN->m_iCustomMaxSeconds)
+
+	float fSecondsTotal = fSeconds+fAdjust; 
+
+	// give a bit of leeway - ITG's R23 feature cuts off at 2:10 instead of 2:00, so add 10 to the limit
+	if (m_bSongIsCustom && (PREFSMAN->m_iCustomMaxSeconds > 0) && fSecondsTotal > MAX_CUSTOM_LENGTH )
 	{
-                //m_DancingState = STATE_OUTRO;
+		LOG->Warn( "Custom songs time limit of %f seconds exceeded (%f seconds); ending early.",
+			MAX_CUSTOM_LENGTH, fSecondsTotal );
+
                 m_pSoundMusic->StopPlaying();
                 m_soundAssistTick.StopPlaying(); /* Stop any queued assist ticks. */
 		m_SongFinished.StartTransitioning( SM_NotesEnded );
 	}
-	GAMESTATE->UpdateSongPosition( fSeconds+fAdjust, GAMESTATE->m_pCurSong->m_Timing, tm+fAdjust );
+
+	GAMESTATE->UpdateSongPosition( fSecondsTotal, GAMESTATE->m_pCurSong->m_Timing, tm+fAdjust );
 }
 
 void ScreenGameplay::Update( float fDeltaTime )

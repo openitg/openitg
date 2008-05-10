@@ -11,7 +11,7 @@
 -The next combo after a miss is 1 more than it should be
 -Banner custom doesn't always show in ScreenRanking
 -Edit mode eats Edit difficulty charts
--http://boxorroxors.net/forum/viewtopic.php?p=7044#7044 (course bug)
+-http://boxorroxors.net/forum/viewtopic.php?p=7044#7044 (course bug) (fixed 5/10/08)
 -"Random" selections for non-existant BGVids always return the same video
 
 /* Minor feature additions */

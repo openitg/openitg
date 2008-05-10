@@ -62,6 +62,13 @@
 #define PLAYER_X( p, styleType )				THEME->GetMetricF(m_sName,ssprintf("PlayerP%d%sX",p+1,StyleTypeToString(styleType).c_str()))
 #define STOP_COURSE_EARLY						THEME->GetMetricB(m_sName,"StopCourseEarly")	// evaluate this every time it's used
 
+// set an adjusted limit based off the song allowance
+// XXX: if OpenITG crashes, blame this first.
+//
+// YYY: yes, it crashes because a const variable was assigned a value from
+//      a non const field, so I turned it into a macro for the time being --infamouspat
+#define MAX_CUSTOM_LENGTH ((float)(PREFSMAN->m_iCustomMaxSeconds + 10))
+
 static ThemeMetric<float> INITIAL_BACKGROUND_BRIGHTNESS	("ScreenGameplay","InitialBackgroundBrightness");
 static ThemeMetric<float> SECONDS_BETWEEN_COMMENTS	("ScreenGameplay","SecondsBetweenComments");
 
@@ -86,10 +93,6 @@ static Preference<float> g_fNetStartOffset( "NetworkStartOffset",	-3.0 );
 
 // define which steps type we autogen lights from
 const StepsType LIGHTS_AUTOGEN_TYPE = STEPS_TYPE_DANCE_SINGLE;
-
-// set an adjusted limit based off the song allowance
-// XXX: if OpenITG crashes, blame this first.
-const float MAX_CUSTOM_LENGTH = (float)(PREFSMAN->m_iCustomMaxSeconds + 10);
 
 
 REGISTER_SCREEN_CLASS( ScreenGameplay );

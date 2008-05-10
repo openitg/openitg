@@ -363,7 +363,8 @@ void ScoreKeeperMAX2::HandleTapRowScore( TapNoteScore scoreOfLastTap, int iNumTa
 	// Regular combo
 	//
 	const int iComboCountIfHit = m_bComboIsPerRow? 1: iNumTapsInRow;
-	if( scoreOfLastTap >= m_MinScoreToContinueCombo )
+	// OpenITG: fix for "off by 1 note tap combo" bug: check for miss combo too
+	if( scoreOfLastTap >= m_MinScoreToContinueCombo && m_pPlayerStageStats->iCurMissCombo == 0 )
 		m_pPlayerStageStats->iCurCombo += iComboCountIfHit;
 	else
 		if( scoreOfLastTap < m_MinScoreToMaintainCombo )

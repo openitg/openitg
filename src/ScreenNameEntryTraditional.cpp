@@ -347,7 +347,8 @@ void ScreenNameEntryTraditional::Init()
 
 			// If this is a SHOW_NEVER song, then it's probably a training.
 			// Don't show a high score
-			if( pSong->m_SelectionDisplay == Song::SHOW_NEVER /* && !GAMESTATE->IsCourseMode() */ )
+			// OpenITG: fix for "#SELECTABLE:NO course ranking" bug
+			if( pSong->m_SelectionDisplay == Song::SHOW_NEVER && !GAMESTATE->IsCourseMode() )
 				continue;	// skip
 
 			m_FeatDisplay[p].resize( m_FeatDisplay[p].size()+1 );

@@ -8,7 +8,7 @@
 -See if separate coin counters have separate bit mappings
 
 /* Minor bug fixing */
--The next combo after a miss is 1 more than it should be
+-The next combo after a miss is 1 more than it should be (fixed 5/10/08)
 -Banner custom doesn't always show in ScreenRanking
 -Edit mode eats Edit difficulty charts
 -http://boxorroxors.net/forum/viewtopic.php?p=7044#7044 (course bug) (fixed 5/10/08)

@@ -104,6 +104,8 @@ void ScreenSelectMusic::Init()
 {
 	m_bSelectIsDown = false; // used by LoadHelpText which is called by ScreenWithMenuElements::Init()
 
+	m_bLastSongWasLong = m_bLastSongWasMarathon = false;
+
 	ScreenWithMenuElements::Init();
 
 	m_DisplayMode = GAMESTATE->IsCourseMode() ? DISPLAY_COURSES : DISPLAY_SONGS;
@@ -904,6 +906,10 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 						m_MusicWheel.ChangeMusicUnlessLocked( +1 );
 						break;
 					}
+					/*if (! GAMESTATE->IsCourseMode() )
+					{
+						Song *pCurSong = m_MusicWheel.GetSelectedSong();
+					}*/
 				}
 			}
 			else if( bLeftIsDown )
@@ -1846,6 +1852,13 @@ void ScreenSelectMusic::AfterMusicChange()
 
 				m_sprLongBalloon->StopTweening();
 				COMMAND( m_sprLongBalloon, "Hide" );
+
+				// OpenITG: comment out if necessary as ITG never really 
+				//    accounts for marathon songs in the theme.
+				GAMESTATE->m_iCurrentStageIndex += 2;
+				m_bLastSongWasLong = false;
+				m_bLastSongWasMarathon = true;
+				UpdateStage();
 			}
 			else if( pSong->m_fMusicLengthSeconds > PREFSMAN->m_fLongVerSongSeconds )
 			{
@@ -1855,6 +1868,15 @@ void ScreenSelectMusic::AfterMusicChange()
 				
 				m_sprMarathonBalloon->StopTweening();
 				COMMAND( m_sprMarathonBalloon, "Hide" );
+
+				/* OpenITG: candidate system for keeping proper track of rounds:
+				 *    If the song is long/marathon, the right flag is set and and is unset if the
+				 *    player chooses another song of normal length.  Any songs that are unplayable
+				 *    because of length do not show up on the song wheel anyway. --infamouspat */
+				GAMESTATE->m_iCurrentStageIndex++;
+				m_bLastSongWasLong = true;
+				m_bLastSongWasMarathon = false;
+				UpdateStage();
 			}
 			else
 			{
@@ -1863,6 +1885,18 @@ void ScreenSelectMusic::AfterMusicChange()
 
 				m_sprMarathonBalloon->StopTweening();
 				COMMAND( m_sprMarathonBalloon, "Hide" );
+
+				if ( m_bLastSongWasMarathon )
+				{
+					GAMESTATE->m_iCurrentStageIndex -= 2;
+					m_bLastSongWasMarathon = false;
+				}
+				if ( m_bLastSongWasLong )
+				{
+					GAMESTATE->m_iCurrentStageIndex--;
+					m_bLastSongWasLong = false;
+				}
+				UpdateStage();
 			}
 
 			COMMAND( m_sprCourseHasMods, "Hide" );

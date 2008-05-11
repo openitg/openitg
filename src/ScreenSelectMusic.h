@@ -144,6 +144,9 @@ protected:
 	bool				m_bAllowOptionsMenu, m_bAllowOptionsMenuRepeat;
 	bool				m_bSelectIsDown;
 
+	bool				m_bLastSongWasMarathon;
+	bool				m_bLastSongWasLong;
+
 	Transition			m_bgOptionsOut;
 	Transition			m_bgNoOptionsOut;
 

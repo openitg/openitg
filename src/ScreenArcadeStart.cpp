@@ -26,6 +26,9 @@
 
 #define NEXT_SCREEN	THEME->GetMetric( m_sName, "NextScreen" )
 
+/* automatic warning dismissal */
+const float TIMEOUT = 10.0f;
+
 REGISTER_SCREEN_CLASS( ScreenArcadeStart );
 
 ScreenArcadeStart::ScreenArcadeStart( CString sClassName ) : ScreenWithMenuElements( sClassName )
@@ -70,7 +73,7 @@ void ScreenArcadeStart::Update( float fDeltaTime )
 		m_bUSBError = !Refresh();
 
 		// problem was fixed, or we timed out
-		if( !m_bUSBError || m_Timer.Ago() > 10.0f )
+		if( !m_bUSBError || m_Timer.Ago() > TIMEOUT )
 		{
 			this->PlayCommand( "Off" );
 			StartTransitioning( SM_GoToNextScreen );
@@ -116,8 +119,8 @@ void ScreenArcadeStart::DrawPrimitives()
 
 bool ScreenArcadeStart::Refresh()
 {
-	float fTimer = 10.0f - m_Timer.Ago();
-	CLAMP( fTimer, 0.0f, 10.0f);
+	float fTimer = TIMEOUT - m_Timer.Ago();
+	CLAMP( fTimer, 0.0f, TIMEOUT);
 
 	if( !HubIsConnected() )
 	{

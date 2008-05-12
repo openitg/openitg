@@ -162,11 +162,8 @@ InputHandler += arch/InputHandler/InputHandler_PIUIO.h \
 		arch/InputHandler/InputHandler_Iow.cpp
 
 MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture.h \
-		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h
-
-if HAVE_FFMPEG
-MovieTexture += arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h
-endif
+		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h \
+		arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h
 
 Lights = arch/Lights/LightsDriver.h \
 		arch/Lights/LightsDriver_SystemMessage.cpp arch/Lights/LightsDriver_SystemMessage.h \
@@ -404,8 +401,8 @@ main_LDADD = \
 		  $(srcdir)/libresample/libresample.a
 
 openitg_SOURCES = $(main_SOURCES)
-openitg_LDADD = $(main_LDADD)
-#	$(srcdir)/ffmpeg/lib/libavcodec.a $(srcdir)/ffmpeg/lib/libavformat.a
+openitg_LDADD = $(main_LDADD) \
+	$(srcdir)/ffmpeg/lib/libavformat.a $(srcdir)/ffmpeg/lib/libavcodec.a
 
 if HAVE_GTK
 bin_PROGRAMS += GtkModule.so

@@ -42,10 +42,10 @@
 
 #define CACHE_DIR "Cache/"
 
-#ifdef ITG_ARCADE
+#ifdef ITG_ARCADE && !WIN32
 #define CUSTOM_SONG_PATH CString("/rootfs/tmp/")
 #else
-#define CUSTOM_SONG_PATH CString("/Data/temp/")
+#define CUSTOM_SONG_PATH CString("Data/temp/")
 #endif
 
 const int FILE_CACHE_VERSION = 144;	// increment this to invalidate cache

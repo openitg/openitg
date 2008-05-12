@@ -27,14 +27,14 @@ namespace avcodec
 #else
 extern "C"
 {
-#include <ffmpeg/avformat.h>
+#include "ffmpeg/include/ffmpeg/avformat.h"
 }
 #endif
 
 #if !defined(HAVE_IMG_CONVERT)
 extern "C"
 {
-#include <ffmpeg/swscale.h>
+#include "ffmpeg/include/ffmpeg/swscale.h"
 }
 #endif // HAVE_IMG_CONVERT
     void img_convert__(AVPicture *dst, int dst_pix_fmt,
@@ -292,7 +292,7 @@ int FFMpeg_Helper::ReadPacket()
 
 	while( 1 )
 	{
-		CHECKPOINT;
+		//CHECKPOINT;
 		if( current_packet_offset != -1 )
 		{
 			current_packet_offset = -1;
@@ -352,7 +352,7 @@ int FFMpeg_Helper::DecodePacket()
 			return 0; /* eof */
 
 		int got_frame;
-		CHECKPOINT;
+		//CHECKPOINT;
 		/* Hack: we need to send size = 0 to flush frames at the end, but we have
 		 * to give it a buffer to read from since it tries to read anyway. */
 		static uint8_t dummy[FF_INPUT_BUFFER_PADDING_SIZE] = { 0 };
@@ -364,7 +364,7 @@ int FFMpeg_Helper::DecodePacket()
 #endif
 				&frame, &got_frame,
 				pkt.size? pkt.data:dummy, pkt.size );
-		CHECKPOINT;
+		//CHECKPOINT;
 
 		if (len < 0)
 		{
@@ -503,7 +503,7 @@ CString MovieTexture_FFMpeg::Init()
 	ConvertFrame();
 	UpdateFrame();
 
-	CHECKPOINT;
+	//CHECKPOINT;
 
 	StartThread();
 
@@ -710,7 +710,7 @@ void MovieTexture_FFMpeg::CreateTexture()
     if( m_uTexHandle )
         return;
 
-	CHECKPOINT;
+	//CHECKPOINT;
 
 	RageTextureID actualID = GetID();
 	actualID.iAlphaBits = 0;
@@ -798,7 +798,7 @@ bool MovieTexture_FFMpeg::DecodeFrame()
 
 	if( m_State == DECODER_QUIT )
 		return false;
-	CHECKPOINT;
+	//CHECKPOINT;
 
 	/* Read a frame. */
 	int ret = decoder->GetFrame();
@@ -923,7 +923,7 @@ void MovieTexture_FFMpeg::DecoderThread()
 		LOG->Warn( werr_ssprintf(GetLastError(), "SetThreadPriorityBoost failed") );
 #endif
 
-	CHECKPOINT;
+	//CHECKPOINT;
 
 	while( m_State != DECODER_QUIT )
 	{
@@ -968,7 +968,7 @@ void MovieTexture_FFMpeg::DecoderThread()
 			ASSERT_M( m_ImageWaiting == FRAME_NONE || m_State == DECODER_QUIT, ssprintf("%i, %i", m_ImageWaiting, m_State) );
 		}
 	}
-	CHECKPOINT;
+	//CHECKPOINT;
 }
 
 void MovieTexture_FFMpeg::Update(float fDeltaTime)
@@ -1003,7 +1003,7 @@ void MovieTexture_FFMpeg::Update(float fDeltaTime)
 		* calls, causing the clock to keep running. */
 		if( m_ImageWaiting != FRAME_WAITING )
 			return;
-		CHECKPOINT;
+		//CHECKPOINT;
 
 		UpdateFrame();
 		
@@ -1023,13 +1023,13 @@ void MovieTexture_FFMpeg::UpdateFrame()
     /* Just in case we were invalidated: */
     CreateTexture();
 
-	CHECKPOINT;
+	//CHECKPOINT;
 	DISPLAY->UpdateTexture(
         m_uTexHandle,
         m_img,
         0, 0,
         m_iImageWidth, m_iImageHeight );
-    CHECKPOINT;
+    //CHECKPOINT;
 
 	m_ImageWaiting = FRAME_NONE;
 }
@@ -1059,9 +1059,9 @@ void MovieTexture_FFMpeg::StopThread()
 
 	/* Make sure we don't deadlock waiting for m_BufferFinished. */
 	m_BufferFinished.Post();
-	CHECKPOINT;
+	//CHECKPOINT;
 	m_DecoderThread.Wait();
-	CHECKPOINT;
+	//CHECKPOINT;
 	
 	m_ImageWaiting = FRAME_NONE;
 

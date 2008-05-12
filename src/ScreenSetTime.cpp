@@ -158,7 +158,10 @@ void ScreenSetTime::ChangeSelection( int iDirection )
 	SetTimeSelection OldSelection = m_Selection;
 	enum_add<SetTimeSelection>( m_Selection, iDirection );
 
-	CLAMP( (int&)m_Selection, 0, NUM_SET_TIME_SELECTIONS-1 );
+	int iSelection = (int)m_Selection;
+	CLAMP( iSelection, 0, NUM_SET_TIME_SELECTIONS-1 );
+	m_Selection = (SetTimeSelection)iSelection;
+
 	if( iDirection != 0 && m_Selection == OldSelection )
 		return; // can't move any more
 

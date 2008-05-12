@@ -84,14 +84,18 @@ void ScreenBookkeeping::HandleScreenMessage( const ScreenMessage SM )
 void ScreenBookkeeping::MenuLeft( PlayerNumber pn )
 {
 	m_View = (View)(m_View-1);
-	CLAMP( (int&)m_View, 0, NUM_VIEWS-1 );
+	int iView = (int)m_View;
+	CLAMP( iView, 0, NUM_VIEWS-1 );
+	m_View = (View)iView;
 	ChangeView( m_View );
 }
 
 void ScreenBookkeeping::MenuRight( PlayerNumber pn )
 {
 	m_View = (View)(m_View+1);
-	CLAMP( (int&)m_View, 0, NUM_VIEWS-1 );
+	int iView = (int)m_View;
+	CLAMP( iView, 0, NUM_VIEWS-1 );
+	m_View = (View)iView;
 	ChangeView( m_View );
 }
 

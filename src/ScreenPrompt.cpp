@@ -34,7 +34,11 @@ ScreenPrompt::ScreenPrompt(
 	m_sText = sText;
 	m_PromptType = type;
 	m_Answer = defaultAnswer;
-	CLAMP( (int&)m_Answer, 0, m_PromptType );
+
+	int iClamp = (int)m_Answer;
+	CLAMP( iClamp, 0, m_PromptType );
+	m_Answer = (PromptAnswer)iClamp;
+	
 	m_pOnYes = OnYes;
 	m_pOnNo = OnNo;
 	m_pCallbackData = pCallbackData;

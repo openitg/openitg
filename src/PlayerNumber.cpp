@@ -8,7 +8,7 @@
 
 PlayerNumber GetNextHumanPlayer( PlayerNumber pn )
 {
-	for( PlayerNumber p=(PlayerNumber)(pn+1); p<NUM_PLAYERS; ((int&)p)++ )
+	for( PlayerNumber p=(PlayerNumber)(pn+1); p<NUM_PLAYERS; p=(PlayerNumber)(p+1) )
 	{
 		if( GAMESTATE->IsHumanPlayer(p) )
 			return p;
@@ -18,7 +18,7 @@ PlayerNumber GetNextHumanPlayer( PlayerNumber pn )
 
 PlayerNumber GetNextEnabledPlayer( PlayerNumber pn )
 {
-	for( PlayerNumber p=(PlayerNumber)(pn+1); p<NUM_PLAYERS; ((int&)p)++ )
+	for( PlayerNumber p=(PlayerNumber)(pn+1); p<NUM_PLAYERS; p=(PlayerNumber)(p+1) )
 	{
 		if( GAMESTATE->IsPlayerEnabled(p) )
 			return p;
@@ -28,7 +28,7 @@ PlayerNumber GetNextEnabledPlayer( PlayerNumber pn )
 
 PlayerNumber GetNextCpuPlayer( PlayerNumber pn )
 {
-	for( PlayerNumber p=(PlayerNumber)(pn+1); p<NUM_PLAYERS; ((int&)p)++ )
+	for( PlayerNumber p=(PlayerNumber)(pn+1); p<NUM_PLAYERS; p=(PlayerNumber)(p+1) )
 	{
 		if( GAMESTATE->IsCpuPlayer(p) )
 			return p;
@@ -38,7 +38,7 @@ PlayerNumber GetNextCpuPlayer( PlayerNumber pn )
 
 PlayerNumber GetNextPotentialCpuPlayer( PlayerNumber pn )
 {
-	for( PlayerNumber p=(PlayerNumber)(pn+1); p<NUM_PLAYERS; ((int&)p)++ )
+	for( PlayerNumber p=(PlayerNumber)(pn+1); p<NUM_PLAYERS; p=(PlayerNumber)(p+1) )
 	{
 		if( !GAMESTATE->IsHumanPlayer(p) )
 			return p;

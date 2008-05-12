@@ -286,7 +286,7 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 				continue;
 
 
-			usbd.sDevice = "/dev/" + sDevice + "1";
+			usbd.sDevice = "/dev/" + sDevice;
 
 			/*
 			 * sPath/device should be a symlink to the actual device.  For USB

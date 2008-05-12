@@ -16,7 +16,7 @@ public:
 	CString m_sName;
 	vector<CString> m_vsReloadRowMessages;	// refresh this row on on these messages
 	
-	OptionRowHandler::OptionRowHandler() { Init(); }
+	OptionRowHandler() { Init(); }
 	virtual ~OptionRowHandler() { }
 	virtual void Init()
 	{

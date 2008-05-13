@@ -180,11 +180,17 @@ void InputHandler_PIUIO::HandleInput()
 		iNewLightData = m_iLightData & 0xfffcfffc;
 		iNewLightData |= (j | (j << 16));
 
-		IOBoard.Write( iNewLightData );
+		m_iInputData[j] = iNewLightData;
+	}
 
+		//IOBoard.Write( iNewLightData );
 		/* Get the data and send it to RageInput */
-		IOBoard.Read( &(m_iInputData[j]) );
+		//IOBoard.Read( &(m_iInputData[j]) );
 
+		IOBoard.BulkReadWrite( m_iInputData );
+
+	for (uint32_t j = 0; j < 4; j++)
+	{
 		/* PIUIO opens high - for more logical processing, invert it */
 		m_iInputData[j] = ~m_iInputData[j];
 

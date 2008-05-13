@@ -8,7 +8,7 @@ class PIUIO: public USBDriver
 public:
 	bool Read( uint32_t *pData );
 	bool Write( uint32_t iData );
-	bool BulkReadWrite( uint32_t *pData[4] );
+	bool BulkReadWrite( uint32_t pData[4] );
 
 protected:
 	bool Matches( int idVendor, int idProduct ) const;

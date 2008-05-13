@@ -56,7 +56,7 @@ bool PIUIO::Write( uint32_t iData )
 	return true;
 }
 
-bool PIUIO::BulkReadWrite( uint32_t *pData[4] )
+bool PIUIO::BulkReadWrite( uint32_t pData[4] )
 {
 	int iResult;
 

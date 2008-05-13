@@ -2862,6 +2862,8 @@ void ScreenEdit::RevertFromDisk()
 	CString sSongDir = GAMESTATE->m_pCurSong->GetSongDir();
 	GAMESTATE->m_pCurSong->LoadFromSongDir( sSongDir );
 
+	GAMESTATE->m_pCurSong->TidyUpData();
+
 	if( id.IsValid() )
 		GAMESTATE->m_pCurSteps[PLAYER_1].Set( id.ToSteps( GAMESTATE->m_pCurSong, false ) );
 

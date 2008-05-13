@@ -42,7 +42,7 @@
 
 #define CACHE_DIR "Cache/"
 
-#ifdef ITG_ARCADE && !WIN32
+#if defined(ITG_ARCADE) && !defined(WIN32)
 #define CUSTOM_SONG_PATH CString("/rootfs/tmp/")
 #else
 #define CUSTOM_SONG_PATH CString("Data/temp/")

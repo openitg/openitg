@@ -144,8 +144,7 @@ protected:
 	bool				m_bAllowOptionsMenu, m_bAllowOptionsMenuRepeat;
 	bool				m_bSelectIsDown;
 
-	bool				m_bLastSongWasMarathon;
-	bool				m_bLastSongWasLong;
+	int				m_iSavedRoundIndex;
 
 	Transition			m_bgOptionsOut;
 	Transition			m_bgNoOptionsOut;

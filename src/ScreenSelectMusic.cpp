@@ -97,14 +97,14 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 	/* Finish any previous stage.  It's OK to call this when we havn't played a stage yet. 
 	 * Do this before anything that might look at GAMESTATE->m_iCurrentStageIndex. */
 	GAMESTATE->FinishStage();
+
+	m_iSavedRoundIndex = GAMESTATE->m_iCurrentStageIndex;
 }
 
 
 void ScreenSelectMusic::Init()
 {
 	m_bSelectIsDown = false; // used by LoadHelpText which is called by ScreenWithMenuElements::Init()
-
-	m_bLastSongWasLong = m_bLastSongWasMarathon = false;
 
 	ScreenWithMenuElements::Init();
 
@@ -763,7 +763,8 @@ void ScreenSelectMusic::Update( float fDeltaTime )
 	m_bgOptionsOut.Update( fDeltaTime );
 	m_bgNoOptionsOut.Update( fDeltaTime );
 	m_sprOptionsMessage.Update( fDeltaTime );
-	//SCREENMAN->SystemMessageNoAnimate( ssprintf("g_bGoToOptions: %s", g_bGoToOptions ? "true" : "false") );
+	SCREENMAN->SystemMessageNoAnimate( ssprintf("currentIndex: %d, songsPerPlay: %d\nfinal: %s", GAMESTATE->m_iCurrentStageIndex,
+			PREFSMAN->m_iSongsPerPlay.Get(), GAMESTATE->IsFinalStage() ? "true" : "false" ) );
 
 	CheckBackgroundRequests();
 }
@@ -1853,12 +1854,6 @@ void ScreenSelectMusic::AfterMusicChange()
 				m_sprLongBalloon->StopTweening();
 				COMMAND( m_sprLongBalloon, "Hide" );
 
-				// OpenITG: comment out if necessary as ITG never really 
-				//    accounts for marathon songs in the theme.
-				GAMESTATE->m_iCurrentStageIndex += 2;
-				m_bLastSongWasLong = false;
-				m_bLastSongWasMarathon = true;
-				UpdateStage();
 			}
 			else if( pSong->m_fMusicLengthSeconds > PREFSMAN->m_fLongVerSongSeconds )
 			{
@@ -1868,15 +1863,6 @@ void ScreenSelectMusic::AfterMusicChange()
 				
 				m_sprMarathonBalloon->StopTweening();
 				COMMAND( m_sprMarathonBalloon, "Hide" );
-
-				/* OpenITG: candidate system for keeping proper track of rounds:
-				 *    If the song is long/marathon, the right flag is set and and is unset if the
-				 *    player chooses another song of normal length.  Any songs that are unplayable
-				 *    because of length do not show up on the song wheel anyway. --infamouspat */
-				GAMESTATE->m_iCurrentStageIndex++;
-				m_bLastSongWasLong = true;
-				m_bLastSongWasMarathon = false;
-				UpdateStage();
 			}
 			else
 			{
@@ -1885,19 +1871,11 @@ void ScreenSelectMusic::AfterMusicChange()
 
 				m_sprMarathonBalloon->StopTweening();
 				COMMAND( m_sprMarathonBalloon, "Hide" );
-
-				if ( m_bLastSongWasMarathon )
-				{
-					GAMESTATE->m_iCurrentStageIndex -= 2;
-					m_bLastSongWasMarathon = false;
-				}
-				if ( m_bLastSongWasLong )
-				{
-					GAMESTATE->m_iCurrentStageIndex--;
-					m_bLastSongWasLong = false;
-				}
-				UpdateStage();
 			}
+
+			if ( !GAMESTATE->IsFinalStage() )
+				GAMESTATE->m_iCurrentStageIndex = m_iSavedRoundIndex;
+			UpdateStage();
 
 			COMMAND( m_sprCourseHasMods, "Hide" );
 

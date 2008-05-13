@@ -56,8 +56,29 @@ bool PIUIO::Write( uint32_t iData )
 	return true;
 }
 
+bool PIUIO::BulkReadWrite( uint32_t *pData[4] )
+{
+	int iResult;
+
+	while ( 1 )
+	{
+		// XXX: what are the reason(s) for the first 2 numbers being 0?
+		iResult = usb_control_msg(m_pHandle, 0, 0, 0, 0, (char*)(pData), 32, 10011);
+
+		if ( iResult == 32 )
+			break;
+
+		LOG->Warn( "PIUIO bulk comm error: %s", usb_strerror() );
+		Close();
+		
+		while( !Open() )
+			usleep( 100000 );
+	}
+	return true;
+}
+
 /*
- * Copyright (c) 2008 BoXoRRoXoRs
+ * Copyright (c) 2008 vyhd
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

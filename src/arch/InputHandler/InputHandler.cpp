@@ -12,6 +12,8 @@ void InputHandler::UpdateTimer()
 
 void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 {
+	//LOG->Debug( "%s %s", di.toString().c_str(), Down ? "pressed" : "released" );
+
 	if( di.ts.IsZero() )
 	{
 		di.ts = m_LastUpdate.Half();

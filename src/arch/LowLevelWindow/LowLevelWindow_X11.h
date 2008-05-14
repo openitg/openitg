@@ -17,8 +17,10 @@ public:
 
 	RageDisplay::VideoModeParams GetVideoModeParams() const { return CurrentParams; }
 
+//Maybe use in the future...?	
+//	void GetDisplayResolutions( DisplayResolutions &out ) const;
 private:
-	bool m_bWindowIsOpen;
+	bool m_bWasWindowed;
 	RageDisplay::VideoModeParams CurrentParams;
 };
 

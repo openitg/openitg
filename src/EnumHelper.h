@@ -32,6 +32,13 @@ static inline void enum_add( T &val, int iAmt )
 	val = c.value;
 }
 
+template<typename T>
+static inline T enum_add2( T val, int iAmt )
+{
+	return static_cast<T>( val + iAmt );
+}
+
+
 #define FOREACH_ENUM( e, max, var )	for( e var=(e)0; var<max; enum_add<e>( var, +1 ) )
 
 

@@ -26,7 +26,7 @@ protected:
 #endif
 
 /*
- * (c) 2008 BoXoRRoXoRs
+ * Copyright (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

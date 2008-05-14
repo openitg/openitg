@@ -1,17 +1,15 @@
 /* More-or-less in order of priority. */
 
 /* Major bug fixing */
--"Revert from Disk" adds charts
+-X11 full-screen causes scrolling brackets + desktop resize
 -Switching from free to home on the main menu causes OpenITG to hang
 
 /* Things to test on the arcade */
 -See if separate coin counters have separate bit mappings
 
 /* Minor bug fixing */
--The next combo after a miss is 1 more than it should be (fixed 5/10/08)
 -Banner custom doesn't always show in ScreenRanking
 -Edit mode eats Edit difficulty charts
--http://boxorroxors.net/forum/viewtopic.php?p=7044#7044 (course bug) (fixed 5/10/08)
 -"Random" selections for non-existant BGVids always return the same video
 
 /* Minor feature additions */
@@ -22,7 +20,6 @@
 -Implement colors percentages in Versus to show who's ahead
 
 /* Major feature additions */
--Backport or update LowLevelWindow_X11 to include full-screen support
 -Implement custom courses from USB drive
 -Implement "lifebar graph shows FFC/FEC"
 -Improve code behind ITG2's beginner helper

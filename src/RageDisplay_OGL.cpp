@@ -304,8 +304,10 @@ static void LogGLXDebugInformation()
 #if defined(UNIX)
 	ASSERT( g_X11Display );
 
+#if 0
 	const int scr = DefaultScreen( g_X11Display );
 
+	// Much more appropriate in LowLevelWindow_X11
 	LOG->Info( "Display: %s (screen %i)", DisplayString(g_X11Display), scr );
 	LOG->Info( "Direct rendering: %s", glXIsDirect( g_X11Display, glXGetCurrentContext() )? "yes":"no" );
 
@@ -318,6 +320,8 @@ static void LogGLXDebugInformation()
 	LOG->Info( "X server vendor: %s [%i.%i.%i.%i]", XServerVendor( g_X11Display ), major, minor, revision, patch );
 	LOG->Info( "Server GLX vendor: %s [%s]", glXQueryServerString( g_X11Display, scr, GLX_VENDOR ), glXQueryServerString( g_X11Display, scr, GLX_VERSION ) );
 	LOG->Info( "Client GLX vendor: %s [%s]", glXGetClientString( g_X11Display, GLX_VENDOR ), glXGetClientString( g_X11Display, GLX_VERSION ) );
+#endif
+
 #endif
 }
 
@@ -1175,6 +1179,7 @@ void RageCompiledGeometryHWOGL::Draw( int iMeshIndex ) const
 	else
 	{
 		glDisableClientState(GL_NORMAL_ARRAY);
+		AssertNoGLError();
 	}
 
 	if( m_bNeedsTextureMatrixScale && g_bTextureMatrixShader != 0 )
@@ -1190,10 +1195,13 @@ void RageCompiledGeometryHWOGL::Draw( int iMeshIndex ) const
 		AssertNoGLError();
 
 		GLExt.glUseProgramObjectARB( g_bTextureMatrixShader );
+		// XXX: This causes the scrolling brackets problem, but avoids a crash.
+//		AssertNoGLError();
+		FlushGLErrors();
 	}
 
 	GLExt.glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, m_nTriangles );
-	AssertNoGLError();
+//	AssertNoGLError();
 
 #define BUFFER_OFFSET(o) ((char*)(o))
 

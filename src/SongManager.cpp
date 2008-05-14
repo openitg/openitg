@@ -307,7 +307,7 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 		}
 
 		// we want to stop right on the number, not after. "Greater than" is added as a safeguard.
-		if( iSongsLoaded >= PREFSMAN->m_iCustomsLoadMax )
+		if( PREFSMAN->m_iCustomsLoadMax > 0 && iSongsLoaded >= PREFSMAN->m_iCustomsLoadMax )
 		{
 			LOG->Warn( "Loading interrupted. Limit of %i songs was reached, after %f seconds.",
 			(int)PREFSMAN->m_iCustomsLoadMax, LoadTimer.Ago() );

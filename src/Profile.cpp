@@ -33,6 +33,7 @@ const CString STATS_XSL            = "Stats.xsl";
 const CString COMMON_XSL           = "Common.xsl";
 const CString STATS_XML            = "Stats.xml";
 const CString EDITABLE_INI         = "Editable.ini";
+const CString EXTRA_INI            = "Extra.ini";
 const CString DONT_SHARE_SIG       = "DontShare.sig";
 const CString PUBLIC_KEY_FILE      = "public.key";
 const CString SCREENSHOTS_SUBDIR   = "Screenshots/";
@@ -893,14 +894,16 @@ bool Profile::SaveStatsXmlToDir( CString sDir, bool bSignData ) const
 void Profile::SaveEditableDataToDir( CString sDir ) const
 {
 	IniFile ini;
+	IniFile eIni;
 
 	ini.SetValue( "Editable", "DisplayName",			m_sDisplayName );
 	ini.SetValue( "Editable", "LastUsedHighScoreName",	m_sLastUsedHighScoreName );
 	ini.SetValue( "Editable", "WeightPounds",			m_iWeightPounds );
-	ini.SetValue( "Editable", "UseCatalogXML",		m_bUseCatalog );
-	ini.SetValue( "Editable", "AdditionalSpeedMods",	join(", ", m_sPlayerAdditionalModifiers));
+	//ini.SetValue( "Editable", "UseCatalogXML",		m_bUseCatalog );
+	eIni.SetValue( "Editable", "AdditionalSpeedMods",	join(", ", m_sPlayerAdditionalModifiers));
 
 	ini.WriteFile( sDir + EDITABLE_INI );
+	eIni.WriteFile( sDir + EXTRA_INI );
 }
 
 XNode* Profile::SaveGeneralDataCreateNode() const
@@ -1033,6 +1036,7 @@ XNode* Profile::SaveGeneralDataCreateNode() const
 Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 {
 	CString fn = sDir + EDITABLE_INI;
+	CString efn = sDir + EXTRA_INI;
 
 	//
 	// Don't load unreasonably large editable.xml files.
@@ -1047,7 +1051,7 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	if( !IsAFile(fn) )
 		return failed_no_profile;
 
-	IniFile ini;
+	IniFile ini, eIni;
 	ini.ReadFile( fn );
 
 	ini.GetValue("Editable","DisplayName",				m_sDisplayName);
@@ -1055,11 +1059,34 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	ini.GetValue("Editable","WeightPounds",				m_iWeightPounds);
 	ini.GetValue("Editable","UseCatalogXML",		m_bUseCatalog );
 
+
+	// This is data that the user can change, so we have to validate it.
+	wstring wstr = CStringToWstring(m_sDisplayName);
+	if( wstr.size() > MAX_DISPLAY_NAME_LENGTH )
+		wstr = wstr.substr(0, MAX_DISPLAY_NAME_LENGTH);
+	m_sDisplayName = WStringToCString(wstr);
+	// TODO: strip invalid chars?
+	if( m_iWeightPounds != 0 )
+		CLAMP( m_iWeightPounds, 20, 1000 );
+
 	m_sPlayerAdditionalModifiers.clear();
+
+	if ( FILEMAN->GetFileSizeInBytes(efn) > MAX_EDITABLE_INI_SIZE_BYTES )
+	{
+		LOG->Warn( "The file '%s' is unreasonably large.  It won't be loaded.", efn.c_str() );
+		// return success because Extra.ini is optional
+		return success;
+	}
+	if ( !IsAFile(efn) )
+	{
+		LOG->Warn( "no Extra.ini found, skipping adding additional speed mods." );
+		return success;
+	}
+	eIni.ReadFile( efn );
 
 	CString sAdditionalSpeedBuf;
 	vector<CString> sASBCandidates;
-	if (ini.GetValue("Editable","AdditionalSpeedMods", sAdditionalSpeedBuf))
+	if (eIni.GetValue("Editable","AdditionalSpeedMods", sAdditionalSpeedBuf))
 	{
 		split(sAdditionalSpeedBuf, ",", sASBCandidates, true);
 		set<CString> sASBCNonDup;
@@ -1081,21 +1108,9 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 			if (mult.Compare(candidate) || constmod.Compare(candidate))
 			{
 				m_sPlayerAdditionalModifiers.push_back(candidate);
-				LOG->Trace("Editable.ini: added custom speed mod %s", candidate.c_str());
 			}
 		}
 	}
-	CHECKPOINT_M("AdditionalSpeedMods end");
-
-
-	// This is data that the user can change, so we have to validate it.
-	wstring wstr = CStringToWstring(m_sDisplayName);
-	if( wstr.size() > MAX_DISPLAY_NAME_LENGTH )
-		wstr = wstr.substr(0, MAX_DISPLAY_NAME_LENGTH);
-	m_sDisplayName = WStringToCString(wstr);
-	// TODO: strip invalid chars?
-	if( m_iWeightPounds != 0 )
-		CLAMP( m_iWeightPounds, 20, 1000 );
 
 	return success;
 }

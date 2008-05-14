@@ -185,6 +185,8 @@ public:
 	Preference<int>		m_iCustomMaxSizeMB;
 	Preference<int>		m_iCustomMaxStepsSizeKB;
 
+	Preference<bool>	m_bAllowExtraPlayerOptions;
+
 	Preference<bool>	m_bComboContinuesBetweenSongs;
 	Preference<float>	m_fLongVerSongSeconds;
 	Preference<float>	m_fMarathonVerSongSeconds;

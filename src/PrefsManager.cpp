@@ -210,6 +210,8 @@ PrefsManager::PrefsManager() :
 	m_iCustomMaxSizeMB	( "CustomMaxSizeMB", 5 ),
 	m_iCustomMaxStepsSizeKB	( "CustomMaxStepSizeKB", 100 ),
 
+	m_bAllowExtraPlayerOptions ( "AllowExtraPlayerOptions", false ),
+
 	m_bComboContinuesBetweenSongs	( "ComboContinuesBetweenSongs",	false ),
 	m_fLongVerSongSeconds			( "LongVerSongSeconds",			60*2.5f ),	// Dynamite Rave is 2:55
 	m_fMarathonVerSongSeconds		( "MarathonVerSongSeconds",		60*5.f ),

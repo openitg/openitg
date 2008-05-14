@@ -763,8 +763,8 @@ void ScreenSelectMusic::Update( float fDeltaTime )
 	m_bgOptionsOut.Update( fDeltaTime );
 	m_bgNoOptionsOut.Update( fDeltaTime );
 	m_sprOptionsMessage.Update( fDeltaTime );
-	SCREENMAN->SystemMessageNoAnimate( ssprintf("currentIndex: %d, songsPerPlay: %d\nfinal: %s", GAMESTATE->m_iCurrentStageIndex,
-			PREFSMAN->m_iSongsPerPlay.Get(), GAMESTATE->IsFinalStage() ? "true" : "false" ) );
+	//SCREENMAN->SystemMessageNoAnimate( ssprintf("currentIndex: %d, songsPerPlay: %d\nfinal: %s", GAMESTATE->m_iCurrentStageIndex,
+			//PREFSMAN->m_iSongsPerPlay.Get(), GAMESTATE->IsFinalStage() ? "true" : "false" ) );
 
 	CheckBackgroundRequests();
 }

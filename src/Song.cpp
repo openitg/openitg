@@ -1592,7 +1592,7 @@ bool Song::CheckCustomSong( CString &sError )
 	}
 
 	// music too big?
-	if( PREFSMAN->m_iCustomMaxSizeMB != 0 && FILEMAN->GetFileSizeInMB(GetMusicPath()) > PREFSMAN->m_iCustomMaxSizeMB )
+	if( PREFSMAN->m_iCustomMaxSizeMB > 0 && FILEMAN->GetFileSizeInMB(GetMusicPath()) > PREFSMAN->m_iCustomMaxSizeMB )
 	{
 		sError = ssprintf( "This song is too big.\nThe maximum size is %u MB.", 
 			(int)PREFSMAN->m_iCustomMaxSizeMB );
@@ -1600,7 +1600,7 @@ bool Song::CheckCustomSong( CString &sError )
 	}
 	
 	// SM file too big?
-	if( PREFSMAN->m_iCustomMaxStepsSizeKB != 0 && FILEMAN->GetFileSizeInKB(GetSongFilePath()) > PREFSMAN->m_iCustomMaxStepsSizeKB )
+	if( PREFSMAN->m_iCustomMaxStepsSizeKB > 0 && FILEMAN->GetFileSizeInKB(GetSongFilePath()) > PREFSMAN->m_iCustomMaxStepsSizeKB )
 	{
 		sError = ssprintf( "The .SM file is too big.\nMaximum size is %u KB.",
 			(int)PREFSMAN->m_iCustomMaxStepsSizeKB );
@@ -1624,7 +1624,7 @@ bool Song::CheckCustomSong( CString &sError )
 	// memory leak possibility if we forget about this.
 	delete Sample;
 
-	if( PREFSMAN->m_iCustomMaxSeconds != 0 && fLength > (float)PREFSMAN->m_iCustomMaxSeconds )
+	if( PREFSMAN->m_iCustomMaxSeconds > 0 && fLength > (float)PREFSMAN->m_iCustomMaxSeconds )
 	{
 		sError = ssprintf( "This song is %.0f seconds long. The maximum length is %.0f seconds.", fLength, (float)PREFSMAN->m_iCustomMaxSeconds );
 		return false;

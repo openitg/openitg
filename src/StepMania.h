@@ -21,6 +21,7 @@ CString SaveScreenshot( CString sDir, bool bSaveCompressed, bool bMakeSignature,
 
 void InsertCoin( int iNum = 1 );
 void InsertCredit();
+void ClearCredits();
 
 extern int g_argc;
 extern char **g_argv;

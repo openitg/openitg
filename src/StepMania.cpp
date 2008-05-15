@@ -1345,6 +1345,14 @@ void InsertCredit()
 	InsertCoin( PREFSMAN->m_iCoinsPerCredit );
 }
 
+void ClearCredits()
+{
+	int iLost = GAMESTATE->m_iCoins;
+	GAMESTATE->m_iCoins = 0;
+	SCREENMAN->RefreshCreditsMessages();
+	LOG->Trace( "%i Coins discarded" , iLost );
+}
+
 /* Returns true if the key has been handled and should be discarded, false if
  * the key should be sent on to screens. */
 bool HandleGlobalInputs( DeviceInput DeviceI, InputEventType type, GameInput GameI, MenuInput MenuI, StyleInput StyleI )

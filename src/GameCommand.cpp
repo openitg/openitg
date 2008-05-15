@@ -64,6 +64,7 @@ void GameCommand::Init()
 	m_bCopyEditsFromMachine = false;
 	m_bCopyEditsToMachine = false;
 	m_bInsertCredit = false;
+	m_bClearCredits = false;
 	m_bResetToFactoryDefaults = false;
 	m_bStopMusic = false;
 	m_bApplyDefaultOptions = false;
@@ -388,6 +389,10 @@ void GameCommand::LoadOne( const Command& cmd )
 	else if( sName == "insertcredit" )
 	{
 		m_bInsertCredit = true;
+	}
+	else if( sName == "clearcredits" )
+	{
+		m_bClearCredits = true;
 	}
 	else if( sName == "resettofactorydefaults" )
 	{
@@ -1035,6 +1040,10 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 	if( m_bInsertCredit )
 	{
 		InsertCredit();
+	}
+	if( m_bClearCredits )
+	{
+		ClearCredits();
 	}
 	if( m_bResetToFactoryDefaults )
 	{

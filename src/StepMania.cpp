@@ -1345,6 +1345,9 @@ void InsertCredit()
 	InsertCoin( PREFSMAN->m_iCoinsPerCredit );
 }
 
+// Clears all credits currently in the machine.
+// Useful for techs testing the coin mechs.
+// -- Matt1360
 void ClearCredits()
 {
 	int iLost = GAMESTATE->m_iCoins;

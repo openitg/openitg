@@ -1,5 +1,10 @@
 OpenITG, alpha 6 (in development)
 ---------------------------------
+-Feature addition:
+    Added the feature "Clear Credits". It works the same as
+    Insert Credit does in the operators menu. You can add it
+    in the theme if you can figure out how Insert Credit works.
+    The command is simply "ClearCredits".
 -Code structure changes:
     Reverted InputFilter - too little gain for too many problems
     Backported and modified 4.0's X11 code (Linux window/input)

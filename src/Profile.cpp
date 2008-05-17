@@ -1071,6 +1071,7 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 
 	m_sPlayerAdditionalModifiers.clear();
 
+	if ( ! PREFSMAN->m_bAllowExtraPlayerOptions ) return success;
 	if ( FILEMAN->GetFileSizeInBytes(efn) > MAX_EDITABLE_INI_SIZE_BYTES )
 	{
 		LOG->Warn( "The file '%s' is unreasonably large.  It won't be loaded.", efn.c_str() );
@@ -1079,7 +1080,7 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	}
 	if ( !IsAFile(efn) )
 	{
-		LOG->Warn( "no Extra.ini found, skipping adding additional speed mods." );
+		LOG->Warn( "no Extra.ini found, skipping." );
 		return success;
 	}
 	eIni.ReadFile( efn );

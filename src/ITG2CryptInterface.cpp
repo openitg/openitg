@@ -148,7 +148,6 @@ int ITG2CryptInterface::crypt_read(crypt_file *cf, void *buf, int size)
 	if (size % 16 > 0)
 		bufsize += 16;
 
-	unsigned int got;
 	unsigned int oldpos = cf->filepos;
 
 	crbuf = new unsigned char[bufsize]; // not an efficient way to do this, but oh well
@@ -170,11 +169,11 @@ int ITG2CryptInterface::crypt_read(crypt_file *cf, void *buf, int size)
 		read(cf->fd, backbuffer, 16);
 	}
 
-	for (unsigned int i = 0; i < bufsize / 16; i++)
+	for (unsigned i = 0; i < bufsize / 16; i++)
 	{
 		aes_decrypt(crbuf+(i*16), decbuf, cf->ctx);
 
-		for (int j = 0; j < 16; j++)
+		for (unsigned char j = 0; j < 16; j++)
 			dcbuf[(i*16)+j] = decbuf[j] ^ (backbuffer[j] - j);
 
 		if (((cryptpos + i*16) + 16) % 4080 == 0)
@@ -184,8 +183,8 @@ int ITG2CryptInterface::crypt_read(crypt_file *cf, void *buf, int size)
 	}
 
 	memcpy(buf, dcbuf+difference, size);
-	memset(backbuffer, '\0', 16);
-	memcpy(backbuffer, dcbuf, 15);
+	//memset(backbuffer, '\0', 16);
+	//memcpy(backbuffer, dcbuf, 15);
 
 	cf->filepos = oldpos + size;
 

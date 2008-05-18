@@ -1918,6 +1918,8 @@ XNode* Profile::SaveCoinDataCreateNode() const
 void Profile::BackupToDir( CString sFromDir, CString sToDir )
 {
 	FileCopy( sFromDir+EDITABLE_INI,				sToDir+EDITABLE_INI );
+	if ( IsAFile( sFromDir+EXTRA_INI ) )
+		FileCopy( sFromDir+EXTRA_INI,				sToDir+EXTRA_INI );
 	FileCopy( sFromDir+STATS_XML,					sToDir+STATS_XML );
 	FileCopy( sFromDir+STATS_XML+SIGNATURE_APPEND,	sToDir+STATS_XML+SIGNATURE_APPEND );
 	FileCopy( sFromDir+DONT_SHARE_SIG,				sToDir+DONT_SHARE_SIG );

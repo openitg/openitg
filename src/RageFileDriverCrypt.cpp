@@ -47,15 +47,6 @@ RageFileDriverCrypt::RageFileDriverCrypt( CString root_, CString secret_):RageFi
 	root = root_;
 }
 
-static CString MakeTempFilename( const CString &sPath )
-{
-	/* "Foo/bar/baz" -> "Foo/bar/new.baz.new".  Both prepend and append: we don't
-	 * want a wildcard search for the filename to match (foo.txt.new matches foo.txt*),
-	 * and we don't want to have the same extension (so "new.foo.sm" doesn't show up
-	 * in *.sm). */
-	return Dirname(sPath) + "new." + Basename(sPath) + ".new";
-}
-
 RageFileBasic *RageFileDriverCrypt::Open( const CString &path, int mode, int &err )
 {
 	CString sPath = root + path;
@@ -76,7 +67,6 @@ RageFileBasic *RageFileDriverCrypt::Open( const CString &path, int mode, int &er
 
 RageFileBasic *RageFileObjCrypt::Copy() const
 {
-        int iErr;
 	crypt_file *cpCf = new crypt_file;
 	cpCf->path = cf->path;
 	memcpy(cpCf->ctx, cf->ctx, sizeof(cf->ctx));

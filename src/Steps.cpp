@@ -42,7 +42,7 @@ Steps::Steps()
 
 	m_NoteData.Init();
 	m_bNoteDataIsFilled = false;
-	m_sNoteDataCompressed = "";
+	m_sNoteDataCompressed = CString("");
 	parent = NULL;
 }
 
@@ -60,6 +60,7 @@ void Steps::SetNoteData( const NoteData& noteDataNew )
 	m_bNoteDataIsFilled = true;
 	
 	NoteDataUtil::GetSMNoteDataString( m_NoteData, m_sNoteDataCompressed );
+	//TrimLeft( m_sNoteDataCompressed );
 	m_uHash = GetHashForString( m_sNoteDataCompressed );
 }
 
@@ -86,12 +87,15 @@ void Steps::SetSMNoteData( const CString &notes_comp_ )
 	m_bNoteDataIsFilled = false;
 
 	m_sNoteDataCompressed = notes_comp_;
+	TrimLeft( m_sNoteDataCompressed );
 	m_uHash = GetHashForString( m_sNoteDataCompressed );
 }
 
 /* XXX: this function should pull data from m_sFilename, like Decompress() */
 void Steps::GetSMNoteData( CString &notes_comp_out ) const
 {
+	ASSERT(this);
+
 	if( m_sNoteDataCompressed.empty() )
 	{
 		if( !m_bNoteDataIsFilled ) 

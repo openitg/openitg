@@ -9,7 +9,6 @@
 
 /* Minor bug fixing */
 -Banner custom doesn't always show in ScreenRanking
--Edit mode eats Edit difficulty charts
 -"Random" selections for non-existant BGVids always return the same video
 
 /* Minor feature additions */

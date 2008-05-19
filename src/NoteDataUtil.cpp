@@ -262,14 +262,18 @@ void NoteDataUtil::InsertHoldTails( NoteData &inout )
 
 void NoteDataUtil::GetSMNoteDataString( const NoteData &in_, CString &notes_out )
 {
+	LOG->Trace( "NoteDataUtil::GetSMNoteDataString()" );
 	//
 	// Get note data
 	//
+
 	NoteData in( in_ );
 	InsertHoldTails( in );
 
 	float fLastBeat = in.GetLastBeat();
 	int iLastMeasure = int( fLastBeat/BEATS_PER_MEASURE );
+	CStringArray lines;
+	CString curLine;
 
 	CString &sRet = notes_out;
 
@@ -278,7 +282,8 @@ void NoteDataUtil::GetSMNoteDataString( const NoteData &in_, CString &notes_out 
 	for( int m=0; m<=iLastMeasure; m++ )	// foreach measure
 	{
 		if( m )
-			sRet.append( 1, ',' );
+			lines.push_back(",");
+			//sRet.append(1, ',');
 
 		NoteType nt = GetSmallestNoteTypeForMeasure( in, m );
 		int iRowSpacing;
@@ -288,7 +293,7 @@ void NoteDataUtil::GetSMNoteDataString( const NoteData &in_, CString &notes_out 
 			iRowSpacing = int(roundf( NoteTypeToBeat(nt) * ROWS_PER_BEAT ));
 			// (verify first)
 			// iRowSpacing = BeatToNoteRow( NoteTypeToBeat(nt) );
-		sRet += ssprintf("  // measure %d\n", m+1);
+		//sRet += ssprintf("  // measure %d\n", m+1);
 
 		const int iMeasureStartRow = m * ROWS_PER_MEASURE;
 		const int iMeasureLastRow = (m+1) * ROWS_PER_MEASURE - 1;
@@ -318,21 +323,28 @@ void NoteDataUtil::GetSMNoteDataString( const NoteData &in_, CString &notes_out 
 				default: 
 					FAIL_M( ssprintf("tn %i", tn.type) );	// invalid enum value
 				}
-				sRet.append(1, c);
+				//sRet.append(1, c);
+				curLine.append(1,c);
 
 				if( tn.type == TapNote::attack )
 				{
-					sRet.append( ssprintf("{%s:%.2f}",tn.sAttackModifiers.c_str(), tn.fAttackDurationSeconds) );
+					//sRet.append( ssprintf("{%s:%.2f}",tn.sAttackModifiers.c_str(), tn.fAttackDurationSeconds) );
+					curLine.append( ssprintf("{%s:%.2f}",tn.sAttackModifiers.c_str(), tn.fAttackDurationSeconds) );
 				}
 				if( tn.bKeysound )
 				{
-					sRet.append( ssprintf("[%d]",tn.iKeysoundIndex) );
+					//sRet.append( ssprintf("[%d]",tn.iKeysoundIndex) );
+					curLine.append( ssprintf("[%d]",tn.iKeysoundIndex) );
 				}
 			}
 			
-			sRet.append(1, '\n');
+			//sRet.append(1, '\n');
+			lines.push_back(curLine);
+			curLine = "";
 		}
 	}
+	sRet = join("\r\n",lines);
+	sRet += "\r\n";
 }
 
 void NoteDataUtil::LoadTransformedSlidingWindow( const NoteData &in, NoteData &out, int iNewNumTracks )

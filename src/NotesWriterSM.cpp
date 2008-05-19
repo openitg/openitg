@@ -151,7 +151,7 @@ static CString JoinLineList( vector<CString> &lines )
 	while( j < lines.size() && lines.size() == 0 )
 		++j;
 
-	return join( "\r\n", lines.begin()+j, lines.end() );
+	return join( "\r\n", lines.begin()+j, lines.end() ) + "\r\n";
 }
 
 CString NotesWriterSM::GetSMNotesTag( const Song &song, const Steps &in, bool bSavingCache )

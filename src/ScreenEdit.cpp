@@ -2046,6 +2046,12 @@ void ScreenEdit::HandleMainMenuChoice( MainMenuChoice c, const vector<int> &iAns
 						pSteps->SetSavedToDisk( true );
 						CopyToLastSave();
 
+						const vector<Steps*> vpSteps = GAMESTATE->m_pCurSong->GetAllSteps();
+						FOREACH_CONST(Steps*, vpSteps, s)
+						{
+							(*s)->Decompress();
+						}
+
 						GAMESTATE->m_pCurSong->Save();
 						SCREENMAN->ZeroNextUpdate();
 

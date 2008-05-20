@@ -8,6 +8,8 @@ OpenITG, alpha 6 (in development)
     "ScorePxBehindCommand" - played when player's score is lower
 -New game commands:
     "clearcredits" - clears credits on the machine (useful for testing)
+-Misc. changes:
+    Disabled autogeneration of new Public/Private RSA keys on load failure
 -Fixed bugs:
     Editor eats Edit charts
     Some custom songs end immediately after start

@@ -48,8 +48,7 @@ CryptManager::CryptManager()
 	{
 		if( !DoesFileExist(PRIVATE_KEY_PATH) || !DoesFileExist(PUBLIC_KEY_PATH) )
 		{
-			LOG->Warn( "Keys missing.  Generating new keys" );
-			GenerateRSAKey( KEY_LENGTH, PRIVATE_KEY_PATH, PUBLIC_KEY_PATH, "aoksdjaksd" );
+			LOG->Warn( "Public and/or Private keys missing. Profile data cannot be signed." );
 			FlushDirCache();
 		}
 	}

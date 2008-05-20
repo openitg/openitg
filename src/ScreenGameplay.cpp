@@ -434,6 +434,10 @@ void ScreenGameplay::Init()
 
 		/* used for comparing players' scores */
 		/* UGLY: we can't use ActorUtil here due to an Actor derivative in a pointer, so manually add it */
+		LOG->Debug( "Command \"Ahead\" being loaded from %s under [%s]",
+		CString(m_pPrimaryScoreDisplay[p]->GetName()+"AheadCommand").c_str(), m_sName.c_str() );
+		LOG->Debug( "Command \"Behind\" being loaded from %s under [%s]",
+		CString(m_pPrimaryScoreDisplay[p]->GetName()+"BehindCommand").c_str(), m_sName.c_str() );
 		m_pPrimaryScoreDisplay[p]->AddCommand( "Ahead", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"AheadCommand") );
 		m_pPrimaryScoreDisplay[p]->AddCommand( "Behind", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"BehindCommand") );
 
@@ -1241,8 +1245,10 @@ void ScreenGameplay::CompareScores()
 	/* mark the secondary player as ahead, too */
 	if( pn_higher == PLAYER_INVALID )
 	{
+		/* XXX: what kind of performance hit do we take from
+		 * LoadAndPlayCommand over PlayCommand? */
 		FOREACH_EnabledPlayer( p )
-			if( p != pn_higher ) m_pPrimaryScoreDisplay[p]->PlayCommand( "Ahead" );
+			m_pPrimaryScoreDisplay[p]->PlayCommand( "Ahead" );
 
 		return;
 	}

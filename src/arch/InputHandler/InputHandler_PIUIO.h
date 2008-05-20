@@ -40,8 +40,8 @@ private:
 	float m_fTotalReadTime;
 
 	/* one uint32_t per sensor set */
-	uint32_t m_iInputData[4];
-	uint32_t m_iLastInputData[4];
+	uint32_t m_iInputData[8];
+	uint32_t m_iLastInputData[8];
 
 	uint32_t m_iLightData;
 	uint32_t m_iLastLightData;

@@ -400,6 +400,8 @@ void ScreenGameplay::Init()
 	m_bCompareScores = GAMESTATE->IsEventMode() && GAMESTATE->GetCurrentStyle()->m_StyleType == TWO_PLAYERS_TWO_SIDES &&
 		GAMESTATE->m_pCurSteps[PLAYER_1]->GetDifficulty() == GAMESTATE->m_pCurSteps[PLAYER_2]->GetDifficulty();
 
+	LOG->Debug( "m_bCompareScores set to %s", m_bCompareScores ? "true" : "false" );
+
 	m_LeadingPlayer = PLAYER_INVALID;
 
 	FOREACH_EnabledPlayer(p)
@@ -431,6 +433,7 @@ void ScreenGameplay::Init()
 
 		m_pPrimaryScoreDisplay[p]->Init( GAMESTATE->m_pPlayerState[p] );
 		m_pPrimaryScoreDisplay[p]->SetName( ssprintf("ScoreP%d",p+1) );
+		m_pPrimaryScoreDisplay[p]->SetEffectClock( CLOCK_BGM_BEAT );
 
 		/* used for comparing players' scores */
 		/* UGLY: we can't use ActorUtil here due to an Actor derivative in a pointer, so manually add it */
@@ -1219,6 +1222,7 @@ void ScreenGameplay::PauseGame( bool bPause, GameController gc )
 		m_Player[p].SetPaused( m_bPaused );
 }
 
+// XXX: construction zone
 void ScreenGameplay::CompareScores()
 {
 	if( !m_bCompareScores )
@@ -1248,14 +1252,20 @@ void ScreenGameplay::CompareScores()
 		/* XXX: what kind of performance hit do we take from
 		 * LoadAndPlayCommand over PlayCommand? */
 		FOREACH_EnabledPlayer( p )
-			m_pPrimaryScoreDisplay[p]->PlayCommand( "Ahead" );
+			m_pPrimaryScoreDisplay[p]->SetEffectPulse( 1, 0.95, 1.05 );
+//			m_pPrimaryScoreDisplay[p]->PlayCommand( "Ahead" );
 
 		return;
 	}
 
 	/* set each player accordingly */
 	FOREACH_EnabledPlayer( p )
-		m_pPrimaryScoreDisplay[p]->PlayCommand( (p == pn_higher) ? "Ahead" : "Behind" );
+		if( p == pn_higher )
+			m_pPrimaryScoreDisplay[p]->SetEffectPulse( 1, 0.95, 1.05 );
+		else
+			m_pPrimaryScoreDisplay[p]->SetEffectNone();
+
+//		m_pPrimaryScoreDisplay[p]->PlayCommand( (p == pn_higher) ? "Ahead" : "Behind" );
 }
 
 	

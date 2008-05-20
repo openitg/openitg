@@ -1,17 +1,19 @@
 OpenITG, alpha 6 (in development)
 ---------------------------------
--Feature addition:
-    Added the feature "Clear Credits". It works the same as
-    Insert Credit does in the operators menu. You can add it
-    in the theme if you can figure out how Insert Credit works.
-    The command is simply "ClearCredits".
 -Code structure changes:
     Reverted InputFilter - too little gain for too many problems
     Backported and modified 4.0's X11 code (Linux window/input)
+-New metrics in ScreenGameplay (event mode, same difficulty, versus):
+    "ScorePxAheadCommand" - played when player's score is higher
+    "ScorePxBehindCommand" - played when player's score is lower
+-New game commands:
+    "clearcredits" - clears credits on the machine (useful for testing)
 -Fixed bugs:
+    Editor eats Edit charts
     Some custom songs end immediately after start
     Repeating menu input error on ScreenSelectMusic
     Editor doesn't draw properly, causes failed asserts
+    Song wheel doesn't "budge" when attempting to move ofter Chance
     "Revert from Disk" in editor causes duplicate charts, crashes
 
 OpenITG, alpha 5 (April 30th, 2008)

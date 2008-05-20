@@ -72,6 +72,7 @@ protected:
 	void SendCrossedMessages();
 	void BackOutFromGameplay();
 
+	void CompareScores();
 	void PlayTicks();
 	void UpdateSongPosition( float fDeltaTime );
 	void UpdateLyrics( float fDeltaTime );
@@ -170,6 +171,10 @@ protected:
 	BeginnerHelper	m_BeginnerHelper;
 
 	NoteData		m_CabinetLightsNoteData;
+
+	/* used for Event Mode comparison messages */
+	bool			m_bCompareScores;
+	PlayerNumber		m_LeadingPlayer;
 };
 
 

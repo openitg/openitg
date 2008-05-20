@@ -161,6 +161,14 @@ void ScreenGameplay::Init()
 			GAMESTATE->SaveCurrentSettingsToProfile(pn);
 	}
 
+	/* See if we should be comparing scores during updates: we only do this
+	 * during versus in event mode, if both players have the same difficulty */
+
+	m_bCompareScores = GAMESTATE->IsEventMode() && GAMESTATE->GetCurrentStyle()->m_StyleType == TWO_PLAYERS_TWO_SIDES &&
+		GAMESTATE->m_pCurSteps[PLAYER_1]->GetDifficulty() == GAMESTATE->m_pCurSteps[PLAYER_2]->GetDifficulty();
+
+	m_LeadingPlayer = PLAYER_INVALID;
+
 	/* Called once per stage (single song or single course). */
 	GAMESTATE->BeginStage();
 
@@ -1204,6 +1212,44 @@ void ScreenGameplay::PauseGame( bool bPause, GameController gc )
 		m_Player[p].SetPaused( m_bPaused );
 }
 
+void ScreenGameplay::CompareScores()
+{
+	if( !m_bCompareScores )
+		return;
+
+	static float fP1Score, fP2Score;
+	PlayerNumber pn_higher;
+	
+	fP1Score = STATSMAN->m_CurStageStats.m_player[PLAYER_1].GetPercentDancePoints();
+	fP2Score = STATSMAN->m_CurStageStats.m_player[PLAYER_2].GetPercentDancePoints();
+
+	if( fP1Score != fP2Score )
+		pn_higher = fP1Score > fP2Score ? PLAYER_1 : PLAYER_2;
+	else
+		pn_higher = PLAYER_INVALID; /* a bit hacky...used to mark ties. */
+
+	if( m_LeadingPlayer == pn_higher )
+		return;
+
+	m_LeadingPlayer = pn_higher;
+
+	/* mark the secondary player as ahead, too */
+	if( pn_higher == PLAYER_INVALID )
+	{
+		FOREACH_EnabledPlayer( p )
+			if( p != pn_higher ) m_pPrimaryScoreDisplay[p]->PlayCommand( "Ahead" );
+
+		return;
+	}
+
+	/* set each player accordingly */
+	FOREACH_EnabledPlayer( p )
+		m_pPrimaryScoreDisplay[p]->PlayCommand( (p == pn_higher) ? "Ahead" : "Behind" );
+}
+
+	
+
+
 // play assist ticks
 void ScreenGameplay::PlayTicks()
 {
@@ -1650,6 +1696,8 @@ void ScreenGameplay::Update( float fDeltaTime )
 		m_fLastBPS = GAMESTATE->m_fCurBPS;
 		m_BPMDisplay.SetConstantBpm( GAMESTATE->m_fCurBPS * 60.0f );
 	}
+
+	CompareScores();
 
 	PlayTicks();
 

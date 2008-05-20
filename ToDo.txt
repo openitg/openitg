@@ -2,7 +2,7 @@
 
 /* Major bug fixing */
 -X11 full-screen causes scrolling brackets + desktop resize
--Switching from free to home on the main menu causes OpenITG to hang
+-Switching modes on the main menu causes OpenITG to hang
 
 /* Things to test on the arcade */
 -See if separate coin counters have separate bit mappings
@@ -16,7 +16,6 @@
 -Include ThemeInfo.ini support
 -Add Windows code for network diagnostics
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
--Implement colors percentages in Versus to show who's ahead
 
 /* Major feature additions */
 -Implement custom courses from USB drive

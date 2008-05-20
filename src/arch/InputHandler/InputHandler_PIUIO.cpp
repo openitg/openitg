@@ -87,11 +87,11 @@ void InputHandler_PIUIO::InputThreadMain()
 	}
 }
 
-static CString ShortArrayToBin( uint32_t arr[4] )
+static CString ShortArrayToBin( uint32_t arr[8] )
 {
 	CString result;
 	uint32_t one = 1;
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 31; j >= 0; j--)
 		{
@@ -158,6 +158,8 @@ void InputHandler_PIUIO::HandleInput()
 	// reset
 	for (unsigned j = 0; j < NUM_SENSORS; j++)
 		ZERO( sensor_bits );
+	for (unsigned j = 0; j < 8; j++)
+		ZERO( m_iInputData );
 
 	/* Explanation of this logic:
 	 * ==========================
@@ -180,7 +182,7 @@ void InputHandler_PIUIO::HandleInput()
 		iNewLightData = m_iLightData & 0xfffcfffc;
 		iNewLightData |= (j | (j << 16));
 
-		m_iInputData[j] = iNewLightData;
+		m_iInputData[j*2] = iNewLightData;
 	}
 
 		//IOBoard.Write( iNewLightData );
@@ -192,7 +194,7 @@ void InputHandler_PIUIO::HandleInput()
 	for (uint32_t j = 0; j < 4; j++)
 	{
 		/* PIUIO opens high - for more logical processing, invert it */
-		m_iInputData[j] = ~m_iInputData[j];
+		m_iInputData[j] = ~m_iInputData[j*2];
 
 		/* Toggle sensor bits - Left, Right, Up, Down */
 		// P1

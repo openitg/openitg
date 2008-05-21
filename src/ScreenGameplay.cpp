@@ -400,10 +400,6 @@ void ScreenGameplay::Init()
 	m_bCompareScores = GAMESTATE->IsEventMode() && GAMESTATE->GetCurrentStyle()->m_StyleType == TWO_PLAYERS_TWO_SIDES &&
 		GAMESTATE->m_pCurSteps[PLAYER_1]->GetDifficulty() == GAMESTATE->m_pCurSteps[PLAYER_2]->GetDifficulty();
 
-	LOG->Debug( "m_bCompareScores set to %s", m_bCompareScores ? "true" : "false" );
-
-	m_LeadingPlayer = PLAYER_INVALID;
-
 	FOREACH_EnabledPlayer(p)
 	{
 		//
@@ -437,10 +433,6 @@ void ScreenGameplay::Init()
 
 		/* used for comparing players' scores */
 		/* UGLY: we can't use ActorUtil here due to an Actor derivative in a pointer, so manually add it */
-		LOG->Debug( "Command \"Ahead\" being loaded from %s under [%s]",
-		CString(m_pPrimaryScoreDisplay[p]->GetName()+"AheadCommand").c_str(), m_sName.c_str() );
-		LOG->Debug( "Command \"Behind\" being loaded from %s under [%s]",
-		CString(m_pPrimaryScoreDisplay[p]->GetName()+"BehindCommand").c_str(), m_sName.c_str() );
 		m_pPrimaryScoreDisplay[p]->AddCommand( "Ahead", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"AheadCommand") );
 		m_pPrimaryScoreDisplay[p]->AddCommand( "Behind", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"BehindCommand") );
 
@@ -1234,12 +1226,10 @@ void ScreenGameplay::CompareScores()
 	iPointsP1 = STATSMAN->m_CurStageStats.m_player[PLAYER_1].iActualDancePoints;
 	iPointsP2 = STATSMAN->m_CurStageStats.m_player[PLAYER_2].iActualDancePoints;
 
-	if( iPointsP1 != iPointsP2 )
-		pn_higher = iPointsP1 > iPointsP2 ? PLAYER_1 : PLAYER_2;
+	if( iPointsP1 == iPointsP2 )
+		pn_higher = PLAYER_INVALID; /* tie */
 	else
-		pn_higher = PLAYER_INVALID; /* a bit hacky...used to mark ties. */
-
-	LOG->Debug( "P1 points: %i, P2 points: %i, leader: P%d", iPointsP1, iPointsP2, pn_higher != PLAYER_INVALID ? pn_higher+1 : 0 );
+		pn_higher = iPointsP1 > iPointsP2 ? PLAYER_1 : PLAYER_2;
 
 	if( m_LeadingPlayer == pn_higher )
 		return;
@@ -1249,23 +1239,15 @@ void ScreenGameplay::CompareScores()
 	/* mark the secondary player as ahead, too */
 	if( pn_higher == PLAYER_INVALID )
 	{
-		/* XXX: what kind of performance hit do we take from
-		 * LoadAndPlayCommand over PlayCommand? */
 		FOREACH_EnabledPlayer( p )
-			m_pPrimaryScoreDisplay[p]->SetEffectPulse( 1, 0.95, 1.05 );
-//			m_pPrimaryScoreDisplay[p]->PlayCommand( "Ahead" );
+			m_pPrimaryScoreDisplay[p]->PlayCommand( "Ahead" );
 
 		return;
 	}
 
 	/* set each player accordingly */
 	FOREACH_EnabledPlayer( p )
-		if( p == pn_higher )
-			m_pPrimaryScoreDisplay[p]->SetEffectPulse( 1, 0.95, 1.05 );
-		else
-			m_pPrimaryScoreDisplay[p]->SetEffectNone();
-
-//		m_pPrimaryScoreDisplay[p]->PlayCommand( (p == pn_higher) ? "Ahead" : "Behind" );
+		m_pPrimaryScoreDisplay[p]->PlayCommand( (p == pn_higher) ? "Ahead" : "Behind" );
 }
 
 	

@@ -8,8 +8,10 @@
 -See if separate coin counters have separate bit mappings
 
 /* Minor bug fixing */
+-InputHandler_PIUIO's coin code is broken
 -Banner custom doesn't always show in ScreenRanking
 -"Random" selections for non-existant BGVids always return the same video
+-On AutoplayCPU, rolls eat arrows/mines after them
 
 /* Minor feature additions */
 -Re-implement "InputDebounceTime"

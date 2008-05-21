@@ -21,3 +21,4 @@
 -Implement custom courses from USB drive
 -Implement "lifebar graph shows FFC/FEC"
 -Improve code behind ITG2's beginner helper
+-OptionList LOL

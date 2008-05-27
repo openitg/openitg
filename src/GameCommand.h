@@ -62,6 +62,7 @@ public:
 	Trail*		m_pTrail;
 	Character*	m_pCharacter;
 	std::map<CString,CString> m_SetEnv;
+	CString		m_sTheme;
 	CString		m_sSongGroup;
 	SortOrder	m_SortOrder;
 	int			m_iUnlockIndex;	// -1 for no unlock

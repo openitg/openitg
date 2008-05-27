@@ -893,14 +893,13 @@ bool Profile::SaveStatsXmlToDir( CString sDir, bool bSignData ) const
 
 void Profile::SaveEditableDataToDir( CString sDir ) const
 {
-	IniFile ini;
-	IniFile eIni;
+	IniFile ini, eIni;
 
 	ini.SetValue( "Editable", "DisplayName",			m_sDisplayName );
 	ini.SetValue( "Editable", "LastUsedHighScoreName",	m_sLastUsedHighScoreName );
 	ini.SetValue( "Editable", "WeightPounds",			m_iWeightPounds );
-	//ini.SetValue( "Editable", "UseCatalogXML",		m_bUseCatalog );
-	eIni.SetValue( "Editable", "AdditionalSpeedMods",	join(", ", m_sPlayerAdditionalModifiers));
+	eIni.SetValue( "Extra", "UseCatalogXML",		m_bUseCatalog );
+	eIni.SetValue( "Extra", "AdditionalSpeedMods",	join(", ", m_sPlayerAdditionalModifiers));
 
 	ini.WriteFile( sDir + EDITABLE_INI );
 	eIni.WriteFile( sDir + EXTRA_INI );
@@ -1057,8 +1056,6 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	ini.GetValue("Editable","DisplayName",				m_sDisplayName);
 	ini.GetValue("Editable","LastUsedHighScoreName",	m_sLastUsedHighScoreName);
 	ini.GetValue("Editable","WeightPounds",				m_iWeightPounds);
-	ini.GetValue("Editable","UseCatalogXML",		m_bUseCatalog );
-
 
 	// This is data that the user can change, so we have to validate it.
 	wstring wstr = CStringToWstring(m_sDisplayName);
@@ -1085,9 +1082,12 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	}
 	eIni.ReadFile( efn );
 
+	ini.GetValue("Extra","UseCatalogXML",		m_bUseCatalog );
+
 	CString sAdditionalSpeedBuf;
 	vector<CString> sASBCandidates;
-	if (eIni.GetValue("Editable","AdditionalSpeedMods", sAdditionalSpeedBuf))
+
+	if (eIni.GetValue("Extra","AdditionalSpeedMods", sAdditionalSpeedBuf))
 	{
 		split(sAdditionalSpeedBuf, ",", sASBCandidates, true);
 		set<CString> sASBCNonDup;

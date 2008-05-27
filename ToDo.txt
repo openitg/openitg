@@ -3,6 +3,7 @@
 /* Major bug fixing */
 -X11 full-screen causes scrolling brackets + desktop resize
 -Switching modes on the main menu causes OpenITG to hang
+-Figure out what the hell's up with saving USB stats
 
 /* Things to test on the arcade */
 -See if separate coin counters have separate bit mappings

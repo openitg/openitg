@@ -39,6 +39,7 @@ void GameCommand::Init()
 	m_CourseDifficulty = DIFFICULTY_INVALID;
 	m_sModifiers = "";
 	m_sAnnouncer = "";
+	m_sTheme = "";
 	m_sScreen = "";
 	m_LuaFunction.Unset();
 	m_pSong = NULL;
@@ -116,7 +117,6 @@ bool GameCommand::DescribesCurrentMode( PlayerNumber pn ) const
 		if( so != GAMESTATE->m_SongOptions )
 			return false;
 	}
-
 	if( m_pSong && GAMESTATE->m_pCurSong.Get() != m_pSong )
 		return false;
 	if( m_pSteps && GAMESTATE->m_pCurSteps[pn].Get() != m_pSteps )
@@ -136,6 +136,9 @@ bool GameCommand::DescribesCurrentMode( PlayerNumber pn ) const
 	if( m_iGoalCalories != -1 && PROFILEMAN->GetProfile(pn)->m_iGoalCalories != m_iGoalCalories )
 		return false;
 	if( m_GoalType != GOAL_INVALID && PROFILEMAN->GetProfile(pn)->m_GoalType != m_GoalType )
+		return false;
+	/* XXX: I don't think we need this. */
+	if( m_sTheme != THEME->GetCurThemeName() )
 		return false;
 
 	return true;
@@ -228,7 +231,22 @@ void GameCommand::LoadOne( const Command& cmd )
 	{
 		m_sScreen = sValue;
 	}
-	
+
+	else if( sName == "theme" )
+	{
+		if( THEME->DoesThemeExist(sValue) )
+		{
+			m_sTheme = sValue; //set in ApplySelf
+			LOG->Debug( "Theme %s exists.", sValue.c_str() );
+		}
+		else
+		{
+			LOG->Debug( "Theme %s does not exist.", sValue.c_str() );
+			m_sInvalidReason = ssprintf( "Theme \"%s\" does not exist", sValue.c_str() );
+			m_bInvalid |= true;
+		}
+	}
+
 	else if( sName == "song" )
 	{
 		m_pSong = SONGMAN->FindSong( sValue );
@@ -409,6 +427,7 @@ void GameCommand::LoadOne( const Command& cmd )
 
 	else
 	{
+		LOG->Debug( "sName = %s, sValue = %s", sName.c_str(), sValue.c_str() );
 		CString sWarning = ssprintf( "Command '%s' is not valid.", cmd.GetOriginalCommandString().c_str() );
 		LOG->Warn( sWarning );
 		Dialog::OK( sWarning, "INVALID_GAME_COMMAND" );
@@ -787,6 +806,13 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 	 * stop music between preparing screens and loading screens. */
 	if( m_bStopMusic )
 		SOUND->StopMusic();
+
+	/* do this here, so we load new metrics before attempting screen loads */
+	if( m_sTheme != "" && m_sTheme != THEME->GetCurThemeName() )
+	{
+		LOG->Debug( "Switching to theme %s", m_sTheme.c_str() );
+		THEME->SwitchThemeAndLanguage( m_sTheme, THEME->GetCurLanguage() );
+	}
 
 	FOREACH_CONST( CString, m_vsScreensToPrepare, s )
 		SCREENMAN->PrepareScreen( *s );

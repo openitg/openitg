@@ -137,9 +137,6 @@ bool GameCommand::DescribesCurrentMode( PlayerNumber pn ) const
 		return false;
 	if( m_GoalType != GOAL_INVALID && PROFILEMAN->GetProfile(pn)->m_GoalType != m_GoalType )
 		return false;
-	/* XXX: I don't think we need this. */
-	if( m_sTheme != THEME->GetCurThemeName() )
-		return false;
 
 	return true;
 }

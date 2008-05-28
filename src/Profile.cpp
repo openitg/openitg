@@ -748,7 +748,8 @@ Profile::LoadResult Profile::LoadAllFromDir( CString sDir, bool bRequireSignatur
 	CString fn = sDir + STATS_XML;
 	if( !IsAFile(fn) )
 		return failed_no_profile;
-
+/*
+EXPERIMENT: will this make stats load and save properly?
 	//
 	// Don't unreasonably large stats.xml files.
 	//
@@ -761,6 +762,7 @@ Profile::LoadResult Profile::LoadAllFromDir( CString sDir, bool bRequireSignatur
 			return failed_tampered;
 		}
 	}
+*/
 
 	if( bRequireSignature )
 	{ 
@@ -1038,7 +1040,7 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	CString efn = sDir + EXTRA_INI;
 
 	//
-	// Don't load unreasonably large editable.xml files.
+	// Don't load unreasonably large editable.ini files.
 	//
 	int iBytes = FILEMAN->GetFileSizeInBytes( fn );
 	if( iBytes > MAX_EDITABLE_INI_SIZE_BYTES )

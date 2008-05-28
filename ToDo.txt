@@ -25,3 +25,4 @@
 -Implement "lifebar graph shows FFC/FEC"
 -Improve code behind ITG2's beginner helper
 -OptionList LOL
+-Fix up/rewrite network gameplay screens for arcade support

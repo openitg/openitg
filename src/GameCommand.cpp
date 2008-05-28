@@ -234,11 +234,9 @@ void GameCommand::LoadOne( const Command& cmd )
 		if( THEME->DoesThemeExist(sValue) )
 		{
 			m_sTheme = sValue; //set in ApplySelf
-			LOG->Debug( "Theme %s exists.", sValue.c_str() );
 		}
 		else
 		{
-			LOG->Debug( "Theme %s does not exist.", sValue.c_str() );
 			m_sInvalidReason = ssprintf( "Theme \"%s\" does not exist", sValue.c_str() );
 			m_bInvalid |= true;
 		}
@@ -806,10 +804,7 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 
 	/* do this here, so we load new metrics before attempting screen loads */
 	if( m_sTheme != "" && m_sTheme != THEME->GetCurThemeName() )
-	{
-		LOG->Debug( "Switching to theme %s", m_sTheme.c_str() );
 		THEME->SwitchThemeAndLanguage( m_sTheme, THEME->GetCurLanguage() );
-	}
 
 	FOREACH_CONST( CString, m_vsScreensToPrepare, s )
 		SCREENMAN->PrepareScreen( *s );

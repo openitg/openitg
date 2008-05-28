@@ -72,6 +72,8 @@ public:
 	CString GetButtonComment( DeviceInput di ) const;
 	
 	void GetInputEvents( InputEventArray &array );
+private:
+	void CheckButtonChange( DeviceInput di, ButtonState &bs, const RageTimer &now );
 };
 
 

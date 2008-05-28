@@ -4,7 +4,7 @@
 #include "RageInput.h"
 #include "RageUtil.h"
 #include "RageThreads.h"
-
+#include "Preference.h"
 
 InputFilter*	INPUTFILTER = NULL;	// global and accessable from anywhere in our program
 
@@ -15,6 +15,8 @@ static const float SLOW_REPEATS_PER_SEC = 8;
 static const float FAST_REPEATS_PER_SEC = 8;
 
 static float g_fTimeBeforeSlow, g_fTimeBeforeFast, g_fTimeBetweenSlow, g_fTimeBetweenFast;
+
+Preference<float> g_fInputDebounceTime( "InputDebounceTime", 0 );
 
 
 InputFilter::InputFilter()
@@ -167,6 +169,11 @@ void InputFilter::Update(float fDeltaTime)
 	}
 
 }
+
+void InputFilter::CheckButtonChange( DeviceInput di, ButtonState &bs, const RageTimer &now )
+{
+	queue.push_back( InputEvent(di, bs.m_BeingHeld ? IET_FIRST_PRESS:IET_RELEASE) );
+}	
 
 bool InputFilter::IsBeingPressed( DeviceInput di )
 {

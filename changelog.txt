@@ -3,14 +3,17 @@ OpenITG, alpha 6 (in development)
 -Code structure changes:
     Reverted InputFilter - too little gain for too many problems
     Backported/modified 4.0's X11 code (Linux window/input)
--New metrics in ScreenGameplay (event mode, same difficulty, versus):
+-New metrics in ScreenGameplay:
+    (Note: must be in Event Mode, Versus, and playing the same chart)
     "ScorePxAheadCommand" - played when player's score is higher
     "ScorePxBehindCommand" - played when player's score is lower
 -New game commands:
     "clearcredits" - clears credits on the machine (useful for testing)
     "theme" - sets the theme, by name, when used (useful for theme switchers)
+-Win32 changes:
+    Added code to reboot on crashes for arcade builds (#define ITG_ARCADE)
 -Misc. changes:
-    Moved OpenITG-specific profile options to Extra.ini
+    Moved OpenITG-specific profile options to Extra.ini (caused ITG2 crashes)
     Disabled autogeneration of new Public/Private RSA keys on load failure
 -Fixed bugs:
     Some custom songs end immediately after start
@@ -18,6 +21,8 @@ OpenITG, alpha 6 (in development)
     Editor doesn't draw properly, causes failed asserts
     Song wheel doesn't "budge" when attempting to move ofter Chance
     "Revert from Disk" in editor causes duplicate charts, crashes
+    Crash on bookkeeping when switching to an undefined screen
+    In AutoplayCPU, rolls cause early judgments of arrows and mines
 
 OpenITG, alpha 5 (April 30th, 2008)
 -----------------------------------

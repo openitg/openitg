@@ -22,6 +22,11 @@
 
 #include "GotoURL.h"
 
+/* Workaround for 'undefined' problem */
+#ifndef EWX_FORCEIFHUNG
+#define EWX_FORCEIFHUNG 0x10
+#endif
+
 static HFONT hFontMono = NULL;
 
 static void DoSave();
@@ -193,6 +198,26 @@ long __stdcall CrashHandler(EXCEPTION_POINTERS *pExc)
 		pExc->ContextRecord->FloatSave.ControlWord |= 0x3F;
 		return EXCEPTION_CONTINUE_EXECUTION;
 	}
+
+/* just halt threads, write the log, and reboot. */
+#ifdef ITG_ARCADE
+	RageThread::HaltAllThreads( false );
+
+	VDDebugInfoInitFromFile( &g_debugInfo );
+
+	if( !g_CrashInfo.m_CrashReason[0] )
+		GetReason( pExc->ExceptionRecord, &g_CrashInfo );
+	do_backtrace( g_CrashInfo.m_BacktracePointers, BACKTRACE_MAX_SIZE, GetCurrentProcess(),  GetCurrentThread(), pExc->ContextRecord );
+	DoSave();
+
+	VDDebugInfoDeinit(&g_debugInfo);
+
+        bool bRestart = ExitWindowsEx( EWX_REBOOT | EWX_FORCEIFHUNG,
+        SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_MAINTENANCE
+        | SHTDN_REASON_FLAG_PLANNED );
+
+	return;
+#endif
 
 	static int InHere = 0;
 	if( InHere > 0 )

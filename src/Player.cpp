@@ -928,13 +928,16 @@ void Player::HandleStep( int col, const RageTimer &tm, bool bHeld )
 
 			// GetTapNoteScore always returns TNS_MARVELOUS in autoplay.
 			// If the step is far away, don't judge it.
-			if( m_pPlayerState->m_PlayerController == PC_AUTOPLAY &&
-				fSecondsFromPerfect > ADJUSTED_WINDOW_TAP(TW_Boo) )
+
+			/* Tentative roll-eats-arrows fix */
+//			if( m_pPlayerState->m_PlayerController == PC_AUTOPLAY &&
+			if( fSecondsFromPerfect > ADJUSTED_WINDOW_TAP(TW_Boo) )
 				score = TNS_NONE;
 
 			// TRICKY:  We're asking the AI to judge mines.  consider TNS_GOOD and below
 			// as "mine was hit" and everything else as "mine was avoided"
-			if( tn.type == TapNote::mine )
+			/* Make sure we don't execute this code if there's no score. -- Vyhd */
+			if( tn.type == TapNote::mine && score != TNS_NONE )
 			{
 				// The CPU hits a lot of mines.  Only consider hitting the 
 				// first mine for a row.  We know we're the first mine if 

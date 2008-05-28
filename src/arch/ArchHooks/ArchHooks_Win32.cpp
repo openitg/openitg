@@ -166,17 +166,13 @@ void ArchHooks_Win32::RestartProgram()
 	Win32RestartProgram();
 }
 
-/* Necessary? Is there anything RestartProgram can't do that this can? */
 void ArchHooks_Win32::SystemReboot()
 {
-	GAMESTATE->EndGame();
-
 #ifndef ITG_ARCADE
-	return; // pretend there's nothing else here right now -- we'll enable if needed
-#endif
+	Win32RestartProgram();
 
-	if( IsAFile("/Data/no-reboot") )
-		return;
+	return; // pretend there's nothing else here right now -- enable if you need it
+#endif
 
 	/* Reboot, kill any hung processes, "Application Maintenance: Planned" */
 	bool bRestart = ExitWindowsEx( EWX_REBOOT | EWX_FORCEIFHUNG,

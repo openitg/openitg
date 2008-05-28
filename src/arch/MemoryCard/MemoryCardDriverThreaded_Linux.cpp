@@ -285,8 +285,8 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 			if( atoi(sBuf) != 1 )
 				continue;
 
-
-			usbd.sDevice = "/dev/" + sDevice;
+			/* Not having the '1' breaks memory cards for me. -- Vyhd */
+			usbd.sDevice = "/dev/" + sDevice + "1";
 
 			/*
 			 * sPath/device should be a symlink to the actual device.  For USB

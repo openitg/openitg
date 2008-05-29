@@ -104,9 +104,12 @@ void ScreenArcadeStart::HandleScreenMessage( const ScreenMessage SM )
 
 void ScreenArcadeStart::MenuStart( PlayerNumber pn )
 {
-	if(!IsTransitioning())
+	if( !IsTransitioning() )
 	{
-		g_sInputType = "Self";
+		// nothing set by SAStart, so set it now
+		if( g_sInputType == "" )
+			g_sInputType = "Home";
+
 		this->PlayCommand( "Off" );
 		StartTransitioning( SM_GoToNextScreen );		
 	}
@@ -119,7 +122,8 @@ void ScreenArcadeStart::DrawPrimitives()
 
 bool ScreenArcadeStart::Refresh()
 {
-	float fTimer = TIMEOUT - m_Timer.Ago();
+
+	float fTimer = (TIMEOUT - m_Timer.Ago()) + this->GetTweenTimeLeft();
 	CLAMP( fTimer, 0.0f, TIMEOUT);
 
 	if( !HubIsConnected() )
@@ -136,30 +140,27 @@ bool ScreenArcadeStart::Refresh()
 
 bool ScreenArcadeStart::LoadHandler()
 {
-	vector<USBDevice> vDevices;
-	GetUSBDeviceList( vDevices );
-
 	// this makes it so much easier to keep track of. --Vyhd
 	enum Board { BOARD_NONE, BOARD_ITGIO, BOARD_PIUIO };
-
 	Board iBoard = BOARD_NONE;
-	
-	for( unsigned i = 0; i < vDevices.size(); i++ )
-	{
-		if( vDevices[i].IsITGIO() )
-		{
-			iBoard = BOARD_ITGIO;
-			g_sInputType = "ITGIO";
-		}
-		else if( vDevices[i].IsPIUIO() )
-		{
-			iBoard = BOARD_PIUIO;
-			g_sInputType = "PIUIO";
-		}
 
-		// early abort if we found something
-		if( iBoard != BOARD_NONE )
-			break;
+	{
+		vector<USBDevice> vDevices;
+		GetUSBDeviceList( vDevices );
+
+		/* g_sInputType is set by the I/O
+		 * drivers - no need to do it here */
+		for( unsigned i = 0; i < vDevices.size(); i++ )
+		{
+			if( vDevices[i].IsITGIO() )
+				iBoard = BOARD_ITGIO;
+			else if( vDevices[i].IsPIUIO() )
+				iBoard = BOARD_PIUIO;
+
+			// early abort if we found something
+			if( iBoard != BOARD_NONE )
+				break;
+		}
 	}
 
 	USBDriver *pDriver;
@@ -176,9 +177,8 @@ bool ScreenArcadeStart::LoadHandler()
 	}
 #else
 	{
-		/* HACK: return true if PC, even though it doesn't load. */
+		/* Return true if PC, even though it doesn't load. */
 		LOG->Warn( "ScreenArcadeStart: I/O board not found. Continuing anyway..." );
-		g_sInputType = "Home";
 		return true;
 	}
 #endif

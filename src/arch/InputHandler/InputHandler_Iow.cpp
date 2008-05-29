@@ -15,6 +15,7 @@ extern CString g_sInputType;
 InputHandler_Iow::InputHandler_Iow()
 {
 	m_bShutdown = false;
+	g_sInputType = "ITGIO";
 
 	if( !IOBoard.Open() )
 	{
@@ -33,8 +34,6 @@ InputHandler_Iow::InputHandler_Iow()
 	LightsThread.SetName( "Iow lights thread" );
 	InputThread.Create( InputThread_Start, this );
 	LightsThread.Create( LightsThread_Start, this );
-
-	g_sInputType = "ITGIO";
 }
 
 InputHandler_Iow::~InputHandler_Iow()
@@ -64,7 +63,7 @@ void InputHandler_Iow::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesO
 	if( m_bFoundDevice )
 	{
 		vDevicesOut.push_back( InputDevice(DEVICE_ITGIO) );
-		vDescriptionsOut.push_back( "ITGIO|PIUIO" );
+		vDescriptionsOut.push_back( "ITGIO" );
 	}
 }
 

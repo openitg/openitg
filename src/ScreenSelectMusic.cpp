@@ -1260,7 +1260,7 @@ void UpdateLoadProgress( float fPercent )
 		// check for any input and pass it back later - make sure we don't
 		// accidently assign it false again if the first player is true
 		FOREACH_EnabledPlayer( pn )
-			g_bGoToOptions = INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_START) ) || g_bGoToOptions;
+			g_bGoToOptions |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_START) );
 	}
 	else
 		LOG->Trace( "Not checking for input; already got it." );
@@ -1286,13 +1286,9 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 	// timeout is high so slow, but valid, loads don't get interrupted
 #ifndef WIN32
 	if( !PREFSMAN->m_bCustomSongPreviews )
-	{
 		MEMCARDMAN->MountCard( pSong->m_SongOwner, 20 );
-	}
 	else
-	{
 		MEMCARDMAN->PauseMountingThread( 600 );
-	}
 #endif
 	
 	// now, verify the song internally since we can read the data now
@@ -1317,18 +1313,14 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 		bCopied = CopyWithProgress( GAMESTATE->m_pCurSong->GetMusicPath(), 
 		GAMESTATE->m_pCurSong->m_sGameplayMusic, &UpdateLoadProgress );
 
-		if( !bCopied ) // failed
-		{
+		if( !bCopied ) // failed, most likely a permissions error
 			SCREENMAN->SystemMessage( "Copying error. Check your permissions." );
-		}
 	}
 
 	// ...and unmount, now that we're done.
 #ifndef WIN32
 	if( !PREFSMAN->m_bCustomSongPreviews )
 		MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
-	//else
-		//MEMCARDMAN->PauseMountingThread( 600 );
 #endif
 
 	// EXPERIMENT: fix input-killing bug

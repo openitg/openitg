@@ -1330,19 +1330,22 @@ CString SaveScreenshot( CString sDir, bool bSaveCompressed, bool bMakeSignature,
 	return sFileName;
 }
 
-void InsertCoin( int iNum )
+void InsertCoin( int iNum, bool bRecord )
 {
 	GAMESTATE->m_iCoins += iNum;
 	LOG->Trace("%i coins inserted, %i needed to play", GAMESTATE->m_iCoins, PREFSMAN->m_iCoinsPerCredit.Get() );
-	BOOKKEEPER->CoinInserted();
+
+	if( bRecord )
+		BOOKKEEPER->CoinInserted();
+
 	SCREENMAN->RefreshCreditsMessages();
 	SCREENMAN->PlayCoinSound();
 	MESSAGEMAN->Broadcast( MESSAGE_COIN_INSERTED );
 }
 
-void InsertCredit()
+void InsertCredit( bool bRecord )
 {
-	InsertCoin( PREFSMAN->m_iCoinsPerCredit );
+	InsertCoin( PREFSMAN->m_iCoinsPerCredit, bRecord );
 }
 
 // Clears all credits currently in the machine.

@@ -36,6 +36,7 @@ private:
 
 	/* debug code */
 	RageTimer m_InputTimer;
+	RageTimer m_USBTimer;
 	unsigned int m_iReadCount;
 	float m_fTotalReadTime;
 

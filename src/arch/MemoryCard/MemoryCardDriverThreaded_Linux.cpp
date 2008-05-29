@@ -20,6 +20,9 @@
 
 const CString TEMP_MOUNT_POINT = "/@mctemp/";
 
+/* the device paths apparently change between USB drivers... */
+const bool NEW_SYNTAX = system( "lsmod | grep usb_storage" ) == 0;
+
 void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut );
 
 template<class T>
@@ -257,6 +260,105 @@ bool MemoryCardDriverThreaded_Linux::DoOneUpdate( bool bMount, vector<UsbStorage
 	return true;
 }
 
+/* split to be more readable/easier to mess around with. - Vyhd */
+void SetDeviceInfo( UsbStorageDevice &usbd, CString sPath )
+{
+	/*
+	 * sPath/device should be a symlink to the actual device.  For USB
+	 * devices, it looks like this:
+	 *
+	 * device -> ../../devices/pci0000:00/0000:00:02.1/usb2/2-1/2-1:1.0
+	 *
+	 * "2-1" is "bus-port".
+	 */
+
+	char szLink[256];
+	int iRet = readlink( sPath + "device", szLink, sizeof(szLink) );
+	if( iRet == -1 )
+	{
+		LOG->Warn( "readlink(\"%s\"): %s", (sPath + "device").c_str(), strerror(errno) );
+	}
+	else
+	{
+		/*
+		 * The full path looks like
+		 *
+		 *   ../../devices/pci0000:00/0000:00:02.1/usb2/2-2/2-2.1/2-2.1:1.0
+		 *
+		 * Each path element refers to a new hop in the chain.
+		 *  "usb2" = second USB host
+		 *  2-            second USB host,
+		 *   -2           port 1 on the host,
+		 *     .1         port 1 on an attached hub
+		 *       .2       ... port 2 on the next hub ...
+		 * 
+		 * We want the bus number and the port of the last hop.  The level is
+		 * the number of hops.
+		 */
+		szLink[iRet] = 0;
+		vector<CString> asBits;
+		split( szLink, "/", asBits );
+
+		if( strstr( szLink, "usb" ) != NULL )
+		{
+			/* With the newer symlinks, the format is similar to:
+			 *
+			 * ../../devices/pci0000:00/0000:00:03.3/usb4/4-6/4-6:1.0/host7/target7:0:0/7:0:0:0
+			 *
+			 * We don't care about this info, but it does interfere with this code. So,
+			 * reassign it (i.e., assign 5th from right instead of 2nd). -- Vyhd
+			 */
+			CString sHostPort;
+			if( NEW_SYNTAX )
+				sHostPort = asBits[asBits.size()-5];
+			else
+				sHostPort = asBits[asBits.size()-2];
+
+			sHostPort.Replace( "-", "." );
+			asBits.clear();
+			split( sHostPort, ".", asBits );
+
+			for( int i = 0; i < asBits.size(); i++ )
+				LOG->Debug( "asBits[%i]: %s", i, asBits[i].c_str() );
+
+			if( asBits.size() > 1 )
+			{
+				usbd.iBus = atoi( asBits[0] );
+				usbd.iPort = atoi( asBits[asBits.size()-1] );
+				usbd.iLevel = asBits.size() - 1;
+			}
+		}
+	}
+
+	return;
+
+	CString sBuf;
+
+	if( ReadFile( sPath + "device/../idVendor", sBuf ) )
+		sscanf( sBuf, "%x", &usbd.idVendor );
+
+	if( ReadFile( sPath + "device/../idProduct", sBuf ) )
+		sscanf( sBuf, "%x", &usbd.idProduct );
+
+	if( ReadFile( sPath + "device/../serial", sBuf ) )
+	{
+		usbd.sSerial = sBuf;
+		TrimRight( usbd.sSerial );
+	}
+
+	if( ReadFile( sPath + "device/../product", sBuf ) )
+	{
+		usbd.sProduct = sBuf;
+		TrimRight( usbd.sProduct );
+	}
+
+	if( ReadFile( sPath + "device/../manufacturer", sBuf ) )
+	{
+		usbd.sVendor = sBuf;
+		TrimRight( usbd.sVendor );
+	}
+}
+
 void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 {
 	LOG->Trace( "GetNewStorageDevices" );
@@ -288,77 +390,7 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 			/* Not having the '1' breaks memory cards for me. -- Vyhd */
 			usbd.sDevice = "/dev/" + sDevice + "1";
 
-			/*
-			 * sPath/device should be a symlink to the actual device.  For USB
-			 * devices, it looks like this:
-			 *
-			 * device -> ../../devices/pci0000:00/0000:00:02.1/usb2/2-1/2-1:1.0
-			 *
-			 * "2-1" is "bus-port".
-			 */
-			char szLink[256];
-			int iRet = readlink( sPath + "device", szLink, sizeof(szLink) );
-			if( iRet == -1 )
-			{
-				LOG->Warn( "readlink(\"%s\"): %s", (sPath + "device").c_str(), strerror(errno) );
-			}
-			else
-			{
-				/*
-				 * The full path looks like
-				 *
-				 *   ../../devices/pci0000:00/0000:00:02.1/usb2/2-2/2-2.1/2-2.1:1.0
-				 *
-				 * Each path element refers to a new hop in the chain.
-				 *  "usb2" = second USB host
-				 *  2-            second USB host,
-				 *   -2           port 1 on the host,
-				 *     .1         port 1 on an attached hub
-				 *       .2       ... port 2 on the next hub ...
-				 * 
-				 * We want the bus number and the port of the last hop.  The level is
-				 * the number of hops.
-				 */
-				szLink[iRet] = 0;
-				vector<CString> asBits;
-				split( szLink, "/", asBits );
-
-				if( strstr( szLink, "usb" ) != NULL )
-				{
-					CString sHostPort = asBits[asBits.size()-2];
-					sHostPort.Replace( "-", "." );
-					asBits.clear();
-					split( sHostPort, ".", asBits );
-					if( asBits.size() > 1 )
-					{
-						usbd.iBus = atoi( asBits[0] );
-						usbd.iPort = atoi( asBits[asBits.size()-1] );
-						usbd.iLevel = asBits.size() - 1;
-					}
-				}
-			}
-
-			if( ReadFile( sPath + "device/../idVendor", sBuf ) )
-				sscanf( sBuf, "%x", &usbd.idVendor );
-
-			if( ReadFile( sPath + "device/../idProduct", sBuf ) )
-				sscanf( sBuf, "%x", &usbd.idProduct );
-
-			if( ReadFile( sPath + "device/../serial", sBuf ) )
-			{
-				usbd.sSerial = sBuf;
-				TrimRight( usbd.sSerial );
-			}
-			if( ReadFile( sPath + "device/../product", sBuf ) )
-			{
-				usbd.sProduct = sBuf;
-				TrimRight( usbd.sProduct );
-			}
-			if( ReadFile( sPath + "device/../manufacturer", sBuf ) )
-			{
-				usbd.sVendor = sBuf;
-				TrimRight( usbd.sVendor );
-			}
+			SetDeviceInfo( usbd, sPath );
 
 			vDevicesOut.push_back( usbd );
 		}
@@ -417,7 +449,7 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 	for( unsigned i=0; i<vDevicesOut.size(); i++ )
 	{
 		UsbStorageDevice& usbd = vDevicesOut[i];
-		LOG->Trace( "    sDevice: %s, iBus: %d, iLevel: %d, iPort: %d, id: %04X:%04X, Vendor: '%s', Product: '%s', sSerial: \"%s\", sOsMountDir: %s",
+		LOG->Debug( "    sDevice: %s, iBus: %d, iLevel: %d, iPort: %d, id: %04X:%04X, Vendor: '%s', Product: '%s', sSerial: \"%s\", sOsMountDir: %s",
 				usbd.sDevice.c_str(), usbd.iBus, usbd.iLevel, usbd.iPort, usbd.idVendor, usbd.idProduct, usbd.sVendor.c_str(),
 				usbd.sProduct.c_str(), usbd.sSerial.c_str(), usbd.sOsMountDir.c_str() );
 	}

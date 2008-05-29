@@ -64,13 +64,11 @@ Song* GetDefaultSong()
 
 static int GetNumStagesForCurrentSong()
 {
-	int iNumStagesOfThisSong = 1;
+	int iNumStagesOfThisSong = 1; // default
 	if( GAMESTATE->m_pCurSong )
 		iNumStagesOfThisSong = SongManager::GetNumStagesForSong( GAMESTATE->m_pCurSong );
-	else if( GAMESTATE->m_pCurCourse )
-		iNumStagesOfThisSong = 1;
 	else
-		return -1;
+		return iNumStagesOfThisSong;
 
 	ASSERT( iNumStagesOfThisSong >= 1 && iNumStagesOfThisSong <= 3 );
 

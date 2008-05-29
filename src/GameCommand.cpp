@@ -231,15 +231,12 @@ void GameCommand::LoadOne( const Command& cmd )
 
 	else if( sName == "theme" )
 	{
+		/* XXX: don't hinder commands if the specified theme doesn't exist. So, just 
+		 * assign the name if it exists, and display a non-fatal error if it doesn't. */
 		if( THEME->DoesThemeExist(sValue) )
-		{
-			m_sTheme = sValue; //set in ApplySelf
-		}
+			m_sTheme = sValue;
 		else
-		{
-			m_sInvalidReason = ssprintf( "Theme \"%s\" does not exist", sValue.c_str() );
-			m_bInvalid |= true;
-		}
+			LOG->Warn( "Theme \"%s\" not found", sValue.c_str() );
 	}
 
 	else if( sName == "song" )
@@ -1057,7 +1054,8 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 	}
 	if( m_bInsertCredit )
 	{
-		InsertCredit();
+		/* don't record in the bookkeeper */
+		InsertCredit( false ); 
 	}
 	if( m_bClearCredits )
 	{

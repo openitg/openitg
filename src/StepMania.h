@@ -19,8 +19,8 @@ void FocusChanged( bool bHasFocus );
 // If successful, return filename of screenshot in sDir, else return ""
 CString SaveScreenshot( CString sDir, bool bSaveCompressed, bool bMakeSignature, int iIndex = -1 );
 
-void InsertCoin( int iNum = 1 );
-void InsertCredit();
+void InsertCoin( int iNum = 1, bool bRecord = true );
+void InsertCredit( bool bRecord = true );
 void ClearCredits();
 
 extern int g_argc;

@@ -24,8 +24,6 @@ Preference<bool>	g_bIOCoinTest( "IOCoinTest", false );
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
 	m_bShutdown = false;
-
-	/* Mark the input type, for theme purposes */
 	g_sInputType = "PIUIO";
 
 	// device found and set

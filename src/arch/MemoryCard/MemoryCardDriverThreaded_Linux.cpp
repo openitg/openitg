@@ -20,8 +20,9 @@
 
 const CString TEMP_MOUNT_POINT = "/@mctemp/";
 
-/* the device paths apparently change between USB drivers... */
-const bool NEW_SYNTAX = system( "lsmod | grep usb_storage" ) == 0;
+/* the device paths change slightly between USB kernel modules.
+ * Assume "ub" unless this returns true, meaning "usb_storage". */
+const bool USB_STORAGE_MODULE = system( "lsmod | grep -q usb_storage" ) == 0;
 
 void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut );
 
@@ -309,7 +310,7 @@ void SetDeviceInfo( UsbStorageDevice &usbd, CString sPath )
 			 * reassign it (i.e., assign 5th from right instead of 2nd). -- Vyhd
 			 */
 			CString sHostPort;
-			if( NEW_SYNTAX )
+			if( USB_STORAGE_MODULE )
 				sHostPort = asBits[asBits.size()-5];
 			else
 				sHostPort = asBits[asBits.size()-2];

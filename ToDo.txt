@@ -14,7 +14,7 @@
 
 /* Minor feature additions */
 -Re-implement "InputDebounceTime"
--Include ThemeInfo.ini support
+-Include ThemeInfo.ini support (is this still needed?)
 -Add Windows code for network diagnostics
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
 

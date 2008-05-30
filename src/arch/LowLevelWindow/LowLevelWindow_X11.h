@@ -1,3 +1,5 @@
+<<<<<<< .mine
+=======
 /* LowLevelWindow_X11 - OpenGL GLX window driver. */
 
 #ifndef LOW_LEVEL_WINDOW_X11_H
@@ -17,10 +19,8 @@ public:
 
 	RageDisplay::VideoModeParams GetVideoModeParams() const { return CurrentParams; }
 
-//Maybe use in the future...?	
-//	void GetDisplayResolutions( DisplayResolutions &out ) const;
 private:
-	bool m_bWasWindowed;
+	bool m_bWindowIsOpen;
 	RageDisplay::VideoModeParams CurrentParams;
 };
 
@@ -56,3 +56,4 @@ private:
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+>>>>>>> .r310

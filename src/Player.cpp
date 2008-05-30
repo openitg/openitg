@@ -929,8 +929,6 @@ void Player::HandleStep( int col, const RageTimer &tm, bool bHeld )
 			// GetTapNoteScore always returns TNS_MARVELOUS in autoplay.
 			// If the step is far away, don't judge it.
 
-			/* Tentative roll-eats-arrows fix */
-//			if( m_pPlayerState->m_PlayerController == PC_AUTOPLAY &&
 			if( fSecondsFromPerfect > ADJUSTED_WINDOW_TAP(TW_Boo) )
 				score = TNS_NONE;
 

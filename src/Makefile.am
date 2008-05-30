@@ -71,7 +71,7 @@ BackgroundUtil.cpp BackgroundUtil.h \
 BannerCache.cpp BannerCache.h CatalogXml.cpp CatalogXml.h \
 Character.cpp Character.h \
 CodeDetector.cpp CodeDetector.h \
-CodeSet.cpp CodeSet.h \
+#CodeSet.cpp CodeSet.h \
 Command.cpp Command.h \
 CommonMetrics.cpp CommonMetrics.h \
 Difficulty.cpp Difficulty.h EnumHelper.cpp EnumHelper.h Course.cpp Course.h \
@@ -259,7 +259,8 @@ MemoryCardDisplay.cpp MemoryCardDisplay.h \
 MenuTimer.cpp MenuTimer.h ModeSwitcher.cpp ModeSwitcher.h MusicBannerWheel.cpp MusicBannerWheel.h \
 MusicList.cpp MusicList.h MusicSortDisplay.cpp MusicSortDisplay.h MusicWheel.cpp MusicWheel.h \
 MusicWheelItem.cpp MusicWheelItem.h OptionIcon.cpp OptionIcon.h OptionIconRow.cpp OptionIconRow.h \
-OptionsList.cpp OptionsList.h OptionRow.cpp OptionRow.h OptionsCursor.cpp OptionsCursor.h \
+#OptionsList.cpp OptionsList.h \
+OptionRow.cpp OptionRow.h OptionsCursor.cpp OptionsCursor.h \
 PaneDisplay.cpp PaneDisplay.h ScrollBar.cpp ScrollBar.h \
 ScrollingList.cpp ScrollingList.h SnapDisplay.cpp SnapDisplay.h \
 TextBanner.cpp TextBanner.h WheelBase.cpp WheelBase.h WheelItemBase.cpp WheelItemBase.h \

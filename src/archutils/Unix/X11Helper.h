@@ -3,6 +3,9 @@
 #define X11_HELPER_H
 
 #include <X11/Xlib.h>		// Window
+
+#include "RageDisplay.h"	// RageDisplay
+
 namespace X11Helper
 {
 	// All functions in here that return a bool return true on success, and
@@ -10,28 +13,39 @@ namespace X11Helper
 
 	// Create the connection, if necessary; otherwise do some important
 	// internal session-tracking stuff (so you should call this anyway).
-	bool OpenXConnection();
+	bool Go();
+
+	// The current Display (connection). Initialized by the first call to
+	// Go().
+	extern Display *Dpy;
+
+	// Get the current open window. Initialized by the first call to
+	// MakeWindow().
+	extern Window Win;
+
+	// (Re)create the window on the screen of this number with this depth,
+	// this visual type, this width (optional -- you can resize the window
+	// in your callback later), and this height (optional).
+	bool MakeWindow(int screenNum, int depth, Visual *visual,
+					int width=32, int height=32);
+
+	// Unmask one X event type mask thingy (XSelectInput() arg 3) on the
+	// current window. Masked/unmasked events will carry between windows.
+	bool OpenMask(long mask);
+
+	// (Re)mask one X event type mask thingy (XSelectInput() arg 3) on the
+	// current window. Masked/unmasked events will carry between windows.
+	bool CloseMask(long mask);
 
 	// Destroy the connection, if appropriate; otherwise do some important
 	// internal session-tracking stuff (so you should call it anyway).
-	void CloseXConnection();
-
-	// The current Display (connection). Initialized by the first call to
-	// OpenXConnection().
-	extern Display *Dpy;
-
-	// The Window used by LowLevelWindow_X11 as the main window.
-	extern Window Win;
-
-	// (Re)create the Window win.
-	bool MakeWindow( Window &win, int screenNum, int depth, Visual *visual,
-			 int width, int height, bool overrideRedirect );
+	void Stop();
 };
 
 #endif
 
 /*
- * (c) 2005, 2006 Ben Anderson, Steve Checkoway
+ * (c) 2005 Ben Anderson
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

@@ -3,6 +3,11 @@
 #include "RageUtil.h"
 #include "InputHandler.h"
 #include "RageLog.h"
+#include "PrefsManager.h" // XXX
+#include <map>
+
+/* This code is taken from CNLohr's 3.9 AC build. */
+map< int, RageTimer > m_LastHit;
 
 void InputHandler::UpdateTimer()
 {
@@ -20,7 +25,14 @@ void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 		++m_iInputsSinceUpdate;
 	}
 
-	INPUTFILTER->ButtonPressed( di, Down );
+	if( !Down )
+		INPUTFILTER->ButtonPressed( di, Down );
+	else
+		if( m_LastHit.find(di.button) == m_LastHit.end() || m_LastHit[di.button].PeekDeltaTime() > PREFSMAN->m_fInputDebounceTime )
+		{
+			INPUTFILTER->ButtonPressed( di, Down );
+			m_LastHit[di.button].Touch();
+		}
 
 	if( m_iInputsSinceUpdate >= 50 )
 	{

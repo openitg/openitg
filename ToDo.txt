@@ -1,7 +1,6 @@
 /* More-or-less in order of priority. */
 
 /* Major bug fixing */
--X11 full-screen causes scrolling brackets + desktop resize
 -Switching modes on the main menu causes OpenITG to hang
 -Figure out what the hell's up with saving USB stats
 
@@ -13,6 +12,7 @@
 -"Random" selections for non-existant BGVids always return the same video
 
 /* Minor feature additions */
+-Working full-screen on Linux
 -Re-implement "InputDebounceTime"
 -Include ThemeInfo.ini support (is this still needed?)
 -Add Windows code for network diagnostics

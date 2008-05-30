@@ -186,6 +186,7 @@ public:
 	Preference<int>		m_iCustomMaxStepsSizeKB;
 
 	Preference<bool>	m_bAllowExtraPlayerOptions;
+	Preference<float>	m_fInputDebounceTime;
 
 	Preference<bool>	m_bComboContinuesBetweenSongs;
 	Preference<float>	m_fLongVerSongSeconds;

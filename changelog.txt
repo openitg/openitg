@@ -1,4 +1,4 @@
-OpenITG, alpha 6 (in development)
+OpenITG, alpha 6 (May 30th, 2008)
 ---------------------------------
 -Code structure changes:
     Reverted InputFilter - too little gain for too many problems

@@ -9,15 +9,15 @@
 
 /* The name of the build and its current version */
 #define PRODUCT_NAME "OpenITG"
-#define PRODUCT_VER "alpha 6 DEV"
+#define PRODUCT_VER "alpha 6"
 
-/* Build date, in MMDDYYYY - used for serials */
-#define PRODUCT_BUILD_DATE "05082008"
+/* Build date, in MMDDYYYY - used for serials. We/I need to remember
+ * to update this every time a new revision is added ... */
+#define PRODUCT_BUILD_DATE "05302008"
 
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"
 #elif defined(XBOX)
-/* Not likely at all, but might as well be ready for it. */
 #define PRODUCT_PLATFORM "CS" 
 #else
 #define PRODUCT_PLATFORM "PC"
@@ -27,7 +27,7 @@
 #define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER
 
 /* A central location from which we can update crash handler data... */
-#define CRASH_REPORT_URL "http://boxorroxors.net/forum/viewtopic.php?t=713"
+#define CRASH_REPORT_URL "http://boxorroxors.net/forum/viewtopic.php?t=791"
 
 #endif
 

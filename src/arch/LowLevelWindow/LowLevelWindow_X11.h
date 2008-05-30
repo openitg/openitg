@@ -1,5 +1,3 @@
-<<<<<<< .mine
-=======
 /* LowLevelWindow_X11 - OpenGL GLX window driver. */
 
 #ifndef LOW_LEVEL_WINDOW_X11_H
@@ -56,4 +54,3 @@ private:
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
->>>>>>> .r310

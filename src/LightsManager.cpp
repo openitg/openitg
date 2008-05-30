@@ -321,7 +321,6 @@ void LightsManager::Update( float fDeltaTime )
 	switch( m_LightsMode )
 	{
 	case LIGHTSMODE_ATTRACT:
-	case LIGHTSMODE_DEMONSTRATION:
 		{
 			ZERO( m_LightsState.m_bGameButtonLights );
 		}
@@ -340,9 +339,10 @@ void LightsManager::Update( float fDeltaTime )
 		}
 		break;
 	case LIGHTSMODE_MENU:
+	case LIGHTSMODE_DEMONSTRATION:
 	case LIGHTSMODE_GAMEPLAY:
 		{
-			if( m_LightsMode == LIGHTSMODE_GAMEPLAY  &&  PREFSMAN->m_bBlinkGameplayButtonLightsOnNote )
+			if( m_LightsMode != LIGHTSMODE_MENU && PREFSMAN->m_bBlinkGameplayButtonLightsOnNote )
 			{
 				//
 				// Blink on notes.

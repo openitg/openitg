@@ -368,7 +368,7 @@ bool SMLoader::LoadFromSMFile( CString sPath, Song &out )
 			BackgroundLayer iLayer = BACKGROUND_LAYER_1;
 			int iBGLayer = (int)iLayer;
 			if( 1 == sscanf( sValueName, "BGCHANGES%d", &iBGLayer ) )
-				iLayer = (BackgroundLayer)(iLayer-1);	// #BGCHANGES2 = BACKGROUND_LAYER_2
+				iLayer = (BackgroundLayer)(iBGLayer-1);	// #BGCHANGES2 = BACKGROUND_LAYER_2
 
 			bool bValid = iLayer>=0 && iLayer<NUM_BackgroundLayer;
 			if( !bValid )

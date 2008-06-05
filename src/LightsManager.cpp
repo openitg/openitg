@@ -38,6 +38,8 @@ static const CString LightsModeNames[] = {
 	"Attract",
 	"Joining",
 	"Menu",
+	"Menu (cabinet)",
+	"Menu (bass)",
 	"Demonstration",
 	"Gameplay",
 	"Stage",
@@ -204,49 +206,49 @@ void LightsManager::Update( float fDeltaTime )
 		}
 		break;
 	case LIGHTSMODE_MENU:
+	case LIGHTSMODE_MENU_LIGHTS:
+	case LIGHTSMODE_MENU_BASS:
 		{
 			FOREACH_CabinetLight( cl )
 				m_LightsState.m_bCabinetLights[cl] = false;
 
-#if 0
-			/* backported from 4.0 */
-			static float fLastBeat;
-			static int iLight;
-
-			if( fracf(GAMESTATE->m_fLightSongBeat) < fracf(fLastBeat) )
-			{
-				++iLight;
-				wrap( iLight, 4 );
-			}
-
-			fLastBeat = GAMESTATE->m_fLightSongBeat;
-			int iBeat = iLight;
-
-			switch( iLight )
-#else
 			int iBeat = (int)(GAMESTATE->m_fLightSongBeat);
-			int iTopIndex = iBeat;
-			wrap( iTopIndex, 4 );
-			switch( iTopIndex )
-#endif
+
+			if( m_LightsMode != LIGHTSMODE_MENU_LIGHTS )
 			{
-			case 0:	m_LightsState.m_bCabinetLights[LIGHT_MARQUEE_UP_LEFT]  = true;	break;
-			case 1:	m_LightsState.m_bCabinetLights[LIGHT_MARQUEE_LR_RIGHT] = true;	break;
-			case 2:	m_LightsState.m_bCabinetLights[LIGHT_MARQUEE_UP_RIGHT] = true;	break;
-			case 3:	m_LightsState.m_bCabinetLights[LIGHT_MARQUEE_LR_LEFT]  = true;	break;
-			default:	ASSERT(0);
+				int iTopIndex = iBeat;
+				wrap( iTopIndex, 4 );
+
+				switch( iTopIndex )
+				{
+				case 0:	m_LightsState.m_bCabinetLights[LIGHT_MARQUEE_UP_LEFT]  = true;	break;
+				case 1:	m_LightsState.m_bCabinetLights[LIGHT_MARQUEE_LR_RIGHT] = true;	break;
+				case 2:	m_LightsState.m_bCabinetLights[LIGHT_MARQUEE_UP_RIGHT] = true;	break;
+				case 3:	m_LightsState.m_bCabinetLights[LIGHT_MARQUEE_LR_LEFT]  = true;	break;
+				default:	ASSERT(0);
+				}
 			}
 
 			/* Flash the button lights for active players. */
 			bool bBlinkOn = (iBeat%2)==0;
 
 			FOREACH_PlayerNumber( pn )
-			{
 				if( GAMESTATE->m_bSideIsJoined[pn] )
-				{
 					m_LightsState.m_bCabinetLights[LIGHT_BUTTONS_LEFT+pn] = bBlinkOn;
-				}
-			}
+
+			if( m_LightsMode == LIGHTSMODE_MENU )
+				break;
+
+			/* UGLY: must be done manually so we can specify */
+			/* update bass */
+			m_LightsState.m_bCabinetLights[LIGHT_BASS_LEFT] = m_fSecsLeftInCabinetLightBlink[LIGHT_BASS_LEFT] > 0;
+			m_LightsState.m_bCabinetLights[LIGHT_BASS_RIGHT] = m_fSecsLeftInCabinetLightBlink[LIGHT_BASS_RIGHT] > 0;
+
+			if( m_LightsMode == LIGHTSMODE_MENU_BASS )
+				break;
+
+			FOREACH_CabinetLight( cl )
+				m_LightsState.m_bCabinetLights[cl] = m_fSecsLeftInCabinetLightBlink[cl] > 0;
 		}
 		break;
 	case LIGHTSMODE_DEMONSTRATION:
@@ -339,10 +341,12 @@ void LightsManager::Update( float fDeltaTime )
 		}
 		break;
 	case LIGHTSMODE_MENU:
+	case LIGHTSMODE_MENU_BASS:
+	case LIGHTSMODE_MENU_LIGHTS:
 	case LIGHTSMODE_DEMONSTRATION:
 	case LIGHTSMODE_GAMEPLAY:
 		{
-			if( m_LightsMode != LIGHTSMODE_MENU && PREFSMAN->m_bBlinkGameplayButtonLightsOnNote )
+			if( (m_LightsMode == LIGHTSMODE_GAMEPLAY && PREFSMAN->m_bBlinkGameplayButtonLightsOnNote) || m_LightsMode == LIGHTSMODE_DEMONSTRATION )
 			{
 				//
 				// Blink on notes.

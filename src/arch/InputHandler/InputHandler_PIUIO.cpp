@@ -23,6 +23,9 @@ Preference<bool>	g_bIOCoinTest( "IOCoinTest", false );
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
+	/* set this to change how PIUIO reads */
+	m_bUseUnstable = true;
+
 	m_bShutdown = false;
 	g_sInputType = "PIUIO";
 
@@ -120,6 +123,80 @@ static CString GetSensorDescription( int iBits )
 
 	return join(", ", retSensors);
 }
+
+/* this is the input-reading logic that needs tested */
+void InputHandler_PIUIO::HandleInputInternalUnstable()
+{
+	uint32_t i = 1; // convenience hack
+	uint32_t iNewLightData = 0;
+
+	for (uint32_t j = 0; j < 4; j++)
+	{
+		iNewLightData = m_iLightData & 0xfffcfffc;
+		iNewLightData |= (j | (j << 16));
+
+		m_iInputData[j] = iNewLightData;
+	}
+
+	IOBoard.BulkReadWrite( m_iInputData );
+
+	for (uint32_t j = 0; j < 4; j++)
+	{
+		/* PIUIO opens high - for more logical processing, invert it */
+		m_iInputData[j] = ~m_iInputData[j];
+
+		/* Toggle sensor bits - Left, Right, Up, Down */
+		// P1
+		/* Don't read past the P2 arrows */
+		if (m_iInputData[j] & (i << 2)) sensor_bits[0] |= (i << j);
+		if (m_iInputData[j] & (i << 3)) sensor_bits[1] |= (i << j);
+		if (m_iInputData[j] & (i << 0)) sensor_bits[2] |= (i << j);
+		if (m_iInputData[j] & (i << 1)) sensor_bits[3] |= (i << j);
+
+		// P2
+		if (m_iInputData[j] & (i << 18)) sensor_bits[8] |= (i << j);
+		if (m_iInputData[j] & (i << 19)) sensor_bits[9] |= (i << j);
+		if (m_iInputData[j] & (i << 16)) sensor_bits[10] |= (i << j);
+		if (m_iInputData[j] & (i << 17)) sensor_bits[11] |= (i << j);
+	}
+}
+
+/* this is the input-reading logic that we know works */
+void InputHandler_PIUIO::HandleInputInternal()
+{
+	uint32_t i = 1; // convenience hack
+	uint32_t iNewLightData = 0;
+
+	for (uint32_t j = 0; j < 4; j++)
+	{
+		iNewLightData = m_iLightData & 0xfffcfffc;
+		iNewLightData |= (j | (j << 16));
+
+		m_iInputData[j] = iNewLightData;
+
+		IOBoard.Write( iNewLightData );
+		IOBoard.Read( &(m_iInputData[j]) );
+
+		/* PIUIO opens high - for more logical processing, invert it */
+		m_iInputData[j] = ~m_iInputData[j];
+
+		/* Toggle sensor bits - Left, Right, Up, Down */
+		// P1
+		/* Don't read past the P2 arrows */
+		if (m_iInputData[j] & (i << 2)) sensor_bits[0] |= (i << j);
+		if (m_iInputData[j] & (i << 3)) sensor_bits[1] |= (i << j);
+		if (m_iInputData[j] & (i << 0)) sensor_bits[2] |= (i << j);
+		if (m_iInputData[j] & (i << 1)) sensor_bits[3] |= (i << j);
+
+		// P2
+		if (m_iInputData[j] & (i << 18)) sensor_bits[8] |= (i << j);
+		if (m_iInputData[j] & (i << 19)) sensor_bits[9] |= (i << j);
+		if (m_iInputData[j] & (i << 16)) sensor_bits[10] |= (i << j);
+		if (m_iInputData[j] & (i << 17)) sensor_bits[11] |= (i << j);
+	}
+
+}
+
 // XXX fixed 4/7/08.  Game.  Set.  Match.  --infamouspat
 // ITT history :D  -- vyhd
 void InputHandler_PIUIO::HandleInput()
@@ -149,8 +226,6 @@ void InputHandler_PIUIO::HandleInput()
 		(i << 9) | (i << 14), (i << 10)
 	};
 
-	uint32_t iNewLightData = 0;
-
 	bool bInputIsNonZero = false, bInputChanged = false;
 
 	// reset
@@ -159,55 +234,11 @@ void InputHandler_PIUIO::HandleInput()
 	for (unsigned j = 0; j < 8; j++)
 		ZERO( m_iInputData );
 
-	/* Explanation of this logic:
-	 * ==========================
-	 * Output bits 15-16 and 31-32 tell PIUIO which
-	 * sensor set to report from when we read input.
-	 *
-	 * We AND out these bits, so they're guaranteed 0, then write
-	 * the number we want for this read (re-writing the lights state).
-	 *
-	 * After this is written, we read the input into our input
-	 * data array, add the sensor bits read into an array used to
-	 * show which sensors are being pressed, and combine the data.
-	 *
-	 * The resultant iInputBitField, combined from four reads, is 
-	 * finally used to report input when compared against the maps.
-	 */
-
-	for (uint32_t j = 0; j < 4; j++)
-	{
-		iNewLightData = m_iLightData & 0xfffcfffc;
-		iNewLightData |= (j | (j << 16));
-
-		m_iInputData[j*2] = iNewLightData;
-	}
-
-		//IOBoard.Write( iNewLightData );
-		/* Get the data and send it to RageInput */
-		//IOBoard.Read( &(m_iInputData[j]) );
-
-		IOBoard.BulkReadWrite( m_iInputData );
-
-	for (uint32_t j = 0; j < 4; j++)
-	{
-		/* PIUIO opens high - for more logical processing, invert it */
-		m_iInputData[j] = ~m_iInputData[j*2];
-
-		/* Toggle sensor bits - Left, Right, Up, Down */
-		// P1
-		/* Don't read past the P2 arrows */
-		if (m_iInputData[j] & (i << 2)) sensor_bits[0] |= (i << j);
-		if (m_iInputData[j] & (i << 3)) sensor_bits[1] |= (i << j);
-		if (m_iInputData[j] & (i << 0)) sensor_bits[2] |= (i << j);
-		if (m_iInputData[j] & (i << 1)) sensor_bits[3] |= (i << j);
-
-		// P2
-		if (m_iInputData[j] & (i << 18)) sensor_bits[8] |= (i << j);
-		if (m_iInputData[j] & (i << 19)) sensor_bits[9] |= (i << j);
-		if (m_iInputData[j] & (i << 16)) sensor_bits[10] |= (i << j);
-		if (m_iInputData[j] & (i << 17)) sensor_bits[11] |= (i << j);
-	}
+	/* read the input and handle the sensor logic */
+	if( m_bUseUnstable )
+		HandleInputInternalUnstable();
+	else
+		HandleInputInternal();
 
 	/* Handle coin events now */
 	// XXX: probably should have a way to refer to the I/O fields

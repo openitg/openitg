@@ -68,13 +68,14 @@ void ScreenArcadeStart::Update( float fDeltaTime )
 	if( m_bFirstUpdate )
 		m_Timer.Touch();
 
-	if( !m_bBoardError )
+	if( m_bBoardError == false )
 	{
-		m_bUSBError = !Refresh();
+		m_bUSBError = (Refresh() == false);
 
 		// problem was fixed, or we timed out
-		if( !m_bUSBError || m_Timer.Ago() > TIMEOUT )
+		if( m_bUSBError == false || m_Timer.Ago() > TIMEOUT )
 		{
+			g_sInputType = "Home";
 			this->PlayCommand( "Off" );
 			StartTransitioning( SM_GoToNextScreen );
 		}
@@ -140,6 +141,10 @@ bool ScreenArcadeStart::Refresh()
 
 bool ScreenArcadeStart::LoadHandler()
 {
+	INPUTMAN->AddHandler( new InputHandler_PIUIO );
+
+	return true;
+
 	// this makes it so much easier to keep track of. --Vyhd
 	enum Board { BOARD_NONE, BOARD_ITGIO, BOARD_PIUIO };
 	Board iBoard = BOARD_NONE;

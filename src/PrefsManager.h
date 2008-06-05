@@ -314,6 +314,7 @@ private:
 public:
 	Preference<CString>	m_sMovieDrivers;	// "" == default
 	Preference<CString>	m_sLightsStepsDifficulty;
+	Preference<bool>	m_bLightsChartsInMenus;
 	Preference<bool>	m_bBlinkGameplayButtonLightsOnNote;
 	Preference<bool>	m_bAllowUnacceleratedRenderer;
 	Preference<bool>	m_bThreadedInput;

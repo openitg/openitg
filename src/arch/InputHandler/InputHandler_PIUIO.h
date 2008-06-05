@@ -1,8 +1,6 @@
-#ifndef INPUT_HANDLER_LINUX_PIUIO_H
-#define INPUT_HANDLER_LINUX_PIUIO_H
+#ifndef INPUT_HANDLER_PIUIO_H
+#define INPUT_HANDLER_PIUIO_H
 
-/*  I've heard bad things about portability relating to stdint.  /
-/   If you run into any problems, let me know. - Vyhd		 */
 #ifdef WIN32
 #include <windows.h>
 #else
@@ -17,8 +15,6 @@
 class InputHandler_PIUIO: public InputHandler
 {
 public:
-	/* If bPumpMode, some mappings change */
-//	InputHandler_PIUIO( bool bPumpMode = false );
 	InputHandler_PIUIO();
 	~InputHandler_PIUIO();
 
@@ -32,7 +28,6 @@ private:
 	bool m_bFoundDevice;
 	bool m_bShutdown;
 	bool m_bCoinEvent;
-	bool m_bPumpMode;
 
 	/* debug code */
 	RageTimer m_InputTimer;
@@ -41,8 +36,8 @@ private:
 	float m_fTotalReadTime;
 
 	/* one uint32_t per sensor set */
-	uint32_t m_iInputData[8];
-	uint32_t m_iLastInputData[8];
+	uint32_t m_iInputData[4];
+	uint32_t m_iLastInputData[4];
 
 	uint32_t m_iLightData;
 	uint32_t m_iLastLightData;
@@ -51,6 +46,14 @@ private:
 	void InputThreadMain();
 
 	void HandleInput();
+
+	/* temp workaround to keep a dev driver while
+	 * maintaining a working release driver - to
+	 * use Unstable, set m_bUseUnstable to true */
+
+	bool m_bUseUnstable;
+	void HandleInputInternal();
+	void HandleInputInternalUnstable();
 
 	// allow this driver to update lights with "ext"
 	void UpdateLights();

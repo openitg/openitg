@@ -12,6 +12,10 @@
 class MenuTimer;
 class HelpDisplay;
 
+/* lights loading stuff */
+#include "NoteData.h"
+#include "song.h"
+
 class ScreenWithMenuElements : public Screen
 {
 public:
@@ -54,6 +58,15 @@ protected:
 
 	ThemeMetric<LuaExpression>	FIRST_UPDATE_COMMAND;
 	ThemeMetric<bool>			PLAY_MUSIC;
+
+	/* lights-cabinet stuff */
+	virtual void LoadLights();
+	virtual void UpdateLights();
+
+	NoteData	m_NoteData;
+	Song		m_SongData;
+
+	bool		m_bUseLightsChart;
 };
 
 #endif

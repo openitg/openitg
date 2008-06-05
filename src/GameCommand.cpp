@@ -743,7 +743,14 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 		FOREACH_CONST( PlayerNumber, vpns, pn )
 		{
 			m_LuaFunction.PushSelf( L );
+
+			/* UGLY DISGUSTING HACK: if theme switching, work around a
+			 * crash here. We'll find the actual cause before long... */
+			if( lua_isnil(L, -1) && m_sTheme != "" )
+				break;
+
 			ASSERT( !lua_isnil(L, -1) );
+
 
 			lua_pushnumber( L, *pn ); // 1st parameter
 			lua_call( L, 1, 0 ); // call function with 1 argument and 0 results

@@ -302,6 +302,7 @@ PrefsManager::PrefsManager() :
 	m_sLightsDriver					( "LightsDriver",				"" ),
 	m_sMovieDrivers					( "MovieDrivers",				"" ),
 	m_sLightsStepsDifficulty		( "LightsStepsDifficulty",		"medium" ),
+	m_bLightsChartsInMenus			( "LightsChartsInMenus",	false ),
 	m_bBlinkGameplayButtonLightsOnNote	( "BlinkGameplayButtonLightsOnNote",false ),
 	m_bAllowUnacceleratedRenderer	( "AllowUnacceleratedRenderer",	false ),
 	m_bThreadedInput				( "ThreadedInput",				true ),

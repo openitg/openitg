@@ -1,6 +1,7 @@
 /* More-or-less in order of priority. */
 
 /* Major bug fixing */
+-Switching between charts in editor (F5-F6) eats charts D:
 -Switching modes on the main menu causes OpenITG to hang
 -Figure out what the hell's up with saving USB stats
 
@@ -13,8 +14,8 @@
 
 /* Minor feature additions */
 -Working full-screen on Linux
--Re-implement "InputDebounceTime"
 -Include ThemeInfo.ini support (is this still needed?)
+-Write .edit files directly to USB cards
 -Add Windows code for network diagnostics
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
 

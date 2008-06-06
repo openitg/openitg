@@ -1,3 +1,7 @@
+OpenITG, alpha 7 (in development)
+---------------------------------
+-Preliminary, hacky lights-cabinet support in theme SM files
+
 OpenITG, alpha 6 (May 30th, 2008)
 ---------------------------------
 -Code structure changes:

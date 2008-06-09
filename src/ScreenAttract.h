@@ -14,6 +14,7 @@ public:
 	virtual void Init();
 	virtual ~ScreenAttract();
 
+	static void SetAttractVolume( bool bInAttract );
 	static void AttractInput( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI, ScreenWithMenuElements *pScreen );
 	static void GoToStartScreen( CString sScreenName );
 	

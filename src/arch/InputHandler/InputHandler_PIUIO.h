@@ -18,8 +18,6 @@ public:
 	InputHandler_PIUIO();
 	~InputHandler_PIUIO();
 
-//	for non-threaded input...should we even bother?
-//	void Update( float fDeltaTime );
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
 	PIUIO IOBoard;
@@ -48,8 +46,8 @@ private:
 	void HandleInput();
 
 	/* temp workaround to keep a dev driver while
-	 * maintaining a working release driver - to
-	 * use Unstable, set m_bUseUnstable to true */
+	 * maintaining a working release driver - to use
+	 * Unstable, set UseUnstablePIUIODriver to true */
 
 	bool m_bUseUnstable;
 	void HandleInputInternal();

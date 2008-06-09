@@ -295,6 +295,7 @@ PrefsManager::PrefsManager() :
 	m_bSmoothLines					( "SmoothLines",				false ),
 	m_sSoundDrivers					( "SoundDrivers",				"" ),
 	m_fSoundVolume					( "SoundVolume",				-1 ),	// default
+	m_fSoundVolumeAttract				( "SoundVolumeAttract",				0.5 ),
 	m_iSoundWriteAhead				( "SoundWriteAhead",			0 ),
 	m_iSoundDevice					( "SoundDevice",				"" ),
 	m_SoundResampleQuality			( "SoundResampleQuality",		RageSoundReader_Resample::RESAMP_NORMAL ),
@@ -417,6 +418,15 @@ float PrefsManager::GetSoundVolume()
 		return DEFAULT_SOUND_VOLUME;
 	else
 		return m_fSoundVolume; 
+}
+
+float PrefsManager::GetSoundVolumeAttract()
+{
+	// fallback to regular volume if -1
+	if( m_fSoundVolumeAttract == -1 )
+		return GetSoundVolume();
+
+	return m_fSoundVolumeAttract;
 }
 
 CString PrefsManager::GetInputDrivers()	{

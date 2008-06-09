@@ -13,10 +13,11 @@
 #include "InputMapper.h"
 #include "ThemeManager.h"
 #include "GameSoundManager.h"
+#include "RageSoundManager.h"
 #include "CommonMetrics.h"
 #include "BGAnimation.h"
 
-#define NEXT_SCREEN					THEME->GetMetric (m_sName,"NextScreen")
+#define NEXT_SCREEN			THEME->GetMetric (m_sName,"NextScreen")
 #define START_SCREEN(sScreenName)	THEME->GetMetric (sScreenName,"StartScreen")
 
 ThemeMetric<bool>	BACK_GOES_TO_START_SCREEN( "ScreenAttract", "BackGoesToStartScreen" );
@@ -36,6 +37,8 @@ void ScreenAttract::Init()
 
 	ScreenWithMenuElements::Init();
 
+	SetAttractVolume( true );
+
 	this->SortByDrawOrder();
 }
 
@@ -45,6 +48,25 @@ ScreenAttract::~ScreenAttract()
 	LOG->Trace( "ScreenAttract::~ScreenAttract()" );
 }
 
+void ScreenAttract::SetAttractVolume( bool bInAttract )
+{
+	LOG->Debug( "ScreenAttract::SetAttractVolume( %s )", bInAttract ? "true" : "false" );
+
+	if( bInAttract )
+	{
+		if( GAMESTATE->IsTimeToPlayAttractSounds() )
+			SOUNDMAN->SetPrefs( PREFSMAN->GetSoundVolumeAttract() );
+		else
+			SOUNDMAN->SetPrefs( 0 ); // mute most sounds
+	}
+	else
+	{
+		// set the regular volume
+		SOUNDMAN->SetPrefs( PREFSMAN->GetSoundVolume() ); 
+	}
+
+	LOG->Debug( "New mixer volume: %f", SOUNDMAN->GetMixVolume() );
+}
 
 void ScreenAttract::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
@@ -89,6 +111,7 @@ void ScreenAttract::AttractInput( const DeviceInput& DeviceI, const InputEventTy
 				if( MenuI.button != MENU_BUTTON_COIN )
 					SCREENMAN->PlayCoinSound();
 				
+				SetAttractVolume( false ); // unmute
 				pScreen->Cancel( SM_GoToStartScreen );
 				break;
 			default:
@@ -117,12 +140,6 @@ void ScreenAttract::AttractInput( const DeviceInput& DeviceI, const InputEventTy
 
 void ScreenAttract::StartPlayingMusic()
 {
-	if( !GAMESTATE->IsTimeToPlayAttractSounds() )
-	{
-		SOUND->PlayMusic( "" ); // stop music
-		return;
-	}
-
 	ScreenWithMenuElements::StartPlayingMusic();
 }
 

@@ -2,21 +2,33 @@
 #define INPUT_HANDLER_LINUX_JOYSTICK_H 1
 
 #include "InputHandler.h"
+#include "RageThreads.h"
+#include "RageTimer.h"
 
 class InputHandler_Linux_Joystick: public InputHandler
 {
 public:
 	InputHandler_Linux_Joystick();
 	~InputHandler_Linux_Joystick();
-
 	enum { NUM_JOYSTICKS = 4 };
-	void Update(float fDeltaTime);
-	void GetDevicesAndDescriptions(vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut);
+
+	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 
 private:
+	static int InputThread_Start( void *p );
+	void InputThread();
+
 	int fds[NUM_JOYSTICKS];
 	CString m_sDescription[NUM_JOYSTICKS];
+	RageThread m_InputThread;
+	bool m_bShutdown;
+
+	// debugging
+	RageTimer m_InputTimer;
+	float m_fTotalReadTime;
+	int m_iReadCount;
 };
+
 #define USE_INPUT_HANDLER_LINUX_JOYSTICK
 
 #endif

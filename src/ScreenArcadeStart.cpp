@@ -123,8 +123,13 @@ void ScreenArcadeStart::DrawPrimitives()
 
 bool ScreenArcadeStart::Refresh()
 {
+	float fTimer = (TIMEOUT - m_Timer.Ago());
 
-	float fTimer = (TIMEOUT - m_Timer.Ago()) + this->GetTweenTimeLeft();
+	// skew this by the tween time, so we stay at 10 until
+	// the screen has fully loaded
+	if( m_Timer.Ago() < 0.1 )
+		fTimer += this->GetTweenTimeLeft();
+
 	CLAMP( fTimer, 0.0f, TIMEOUT);
 
 	if( !HubIsConnected() )
@@ -141,10 +146,6 @@ bool ScreenArcadeStart::Refresh()
 
 bool ScreenArcadeStart::LoadHandler()
 {
-	INPUTMAN->AddHandler( new InputHandler_PIUIO );
-
-	return true;
-
 	// this makes it so much easier to keep track of. --Vyhd
 	enum Board { BOARD_NONE, BOARD_ITGIO, BOARD_PIUIO };
 	Board iBoard = BOARD_NONE;

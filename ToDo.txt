@@ -1,7 +1,7 @@
 /* More-or-less in order of priority. */
 
 /* Major bug fixing */
--Switching between charts in editor (F5-F6) eats charts D:
+-Switching between charts in editor (F5-F6) eats charts
 -Switching modes on the main menu causes OpenITG to hang
 -Figure out what the hell's up with saving USB stats
 
@@ -9,19 +9,20 @@
 -See if separate coin counters have separate bit mappings
 
 /* Minor bug fixing */
+-Volume isn't properly reset when doing attract->operator menu->title
 -InputHandler_PIUIO's coin code is broken
 -"Random" selections for non-existant BGVids always return the same video
 
 /* Minor feature additions */
 -Working full-screen on Linux
 -Include ThemeInfo.ini support (is this still needed?)
--Write .edit files directly to USB cards
+-Write .edit files directly to USB cards from editor
 -Add Windows code for network diagnostics
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
 
 /* Major feature additions */
+-OptionList LOL
 -Implement custom courses from USB drive
 -Implement "lifebar graph shows FFC/FEC"
--Improve code behind ITG2's beginner helper
--OptionList LOL
 -Fix up/rewrite network gameplay screens for arcade support
+-Improve code behind ITG2's beginner helper

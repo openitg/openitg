@@ -1,15 +1,16 @@
 #include "global.h"
-#include "ScreenDemonstration.h"
 #include "RageLog.h"
-#include "ThemeManager.h"
-#include "GameState.h"
-#include "SongManager.h"
 #include "StepMania.h"
-#include "ScreenManager.h"
 #include "RageSoundManager.h"
 #include "GameSoundManager.h"
+#include "SongManager.h"
+#include "ThemeManager.h"
+#include "ScreenManager.h"
 #include "GameManager.h"
+#include "GameState.h"
 #include "Style.h"
+#include "ScreenDemonstration.h"
+#include "ScreenAttract.h"
 
 
 #define SECONDS_TO_SHOW			THEME->GetMetricF(m_sName,"SecondsToShow")
@@ -25,6 +26,7 @@ ScreenDemonstration::ScreenDemonstration( CString sName ) : ScreenJukebox( sName
 
 void ScreenDemonstration::Init()
 {
+	ScreenAttract::SetAttractVolume( true );
 	// Choose a Style
 	{
 		vector<CString> v;
@@ -84,16 +86,12 @@ void ScreenDemonstration::HandleScreenMessage( const ScreenMessage SM )
 	else if( SM == SM_GainFocus )
 	{
 	}
-	else if( SM == SM_LoseFocus )
-	{
-		SOUNDMAN->SetPrefs( PREFSMAN->GetSoundVolume() );	// turn volume back on
-	}
 	else if( SM == SM_GoToNextScreen )
 	{
 		if( m_pSoundMusic )
 			m_pSoundMusic->Stop();
 		GAMESTATE->Reset();
-		SOUNDMAN->SetPrefs( PREFSMAN->GetSoundVolume() );	// turn volume back on
+		ScreenAttract::SetAttractVolume( false );	// turn volume back on
 		SCREENMAN->SetNewScreen( NEXT_SCREEN );
 		return;
 	}

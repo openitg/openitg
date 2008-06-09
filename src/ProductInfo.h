@@ -13,7 +13,7 @@
 
 /* Build date, in MMDDYYYY - used for serials. We/I need to remember
  * to update this every time a new revision is added ... */
-#define PRODUCT_BUILD_DATE "06012008"
+#define PRODUCT_BUILD_DATE "06082008"
 
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"

@@ -305,6 +305,7 @@ private:
 	Preference<CString>	m_sSoundDrivers;	// "" == default
 public:
 	Preference<float>	m_fSoundVolume;	// -1 == default
+	Preference<float>	m_fSoundVolumeAttract;
 	Preference<int>		m_iSoundWriteAhead;
 	Preference<CString>	m_iSoundDevice;	
 	Preference<RageSoundReader_Resample::ResampleQuality>	m_SoundResampleQuality;
@@ -353,6 +354,7 @@ public:
 	CString GetVideoRenderers();
 	CString GetSoundDrivers();
 	float GetSoundVolume();
+	float GetSoundVolumeAttract();
 	CString GetInputDrivers();
 	CString GetMovieDrivers();
 	CString GetLightsDriver();

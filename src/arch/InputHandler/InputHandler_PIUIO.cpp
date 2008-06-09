@@ -19,12 +19,12 @@ extern CString g_sInputType; // from RageInput
 
 const unsigned NUM_SENSORS = 12;
 
-Preference<bool>	g_bIOCoinTest( "IOCoinTest", false );
+Preference<bool>	g_bUseUnstable( "UseUnstablePIUIODriver", false );
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
 	/* set this to change how PIUIO reads */
-	m_bUseUnstable = true;
+	m_bUseUnstable = g_bUseUnstable;
 
 	m_bShutdown = false;
 	g_sInputType = "PIUIO";
@@ -240,20 +240,16 @@ void InputHandler_PIUIO::HandleInput()
 	else
 		HandleInputInternal();
 
-	/* Handle coin events now */
-	// XXX: probably should have a way to refer to the I/O fields
+	/* Flag coin events */
 	if( m_iInputData[0] & iInputBits[IO_INSERT_COIN] )
-	{
-		if( SCREENMAN )
-			SCREENMAN->SystemMessageNoAnimate( "PIUIO detected coin insert." );
-
 		m_bCoinEvent = true;
-	}
 
 	for (int j = 0; j < 4; j++)
 	{
-		if (m_iInputData[j] != 0) bInputIsNonZero = true;
-		if (m_iInputData[j] != m_iLastInputData[j]) bInputChanged = true;
+		if (m_iInputData[j] != 0)
+			bInputIsNonZero = true;
+		if (m_iInputData[j] != m_iLastInputData[j])
+			bInputChanged = true;
 	}
 
 	/* If they asked for it... */
@@ -263,25 +259,7 @@ void InputHandler_PIUIO::HandleInput()
 			LOG->Trace( "Input: %s", ShortArrayToBin(m_iInputData).c_str() );
 
 		if( SCREENMAN )
-			SCREENMAN->SystemMessageNoAnimate(ShortArrayToBin(m_iInputData));
-
-		/*
-		CString sInputs;
-		
-		for( unsigned x = 0; x < 64; x++ )
-		{
-			if( !(m_iInputData & (i << x)) )
-				continue;
-
-			if( sInputs == "" )
-				sInputs	= ssprintf( "Inputs: (1 << %i)", x );
-			else
-				sInputs += ssprintf( ", (1 << %i)", x );
-		}
-
-		if( LOG )
-			LOG->Info( sInputs );
-		*/
+			SCREENMAN->SystemMessageNoAnimate( ShortArrayToBin(m_iInputData) );
 	}
 
 	uint32_t iInputBitField = 0;
@@ -364,30 +342,22 @@ void InputHandler_PIUIO::UpdateLights()
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
-	int iBit = 0;
-	if( g_bIOCoinTest )
-		iBit = (1 << 10);
-	else
-		iBit = (1 << 28);
-
-	static const uint32_t iCoinBit = iBit;
+	// XXX: this should work, but doesn't. Why not?
+	static const uint32_t iCoinBit = (1 << 28);
 
 	// reset
 	m_iLightData = 0;
 
-	if( !g_bIOCoinTest )
-	{
-		// update marquee lights
-		FOREACH_CabinetLight( cl )
-			if( g_LightsState.m_bCabinetLights[cl] )
-				m_iLightData |= iCabinetBits[cl];
+	// update marquee lights
+	FOREACH_CabinetLight( cl )
+		if( g_LightsState.m_bCabinetLights[cl] )
+			m_iLightData |= iCabinetBits[cl];
 
-		// update the four pad lights on both game controllers
-		FOREACH_GameController( gc )
-			FOREACH_ENUM( GameButton, 4, gb )
-				if( g_LightsState.m_bGameButtonLights[gc][gb] )
-					m_iLightData |= iPadBits[gc][gb];
-	}
+	// update the four pad lights on both game controllers
+	FOREACH_GameController( gc )
+		FOREACH_ENUM( GameButton, 4, gb )
+			if( g_LightsState.m_bGameButtonLights[gc][gb] )
+				m_iLightData |= iPadBits[gc][gb];
 
 	// pulse the coin counter if we have an event
 	if( m_bCoinEvent )

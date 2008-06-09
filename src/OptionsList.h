@@ -8,7 +8,6 @@
 #include "OptionRowHandler.h"
 #include "BitmapText.h"
 #include "OptionsCursor.h"
-#include "CodeSet.h"
 #include "ThemeMetric.h"
 
 class OptionsList;
@@ -62,12 +61,13 @@ private:
 	void MoveItem( const CString &sRowName, int iMove );
 	void SwitchMenu( int iDir );
 	void PositionCursor();
-	void SelectionsChanged( const CString &sRowName );
+	void SelectionsChanged(  const CString &sRowName );
 	void UpdateMenuFromSelections();
 	CString GetCurrentRow() const;
 	const OptionRowHandler *GetCurrentHandler();
 	int GetOneSelection( CString sRow, bool bAllowFail=false ) const;
 	void SwitchToCurrentRow();
+
 	void TweenOnCurrentRow( bool bForward );
 	void SetDefaultCurrentRow();
 	void Push( CString sDest );
@@ -75,9 +75,9 @@ private:
 	void ImportRow( CString sRow );
 	void ExportRow( CString sRow );
 
-	static int FindScreenInHandler( const OptionRowHandler *pHandler, CString sScreen );
+	static int FindScreenInHandler( OptionRowDefinition *ordef, const OptionRowHandler *pHandler, CString sScreen );
 
-	InputQueueCodeSet	m_Codes;
+	//InputQueueCodeSet	m_Codes;
 
 	OptionsList		*m_pLinked;
 
@@ -86,6 +86,7 @@ private:
 
 	vector<CString> m_asLoadedRows;
 	map<CString, OptionRowHandler *> m_Rows;
+	map<OptionRowHandler *, OptionRowDefinition *> m_RowDefs;
 	map<CString, vector<bool> > m_bSelections;
 	set<CString> m_setDirectRows;
 	set<CString> m_setTopMenus; /* list of top-level menus, pointing to submenus */

@@ -92,6 +92,70 @@ Actor::Actor()
 	m_bFirstUpdate = true;
 }
 
+Actor *Actor::Copy() const { return new Actor(*this); }
+
+Actor::Actor( const Actor &cpy ):
+	IMessageSubscriber( cpy )
+{
+	/* Don't copy an Actor in the middle of rendering. */
+	ASSERT( cpy.m_pTempState == NULL );
+	m_pTempState = NULL;
+
+#define CPY(x) x = cpy.x
+	CPY( m_sName );
+	//CPY( m_pParent );
+	//CPY( m_pLuaInstance );
+
+	CPY( m_baseRotation );
+	CPY( m_baseScale );
+	CPY( m_fBaseAlpha );
+
+
+	CPY( m_size );
+	CPY( m_current );
+	CPY( m_start );
+	//for( unsigned i = 0; i < cpy.m_Tweens.size(); ++i )
+		//m_Tweens.push_back( new TweenStateAndInfo((*cpy).m_Tweens[i]) );
+	m_Tweens = cpy.m_Tweens;
+
+	CPY( m_bFirstUpdate );
+
+	CPY( m_HorizAlign );
+	CPY( m_VertAlign );
+
+	CPY( m_Effect );
+	CPY( m_fSecsIntoEffect );
+	CPY( m_fEffectDelta );
+	//CPY( m_fEffectRampUp );
+	//CPY( m_fEffectHoldAtHalf );
+	//CPY( m_fEffectRampDown );
+	//CPY( m_fEffectHoldAtZero );
+	CPY( m_fEffectOffset );
+	CPY( m_EffectClock );
+
+	CPY( m_effectColor1 );
+	CPY( m_effectColor2 );
+	CPY( m_vEffectMagnitude );
+
+	CPY( m_bVisible );
+	CPY( m_fHibernateSecondsLeft );
+	CPY( m_fShadowLength );
+	CPY( m_bIsAnimating );
+	CPY( m_iDrawOrder );
+
+	CPY( m_bTextureWrapping );
+	//CPY( m_bTextureFiltering );
+	CPY( m_BlendMode );
+	CPY( m_bClearZBuffer );
+	CPY( m_ZTestMode );
+	CPY( m_bZWrite );
+	CPY( m_fZBias );
+	CPY( m_CullMode );
+
+	CPY( m_mapNameToCommands );
+#undef CPY
+}
+
 static bool GetMessageNameFromCommandName( const CString &sCommandName, CString &sMessageNameOut )
 {
 	if( sCommandName.Right(7) == "Message" )
@@ -213,12 +277,12 @@ void Actor::BeginDraw()		// set the world matrix and calculate actor properties
 		 * the effect can happen from .40 to .55 by setting offset to .40 and
 		 * delay to .85. */
 		const float fTotalPeriod = m_fEffectPeriodSeconds + m_fEffectDelay;
-		CHECKPOINT_M( ssprintf("%f = %f + %f", fTotalPeriod, m_fEffectPeriodSeconds, m_fEffectDelay) );
+		//CHECKPOINT_M( ssprintf("%f = %f + %f", fTotalPeriod, m_fEffectPeriodSeconds, m_fEffectDelay) );
 		const float fSecsIntoPeriod = fmodfp( m_fSecsIntoEffect+m_fEffectOffset, fTotalPeriod );
-		CHECKPOINT_M( ssprintf("%f = fmodfp(%f + %f, %f)", fSecsIntoPeriod, m_fSecsIntoEffect, m_fEffectOffset, fTotalPeriod) );
+		//CHECKPOINT_M( ssprintf("%f = fmodfp(%f + %f, %f)", fSecsIntoPeriod, m_fSecsIntoEffect, m_fEffectOffset, fTotalPeriod) );
 
 		float fPercentThroughEffect = SCALE( fSecsIntoPeriod, 0, m_fEffectPeriodSeconds, 0, 1 );
-		CHECKPOINT_M( ssprintf("%f = SCALE(%f, 0, %f, 0, 1)", fPercentThroughEffect, fSecsIntoPeriod, m_fEffectPeriodSeconds) );
+		//CHECKPOINT_M( ssprintf("%f = SCALE(%f, 0, %f, 0, 1)", fPercentThroughEffect, fSecsIntoPeriod, m_fEffectPeriodSeconds) );
 		fPercentThroughEffect = clamp( fPercentThroughEffect, 0, 1 );
 		ASSERT_M( fPercentThroughEffect >= 0 && fPercentThroughEffect <= 1,
 			ssprintf("%f", fPercentThroughEffect) );

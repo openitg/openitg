@@ -200,6 +200,7 @@ OptionsList::~OptionsList()
 void OptionsList::Load( CString sType, PlayerNumber pn )
 {
 	TOP_MENU.Load( sType, "TopMenu" );
+	//SET_XY( this );
 
 	m_pn = pn;
 	m_bStartIsDown = false;
@@ -381,7 +382,7 @@ void OptionsList::MoveItem( const CString &sRowName, int iMove )
 
 void OptionsList::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
-	LOG->Debug("OptionsList::Input()");
+	//LOG->Debug("OptionsList::Input()");
 	PlayerNumber pn = GAMESTATE->GetCurrentStyle()->ControllerToPlayerNumber( GameI.controller );
 
 	CString msg;

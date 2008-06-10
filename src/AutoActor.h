@@ -15,6 +15,8 @@ public:
 	~AutoActor()					{ Unload(); }
 	operator const Actor* () const	{ return m_pActor; }
 	operator Actor* ()				{ return m_pActor; }
+        AutoActor( const AutoActor &cpy );
+        AutoActor &operator =( const AutoActor &cpy );
 	const Actor *operator->() const { return m_pActor; }
 	Actor *operator->()				{ return m_pActor; }
 	void Unload();

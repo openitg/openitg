@@ -29,6 +29,25 @@ void AutoActor::LoadAndSetName( const CString &sScreenName, const CString &sActo
 	m_pActor->SetName( sActorName );
 }
 
+AutoActor::AutoActor( const AutoActor &cpy )
+{
+        if( cpy.m_pActor == NULL )
+                m_pActor = NULL;
+        else
+                m_pActor = cpy.m_pActor->Copy();
+}
+
+AutoActor &AutoActor::operator=( const AutoActor &cpy )
+{
+        Unload();
+
+        if( cpy.m_pActor == NULL )
+                m_pActor = NULL;
+        else
+                m_pActor = cpy.m_pActor->Copy();
+        return *this;
+}
+
 /*
  * (c) 2003-2004 Chris Danford
  * All rights reserved.

@@ -20,8 +20,14 @@ public:
 
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
-	PIUIO IOBoard;
+	PIUIO Board;
 	RageThread InputThread;
+
+	// keeps track of which sensors are on for each input
+	bool m_bInputs[32][4];
+
+	// used to determine which inputs have sensor comments
+	bool m_bReportSensor[32];
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;
@@ -48,8 +54,6 @@ private:
 	/* temp workaround to keep a dev driver while
 	 * maintaining a working release driver - to use
 	 * Unstable, set UseUnstablePIUIODriver to true */
-
-	bool m_bUseUnstable;
 	void HandleInputInternal();
 	void HandleInputInternalUnstable();
 

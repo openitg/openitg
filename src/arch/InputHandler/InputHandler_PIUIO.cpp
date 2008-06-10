@@ -8,7 +8,9 @@
 #include "PrefsManager.h" // for m_bDebugUSBInput
 #include "ScreenManager.h"
 #include "LightsManager.h"
+#include "InputMapper.h"
 
+#include "GameInput.h"
 #include "Preference.h"
 
 #include "arch/Lights/LightsDriver_External.h"
@@ -17,20 +19,15 @@
 extern LightsState g_LightsState; // from LightsDriver_External
 extern CString g_sInputType; // from RageInput
 
-const unsigned NUM_SENSORS = 12;
-
 Preference<bool>	g_bUseUnstable( "UseUnstablePIUIODriver", false );
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
-	/* set this to change how PIUIO reads */
-	m_bUseUnstable = g_bUseUnstable;
-
 	m_bShutdown = false;
 	g_sInputType = "PIUIO";
 
 	// device found and set
-	if( !IOBoard.Open() )
+	if( !Board.Open() )
 	{
 		LOG->Warn( "OpenITG could not establish a connection with PIUIO." );
 		return;
@@ -43,9 +40,17 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 	if( PREFSMAN->GetLightsDriver().Find("ext") == -1 )
 		LOG->Warn( "\"ext\" is not an enabled LightsDriver. The I/O board cannot run lights." );
 
+
+	// figure out which inputs we should report sensors on - pads only
+	// XXX: make this refresh whenever mappings have changed!
+	InputDevice id = InputDevice( DEVICE_JOY1 );
+
+	// for now, we do this. make this dynamic and Style-based in the near future.
+	for( int i = 0; i < 32; i++ )
+		m_bReportSensor[i] = true;
+
 	InputThread.SetName( "PIUIO thread" );
 	InputThread.Create( InputThread_Start, this );
-
 }
 
 InputHandler_PIUIO::~InputHandler_PIUIO()
@@ -58,14 +63,14 @@ InputHandler_PIUIO::~InputHandler_PIUIO()
 		LOG->Trace( "PIUIO thread shut down." );
 	}
 
-	IOBoard.Close();
+	Board.Close();
 }
 
 void InputHandler_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )
 {
 	if( m_bFoundDevice )
 	{
-		vDevicesOut.push_back( InputDevice(DEVICE_PIUIO) );
+		vDevicesOut.push_back( InputDevice(DEVICE_JOY1) );
 		vDescriptionsOut.push_back( "PIUIO" );
 	}
 }
@@ -106,20 +111,15 @@ static CString ShortArrayToBin( uint32_t arr[8] )
 	return result;
 }
 
-// P1: right left bottom top, P2: right left bottom top
-int sensor_bits[NUM_SENSORS];
+static CString SensorNames[] = { "right", "left", "bottom", "top" };
 
-static CString SensorDescriptions[] = { "right", "left", "bottom", "top" };
-
-static CString GetSensorDescription( int iBits )
+static CString GetSensorDescription( bool *bSensorArray )
 {
-	if ( iBits == 0 )
-		return "";
-
 	CStringArray retSensors;
+
 	for( int i = 0; i < 4; i++ )
-		if ( iBits & (1 << i) )
-			retSensors.push_back(SensorDescriptions[i]);
+		if( bSensorArray[i] )
+			retSensors.push_back( SensorNames[i] );
 
 	return join(", ", retSensors);
 }
@@ -127,83 +127,58 @@ static CString GetSensorDescription( int iBits )
 /* this is the input-reading logic that needs tested */
 void InputHandler_PIUIO::HandleInputInternalUnstable()
 {
-	uint32_t i = 1; // convenience hack
 	uint32_t iNewLightData = 0;
 
-	for (uint32_t j = 0; j < 4; j++)
+	// write each light state at once
+	for (uint32_t i = 0; i < 4; i++)
 	{
 		iNewLightData = m_iLightData & 0xfffcfffc;
-		iNewLightData |= (j | (j << 16));
+		iNewLightData |= (i | (i << 16));
 
-		m_iInputData[j] = iNewLightData;
+		m_iInputData[i] = iNewLightData;
 	}
 
-	IOBoard.BulkReadWrite( m_iInputData );
+	Board.BulkReadWrite( m_iInputData );
 
-	for (uint32_t j = 0; j < 4; j++)
+	for (uint32_t i = 0; i < 4; i++)
 	{
 		/* PIUIO opens high - for more logical processing, invert it */
-		m_iInputData[j] = ~m_iInputData[j];
+		m_iInputData[i] = ~m_iInputData[i];
 
-		/* Toggle sensor bits - Left, Right, Up, Down */
-		// P1
-		/* Don't read past the P2 arrows */
-		if (m_iInputData[j] & (i << 2)) sensor_bits[0] |= (i << j);
-		if (m_iInputData[j] & (i << 3)) sensor_bits[1] |= (i << j);
-		if (m_iInputData[j] & (i << 0)) sensor_bits[2] |= (i << j);
-		if (m_iInputData[j] & (i << 1)) sensor_bits[3] |= (i << j);
-
-		// P2
-		if (m_iInputData[j] & (i << 18)) sensor_bits[8] |= (i << j);
-		if (m_iInputData[j] & (i << 19)) sensor_bits[9] |= (i << j);
-		if (m_iInputData[j] & (i << 16)) sensor_bits[10] |= (i << j);
-		if (m_iInputData[j] & (i << 17)) sensor_bits[11] |= (i << j);
+		// figure out which sensors were enabled
+		for( int j = 0; j < 32; j++ )
+			if( m_iInputData[j] & (1 << 32-j) )
+				m_bInputs[j][i] = true;
 	}
 }
 
 /* this is the input-reading logic that we know works */
 void InputHandler_PIUIO::HandleInputInternal()
 {
-	uint32_t i = 1; // convenience hack
 	uint32_t iNewLightData = 0;
 
-	for (uint32_t j = 0; j < 4; j++)
+	for (uint32_t i = 0; i < 4; i++)
 	{
 		iNewLightData = m_iLightData & 0xfffcfffc;
-		iNewLightData |= (j | (j << 16));
+		iNewLightData |= (i | (i << 16));
 
-		m_iInputData[j] = iNewLightData;
+		m_iInputData[i] = iNewLightData;
 
-		IOBoard.Write( iNewLightData );
-		IOBoard.Read( &(m_iInputData[j]) );
+		Board.Write( iNewLightData );
+		Board.Read( &(m_iInputData[i]) );
 
 		/* PIUIO opens high - for more logical processing, invert it */
-		m_iInputData[j] = ~m_iInputData[j];
+		m_iInputData[i] = ~m_iInputData[i];
 
 		/* Toggle sensor bits - Left, Right, Up, Down */
-		// P1
-		/* Don't read past the P2 arrows */
-		if (m_iInputData[j] & (i << 2)) sensor_bits[0] |= (i << j);
-		if (m_iInputData[j] & (i << 3)) sensor_bits[1] |= (i << j);
-		if (m_iInputData[j] & (i << 0)) sensor_bits[2] |= (i << j);
-		if (m_iInputData[j] & (i << 1)) sensor_bits[3] |= (i << j);
-
-		// P2
-		if (m_iInputData[j] & (i << 18)) sensor_bits[8] |= (i << j);
-		if (m_iInputData[j] & (i << 19)) sensor_bits[9] |= (i << j);
-		if (m_iInputData[j] & (i << 16)) sensor_bits[10] |= (i << j);
-		if (m_iInputData[j] & (i << 17)) sensor_bits[11] |= (i << j);
+		for( int j = 0; j < 32; j++ )
+			if( m_iInputData[j] & (1 << 32-j) )
+				m_bInputs[j][i] = true;
 	}
 
 }
 
-// XXX fixed 4/7/08.  Game.  Set.  Match.  --infamouspat
-// ITT history :D  -- vyhd
-void InputHandler_PIUIO::HandleInput()
-{
-	m_InputTimer.Touch();
-	uint32_t i = 1; // convenience hack
-
+#if 0
 	/* Easy to access if needed --Vyhd */
 	static const uint32_t iInputBits[NUM_IO_BUTTONS] =
 	{
@@ -225,24 +200,30 @@ void InputHandler_PIUIO::HandleInput()
 		// Service button, Coin event
 		(i << 9) | (i << 14), (i << 10)
 	};
+#endif
+
+// XXX fixed 4/7/08.  Game.  Set.  Match.  --infamouspat
+// ITT history :D  -- vyhd
+void InputHandler_PIUIO::HandleInput()
+{
+	m_InputTimer.Touch();
+	uint32_t i = 1; // convenience hack
 
 	bool bInputIsNonZero = false, bInputChanged = false;
 
 	// reset
-	for (unsigned j = 0; j < NUM_SENSORS; j++)
-		ZERO( sensor_bits );
-	for (unsigned j = 0; j < 8; j++)
-		ZERO( m_iInputData );
+	ZERO( m_iInputData );
+	ZERO( m_bInputs );
 
 	/* read the input and handle the sensor logic */
-	if( m_bUseUnstable )
+	if( g_bUseUnstable )
 		HandleInputInternalUnstable();
 	else
 		HandleInputInternal();
 
 	/* Flag coin events */
-	if( m_iInputData[0] & iInputBits[IO_INSERT_COIN] )
-		m_bCoinEvent = true;
+//	if( m_iInputData[0] & )
+//		m_bCoinEvent = true;
 
 	for (int j = 0; j < 4; j++)
 	{
@@ -267,24 +248,23 @@ void InputHandler_PIUIO::HandleInput()
 	for (int j = 0; j < 4; j++)
 		iInputBitField |= m_iInputData[j];
 
-	InputDevice id = DEVICE_PIUIO;
+	InputDevice id = DEVICE_JOY1;
 
 	/* Actually handle the input now */
-	for( int iButton = 0; iButton < NUM_IO_BUTTONS; iButton++ )
+	for( int iButton = 0; iButton < 32; iButton++ )
 	{
-		DeviceInput di(id, iButton);
+		DeviceInput di(id, JOY_1+iButton);
 
 		/* If we're in a thread, our timestamp is accurate */
 		if( InputThread.IsCreated() )
 			di.ts.Touch();
 
 		/* Set a description of detected sensors to the arrows */
-		if (iButton < 4 || (iButton > 7 && iButton < 12))
-			INPUTFILTER->SetButtonComment(di, GetSensorDescription(sensor_bits[iButton]));
+		// XXX: set this to pad-only ( StyleI.IsValid()? )
+		INPUTFILTER->SetButtonComment(di, GetSensorDescription( m_bInputs[iButton] ));
 
 		/* Is the button we're looking for flagged in the input data? */
-		ButtonPressed( di, iInputBitField & iInputBits[iButton] );
-
+		ButtonPressed( di, iInputBitField & (1 << (31-iButton)) );
 	}
 
 	/* assign our last input */

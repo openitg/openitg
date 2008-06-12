@@ -4,7 +4,14 @@
 #include "GameState.h"
 #include "CommonMetrics.h"
 #include "LuaManager.h"
+#include "EnumHelper.h"
 
+
+static const char *PlayerNumberNames[] = {
+        "P1",
+        "P2",
+};
+XToString( PlayerNumber, 2 );
 
 PlayerNumber GetNextHumanPlayer( PlayerNumber pn )
 {

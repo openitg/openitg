@@ -27,6 +27,8 @@ PlayerNumber GetNextEnabledPlayer( PlayerNumber pn );
 PlayerNumber GetNextCpuPlayer( PlayerNumber pn );
 PlayerNumber GetNextPotentialCpuPlayer( PlayerNumber pn );
 
+const CString& PlayerNumberToString( PlayerNumber pn );
+
 const PlayerNumber	OPPOSITE_PLAYER[NUM_PLAYERS] = { PLAYER_2, PLAYER_1 };
 
 #endif

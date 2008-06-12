@@ -49,7 +49,6 @@ static int GetOneSelection( const vector<bool> &vbSelected )
 	return iRet;
 }
 
-
 class OptionRowHandlerList : public OptionRowHandler
 {
 public:
@@ -288,7 +287,15 @@ public:
 		const GameCommand &mc = ListEntries[iChoice];
 		return !mc.m_sScreen.empty();
 	}
-
+	virtual CString GetScreen( int iChoice ) const
+        {
+                const GameCommand &gc = ListEntries[iChoice];
+                return gc.m_sScreen;
+        }
+	virtual void GetGameCommand( int iChoice, GameCommand &out ) const
+	{
+		out = ListEntries[iChoice];
+	}
 	void FillNoteSkins( OptionRowDefinition &defOut, CString sParam )
 	{
 		Init();

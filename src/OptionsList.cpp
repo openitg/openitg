@@ -183,6 +183,7 @@ void OptionListRow::PositionCursor( Actor *pCursor, int iSelection )
 	else
 		pCursor->PlayCommand( "PositionOneRow" );
 	pCursor->SetXY( fX, fY );
+	//pCursor->SetY( fY );
 }
 
 OptionsList::OptionsList()
@@ -200,13 +201,12 @@ OptionsList::~OptionsList()
 void OptionsList::Load( CString sType, PlayerNumber pn )
 {
 	TOP_MENU.Load( sType, "TopMenu" );
-	//SET_XY( this );
 
 	m_pn = pn;
 	m_bStartIsDown = false;
 
-	m_Cursor.Load( THEME->GetPathG(sType, "cursor") );
 	m_Cursor->SetName( "Cursor" );
+	m_Cursor.Load( THEME->GetPathG(sType, "cursor") );
 	ActorUtil::LoadAllCommands( *m_Cursor, sType );
 	this->AddChild( m_Cursor );
 
@@ -226,7 +226,6 @@ void OptionsList::Load( CString sType, PlayerNumber pn )
 
 		if( m_Rows.find(sLineName) != m_Rows.end() )
 		{
-			LOG->Debug("continue;'ing...");
 			continue;
 		}
 
@@ -261,6 +260,7 @@ void OptionsList::Load( CString sType, PlayerNumber pn )
 		this->AddChild( &m_Row[i] );
 	}
 
+	this->PlayCommand( "On" );
 	this->PlayCommand( "TweenOff" );
 	this->FinishTweening();
 }

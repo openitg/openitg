@@ -38,6 +38,12 @@ void FontManager::ReloadFonts()
 	}
 }
 
+Font *FontManager::CopyFont( Font *pFont )
+{
+        ++pFont->m_iRefCount;
+        return pFont;
+}
+
 Font* FontManager::LoadFont( const CString &sFontOrTextureFilePath, CString sChars )
 {
 	// Convert the path to lowercase so that we don't load duplicates.
@@ -45,7 +51,7 @@ Font* FontManager::LoadFont( const CString &sFontOrTextureFilePath, CString sCha
 	// of the same bitmap if there are equivalent but different paths
 	// (e.g. "graphics\blah.png" and "..\stepmania\graphics\blah.png" ).
 
-	CHECKPOINT_M( ssprintf("FontManager::LoadFont(%s).", sFontOrTextureFilePath.c_str()) );
+	//CHECKPOINT_M( ssprintf("FontManager::LoadFont(%s).", sFontOrTextureFilePath.c_str()) );
 	const FontName NewName( sFontOrTextureFilePath, sChars );
 	map<FontName, Font*>::iterator p = g_mapPathToFont.find( NewName );
 	if( p != g_mapPathToFont.end() )
@@ -58,13 +64,14 @@ Font* FontManager::LoadFont( const CString &sFontOrTextureFilePath, CString sCha
 	Font *f = new Font;
 	f->Load(sFontOrTextureFilePath, sChars);
 	g_mapPathToFont[NewName] = f;
+
 	return f;
 }
 
 
 void FontManager::UnloadFont( Font *fp )
 {
-	CHECKPOINT_M( ssprintf("FontManager::UnloadFont(%s).", fp->path.c_str()) );
+	//CHECKPOINT_M( ssprintf("FontManager::UnloadFont(%s) %d.", fp->path.c_str(), fp->path.length() ));
 
 	for( std::map<FontName, Font*>::iterator i = g_mapPathToFont.begin();
 		i != g_mapPathToFont.end(); ++i)
@@ -81,7 +88,7 @@ void FontManager::UnloadFont( Font *fp )
 		}
 		return;
 	}
-	
+
 	RageException::Throw( "Unloaded an unknown font (%p)", fp );
 }
 

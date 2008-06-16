@@ -86,7 +86,7 @@ static bool pApplyMasks()
 	return true;
 }
 
-bool X11Helper::MakeWindow( int screenNum, int depth, Visual *visual, int width, int height )
+bool X11Helper::MakeWindow( int screenNum, int depth, Visual *visual, int width, int height, bool bOverrideRedirect )
 {
 	vector<long>::iterator i;
 	
@@ -115,10 +115,13 @@ bool X11Helper::MakeWindow( int screenNum, int depth, Visual *visual, int width,
 	// XXX: Error catching/handling?
 
 	winAttribs.colormap = XCreateColormap( Dpy, RootWindow(Dpy, screenNum), visual, AllocNone );
+	winAttribs.override_redirect = True;
 
-	Win = XCreateWindow( Dpy, RootWindow(Dpy, screenNum), 0, 0, width,
-		height, 0, depth, InputOutput, visual,
-		CWBorderPixel | CWColormap | CWEventMask, &winAttribs );
+	unsigned long mask = CWBorderPixel | CWColormap | CWEventMask;
+	if ( bOverrideRedirect ) mask |= CWOverrideRedirect;
+
+	Win = XCreateWindow( Dpy, RootWindow(Dpy, screenNum), 0, 0, width, 
+		height, 0, depth, InputOutput, visual, mask, &winAttribs );
 
 	g_bHaveWin = true;
 

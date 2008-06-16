@@ -5,6 +5,11 @@
 
 #include "LowLevelWindow.h"
 
+#include <GL/glx.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <X11/extensions/xf86vmode.h>
+
 class LowLevelWindow_X11 : public LowLevelWindow
 {
 public:
@@ -19,6 +24,7 @@ public:
 
 private:
 	bool m_bWindowIsOpen;
+	bool m_bWasWindowed;
 	RageDisplay::VideoModeParams CurrentParams;
 };
 

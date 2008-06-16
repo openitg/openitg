@@ -27,7 +27,8 @@ namespace X11Helper
 	// this visual type, this width (optional -- you can resize the window
 	// in your callback later), and this height (optional).
 	bool MakeWindow(int screenNum, int depth, Visual *visual,
-					int width=32, int height=32);
+					int width=32, int height=32,
+					bool bOverrideRedirect = false);
 
 	// Unmask one X event type mask thingy (XSelectInput() arg 3) on the
 	// current window. Masked/unmasked events will carry between windows.

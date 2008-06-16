@@ -26,6 +26,7 @@
 #include "ThemeMetric.h"
 #include "ActorCommands.h"
 #include "song.h"
+#include "OptionsList.h"
 
 class ScreenSelectMusic : public ScreenWithMenuElements
 {
@@ -56,6 +57,10 @@ protected:
 	void SkipSongPartTweens();
 	void SkipCoursePartTweens();
 	virtual void LoadHelpText();
+
+
+        void OpenOptionsList( PlayerNumber pn );
+        void CloseOptionsList( PlayerNumber pn );
 
 	bool ValidateCustomSong( Song* pSong );
 
@@ -93,6 +98,7 @@ protected:
 	ThemeMetric<bool> OPTIONS_MENU_AVAILABLE;
 	DynamicThemeMetric<bool> SELECT_MENU_AVAILABLE;
 	DynamicThemeMetric<bool> MODE_MENU_AVAILABLE;
+        ThemeMetric<bool> USE_OPTIONS_LIST;
 
 	CString m_sSectionMusicPath;
 	CString m_sSortMusicPath;
@@ -124,6 +130,7 @@ protected:
 	Sprite				m_sprHighScoreFrame[NUM_PLAYERS];
 	BitmapText			m_textHighScore[NUM_PLAYERS];
 	MusicWheel			m_MusicWheel;
+	OptionsList			m_OptionsList[NUM_PLAYERS];
 	AutoActor			m_MusicWheelUnder;
 	AutoActor			m_sprLongBalloon;
 	AutoActor			m_sprMarathonBalloon;

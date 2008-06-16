@@ -33,6 +33,7 @@
 #include "RageFile.h"
 #include "MemoryCardManager.h" 
 #include "InputQueue.h"
+#include "OptionsList.h"
 
 const int NUM_SCORE_DIGITS	=	9;
 
@@ -80,7 +81,8 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 	MUSIC_WHEEL_TYPE( m_sName, "MusicWheelType" ),
 	OPTIONS_MENU_AVAILABLE( m_sName, "OptionsMenuAvailable" ),
 	SELECT_MENU_AVAILABLE( m_sName, "SelectMenuAvailable" ),
-	MODE_MENU_AVAILABLE( m_sName, "ModeMenuAvailable" )
+	MODE_MENU_AVAILABLE( m_sName, "ModeMenuAvailable" ),
+        USE_OPTIONS_LIST( m_sName, "UseOptionsList" )
 {
 	LOG->Trace( "ScreenSelectMusic::ScreenSelectMusic()" );
 
@@ -157,6 +159,21 @@ void ScreenSelectMusic::Init()
 	m_MusicWheel.SetName( "MusicWheel" );
 	SET_XY( m_MusicWheel );
 	this->AddChild( &m_MusicWheel );
+
+	if( USE_OPTIONS_LIST )
+	{
+		FOREACH_PlayerNumber(p)
+		{
+			m_OptionsList[p].SetName( ssprintf("OptionsListP%d", p+1) );
+			m_OptionsList[p].Load( ssprintf("OptionsListP%d", p+1), p );
+			m_OptionsList[p].SetDrawOrder( 100 );
+			ActorUtil::LoadAllCommands( m_OptionsList[p], m_sName );
+			SET_XY( m_OptionsList[p] );
+			this->AddChild( &m_OptionsList[p] );
+		}
+		m_OptionsList[PLAYER_1].Link( &m_OptionsList[PLAYER_2] );
+		m_OptionsList[PLAYER_2].Link( &m_OptionsList[PLAYER_1] );
+	}
 
 	m_sprBannerMask.SetName( "Banner" );	// use the same metrics and animation as Banner
 	m_sprBannerMask.Load( THEME->GetPathG(m_sName,"banner mask") );
@@ -771,7 +788,7 @@ void ScreenSelectMusic::Update( float fDeltaTime )
 
 void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
-	//LOG->Info( "ScreenSelectMusic::Input()" );
+	//LOG->Debug( "ScreenSelectMusic::Input()" );
 
 	// debugging?
 	// I just like being able to see untransliterated titles occasionally.
@@ -830,9 +847,34 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 
 	if( m_bMadeChoice )		return;		// ignore
 
+	// handle options list input
+        if( USE_OPTIONS_LIST )
+        {
+                PlayerNumber pn = MenuI.player;
+                if( pn != PLAYER_INVALID )
+                {
+                        if( m_OptionsList[pn].IsOpened() )
+                        {
+                                //m_OptionsList[pn].Input( input );
+				m_OptionsList[pn].Input( DeviceI, type, GameI, MenuI, StyleI );
+
+                                if( !m_OptionsList[pn].IsOpened() )
+                                        CloseOptionsList( pn );
+
+                                return;
+                        }
+                        else
+                        {
+                                if( type == IET_RELEASE  &&  MenuI.button == MENU_BUTTON_SELECT /* && m_bAcceptSelectRelease[pn] */ )
+                                        OpenOptionsList( pn );
+                        }
+                }
+        }
+
+
 	LoadHelpText();
 
-	bool bSelectIsPressed = SELECT_MENU_AVAILABLE && INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
+	bool bSelectIsPressed = !USE_OPTIONS_LIST && SELECT_MENU_AVAILABLE && INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
 
 	if( bSelectIsPressed )
 	{
@@ -1007,6 +1049,22 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 	}
 }
 
+void ScreenSelectMusic::OpenOptionsList( PlayerNumber pn )
+{
+        m_OptionsList[pn].Open();
+        CString msg(ssprintf("OptionsListOpenedP%d",pn+1));
+        //msg.SetParam( "Player", pn );
+        MESSAGEMAN->Broadcast( msg );
+}
+
+void ScreenSelectMusic::CloseOptionsList( PlayerNumber pn )
+{
+        m_OptionsList[pn].Close();
+        CString msg(ssprintf("OptionsListClosedP%d",pn+1));
+        //msg.SetParam( "Player", pn );
+        MESSAGEMAN->Broadcast( msg );
+}
+
 void ScreenSelectMusic::LoadHelpText()
 {
 	ScreenWithMenuElements::LoadHelpText();
@@ -1018,7 +1076,7 @@ void ScreenSelectMusic::LoadHelpText()
 		bSelectIsDown = false;
 
 	/* If m_soundSelectPressed isn't loaded yet, wait until it is before we do this. */
-	if( m_bSelectIsDown != bSelectIsDown && m_soundSelectPressed.IsLoaded() )
+	if( m_bSelectIsDown != bSelectIsDown && m_soundSelectPressed.IsLoaded() && !USE_OPTIONS_LIST )
 	{
 		if( bSelectIsDown )
 			m_soundSelectPressed.Play();

@@ -9,6 +9,7 @@
 #include "BitmapText.h"
 #include "OptionsCursor.h"
 #include "ThemeMetric.h"
+#include "RageSound.h"
 
 class OptionsList;
 class OptionListRow: public ActorFrame
@@ -54,6 +55,7 @@ public:
 	bool Start();	/* return true if the last menu was popped in response to this press */
 
 	bool IsOpened() const { return m_asMenuStack.size() > 0; }
+
 private:
 	ThemeMetric<CString> TOP_MENU;
 
@@ -98,6 +100,15 @@ private:
 
 	vector<CString> m_asMenuStack;
 	int m_iMenuStackSelection;
+
+	RageSound m_soundLeft;
+	RageSound m_soundRight;
+	RageSound m_soundOpened;
+	RageSound m_soundClosed;
+	RageSound m_soundPush;
+	RageSound m_soundPop;
+	RageSound m_soundStart;
+
 };
 
 

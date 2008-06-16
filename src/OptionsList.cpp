@@ -5,11 +5,13 @@
 #include "Course.h"
 #include "SongUtil.h"
 #include "StepsUtil.h"
+#include "Font.h"
 #include "Style.h"
 #include "CodeDetector.h"
 #include "InputMapper.h"
 #include "PlayerState.h"
 #include "ScreenDimensions.h"
+#include "RageSound.h"
 
 #define LINE(sLineName)				THEME->GetMetric (m_sName,ssprintf("Line%s",sLineName.c_str()))
 #define MAX_ITEMS_BEFORE_SPLIT			THEME->GetMetricI(m_sName,"MaxItemsBeforeSplit")
@@ -25,9 +27,10 @@ void OptionListRow::Load( OptionsList *pOptions, const CString &sType )
 	ITEMS_SPACING_Y	.Load(sType,"ItemsSpacingY");
 
 	m_Text.resize( 1 );
-	m_Text[0].SetName( "Text" );
 	m_Text[0].LoadFromFont( THEME->GetPathF(sType, "normal") );
+	m_Text[0].SetName( "Text" );
 	ActorUtil::LoadAllCommands( m_Text[0], sType );
+	CHECKPOINT_M( m_Text[0].m_pFont->path );
 
 	m_Underlines.resize( 1 );
 	m_Underlines[0].Load( THEME->GetPathG(sType, "underline") );
@@ -54,8 +57,10 @@ void OptionListRow::SetFromHandler( const OptionRowHandler *cpHandler )
 
 	int iNum = max( m_pOptions->m_RowDefs[pHandler]->choices.size(), m_Text.size() )+1;
 	BitmapText defText = m_Text[0];
+	CHECKPOINT_M( m_Text[0].m_pFont->path );
 	m_Text.resize( iNum, defText );
 	m_Underlines.resize( iNum, m_Underlines[0] );
+	CHECKPOINT_M( m_Text[iNum-1].m_pFont->path );
 
 	for( unsigned i = 0; i < m_pOptions->m_RowDefs[pHandler]->choices.size(); ++i )
 	{
@@ -118,6 +123,7 @@ void OptionListRow::SetTextFromHandler( const OptionRowHandler *cpHandler )
 		//CString sText = pHandler->GetThemedItemText( i );
 		// XXX: localize somehow --infamouspat
 		CString sText = m_pOptions->m_RowDefs[pHandler]->choices[i];
+		CHECKPOINT_M( sText );
 
 		CString sDest = pHandler->GetScreen( i );
 		if( m_pOptions->m_setDirectRows.find(sDest) != m_pOptions->m_setDirectRows.end() && sDest.size() )
@@ -131,6 +137,7 @@ void OptionListRow::SetTextFromHandler( const OptionRowHandler *cpHandler )
 			}
 		}
 
+		CHECKPOINT_M( ssprintf( "%s, selection: %d, size: %d", m_Text[i].m_pFont->path.c_str(), i, m_Text.size()) );
 		m_Text[i].SetText( sText );
 	}
 }
@@ -183,7 +190,6 @@ void OptionListRow::PositionCursor( Actor *pCursor, int iSelection )
 	else
 		pCursor->PlayCommand( "PositionOneRow" );
 	pCursor->SetXY( fX, fY );
-	//pCursor->SetY( fY );
 }
 
 OptionsList::OptionsList()
@@ -194,8 +200,9 @@ OptionsList::OptionsList()
 
 OptionsList::~OptionsList()
 {
-	FOREACHM( CString, OptionRowHandler *, m_Rows, hand )
+	FOREACHM( CString, OptionRowHandler *, m_Rows, hand ) {
 		delete hand->second;
+	}
 }
 
 void OptionsList::Load( CString sType, PlayerNumber pn )
@@ -205,8 +212,8 @@ void OptionsList::Load( CString sType, PlayerNumber pn )
 	m_pn = pn;
 	m_bStartIsDown = false;
 
-	m_Cursor->SetName( "Cursor" );
 	m_Cursor.Load( THEME->GetPathG(sType, "cursor") );
+	m_Cursor->SetName( "Cursor" );
 	ActorUtil::LoadAllCommands( *m_Cursor, sType );
 	this->AddChild( m_Cursor );
 
@@ -218,6 +225,14 @@ void OptionsList::Load( CString sType, PlayerNumber pn )
 	vector<CString> setToLoad;
 	split( TOP_MENUS, ",", setToLoad );
 	m_setTopMenus.insert( setToLoad.begin(), setToLoad.end() );
+
+	m_soundLeft.Load( THEME->GetPathS("OptionsList","left") );
+	m_soundRight.Load( THEME->GetPathS("OptionsList","right") );
+	m_soundOpened.Load( THEME->GetPathS("OptionsList","opened") );
+	m_soundClosed.Load( THEME->GetPathS("OptionsList","closed") );
+	m_soundPush.Load( THEME->GetPathS("OptionsList","push") );
+	m_soundPop.Load( THEME->GetPathS("OptionsList","pop") );
+	m_soundStart.Load( THEME->GetPathS("OptionsList","start") );
 
 	while( !setToLoad.empty() )
 	{
@@ -278,6 +293,7 @@ void OptionsList::Reset()
 
 void OptionsList::Open()
 {	
+	m_soundOpened.Play();
 	this->PlayCommand( "Reset" );
 
 	/* Push the initial menu. */
@@ -293,6 +309,7 @@ void OptionsList::Close()
 {
 	m_bStartIsDown = false;
 	m_asMenuStack.clear();
+	m_soundClosed.Play();
 	this->PlayCommand( "TweenOff" );
 }
 
@@ -380,6 +397,18 @@ void OptionsList::MoveItem( const CString &sRowName, int iMove )
 {
 }
 
+CString InputTypeToString(InputEventType type)
+{
+	switch (type)
+	{
+		case IET_FIRST_PRESS: return "IET_FIRST_PRESS";
+		case IET_RELEASE: return "IET_RELEASE";
+		case IET_SLOW_REPEAT: return "IET_SLOW_REPEAT";
+		case IET_FAST_REPEAT: return "IET_FAST_REPEAT";
+		default: return "What?";
+	}
+}
+
 void OptionsList::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
 	//LOG->Debug("OptionsList::Input()");
@@ -439,17 +468,10 @@ void OptionsList::Input( const DeviceInput& DeviceI, const InputEventType type, 
 		if( type == IET_RELEASE )
 			return;
 
-		/*
-		if( INPUTMAPPER->IsButtonDown(MenuI) )
-		{
-			if( type == IET_FIRST_PRESS )
-				SwitchMenu( -1 );
-			return;
-		}
-		*/
-
 		--m_iMenuStackSelection;
 		wrap( m_iMenuStackSelection, m_RowDefs[pHandler]->choices.size()+1 ); // +1 for exit row
+		m_soundLeft.Play();
+		//m_soundOpened.Play();
 		PositionCursor();
 
 		CString msg(ssprintf("OptionsListLeftP%d",pn+1));
@@ -462,17 +484,10 @@ void OptionsList::Input( const DeviceInput& DeviceI, const InputEventType type, 
 		if( type == IET_RELEASE )
 			return;
 
-		/*
-		if( INPUTMAPPER->IsButtonDown(MenuI) )
-		{
-			if( type == IET_FIRST_PRESS )
-				SwitchMenu( +1 );
-			return;
-		}
-		*/
-
 		++m_iMenuStackSelection;
 		wrap( m_iMenuStackSelection, m_RowDefs[pHandler]->choices.size()+1 ); // +1 for exit row
+		m_soundRight.Play();
+		//m_soundOpened.Play();
 		PositionCursor();
 
 		CString msg(ssprintf("OptionsListRightP%d",pn+1));
@@ -499,36 +514,19 @@ void OptionsList::Input( const DeviceInput& DeviceI, const InputEventType type, 
 	}
 	else if( MenuI.button == MENU_BUTTON_SELECT )
 	{
-		if( type != IET_FIRST_PRESS || type != IET_RELEASE )
-			return;
+		//if( type != IET_FIRST_PRESS || type != IET_RELEASE )
+			//return;
 		if( type == IET_RELEASE )
 		{
-			Close();
+			Pop();
 			return;
 		}
 		return;
 	}
-/*
-	else if ( MenuI.button == MENU_BUTTON_DOWN )
-	{
-		if( type != IET_FIRST_PRESS )
-			return;
-		if (m_iMenuStackSelection < m_bSelections.size()-1) m_iMenuStackSelection++;
-		PositionCursor();
-	}
-	else if ( MenuI.button == MENU_BUTTON_UP )
-	{
-		if( type != IET_FIRST_PRESS )
-			return;
-		if (m_iMenuStackSelection > 0) m_iMenuStackSelection--;
-		PositionCursor();
-	}
-*/
 }
 
 void OptionsList::SwitchToCurrentRow()
 {
-	LOG->Debug("OptionsList::SwitchToCurrentRow()");
 	m_iCurrentRow = !m_iCurrentRow;
 
 	/* Set up the new row. */
@@ -636,6 +634,7 @@ void OptionsList::Pop()
 		return;
 	}
 
+	m_soundPop.Play();
 	CString sLastMenu = m_asMenuStack.back();
 
 	m_asMenuStack.pop_back();
@@ -657,6 +656,7 @@ void OptionsList::Pop()
 void OptionsList::Push( CString sDest )
 {
 	m_asMenuStack.push_back( sDest );
+	m_soundPush.Play();
 	SetDefaultCurrentRow();
 	SwitchToCurrentRow();
 }
@@ -718,6 +718,7 @@ bool OptionsList::Start()
 	OptionRowHandler *pHandler = (OptionRowHandler *)cpHandler;
 	const CString &sCurrentRow = m_asMenuStack.back();
 	vector<bool> &bSelections = m_bSelections[sCurrentRow];
+	m_soundStart.Play();
 	if( m_iMenuStackSelection == (int)bSelections.size() )
 	{
 		Pop();

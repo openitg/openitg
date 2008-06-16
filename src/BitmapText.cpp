@@ -79,10 +79,47 @@ BitmapText::BitmapText()
 	SetShadowLength( 4 );
 }
 
+BitmapText::BitmapText( const BitmapText &cpy ):
+        Actor( cpy )
+{
+        m_pFont = NULL;
+        *this = cpy;
+}
+
+BitmapText &BitmapText::operator =( const BitmapText &cpy )
+{
+#define CPY(a) a = cpy.a
+        CPY( m_sText );
+        CPY( m_wTextLines );
+        CPY( m_iLineWidths );
+        CPY( m_iWrapWidthPixels );
+        CPY( m_fMaxWidth );
+        CPY( m_fMaxHeight );
+        CPY( m_bRainbow );
+ //       CPY( m_bJitter );
+ //       CPY( m_iVertSpacing );
+        CPY( m_aVertices );
+        CPY( m_pTextures );
+ //       CPY( m_bHasGlowAttribute );
+ //       CPY( m_mAttributes );
+#undef CPY
+
+        if( m_pFont )
+                FONT->UnloadFont( m_pFont );
+
+        if( cpy.m_pFont != NULL )
+                m_pFont = FONT->CopyFont( cpy.m_pFont );
+        else
+                m_pFont = NULL;
+
+        return *this;
+}
+
 BitmapText::~BitmapText()
 {
-	if( m_pFont )
+	if( m_pFont ) {
 		FONT->UnloadFont( m_pFont );
+	}
 }
 
 

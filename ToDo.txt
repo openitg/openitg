@@ -13,9 +13,9 @@
 -InputHandler_PIUIO's coin code is broken
 -"Random" selections for non-existant BGVids always return the same video
 -OptionsList: linear tweening is borked despite every other command working
+-Full Screen -> Full Screen switch does not actually reset resolution, rather just the window size
 
 /* Minor feature additions */
--Working full-screen on Linux
 -Include ThemeInfo.ini support (is this still needed?)
 -Write .edit files directly to USB cards from editor
 -Add Windows code for network diagnostics

@@ -12,6 +12,7 @@
 -Volume isn't properly reset when doing attract->operator menu->title
 -InputHandler_PIUIO's coin code is broken
 -"Random" selections for non-existant BGVids always return the same video
+-OptionsList: linear tweening is borked despite every other command working
 
 /* Minor feature additions */
 -Working full-screen on Linux
@@ -21,7 +22,6 @@
 -Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
 
 /* Major feature additions */
--OptionList LOL
 -Implement custom courses from USB drive
 -Implement "lifebar graph shows FFC/FEC"
 -Fix up/rewrite network gameplay screens for arcade support

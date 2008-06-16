@@ -3,6 +3,7 @@
 #include "RageLog.h"
 #include "RageException.h"
 #include "archutils/Unix/X11Helper.h"
+#include "RageUtil.h"
 
 #include <stack>
 #include <math.h>	// ceil()
@@ -162,6 +163,7 @@ CString LowLevelWindow_X11::TryVideoMode( RageDisplay::VideoModeParams p, bool &
 			{
 				if( pSizesX[i].width == p.width && pSizesX[i].height == p.height )
 				{
+					CHECKPOINT_M( ssprintf("%dx%d", pSizesX[i].width, pSizesX[i].height) );
 					iSizeMatch = i;
 					break;
 				}
@@ -180,8 +182,8 @@ CString LowLevelWindow_X11::TryVideoMode( RageDisplay::VideoModeParams p, bool &
 	                {
         	                // We want to prevent the WM from catching anything that comes from the keyboard.
         	                XGrabKeyboard( X11Helper::Dpy, X11Helper::Win, True, GrabModeAsync, GrabModeAsync, CurrentTime );
-        	                m_bWasWindowed = false;
         	        }
+       	                m_bWasWindowed = false;
 		}
 		else
 	        {
@@ -191,8 +193,8 @@ CString LowLevelWindow_X11::TryVideoMode( RageDisplay::VideoModeParams p, bool &
 	                        // In windowed mode, we actually want the WM to function normally.
 	                        // Release any previous grab.
 	                        XUngrabKeyboard( X11Helper::Dpy, CurrentTime );
-	                        m_bWasWindowed = true;
 	                }
+                        m_bWasWindowed = true;
 	        }
 	}
 	else
@@ -202,7 +204,7 @@ CString LowLevelWindow_X11::TryVideoMode( RageDisplay::VideoModeParams p, bool &
 		bNewDeviceOut = false;
 		
 	}
-
+	int rate = XRRConfigCurrentRate( g_pScreenConfig );
 
 	// Do this before resizing the window so that pane-style WMs (Ion,
 	// ratpoison) don't resize us back inappropriately.
@@ -223,6 +225,7 @@ CString LowLevelWindow_X11::TryVideoMode( RageDisplay::VideoModeParams p, bool &
 	}
 
 	CurrentParams = p;
+	CurrentParams.rate = rate;
 
 	return ""; // Success
 }

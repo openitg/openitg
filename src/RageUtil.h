@@ -429,7 +429,7 @@ void FileWrite(RageFileBasic& f, float fWrite);
 
 bool FileCopy( CString sSrcFile, CString sDstFile );
 bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bReadError = NULL );
-bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float) );
+bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float), CString &sError );
 /* We will probably never need to use this. */
 //bool CopyWithProgress( RageFileBasic &in, RageFileBasic &out, RageFileBasic &read,
 //		       CString &sError, void(*OnUpdate)(float), bool *bReadError = NULL );

@@ -703,6 +703,9 @@ void SetupExtensions()
 
 void RageDisplay_OGL::ResolutionChanged()
 {
+	// re-init the vertex shader
+	InitScalingScript();
+
  	SetViewport(0,0);
 
 	/* Clear any junk that's in the framebuffer. */

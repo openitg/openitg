@@ -2,14 +2,21 @@ OpenITG, alpha 7 (in development)
 ---------------------------------
 -Preliminary, hacky lights-cabinet support in theme SM files
 -Input changes:
-    Linux joystick driver is now threaded (supports DebugUSBInput)
+    "Select" or "MenuLeft+MenuRight" cancels custom song loading
+    Linux joystick driver is now threaded (and supports DebugUSBInput)
+    X11 input code backported from 4.0
+-New LUA functions:
+    Debug() - output debugging lines regardless of log settings
 -New preferences:
     "SoundVolumeAttract" - volume during attract sequences
     "UseUnstablePIUIODriver" - self-explanatory...set false for old driver
 -New config options:
     "SoundVolumeAttract" - see above
+-New metrics:
+    "CompareScores" (ScreenGameplay) - manually set whether to compare or not
 -Fixed bugs:
     Actor sounds ignore attract sound settings
+    (OpenGL) Arrow shader fails on full-screen, causing scrolling brackets
     ScreenArcadeStart loops endlessly until manual exit
 -Fixed mistakes:
     Removed some personalized testing code

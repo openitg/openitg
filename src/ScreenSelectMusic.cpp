@@ -34,6 +34,7 @@
 #include "MemoryCardManager.h" 
 #include "InputQueue.h"
 #include "OptionsList.h"
+#include "FontCharAliases.h" // XXX
 
 const int NUM_SCORE_DIGITS	=	9;
 
@@ -60,6 +61,8 @@ static bool g_bBannerWaiting = false;
 static bool g_bSampleMusicWaiting = false;
 static RageTimer g_StartedLoadingAt(RageZeroTimer);
 static bool g_bGoToOptions = false;
+
+extern bool g_bInterruptCopy; // from RageUtil
 
 REGISTER_SCREEN_CLASS( ScreenSelectMusic );
 ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuElements( sClassName ),
@@ -1306,9 +1309,18 @@ void UpdateLoadProgress( float fPercent )
 	if( sName == "" ) // NoName
 		sName = ssprintf( "Player %d", pn+1 );
 
+/*
 	CString sText = ssprintf( "Please wait ...\n%u%%\n\n\n"
 		"Removing %s's USB drive\nwill cancel this selection.", 
 		(int)(fPercent), sName.c_str() );
+*/
+	// We'll make this themeable soon.
+	CString sText = ssprintf( "Please wait ...\n%u%%\n\n\n", (int)(fPercent) );
+
+	static CString sCancelText = "Pressing &SELECT; or &MENULEFT; + &MENURIGHT; will cancel this selection.\n\n";
+	FontCharAliases::ReplaceMarkers( sCancelText );
+
+	sText += sCancelText;
 
 	if( !g_bGoToOptions ) // not true yet - keep checking
 	{
@@ -1320,10 +1332,21 @@ void UpdateLoadProgress( float fPercent )
 		FOREACH_EnabledPlayer( pn )
 			g_bGoToOptions |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_START) );
 	}
-	else
-		LOG->Trace( "Not checking for input; already got it." );
 
 	LOG->Trace( "Loading %s: %f%%", GAMESTATE->m_pCurSong->GetDisplayFullTitle().c_str(), fPercent );
+
+	bool bInterrupt = false;
+
+	// if a player presses Select, stop loading the song.
+	FOREACH_EnabledPlayer( pn )
+		bInterrupt |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) ) ||
+			( INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) &&
+			INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT)) );
+
+	g_bInterruptCopy = bInterrupt;
+
+	if( g_bInterruptCopy )
+		LOG->Debug( "bInterrupt detected." );
 
 	SCREENMAN->OverlayMessage( sText );
 
@@ -1331,6 +1354,7 @@ void UpdateLoadProgress( float fPercent )
 }
 
 // run a few basic tests to be sure we aren't breaking any limits...
+// XXX: make this themeable
 bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 {
 	LOG->Trace( "ScreenSelectMusic::ValidateCustomSong()" );
@@ -1369,10 +1393,15 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 		// we can copy the music. destination is determined with
 		// "m_sGameplayMusic" so we can change that from one place
 		bCopied = CopyWithProgress( GAMESTATE->m_pCurSong->GetMusicPath(), 
-		GAMESTATE->m_pCurSong->m_sGameplayMusic, &UpdateLoadProgress );
+		GAMESTATE->m_pCurSong->m_sGameplayMusic, &UpdateLoadProgress, sError );
 
 		if( !bCopied ) // failed, most likely a permissions error
-			SCREENMAN->SystemMessage( "Copying error. Check your permissions." );
+		{
+			if( !sError.empty() )
+				SCREENMAN->SystemMessage( ssprintf("Copying error: %s.", sError.c_str()) );
+			else
+				SCREENMAN->SystemMessage( "Song selection canceled." );
+		}
 	}
 
 	// ...and unmount, now that we're done.
@@ -1381,9 +1410,7 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 		MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
 #endif
 
-	// EXPERIMENT: fix input-killing bug
 	INPUTFILTER->Reset();
-	INPUTFILTER->Update( 1 );
 
 	SCREENMAN->HideOverlayMessage();
 

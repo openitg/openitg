@@ -12,7 +12,6 @@ public:
 	~LightsDriver_External();
 	
 	void Set( const LightsState *ls );
-
 };
 
 #define USE_LIGHTS_DRIVER_EXTERNAL

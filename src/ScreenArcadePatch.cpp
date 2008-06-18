@@ -285,7 +285,8 @@ bool ScreenArcadePatch::LoadPatch( CString sPath )
 	m_sPatchPath = "Temp/" + sPath;
 #endif
 	CHECKPOINT;
-	if( CopyWithProgress(sFile, m_sPatchPath, &UpdatePatchCopyProgress) )
+	CString sError;
+	if( CopyWithProgress(sFile, m_sPatchPath, &UpdatePatchCopyProgress, sError) )
 	{
 		CHECKPOINT;
 		g_sStatus = "Patch copied! Checking...";
@@ -294,8 +295,11 @@ bool ScreenArcadePatch::LoadPatch( CString sPath )
 	else
 	{
 		CHECKPOINT;
-		/* This generally fails because OpenITG doesn't have access to Data. -- Vyhd */
-		g_sStatus = "Patch copying failed!\nPlease check your permissions and try again.";
+		if( sError.empty() )
+			g_sStatus = "Patch copying failed!\nPlease check your permissions and try again.";
+		else
+			g_sStatus = ssprintf( "Patch copying failed:\n%s", sError.c_str() );
+
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
 		return false;
 	}

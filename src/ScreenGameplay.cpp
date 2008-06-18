@@ -61,6 +61,7 @@
 #define SONG_POSITION_METER_WIDTH				THEME->GetMetricF(m_sName,"SongPositionMeterWidth")
 #define PLAYER_X( p, styleType )				THEME->GetMetricF(m_sName,ssprintf("PlayerP%d%sX",p+1,StyleTypeToString(styleType).c_str()))
 #define STOP_COURSE_EARLY						THEME->GetMetricB(m_sName,"StopCourseEarly")	// evaluate this every time it's used
+#define COMPARE_SCORES						THEME->GetMetricB(m_sName, "CompareScores" )
 
 // set an adjusted limit based off the song allowance
 // XXX: if OpenITG crashes, blame this first.
@@ -396,9 +397,8 @@ void ScreenGameplay::Init()
 	this->AddChild( &m_MaxCombo );
 
 	/* See if we should be comparing scores during updates: we only do this
-	 * during versus in event mode, if both players have the same difficulty */
-	m_bCompareScores = GAMESTATE->IsEventMode() && GAMESTATE->GetCurrentStyle()->m_StyleType == TWO_PLAYERS_TWO_SIDES &&
-		GAMESTATE->m_pCurSteps[PLAYER_1]->GetDifficulty() == GAMESTATE->m_pCurSteps[PLAYER_2]->GetDifficulty();
+	 * if there are two players; the other conditions are set by the themer. */
+	m_bCompareScores = COMPARE_SCORES && GAMESTATE->GetCurrentStyle()->m_StyleType == TWO_PLAYERS_TWO_SIDES;
 
 	FOREACH_EnabledPlayer(p)
 	{
@@ -433,8 +433,11 @@ void ScreenGameplay::Init()
 
 		/* used for comparing players' scores */
 		/* UGLY: we can't use ActorUtil here due to an Actor derivative in a pointer, so manually add it */
-		m_pPrimaryScoreDisplay[p]->AddCommand( "Ahead", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"AheadCommand") );
-		m_pPrimaryScoreDisplay[p]->AddCommand( "Behind", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"BehindCommand") );
+		if( m_bCompareScores )
+		{
+			m_pPrimaryScoreDisplay[p]->AddCommand( "Ahead", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"AheadCommand") );
+			m_pPrimaryScoreDisplay[p]->AddCommand( "Behind", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"BehindCommand") );
+		}
 
 		SET_XY( *m_pPrimaryScoreDisplay[p] );
 		if( GAMESTATE->m_PlayMode != PLAY_MODE_RAVE || SHOW_SCORE_IN_RAVE ) /* XXX: ugly */
@@ -1220,23 +1223,28 @@ void ScreenGameplay::CompareScores()
 	if( !m_bCompareScores )
 		return;
 
-	static int iPointsP1, iPointsP2;
+	// keep these in memory, so we don't re-init each time
+	static float fPercentP1, fPercentP2;
 	PlayerNumber pn_higher;
 	
-	iPointsP1 = STATSMAN->m_CurStageStats.m_player[PLAYER_1].iActualDancePoints;
-	iPointsP2 = STATSMAN->m_CurStageStats.m_player[PLAYER_2].iActualDancePoints;
+	// XXX: make this based off something less hard-coded.
+	fPercentP1 = ftruncf( STATSMAN->m_CurStageStats.m_player[PLAYER_1].GetPercentDancePoints(), 0.0001 );
+	fPercentP2 = ftruncf( STATSMAN->m_CurStageStats.m_player[PLAYER_2].GetPercentDancePoints(), 0.0001 );
 
-	if( iPointsP1 == iPointsP2 )
-		pn_higher = PLAYER_INVALID; /* tie */
+	LOG->Debug( "P1: %f, P2: %f", fPercentP1, fPercentP2 );
+
+	if( fPercentP1 == fPercentP2 )
+		pn_higher = PLAYER_INVALID; /* tie sentinel */
 	else
-		pn_higher = iPointsP1 > iPointsP2 ? PLAYER_1 : PLAYER_2;
+		pn_higher = fPercentP1 > fPercentP2 ? PLAYER_1 : PLAYER_2;
 
+	// don't need to update
 	if( m_LeadingPlayer == pn_higher )
 		return;
 
 	m_LeadingPlayer = pn_higher;
 
-	/* mark the secondary player as ahead, too */
+	/* mark each player as ahead */
 	if( pn_higher == PLAYER_INVALID )
 	{
 		FOREACH_EnabledPlayer( p )

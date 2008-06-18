@@ -10,6 +10,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+// a global flag used to interrupt a currently-running copy dialog.
+bool g_bInterruptCopy;
+
 int randseed = time(NULL);
 
 // From "Numerical Recipes in C".
@@ -1513,35 +1516,43 @@ bool FileCopy( CString sSrcFile, CString sDstFile )
 
 // This is, admittedly, ugly, but given the circumstances, this is the easiest
 // way to get this to work. Occam's Razor has never failed me before...
-bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float) )
+bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float), CString &sError )
 {
 	if( !sSrcFile.CompareNoCase(sDstFile) )
 	{
-		LOG->Warn( "Tried to copy \"%s\" over itself", sSrcFile.c_str() );
+		sError = ssprintf( "Tried to copy \"%s\" over itself", sSrcFile.c_str() );
 		return false;
 	}
 
 	RageFile in;
 	if( !in.Open(sSrcFile, RageFile::READ) )
+	{
+		sError = ssprintf( "Could not open \"%s\" for reading", sSrcFile.c_str() );
 		return false;
+	}
 
-	long iTarget = in.GetFileSize();
-
-	LOG->Trace( "RageFile in is open. Filesize is %lu", iTarget);
+	// it's where you want to be!
+	unsigned long iTarget = in.GetFileSize();
 
 	RageFile out;
 	if( !out.Open(sDstFile, RageFile::WRITE) )
+	{
+		sError = ssprintf( "Could not open \"%s\" for writing", sDstFile.c_str() );
 		return false;
+	}
 
-	long iCurrent = 0;
-	float fPercent; // fPercent = 100 means 100% complete
+	// how much data has been read so far
+	unsigned long iCurrent = 0;
 
-	while(1)
+	// fPercent = 100 means 100% complete
+	float fPercent; 
+
+	while( !g_bInterruptCopy )
 	{
 		CString data;
 		if( in.Read(data, 1024*32) == -1 )
 		{
-			LOG->Warn( "read error: %s", in.GetError().c_str() );
+			sError = ssprintf( "read error (%s)", in.GetError().c_str() );
 			return false;
 		}
 		if( data.empty() )
@@ -1550,7 +1561,7 @@ bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float
 		int i = out.Write(data);
 		if( i == -1 )
 		{
-			LOG->Warn( "write error: %s", out.GetError().c_str() );
+			sError = ssprintf( "write error (%s)", out.GetError().c_str() );
 			return false;
 		}
 
@@ -1563,7 +1574,18 @@ bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float
 
 	if( out.Flush() == -1 )
 	{
-		LOG->Warn( "write error: %s", out.GetError().c_str() );
+		sError = ssprintf( "write error during flush (%s)", out.GetError().c_str() );
+		return false;
+	}
+
+	if( g_bInterruptCopy )
+	{
+		LOG->Debug( "CopyWithProgress was interrupted." );
+		g_bInterruptCopy = false;
+
+		// make sure this is empty, so SSM properly interprets it
+		sError = "";
+
 		return false;
 	}
 
@@ -1572,7 +1594,7 @@ bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float
 
 bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bReadError )
 {
-	while(1)
+	while( !g_bInterruptCopy )
 	{
 		CString data;
 		if( in.Read(data, 1024*32) == -1 )
@@ -1602,10 +1624,16 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bRe
 		return false;
 	}
 
+	if( g_bInterruptCopy )
+	{
+		LOG->Warn( "Copying interrupted." );
+		g_bInterruptCopy = false;
+
+		return false;
+	}
+
 	return true;
 }
-
-/* Removed obsolete/unused function -- Vyhd */
 
 /*
  * Copyright (c) 2001-2004 Chris Danford, Glenn Maynard

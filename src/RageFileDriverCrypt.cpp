@@ -93,7 +93,6 @@ int RageFileObjCrypt::SeekInternal( int iOffset )
 
 int RageFileObjCrypt::ReadInternal( void *pBuf, size_t iBytes )
 {
-	//if (LOG) LOG->Trace("RageFileObjCrypt::ReadInternal(%d) called", iBytes);
         int iRet = ITG2CryptInterface::crypt_read( cf, pBuf, iBytes );
         if( iRet == -1 )
         {
@@ -117,7 +116,6 @@ int RageFileObjCrypt::GetFileSize() const
 
 RageFileObjCrypt::~RageFileObjCrypt()
 {
-	//if(LOG) LOG->Trace("~RageFileObjCrypt(%s) called", m_sPath.c_str());
 	if (cf->fd != -1) {
 		if (ITG2CryptInterface::crypt_close(cf) == -1) {
 			LOG->Warn("~RageFileObjCrypt(): could not close file");
@@ -195,7 +193,9 @@ void CryptFilenameDB::PopulateFileSet( FileSet &fs, const CString &path )
 	DIR *pDir = opendir(root+sPath);
 	if( pDir == NULL )
 	{
-		LOG->MapLog("opendir " + root+sPath, "Couldn't opendir(%s%s): %s", root.c_str(), sPath.c_str(), strerror(errno) );
+		if( errno != 2 ) // "no such file or directory" - ignore, they're spammy.
+			LOG->MapLog("opendir " + root+sPath, "Couldn't opendir(%s%s): %s", root.c_str(), sPath.c_str(), strerror(errno) );
+
 		return;
 	}
 

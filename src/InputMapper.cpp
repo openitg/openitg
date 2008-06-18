@@ -66,11 +66,47 @@ struct AutoJoyMapping
 	struct InputMapper::Mapping maps[32];
 };
 #define END_MARKER	{-1, -1, -1, false },	// end marker
+
+/* I'm separating ITGIO and PIUIO since we're soft-coding them.
+ * ITGIO won't see any improvements, but PIUIO already has, so...
+ * -- Vyhd */
 const AutoJoyMapping g_AutoJoyMappings[] = 
 {
 	{
 		"dance",
-		"ITGIO|PIUIO",
+		"PIUIO",
+		"ITG input device",
+		{
+			/* Player 1 */
+			{ 0, JOY_30,		DANCE_BUTTON_LEFT,		false },
+			{ 0, JOY_29,		DANCE_BUTTON_RIGHT,		false },
+			{ 0, JOY_32,		DANCE_BUTTON_UP,		false },
+			{ 0, JOY_31,		DANCE_BUTTON_DOWN,		false },
+			{ 0, JOY_27,		DANCE_BUTTON_SELECT,		false },
+			{ 0, JOY_28,		DANCE_BUTTON_START,		false },
+			{ 0, JOY_26,		DANCE_BUTTON_MENULEFT,		false },
+			{ 0, JOY_25,		DANCE_BUTTON_MENURIGHT,		false },
+
+			/* Player 2 */
+			{ 1, JOY_14,		DANCE_BUTTON_LEFT,		true },
+			{ 1, JOY_13,		DANCE_BUTTON_RIGHT,		true },
+			{ 1, JOY_16,		DANCE_BUTTON_UP,		true },
+			{ 1, JOY_15,		DANCE_BUTTON_DOWN,		true },
+			{ 1, JOY_11,		DANCE_BUTTON_SELECT,		true },
+			{ 1, JOY_12,		DANCE_BUTTON_START,		true },
+			{ 1, JOY_10,		DANCE_BUTTON_MENULEFT,		true },
+			{ 1, JOY_9,		DANCE_BUTTON_MENURIGHT,		true },
+
+			/* Other controls */
+			{ 0, JOY_23,		DANCE_BUTTON_OPERATOR,		false },
+			{ 1, JOY_18,		DANCE_BUTTON_OPERATOR,		false },
+			{ 0, JOY_22,		DANCE_BUTTON_COIN,		false },
+			END_MARKER
+		}
+	},
+	{
+		"dance",
+		"ITGIO",
 		"ITG input device",
 		{
 			/* Player 1 */

@@ -1374,12 +1374,6 @@ bool HandleGlobalInputs( DeviceInput DeviceI, InputEventType type, GameInput Gam
 		/* Global operator key, to get quick access to the options menu. Don't
 		 * do this if we're on a "system menu", which includes the editor
 		 * (to prevent quitting without storing changes). */
-		/*bOperatorSeq = false;
-		while (!bOperatorSeq)
-		{
-			m_OperatorTimer.SetZero();
-			bOperatorSeq = true;
-		} */
 		if( SCREENMAN->GetTopScreen()->GetScreenType() != system_menu && (type==IET_SLOW_REPEAT||type==IET_FAST_REPEAT))
 		{
 			SCREENMAN->DeletePreparedScreens();

@@ -420,6 +420,12 @@ static bool Trace( const CString &sString )
 	return true;
 }
 
+static bool Debug( const CString &sString )
+{
+	LOG->Debug( "%s", sString.c_str() );
+	return true;
+}
+
 // Holy fuck this is useful. Found in ScreenPackages, Props to Mr. X?
 // -- Matt1360
 static size_t FindEndOfHeaders( const CString &buf )
@@ -438,6 +444,7 @@ static size_t FindEndOfHeaders( const CString &buf )
 
 
 LuaFunction( Trace, Trace(SArg(1)) ); // Log Traces
+LuaFunction( Debug, Debug(SArg(1)) ); // debug lines
 
 /*
  * (c) 2004 Glenn Maynard

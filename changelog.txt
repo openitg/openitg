@@ -15,8 +15,9 @@ OpenITG, alpha 7 (in development)
 -New metrics:
     "CompareScores" (ScreenGameplay) - manually set whether to compare or not
 -Fixed bugs:
-    Actor sounds ignore attract sound settings
     (OpenGL) Arrow shader fails on full-screen, causing scrolling brackets
+    Actor sounds ignore attract sound settings
+    Phantom input when canceling custom song loads
     ScreenArcadeStart loops endlessly until manual exit
 -Fixed mistakes:
     Removed some personalized testing code

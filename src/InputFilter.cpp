@@ -16,6 +16,7 @@ static const float FAST_REPEATS_PER_SEC = 8;
 
 static float g_fTimeBeforeSlow, g_fTimeBeforeFast, g_fTimeBetweenSlow, g_fTimeBetweenFast;
 
+Preference<float>	g_fInputDebounceTime( "InputDebounceTime", 0 );
 
 InputFilter::InputFilter()
 {
@@ -69,16 +70,44 @@ void InputFilter::ButtonPressed( DeviceInput di, bool Down )
 
 	ButtonState &bs = m_ButtonState[di.device][di.button];
 
+	RageTimer now;
+	CheckButtonChange( bs, di, now, Down );
+
 	bs.m_Level = di.level;
 
-	if( bs.m_BeingHeld == Down )
+	if( bs.m_BeingHeld != Down )
+	{
+		bs.m_BeingHeld = Down;
+		bs.m_BeingHeldTime = di.ts;
+	}
+
+	CheckButtonChange( bs, di, now, Down );
+}
+
+void InputFilter::CheckButtonChange( ButtonState &bs, DeviceInput di, const RageTimer &now, bool Down )
+{
+	if( bs.m_BeingHeld == bs.m_bLastReportedHeld )
 		return;
 
-	bs.m_BeingHeld = Down;
+	if( now - bs.m_LastReportTime < g_fInputDebounceTime )
+	{
+		LOG->Warn( "Debouncing %s", di.toString().c_str() );
+		return;
+	}
+
+	bs.m_LastReportTime = now;
+	bs.m_bLastReportedHeld = bs.m_BeingHeld;
 	bs.m_fSecsHeld = 0;
+	bs.m_LastInputTime = bs.m_BeingHeldTime;
+
+	di.ts = bs.m_BeingHeldTime;
+
+	if( !bs.m_bLastReportedHeld )
+		di.level = 0;
 
 	queue.push_back( InputEvent(di,Down? IET_FIRST_PRESS:IET_RELEASE) );
 }
+	
 
 void InputFilter::SetButtonComment( DeviceInput di, const CString &sComment )
 {

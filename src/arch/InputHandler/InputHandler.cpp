@@ -7,7 +7,7 @@
 #include <map>
 
 /* This code is taken from CNLohr's 3.9 AC build. */
-map< int, RageTimer > m_LastHit;
+//map< int, RageTimer > m_LastHit;
 
 void InputHandler::UpdateTimer()
 {
@@ -25,6 +25,9 @@ void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 		++m_iInputsSinceUpdate;
 	}
 
+	INPUTFILTER->ButtonPressed( di, Down );
+
+/*
 	if( !Down )
 		INPUTFILTER->ButtonPressed( di, Down );
 	else
@@ -33,6 +36,7 @@ void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 			INPUTFILTER->ButtonPressed( di, Down );
 			m_LastHit[di.button].Touch();
 		}
+*/
 
 	if( m_iInputsSinceUpdate >= 50 )
 	{

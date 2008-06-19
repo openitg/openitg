@@ -54,10 +54,7 @@ CString COURSE_GROUP_COLOR_NAME( size_t i ) { return ssprintf("CourseGroupColor%
 
 SongManager::SongManager()
 {
-	NUM_SONG_GROUP_COLORS	.Load("SongManager","NumSongGroupColors");
-	SONG_GROUP_COLOR		.Load("SongManager",SONG_GROUP_COLOR_NAME,NUM_SONG_GROUP_COLORS);
-	NUM_COURSE_GROUP_COLORS	.Load("SongManager","NumCourseGroupColors");
-	COURSE_GROUP_COLOR		.Load("SongManager",COURSE_GROUP_COLOR_NAME,NUM_COURSE_GROUP_COLORS);
+	LoadGroupColors();
 }
 
 SongManager::~SongManager()
@@ -66,6 +63,14 @@ SongManager::~SongManager()
 	// So, delete the Courses first.
 	FreeCourses();
 	FreeSongs();
+}
+
+void SongManager::LoadGroupColors()
+{
+	NUM_SONG_GROUP_COLORS	.Load("SongManager","NumSongGroupColors");
+	SONG_GROUP_COLOR		.Load("SongManager",SONG_GROUP_COLOR_NAME,NUM_SONG_GROUP_COLORS);
+	NUM_COURSE_GROUP_COLORS	.Load("SongManager","NumCourseGroupColors");
+	COURSE_GROUP_COLOR		.Load("SongManager",COURSE_GROUP_COLOR_NAME,NUM_COURSE_GROUP_COLORS);
 }
 
 void SongManager::InitAll( LoadingWindow *ld )
@@ -450,14 +455,19 @@ bool SongManager::DoesGroupExist( CString sGroupName )
 
 RageColor SongManager::GetSongGroupColor( const CString &sSongGroupName )
 {
+	CHECKPOINT;
 	// search for the group index
 	unsigned i;
 	for( i=0; i<m_sSongGroupNames.size(); i++ )
 	{
 		if( m_sSongGroupNames[i] == sSongGroupName )
+		{
+			CHECKPOINT_M( "Found group name." );
 			break;
+		}
 	}
 	ASSERT_M( i != m_sSongGroupNames.size(), sSongGroupName );	// this is not a valid group
+	CHECKPOINT_M( "Assert not met." );
 
 	return SONG_GROUP_COLOR.GetValue( i%NUM_SONG_GROUP_COLORS );
 }

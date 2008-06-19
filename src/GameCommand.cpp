@@ -737,20 +737,29 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 	if( m_sModifiers != "" )
 		FOREACH_CONST( PlayerNumber, vpns, pn )
 			GAMESTATE->ApplyModifiers( *pn, m_sModifiers );
-	if( m_LuaFunction.IsSet() )
+
+	/* do this here, so we load new metrics before attempting screen loads.
+	 * IMPORTANT: re-cache SONGMAN metrics so we don't encounter an ugly crash. */
+	if( m_sTheme != "" && m_sTheme != THEME->GetCurThemeName() )
 	{
+		THEME->SwitchThemeAndLanguage( m_sTheme, THEME->GetCurLanguage() );
+		SONGMAN->LoadGroupColors();
+	}
+
+	/* This demonstrates a non-trivial error in the LUA subsystem,
+	 * or a grave misunderstanding on my part. Why can the LUA
+	 * function be set with no actual data?
+	 * Oh well. We can get away with just ignoring it here.
+	 * -- Vyhd */
+	if( m_LuaFunction.IsSet() && m_LuaFunction.GetExpression() != "" )
+	{
+
 		Lua *L = LUA->Get();
 		FOREACH_CONST( PlayerNumber, vpns, pn )
 		{
 			m_LuaFunction.PushSelf( L );
 
-			/* UGLY DISGUSTING HACK: if theme switching, work around a
-			 * crash here. We'll find the actual cause before long... */
-			if( lua_isnil(L, -1) && m_sTheme != "" )
-				break;
-
 			ASSERT( !lua_isnil(L, -1) );
-
 
 			lua_pushnumber( L, *pn ); // 1st parameter
 			lua_call( L, 1, 0 ); // call function with 1 argument and 0 results
@@ -805,10 +814,6 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 	 * stop music between preparing screens and loading screens. */
 	if( m_bStopMusic )
 		SOUND->StopMusic();
-
-	/* do this here, so we load new metrics before attempting screen loads */
-	if( m_sTheme != "" && m_sTheme != THEME->GetCurThemeName() )
-		THEME->SwitchThemeAndLanguage( m_sTheme, THEME->GetCurLanguage() );
 
 	FOREACH_CONST( CString, m_vsScreensToPrepare, s )
 		SCREENMAN->PrepareScreen( *s );

@@ -57,7 +57,7 @@ class LuaExpression: public LuaReference
 public:
 	LuaExpression( const CString &sExpression = "" ) { if( sExpression != "" ) SetFromExpression( sExpression ); }
 	void SetFromExpression( const CString &sExpression );
-
+	CString GetExpression() const { return m_sExpression; }
 protected:
 	virtual void Register();
 

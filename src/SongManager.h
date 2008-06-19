@@ -28,6 +28,7 @@ public:
 	void InitSongsFromDisk( LoadingWindow *ld );
 	void FreeSongs();
 	void Cleanup();
+	void LoadGroupColors();
 
 	void Invalidate( Song *pStaleSong );
 	void RevertFromDisk( Song *pSong, bool bAllowNotesLoss=false );

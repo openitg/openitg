@@ -67,11 +67,10 @@ void InputFilter::ButtonPressed( DeviceInput di, bool Down )
 		LOG->Warn( "Invalid button %i,%i", di.button, GetNumDeviceButtons(di.device) );
 		return;
 	}
+	RageTimer now;
 
 	ButtonState &bs = m_ButtonState[di.device][di.button];
-
-	RageTimer now;
-	CheckButtonChange( bs, di, now, Down );
+//	CheckButtonChange( bs, di, now, Down );
 
 	bs.m_Level = di.level;
 
@@ -91,7 +90,7 @@ void InputFilter::CheckButtonChange( ButtonState &bs, DeviceInput di, const Rage
 
 	if( now - bs.m_LastReportTime < g_fInputDebounceTime )
 	{
-		LOG->Warn( "Debouncing %s", di.toString().c_str() );
+		LOG->Warn( "Debouncing %s: last report was %f ago (now = %f)", di.toString().c_str(), bs.m_LastReportTime.Ago(), now.Ago() );
 		return;
 	}
 

@@ -491,6 +491,7 @@ void MemoryCardManager::CheckStateChanges()
 				}
 				break;
 			case MEMORY_CARD_STATE_READY:
+				MESSAGEMAN->Broadcast( (Message)(MESSAGE_CARD_READY_P1+p) );
 				m_soundReady.Play();
 				break;
 			case MEMORY_CARD_STATE_TOO_LATE:
@@ -724,8 +725,17 @@ bool IsAnyPlayerUsingMemoryCard()
 	return false;
 }
 
+bool IsUsingMemoryCard( PlayerNumber pn )
+{
+	if( MEMCARDMAN->GetCardState(pn) == MEMORY_CARD_STATE_READY )
+		return true;
+
+	return false;
+}
+
 #include "LuaFunctions.h"
-LuaFunction_NoArgs( IsAnyPlayerUsingMemoryCard,		IsAnyPlayerUsingMemoryCard() )
+LuaFunction( IsUsingMemoryCard,			IsUsingMemoryCard( (PlayerNumber)IArg(1) ) );
+LuaFunction_NoArgs( IsAnyPlayerUsingMemoryCard,	IsAnyPlayerUsingMemoryCard() );
 
 /*
  * (c) 2003-2005 Chris Danford, Glenn Maynard

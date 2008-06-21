@@ -88,10 +88,14 @@ void InputFilter::CheckButtonChange( ButtonState &bs, DeviceInput di, const Rage
 	if( bs.m_BeingHeld == bs.m_bLastReportedHeld )
 		return;
 
-	if( now - bs.m_LastReportTime < g_fInputDebounceTime )
+	// XXX: InputDebounce totally borked input on one of my win32 setups --infamouspat
+	if ( di.device == DEVICE_PIUIO || di.device == DEVICE_ITGIO )
 	{
-		LOG->Warn( "Debouncing %s: last report was %f ago (now = %f)", di.toString().c_str(), bs.m_LastReportTime.Ago(), now.Ago() );
-		return;
+		if( now - bs.m_LastReportTime < g_fInputDebounceTime )
+		{
+			LOG->Warn( "Debouncing %s: last report was %f ago (now = %f)", di.toString().c_str(), bs.m_LastReportTime.Ago(), now.Ago() );
+			return;
+		}
 	}
 
 	bs.m_LastReportTime = now;

@@ -204,7 +204,7 @@ CString LowLevelWindow_X11::TryVideoMode( RageDisplay::VideoModeParams p, bool &
 		bNewDeviceOut = false;
 		
 	}
-	int rate = XRRConfigCurrentRate( g_pScreenConfig );
+	//int rate = XRRConfigCurrentRate( g_pScreenConfig );
 
 	// Do this before resizing the window so that pane-style WMs (Ion,
 	// ratpoison) don't resize us back inappropriately.
@@ -225,7 +225,7 @@ CString LowLevelWindow_X11::TryVideoMode( RageDisplay::VideoModeParams p, bool &
 	}
 
 	CurrentParams = p;
-	CurrentParams.rate = rate;
+	//CurrentParams.rate = rate;
 
 	return ""; // Success
 }

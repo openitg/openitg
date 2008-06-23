@@ -88,6 +88,8 @@ const GLenum RageSpriteVertexFormat = GL_T2F_C4F_N3F_V3F;
 /* If we support texture matrix scaling, a handle to the vertex program: */
 static GLhandleARB g_bTextureMatrixShader = 0;
 
+static bool g_ShaderCompiled = false;
+
 LowLevelWindow *wind;
 
 static void InvalidateAllGeometry();
@@ -353,6 +355,7 @@ CString GetInfoLog( GLhandleARB h )
 
 GLhandleARB CompileShader( GLenum ShaderType, CString sBuffer )
 {
+	LOG->Info( "Attempting Shader Compilation: %s", sBuffer.c_str() );
 	GLhandleARB VertexShader = GLExt.glCreateShaderObjectARB( GL_VERTEX_SHADER_ARB );
 	const GLcharARB *pData = sBuffer.data();
 	int iLength = sBuffer.size();
@@ -365,7 +368,7 @@ GLhandleARB CompileShader( GLenum ShaderType, CString sBuffer )
 
 	if( !bCompileStatus )
 	{
-		LOG->Trace( "Compile failure: %s", GetInfoLog( VertexShader ).c_str() );
+		LOG->Warn( "Compile failure (if you're using the ITG noteskins, prepare for doom): %s", GetInfoLog( VertexShader ).c_str() );
 		return 0;
 	}
 
@@ -381,7 +384,9 @@ enum
  * from another file as a text symbol would be ideal, but that's completely different
  * on each platform, so it'd be a maintenance nightmare.  Reading them from a file would
  * be annoying, too. */
-const GLcharARB *g_TextureMatrixScaleShader =
+
+/*
+const GLcharARB *g_TextureMatrixScaleShader = 
 " \
 attribute vec4 TextureMatrixScale; \
 void main( void ) \
@@ -390,6 +395,17 @@ void main( void ) \
 	vec4 multiplied_tex_coord = gl_TextureMatrix[0] * gl_MultiTexCoord0; \
 	gl_TexCoord[0] = (multiplied_tex_coord * TextureMatrixScale) + \
 					(gl_MultiTexCoord0 * (vec4(1)-TextureMatrixScale)); \
+	gl_FrontColor = gl_Color; \
+} \
+";
+*/
+
+const GLcharARB *g_TextureMatrixScaleShader = 
+" \
+attribute vec4 TextureMatrixScale; \
+void main() { \
+	gl_Position = (gl_ModelViewProjectionMatrix * gl_Vertex); \
+	gl_TexCoord[0] = (gl_TextureMatrix[0] * gl_MultiTexCoord0 * TextureMatrixScale) + (gl_MultiTexCoord0 * (vec4(1)-TextureMatrixScale)); \
 	gl_FrontColor = gl_Color; \
 } \
 ";

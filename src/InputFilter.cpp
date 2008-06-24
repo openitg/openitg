@@ -89,7 +89,7 @@ void InputFilter::CheckButtonChange( ButtonState &bs, DeviceInput di, const Rage
 		return;
 
 	// XXX: InputDebounce totally borked input on one of my win32 setups --infamouspat
-	if ( di.device == DEVICE_PIUIO || di.device == DEVICE_ITGIO )
+	if ( di.device != DEVICE_KEYBOARD )
 	{
 		if( now - bs.m_LastReportTime < g_fInputDebounceTime )
 		{

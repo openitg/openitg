@@ -202,6 +202,22 @@ void InputHandler_PIUIO::HandleInputInternal()
 	};
 #endif
 
+// XXX: phase out as soon as possible
+const bool IsPadInput( int iButton )
+{
+	switch( iButton+1 )
+	{
+	case 13: case 14: case 15: case 16: /* Player 2 */
+	case 29: case 30: case 31: case 32: /* Player 1 */
+		return true;
+		break;
+	default:
+		return false;
+	}
+
+	return false;
+}
+
 // XXX fixed 4/7/08.  Game.  Set.  Match.  --infamouspat
 // ITT history :D  -- vyhd
 void InputHandler_PIUIO::HandleInput()
@@ -261,7 +277,8 @@ void InputHandler_PIUIO::HandleInput()
 
 		/* Set a description of detected sensors to the arrows */
 		// XXX: set this to pad-only ( StyleI.IsValid()? )
-		INPUTFILTER->SetButtonComment(di, GetSensorDescription( m_bInputs[iButton] ));
+		if( IsPadInput(iButton) )
+			INPUTFILTER->SetButtonComment(di, GetSensorDescription( m_bInputs[iButton] ));
 
 		/* Is the button we're looking for flagged in the input data? */
 		ButtonPressed( di, iInputBitField & (1 << (31-iButton)) );

@@ -18,6 +18,8 @@ OpenITG, alpha 7 (in development)
     "SoundVolumeAttract" - see above
 -New metrics:
     "CompareScores" (ScreenGameplay) - manually set whether to compare or not
+    "OptionsList" (ScreenSelectMusic) - add a side panel to change options
+	instead of the old options menu
 -Fixed bugs:
     (OpenGL) Arrow shader fails on full-screen, causing scrolling brackets
     Actor sounds ignore attract sound settings

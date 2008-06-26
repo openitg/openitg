@@ -792,7 +792,7 @@ void ScreenSelectMusic::Update( float fDeltaTime )
 void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
 	DeviceInput di = DeviceI;
-	LOG->Debug( "ScreenSelectMusic::Input( %s )", di.toString().c_str() );
+	//LOG->Debug( "ScreenSelectMusic::Input( %s )", di.toString().c_str() );
 
 	// debugging?
 	// I just like being able to see untransliterated titles occasionally.

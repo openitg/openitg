@@ -66,6 +66,7 @@
 #include "NetworkSyncManager.h"
 #include "MessageManager.h"
 #include "StatsManager.h"
+#include "TournamentManager.h"
 #include "io/ITGIO.h" // for I/O error reporting
 
 #if defined(XBOX)
@@ -222,6 +223,7 @@ void ShutdownGame()
 	if( SOUNDMAN )
 		SOUNDMAN->Shutdown();
 
+	SAFE_DELETE( TOURNAMENT );
 	SAFE_DELETE( SCREENMAN );
 	SAFE_DELETE( STATSMAN );
 	SAFE_DELETE( MESSAGEMAN );
@@ -1198,6 +1200,7 @@ int main(int argc, char* argv[])
 	NSMAN 		= new NetworkSyncManager( loading_window ); 
 	MESSAGEMAN	= new MessageManager;
 	STATSMAN	= new StatsManager;
+	TOURNAMENT	= new TournamentManager;
 
 	SAFE_DELETE( loading_window );		// destroy this before init'ing Display
 
@@ -1613,7 +1616,8 @@ static void GameLoop()
 		/* Important:  Process input AFTER updating game logic, or input will be acting on song beat from last frame */
 		HandleInputEvents( fDeltaTime );
 
-		LIGHTSMAN->Update( fDeltaTime );
+		if( !PREFSMAN->m_bThreadedLights )
+			LIGHTSMAN->Update( fDeltaTime );
 
 		HOOKS->Update( fDeltaTime );
 

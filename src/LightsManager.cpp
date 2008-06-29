@@ -1,20 +1,21 @@
 #include "global.h"
-#include "LightsManager.h"
-#include "GameState.h"
-#include "RageTimer.h"
-#include "arch/Lights/LightsDriver.h"
 #include "RageUtil.h"
-#include "GameInput.h"	// for GameController
+#include "RageTimer.h"
+#include "RageThreads.h"
+#include "GameState.h"
+#include "GameManager.h"
 #include "InputMapper.h"
-#include "Game.h"
+#include "LightsManager.h"
 #include "PrefsManager.h"
-#include "Actor.h"
+#include "GameInput.h"	// for GameController
 #include "Preference.h"
 #include "Foreach.h"
-#include "GameManager.h"
 #include "CommonMetrics.h"
+#include "Actor.h"
+#include "Game.h"
 #include "Style.h"
 
+#include "arch/Lights/LightsDriver.h"
 #include "arch/arch.h"
 
 Preference<float>	g_fLightsFalloffSeconds( "LightsFalloffSeconds", 0.1f );
@@ -80,6 +81,8 @@ static void GetUsedGameInputs( vector<GameInput> &vGameInputsOut )
 
 LightsManager*	LIGHTSMAN = NULL;	// global and accessable from anywhere in our program
 
+int LightsManager::LightsThread_Start( void *p ) { ((LightsManager *) p)->LightsThread(); return 0; }
+
 LightsManager::LightsManager(CString sDriver)
 {
 	ZERO( m_fSecsLeftInCabinetLightBlink );
@@ -92,10 +95,25 @@ LightsManager::LightsManager(CString sDriver)
 	m_fTestAutoCycleCurrentIndex = 0;
 	m_clTestManualCycleCurrent = LIGHT_INVALID;
 	m_iControllerTestManualCycleCurrent = -1;
+
+	if( PREFSMAN->m_bThreadedLights )
+	{
+		m_bShutdown = false;
+		m_LightsThread.SetName( "LightsManager thread" );
+//		m_LightsThread.Create( LightsThread_Start, this );
+	}
 }
 
 LightsManager::~LightsManager()
 {
+	if( m_LightsThread.IsCreated() )
+	{
+		m_bShutdown = true;
+		LOG->Trace( "Shutting down LightsManager thread..." );
+		m_LightsThread.Wait();
+		LOG->Trace( "LightsManager thread shut down." );
+	}
+
 	FOREACH( LightsDriver*, m_vpDrivers, iter )
 		SAFE_DELETE( *iter );
 	m_vpDrivers.clear();
@@ -416,6 +434,20 @@ void LightsManager::Update( float fDeltaTime )
 	// apply new light values we set above
 	FOREACH( LightsDriver*, m_vpDrivers, iter )
 		(*iter)->Set( &m_LightsState );
+}
+
+void LightsManager::LightsThread()
+{
+	ASSERT( !m_LightsThread.IsCreated() );
+
+	RageTimer m_LightsTimer;
+	m_LightsTimer.Touch();
+
+	while( !m_bShutdown )
+	{
+		this->Update( m_LightsTimer.GetDeltaTime() );
+		usleep( 10000 ); // give up some time - 0.01 sec per update at least
+	}
 }
 
 void LightsManager::BlinkCabinetLight( CabinetLight cl )

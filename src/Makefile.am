@@ -345,6 +345,7 @@ PrefsManager.cpp PrefsManager.h ProfileManager.cpp ProfileManager.h ScreenManage
 ScreenManager.h SongManager.cpp SongManager.h \
 StatsManager.cpp StatsManager.h \
 ThemeManager.cpp ThemeManager.h \
+TournamentManager.cpp TournamentManager.h \
 UnlockManager.cpp UnlockManager.h
 
 if !WITHOUT_NETWORKING

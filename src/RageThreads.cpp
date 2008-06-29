@@ -235,7 +235,7 @@ void RageThread::Create( int (*fn)(void *), void *data )
 	}
 
 	if( LOG )
-		LOG->Trace( "Starting thread: %s", name.c_str() );
+		LOG->Debug( "Starting thread: %s", name.c_str() );
 	sprintf( m_pSlot->ThreadFormattedOutput, "Thread: %s", name.c_str() );
 
 	/* Start a thread using our own startup function.  We pass the id to fill in,

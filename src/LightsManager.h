@@ -3,6 +3,8 @@
 #ifndef LightsManager_H
 #define LightsManager_H
 
+#include "RageLog.h" // XXX
+#include "RageThreads.h"
 #include "PlayerNumber.h"
 #include "GameInput.h"
 #include "EnumHelper.h"
@@ -90,6 +92,11 @@ private:
 	vector<LightsDriver*> m_vpDrivers;
 	LightsMode m_LightsMode;
 	LightsState m_LightsState;
+
+	bool m_bShutdown;
+	RageThread m_LightsThread;
+	int LightsThread_Start( void *p );
+	void LightsThread();
 
 	int GetTestAutoCycleCurrentIndex() { return (int)m_fTestAutoCycleCurrentIndex; }
 

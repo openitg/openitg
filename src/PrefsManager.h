@@ -318,6 +318,7 @@ public:
 	Preference<bool>	m_bBlinkGameplayButtonLightsOnNote;
 	Preference<bool>	m_bAllowUnacceleratedRenderer;
 	Preference<bool>	m_bThreadedInput;
+	Preference<bool>	m_bThreadedLights;
 	Preference<bool>	m_bThreadedMovieDecode;
 	Preference<bool>	m_bScreenTestMode;
 	Preference<bool>	m_bDebugUSBInput;

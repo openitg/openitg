@@ -306,6 +306,7 @@ PrefsManager::PrefsManager() :
 	m_bBlinkGameplayButtonLightsOnNote	( "BlinkGameplayButtonLightsOnNote",false ),
 	m_bAllowUnacceleratedRenderer	( "AllowUnacceleratedRenderer",	false ),
 	m_bThreadedInput				( "ThreadedInput",				true ),
+	m_bThreadedLights				( "ThreadedLights",				true ),
 	m_bThreadedMovieDecode			( "ThreadedMovieDecode",		true ),
 	m_bScreenTestMode				( "ScreenTestMode",				false ),
 	m_bDebugUSBInput				( "DebugUSBInput",		false ),

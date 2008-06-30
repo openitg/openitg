@@ -30,6 +30,8 @@ TournamentManager::TournamentManager()
 TournamentManager::~TournamentManager()
 {
 	LOG->Debug( "TournamentManager::~TournamentManager()" );
+
+	Reset();
 }
 
 bool TournamentManager::IsTournamentMode()

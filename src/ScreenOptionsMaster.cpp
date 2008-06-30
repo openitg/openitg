@@ -16,6 +16,7 @@
 #include "OptionRowHandler.h"
 #include "ScreenOptionsMasterPrefs.h"
 #include "CommonMetrics.h"
+#include "ScreenAttract.h" // XXX
 
 #define LINE_NAMES					THEME->GetMetric (m_sName,"LineNames")
 #define OPTION_MENU_FLAGS			THEME->GetMetric (m_sName,"OptionMenuFlags")
@@ -35,6 +36,8 @@ ScreenOptionsMaster::ScreenOptionsMaster( CString sClassName ):
 void ScreenOptionsMaster::Init()
 {
 	ScreenOptions::Init();
+
+	ScreenAttract::SetAttractVolume( false );
 
 	CStringArray asLineNames;
 	split( LINE_NAMES, ",", asLineNames );

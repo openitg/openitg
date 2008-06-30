@@ -232,7 +232,7 @@ void InputHandler_PIUIO::HandleInput()
 	ZERO( m_bInputs );
 
 	/* read the input and handle the sensor logic */
-	if( g_bUseUnstable )
+	if( g_bUseUnstable.Get() )
 		HandleInputInternalUnstable();
 	else
 		HandleInputInternal();

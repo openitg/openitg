@@ -11,6 +11,7 @@
 #include "SongManager.h"
 #include "Steps.h"
 #include "NoteSkinManager.h"
+#include "TournamentManager.h"
 #include "GameCommand.h"
 #include "NoteFieldPositioning.h"
 #include "Character.h"
@@ -1780,6 +1781,8 @@ void GameState::VisitAttractScreen( const CString sScreenName )
 
 bool GameState::DifficultiesLocked()
 {
+	if( TOURNAMENT->IsTournamentMode() )
+		return true;
  	if( GAMESTATE->m_PlayMode == PLAY_MODE_RAVE )
 		return true;
 	if( IsCourseMode() )

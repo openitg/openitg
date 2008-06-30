@@ -319,7 +319,7 @@ void SetDeviceInfo( UsbStorageDevice &usbd, CString sPath )
 			asBits.clear();
 			split( sHostPort, ".", asBits );
 
-			for( int i = 0; i < asBits.size(); i++ )
+			for( unsigned i = 0; i < asBits.size(); i++ )
 				LOG->Debug( "asBits[%i]: %s", i, asBits[i].c_str() );
 
 			if( asBits.size() > 1 )

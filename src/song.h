@@ -194,6 +194,7 @@ public:
 	bool SongCompleteForStyle( const Style *st ) const;
 	bool HasStepsType( StepsType st ) const;
 	bool HasStepsTypeAndDifficulty( StepsType st, Difficulty dc ) const;
+	bool HasStepsWithinMeterRange( int iLow, int iHigh ) const;
 	const vector<Steps*>& GetAllSteps() const { return m_vpSteps; }
 	const vector<Steps*>& GetStepsByStepsType( StepsType st ) const { return m_vpStepsByType[st]; }
 	void GetSteps( 

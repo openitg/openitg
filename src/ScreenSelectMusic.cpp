@@ -13,6 +13,7 @@
 #include "GameState.h"
 #include "CodeDetector.h"
 #include "ThemeManager.h"
+#include "TournamentManager.h"
 #include "Steps.h"
 #include "ActorUtil.h"
 #include "RageDisplay.h"
@@ -1886,6 +1887,12 @@ void ScreenSelectMusic::AfterMusicChange()
 			m_textTotalTime.SetText( SecondsToMMSSMsMs(pSong->m_fMusicLengthSeconds) );
 
 			pSong->GetSteps( m_vpSteps, GAMESTATE->GetCurrentStyle()->m_StepsType );
+
+			if( TOURNAMENT->IsTournamentMode() )
+			{
+				StepsUtil::RemoveStepsOutsideMeterRange( pSong, m_vpSteps, 
+				TOURNAMENT->GetLowLimit(), TOURNAMENT->GetHighLimit() );
+			}
 			StepsUtil::RemoveLockedSteps( pSong, m_vpSteps );
 			StepsUtil::SortNotesArrayByDifficulty( m_vpSteps );
 

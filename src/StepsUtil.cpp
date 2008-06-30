@@ -1,8 +1,10 @@
 #include "global.h"
+#include "RageLog.h"
 #include "StepsUtil.h"
 #include "Steps.h"
 #include "ProfileManager.h"
 #include "song.h"
+#include "Difficulty.h"
 #include "SongManager.h"
 #include "GameManager.h"
 #include "XmlFile.h"
@@ -127,6 +129,40 @@ void StepsUtil::RemoveLockedSteps( const Song *pSong, vector<Steps*> &vpSteps )
 		if( UNLOCKMAN->StepsIsLocked(pSong, vpSteps[i]) )
 			vpSteps.erase( vpSteps.begin()+i );
 	}		
+}
+
+void StepsUtil::RemoveStepsOutsideMeterRange( const Song *pSong, vector<Steps*> &vpSteps, int iLow, int iHigh )
+{
+//	for( unsigned i = 0; i < vpSteps.size(); i++ )
+	for( int i=vpSteps.size()-1; i>=0; i-- )
+	{
+		int iMeter = vpSteps[i]->GetMeter();
+
+		if( iMeter < iLow )
+			LOG->Debug( "Song \"%s\" has steps lower than %i, rated \"%i\"; removing.",
+			pSong->GetDisplayMainTitle().c_str(), iLow, vpSteps[i]->GetMeter() );
+		else if( iMeter > iHigh )
+			LOG->Debug( "Song \"%s\" has steps higher than %i, rated \"%i\"; removing.",
+			pSong->GetDisplayMainTitle().c_str(), iHigh, vpSteps[i]->GetMeter() );
+		else
+			LOG->Debug( "Song \"%s\" has steps rated %i; not removing.",
+			pSong->GetDisplayMainTitle().c_str(), vpSteps[i]->GetMeter() );
+
+		if( iMeter < iLow || iMeter > iHigh )
+			vpSteps.erase( vpSteps.begin()+i );
+	}
+}
+
+void StepsUtil::RemoveStepsOutsideDifficultyRange( const Song *pSong, vector<Steps*> &vpSteps, Difficulty d1, Difficulty d2 )
+{
+/*	for( unsigned i = 0; i < vpSteps.size(); i++ )
+	{
+		int iMeter = vpSteps[i]->GetMeter();
+
+		if( iMeter < iLow || iMeter > iHigh )
+			vpSteps.erase( vpSteps.begin()+i );
+	}
+*/
 }
 
 

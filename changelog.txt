@@ -1,6 +1,7 @@
 OpenITG, alpha 7 (in development)
 ---------------------------------
 -Preliminary, hacky lights-cabinet support in theme SM files
+-Barebones work on tournament mode (it's still a while away)
 -Input changes:
     Newer, more ITG-like input debouncing (half-working...)
     "Select" or "MenuLeft+MenuRight" cancels custom song loading
@@ -9,6 +10,10 @@ OpenITG, alpha 7 (in development)
 -New LUA functions:
     IsUsingMemoryCard(PlayerNumber) - self-explanatory
     Debug() - output debugging lines regardless of log settings
+-New code functions:
+    StepsUtil::RemoveStepsOutsideMeterRange() - self-explanatory
+    StepsUtil::RemoveStepsOutsideDifficultyRange() - see above
+    Song::HasStepsWithinMeterRange() - see above
 -New messages:
     "CardReadyP1", "CardReadyP2" - played when a card is verified ready
 -New preferences:

@@ -14,6 +14,7 @@
 
 #include "AnnouncerManager.h"
 #include "ThemeManager.h"
+#include "TournamentManager.h"
 #include "GameManager.h"
 #include "RageFile.h"
 #include "RageTextureManager.h"
@@ -548,6 +549,7 @@ static void GetSongsFromVector( const vector<Song*> &Songs, vector<Song*> &AddTo
 
 	for( unsigned i=0; i<Songs.size(); i++ )
 		if( sGroupName==GROUP_ALL_MUSIC || sGroupName==Songs[i]->m_sGroupName )
+			if( !TOURNAMENT->IsTournamentMode() || Songs[i]->HasStepsWithinMeterRange(TOURNAMENT->GetLowLimit(), TOURNAMENT->GetHighLimit()) )
 			if( SongManager::GetNumStagesForSong(Songs[i]) <= iMaxStages )
 				AddTo.push_back( Songs[i] );
 }

@@ -157,7 +157,7 @@ float LightsManager::GetActorLightLatencySeconds() const
 void LightsManager::Update( float fDeltaTime )
 {
 	// hack, for threaded lights - make this cleaner! -- Vyhd
-	if( !GAMESTATE )
+	if( !GAMESTATE || !INPUTMAPPER || !PREFSMAN )
 		return;
 
 	//

@@ -1538,6 +1538,7 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 
 	if( m_bMadeChoice )
 	{
+		MESSAGEMAN->Broadcast("SongChosen");
 		// do this immediately, so our timestamp is accurate
 		TOURNAMENT->StartMatch();
 

@@ -216,7 +216,7 @@ long __stdcall CrashHandler(EXCEPTION_POINTERS *pExc)
         SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_MAINTENANCE
         | SHTDN_REASON_FLAG_PLANNED );
 
-	return;
+	return NULL;
 #endif
 
 	static int InHere = 0;

@@ -4,12 +4,22 @@
 #define TOURNAMENT_MANAGER_H
 
 #include "ProfileManager.h"
+#include "Grade.h"
+#include "PlayerNumber.h"
 
 const unsigned TOURNAMENT_MAX_PLAYERS = 256;
 
+// a struct that holds the saved data of a tournament match
+// this is sort of a watered-down PlayerStageStats
 struct TournamentMatch
 {
-	CString sPlayer[2];
+	CString sPlayer[NUM_PLAYERS];
+
+	// score data
+	int iActualDancePoints[NUM_PLAYERS];
+	int iPossibleDancePoints[NUM_PLAYERS];
+//	int iTapNoteScores[
+	
 };
 
 class TournamentManager
@@ -19,6 +29,7 @@ public:
 	~TournamentManager();
 
 	bool IsTournamentMode();
+	void StartRound( 
 private:
 	// the actual amount of participants
 	int m_iNumPlayers;

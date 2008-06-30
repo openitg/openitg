@@ -26,6 +26,10 @@ OpenITG, alpha 7 (in development)
     "CompareScores" (ScreenGameplay) - manually set whether to compare or not
     "OptionsList" (ScreenSelectMusic) - add a side panel to change options
 	instead of the old options menu
+-New Screens:
+	"ScreenExitCommand" - Functions as ScreenExit, but with the ability to launch
+		an executable file before exiting.  Must have 'ExecPath' and 'ExecParams' in the
+		metrics entry
 -Fixed bugs:
     (OpenGL) Arrow shader fails on full-screen, causing scrolling brackets
     Actor sounds ignore attract sound settings

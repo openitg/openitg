@@ -81,6 +81,20 @@ static void GetUsedGameInputs( vector<GameInput> &vGameInputsOut )
 
 LightsManager*	LIGHTSMAN = NULL;	// global and accessable from anywhere in our program
 
+void LightsManager::LightsThread()
+{
+	ASSERT( !m_LightsThread.IsCreated() );
+
+	RageTimer m_LightsTimer;
+	m_LightsTimer.Touch();
+
+	while( !m_bShutdown )
+	{
+		this->Update( m_LightsTimer.GetDeltaTime() );
+		usleep( 10000 ); // give up some time - 0.01 sec per update at least
+	}
+}
+
 int LightsManager::LightsThread_Start( void *p ) { ((LightsManager *) p)->LightsThread(); return 0; }
 
 LightsManager::LightsManager(CString sDriver)
@@ -100,7 +114,7 @@ LightsManager::LightsManager(CString sDriver)
 	{
 		m_bShutdown = false;
 		m_LightsThread.SetName( "LightsManager thread" );
-//		m_LightsThread.Create( LightsThread_Start, this );
+		m_LightsThread.Create( LightsThread_Start, this );
 	}
 }
 
@@ -434,20 +448,6 @@ void LightsManager::Update( float fDeltaTime )
 	// apply new light values we set above
 	FOREACH( LightsDriver*, m_vpDrivers, iter )
 		(*iter)->Set( &m_LightsState );
-}
-
-void LightsManager::LightsThread()
-{
-	ASSERT( !m_LightsThread.IsCreated() );
-
-	RageTimer m_LightsTimer;
-	m_LightsTimer.Touch();
-
-	while( !m_bShutdown )
-	{
-		this->Update( m_LightsTimer.GetDeltaTime() );
-		usleep( 10000 ); // give up some time - 0.01 sec per update at least
-	}
 }
 
 void LightsManager::BlinkCabinetLight( CabinetLight cl )

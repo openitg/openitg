@@ -84,6 +84,9 @@ private:
 	void ChangeTestCabinetLight( int iDir );
 	void ChangeTestGameButtonLight( int iDir );
 
+	void LightsThread();
+	static int LightsThread_Start( void *p );
+
 	float m_fSecsLeftInCabinetLightBlink[NUM_CABINET_LIGHTS];
 	float m_fSecsLeftInGameButtonBlink[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];
 	float m_fActorLights[NUM_CABINET_LIGHTS];	// current "power" of each actor light
@@ -95,8 +98,6 @@ private:
 
 	bool m_bShutdown;
 	RageThread m_LightsThread;
-	int LightsThread_Start( void *p );
-	void LightsThread();
 
 	int GetTestAutoCycleCurrentIndex() { return (int)m_fTestAutoCycleCurrentIndex; }
 

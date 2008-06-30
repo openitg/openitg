@@ -83,8 +83,7 @@ LightsManager*	LIGHTSMAN = NULL;	// global and accessable from anywhere in our p
 
 void LightsManager::LightsThread()
 {
-	ASSERT( !m_LightsThread.IsCreated() );
-
+	CHECKPOINT_M("LightsThread");
 	RageTimer m_LightsTimer;
 	m_LightsTimer.Touch();
 
@@ -93,6 +92,7 @@ void LightsManager::LightsThread()
 		this->Update( m_LightsTimer.GetDeltaTime() );
 		usleep( 10000 ); // give up some time - 0.01 sec per update at least
 	}
+	CHECKPOINT_M("LightsThread ended");
 }
 
 int LightsManager::LightsThread_Start( void *p ) { ((LightsManager *) p)->LightsThread(); return 0; }
@@ -112,9 +112,11 @@ LightsManager::LightsManager(CString sDriver)
 
 	if( PREFSMAN->m_bThreadedLights )
 	{
+		CHECKPOINT_M("Starting Lights thread");
 		m_bShutdown = false;
 		m_LightsThread.SetName( "LightsManager thread" );
 		m_LightsThread.Create( LightsThread_Start, this );
+		CHECKPOINT_M("Lights thread started");
 	}
 }
 
@@ -122,15 +124,20 @@ LightsManager::~LightsManager()
 {
 	if( m_LightsThread.IsCreated() )
 	{
+		CHECKPOINT_M("Shutting down lights thread");
 		m_bShutdown = true;
 		LOG->Trace( "Shutting down LightsManager thread..." );
 		m_LightsThread.Wait();
 		LOG->Trace( "LightsManager thread shut down." );
+		CHECKPOINT_M("Lights thread shut down." );
 	}
 
+	CHECKPOINT_M("Deleting drivers");
 	FOREACH( LightsDriver*, m_vpDrivers, iter )
 		SAFE_DELETE( *iter );
 	m_vpDrivers.clear();
+
+	CHECKPOINT_M("Drivers deleted.");
 }
 
 // XXX: make themable
@@ -149,6 +156,10 @@ float LightsManager::GetActorLightLatencySeconds() const
 
 void LightsManager::Update( float fDeltaTime )
 {
+	// hack, for threaded lights - make this cleaner! -- Vyhd
+	if( !GAMESTATE )
+		return;
+
 	//
 	// Update actor effect lights.
 	//

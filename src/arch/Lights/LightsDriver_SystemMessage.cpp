@@ -42,7 +42,8 @@ void LightsDriver_SystemMessage::Set( const LightsState *ls )
 		s += "\n";
 	}
 
-	SCREENMAN->SystemMessageNoAnimate( s );
+	if( SCREENMAN )
+		SCREENMAN->SystemMessageNoAnimate( s );
 }
 
 /*

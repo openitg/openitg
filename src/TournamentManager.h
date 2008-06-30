@@ -4,7 +4,7 @@
 #define TOURNAMENT_MANAGER_H
 
 #include "ProfileManager.h"
-#include "Grade.h"
+#include "GameConstantsAndTypes.h"
 #include "PlayerNumber.h"
 
 const unsigned TOURNAMENT_MAX_PLAYERS = 256;
@@ -18,8 +18,8 @@ struct TournamentMatch
 	// score data
 	int iActualDancePoints[NUM_PLAYERS];
 	int iPossibleDancePoints[NUM_PLAYERS];
-//	int iTapNoteScores[
-	
+	int iTapNoteScores[NUM_TAP_NOTE_SCORES][NUM_PLAYERS];
+	int iHoldNoteScores[NUM_HOLD_NOTE_SCORES][NUM_PLAYERS];
 };
 
 class TournamentManager
@@ -29,10 +29,7 @@ public:
 	~TournamentManager();
 
 	bool IsTournamentMode();
-	void StartRound( 
 private:
-	// the actual amount of participants
-	int m_iNumPlayers;
 };
 
 

@@ -539,6 +539,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="ScreenExit.h">
 			</File>
 			<File
+				RelativePath=".\ScreenExitCommand.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenExitCommand.h">
+			</File>
+			<File
 				RelativePath="ScreenEz2SelectMusic.cpp">
 			</File>
 			<File
@@ -1948,6 +1954,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="OptionsCursor.h">
 			</File>
 			<File
+				RelativePath=".\OptionsList.cpp">
+			</File>
+			<File
+				RelativePath=".\OptionsList.h">
+			</File>
+			<File
 				RelativePath="PaneDisplay.cpp">
 			</File>
 			<File
@@ -2635,85 +2647,85 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					</File>
 				</Filter>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Actors"
-			Filter="">
-			<File
-				RelativePath=".\Actor.cpp">
-			</File>
-			<File
-				RelativePath=".\Actor.h">
-			</File>
-			<File
-				RelativePath="ActorCollision.h">
-			</File>
-			<File
-				RelativePath=".\ActorFrame.cpp">
-			</File>
-			<File
-				RelativePath=".\ActorFrame.h">
-			</File>
-			<File
-				RelativePath="ActorScroller.cpp">
-			</File>
-			<File
-				RelativePath="ActorScroller.h">
-			</File>
-			<File
-				RelativePath="ActorUtil.cpp">
-			</File>
-			<File
-				RelativePath="ActorUtil.h">
-			</File>
-			<File
-				RelativePath="AutoActor.cpp">
-			</File>
-			<File
-				RelativePath="AutoActor.h">
-			</File>
-			<File
-				RelativePath=".\BitmapText.cpp">
-			</File>
-			<File
-				RelativePath=".\BitmapText.h">
-			</File>
-			<File
-				RelativePath="Model.cpp">
-			</File>
-			<File
-				RelativePath="Model.h">
-			</File>
-			<File
-				RelativePath="ModelManager.cpp">
-			</File>
-			<File
-				RelativePath="ModelManager.h">
-			</File>
-			<File
-				RelativePath="ModelTypes.cpp">
-			</File>
-			<File
-				RelativePath="ModelTypes.h">
-			</File>
-			<File
-				RelativePath="Quad.cpp">
-			</File>
-			<File
-				RelativePath="Quad.h">
-			</File>
-			<File
-				RelativePath="RollingNumbers.cpp">
-			</File>
-			<File
-				RelativePath="RollingNumbers.h">
-			</File>
-			<File
-				RelativePath=".\Sprite.cpp">
-			</File>
-			<File
-				RelativePath=".\Sprite.h">
-			</File>
+			<Filter
+				Name="Actors"
+				Filter="">
+				<File
+					RelativePath=".\Actor.cpp">
+				</File>
+				<File
+					RelativePath=".\Actor.h">
+				</File>
+				<File
+					RelativePath="ActorCollision.h">
+				</File>
+				<File
+					RelativePath=".\ActorFrame.cpp">
+				</File>
+				<File
+					RelativePath=".\ActorFrame.h">
+				</File>
+				<File
+					RelativePath="ActorScroller.cpp">
+				</File>
+				<File
+					RelativePath="ActorScroller.h">
+				</File>
+				<File
+					RelativePath="ActorUtil.cpp">
+				</File>
+				<File
+					RelativePath="ActorUtil.h">
+				</File>
+				<File
+					RelativePath="AutoActor.cpp">
+				</File>
+				<File
+					RelativePath="AutoActor.h">
+				</File>
+				<File
+					RelativePath=".\BitmapText.cpp">
+				</File>
+				<File
+					RelativePath=".\BitmapText.h">
+				</File>
+				<File
+					RelativePath="Model.cpp">
+				</File>
+				<File
+					RelativePath="Model.h">
+				</File>
+				<File
+					RelativePath="ModelManager.cpp">
+				</File>
+				<File
+					RelativePath="ModelManager.h">
+				</File>
+				<File
+					RelativePath="ModelTypes.cpp">
+				</File>
+				<File
+					RelativePath="ModelTypes.h">
+				</File>
+				<File
+					RelativePath="Quad.cpp">
+				</File>
+				<File
+					RelativePath="Quad.h">
+				</File>
+				<File
+					RelativePath="RollingNumbers.cpp">
+				</File>
+				<File
+					RelativePath="RollingNumbers.h">
+				</File>
+				<File
+					RelativePath=".\Sprite.cpp">
+				</File>
+				<File
+					RelativePath=".\Sprite.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Global Singletons"
@@ -2861,6 +2873,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath=".\ThemeManager.h">
+			</File>
+			<File
+				RelativePath=".\TournamentManager.cpp">
+			</File>
+			<File
+				RelativePath=".\TournamentManager.h">
 			</File>
 			<File
 				RelativePath="UnlockManager.cpp">
@@ -3094,6 +3112,9 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath=".\ibutton\crcutil.c">
 			</File>
 			<File
+				RelativePath="archutils\Win32\DialogCrashHeader.bmp">
+			</File>
+			<File
 				RelativePath=".\ibutton\ds2480.h">
 			</File>
 			<File
@@ -3139,9 +3160,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath=".\ibutton\win32lnk.c">
 			</File>
 		</Filter>
-		<File
-			RelativePath="archutils\Win32\DialogCrashHeader.bmp">
-		</File>
 		<File
 			RelativePath="archutils\Win32\DialogErrorHeader.bmp">
 		</File>

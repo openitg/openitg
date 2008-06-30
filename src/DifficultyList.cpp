@@ -285,13 +285,7 @@ void DifficultyList::SetFromGameState()
 
 			/* Should match the sort in ScreenSelectMusic::AfterMusicChange. */
 			StepsUtil::RemoveLockedSteps( pSong, CurSteps );
-
-			if( TOURNAMENT->IsTournamentMode() )
-			{
-				StepsUtil::RemoveStepsOutsideMeterRange( pSong, CurSteps,
-				TOURNAMENT->GetLowLimit(), TOURNAMENT->GetHighLimit() );
-			}
-
+			TOURNAMENT->RemoveStepsOutsideLimits( CurSteps );
 			StepsUtil::SortNotesArrayByDifficulty( CurSteps );
 
 			m_Rows.resize( CurSteps.size() );

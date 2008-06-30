@@ -7,22 +7,13 @@
 #include "GameConstantsAndTypes.h"
 #include "Difficulty.h"
 #include "StageStats.h"
-#include "DateTime.h"
 #include "PlayerNumber.h"
 #include <vector>
 
-const unsigned TOURNAMENT_MAX_PLAYERS = 256;
+class Steps;
+struct lua_State;
 
-enum TournamentRound
-{
-	QUALIFIERS,
-	ROUND_1, ROUND_2, ROUND_3, ROUND_4,
-	ROUND_5, ROUND_6, ROUND_7, ROUND_8,
-	ROUND_9, ROUND_10, ROUND_11, ROUND_12,
-	ROUND_13, ROUND_QUARTERFINALS,
-	ROUND_SEMIFINALS, ROUND_FINALS,
-	ROUND_INVALID
-};
+const unsigned TOURNAMENT_MAX_PLAYERS = 256;
 
 // a struct that holds the saved data of a tournament match;
 // this is sort of a watered-down PlayerStageStats
@@ -39,10 +30,10 @@ struct TournamentMatch
 
 	// general statistics
 	CString sGroup, sTitle;	// song or course that was played
+	CString sTimePlayed; // date and time of match
+	CString sRound; // the round this match was played in
 
 	PlayerNumber winner;
-	DateTime datePlayed;
-	TournamentRound iRound;
 };
 
 // a player in the tournament format
@@ -63,11 +54,17 @@ public:
 	TournamentManager();
 	~TournamentManager();
 
-	bool IsTournamentMode();
-	TournamentRound GetRound() { return m_Round; }
+	// limitations on the playable songs + steps
+	int m_iMeterLimitLow, m_iMeterLimitHigh;
+	Difficulty m_DifficultyLimitLow, m_DifficultyLimitHigh;
 
-	int GetLowLimit() { return m_iMeterLimitLow; }
-	int GetHighLimit() { return m_iMeterLimitHigh; }
+	bool IsTournamentMode();
+
+	// remove any steps outside tournament limits
+	void RemoveStepsOutsideLimits( vector<Steps*> &vpSteps );
+
+	TournamentRound GetRound() { return m_Round; }
+	unsigned GetNumCompetitors() { return m_pCompetitors.size(); }
 
 	// vector search-and-find functions
 	int FindIndexOfCompetitor( Competitor *cptr );
@@ -75,15 +72,15 @@ public:
 
 	// attempt to add a new, unique competitor
 	bool RegisterCompetitor( CString sDisplayName, CString sHighScoreName, CString &sError );
-
-	// creates a new TournamentMatch and adds it to the vector
 	void RecordMatch( StageStats &stats );
 
 	void Reset();
-private:
-	int m_iMeterLimitLow, m_iMeterLimitHigh;
-	Difficulty m_DifficultyLimitLow, m_DifficultyLimitHigh;
+	void PushSelf( lua_State *L );
 
+	// debugging
+	void DumpMatches();
+	void DumpCompetitors();
+private:
 	// the current round the tournament is in
 	TournamentRound m_Round;
 

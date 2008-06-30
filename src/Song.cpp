@@ -1054,6 +1054,15 @@ bool Song::HasStepsWithinMeterRange( int iLow, int iHigh ) const
 	return false;
 }
 
+bool Song::HasStepsWithinDifficultyRange( Difficulty dLow, Difficulty dHigh ) const
+{
+	for( unsigned i = 0; i < m_vpSteps.size(); i++ )
+		if( m_vpSteps[i]->GetDifficulty() >= dLow && m_vpSteps[i]->GetDifficulty() <= dHigh )
+			return true;
+
+	return false;
+}
+
 void Song::Save()
 {
 	LOG->Trace( "Song::SaveToSongFile()" );

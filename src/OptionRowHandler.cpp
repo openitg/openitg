@@ -3,6 +3,7 @@
 #include "LuaManager.h"
 #include "ScreenOptionsMasterPrefs.h"
 #include "NoteSkinManager.h"
+#include "TournamentManager.h"
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "GameState.h"
@@ -363,6 +364,7 @@ public:
 			Song *pSong = GAMESTATE->m_pCurSong;
 			pSong->GetSteps( vpSteps, GAMESTATE->GetCurrentStyle()->m_StepsType );
 			StepsUtil::RemoveLockedSteps( pSong, vpSteps );
+			TOURNAMENT->RemoveStepsOutsideLimits( vpSteps );
 			StepsUtil::SortNotesArrayByDifficulty( vpSteps );
 			for( unsigned i=0; i<vpSteps.size(); i++ )
 			{

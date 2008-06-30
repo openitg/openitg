@@ -223,7 +223,6 @@ void ShutdownGame()
 	if( SOUNDMAN )
 		SOUNDMAN->Shutdown();
 
-	SAFE_DELETE( TOURNAMENT );
 	SAFE_DELETE( SCREENMAN );
 	SAFE_DELETE( STATSMAN );
 	SAFE_DELETE( MESSAGEMAN );
@@ -251,6 +250,7 @@ void ShutdownGame()
 	SAFE_DELETE( THEME );
 	SAFE_DELETE( ANNOUNCER );
 	SAFE_DELETE( BOOKKEEPER );
+	SAFE_DELETE( TOURNAMENT );
 	SAFE_DELETE( LIGHTSMAN );
 	SAFE_DELETE( SOUNDMAN );
 	SAFE_DELETE( FONT );
@@ -1167,6 +1167,7 @@ int main(int argc, char* argv[])
 	SOUND		= new GameSoundManager;
 	BOOKKEEPER	= new Bookkeeper;
 	LIGHTSMAN	= new LightsManager( PREFSMAN->GetLightsDriver() );
+	TOURNAMENT	= new TournamentManager;
 	INPUTFILTER	= new InputFilter;
 	INPUTMAPPER	= new InputMapper;
 	INPUTQUEUE	= new InputQueue;
@@ -1200,7 +1201,6 @@ int main(int argc, char* argv[])
 	NSMAN 		= new NetworkSyncManager( loading_window ); 
 	MESSAGEMAN	= new MessageManager;
 	STATSMAN	= new StatsManager;
-	TOURNAMENT	= new TournamentManager;
 
 	SAFE_DELETE( loading_window );		// destroy this before init'ing Display
 

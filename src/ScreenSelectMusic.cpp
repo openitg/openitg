@@ -1888,12 +1888,8 @@ void ScreenSelectMusic::AfterMusicChange()
 
 			pSong->GetSteps( m_vpSteps, GAMESTATE->GetCurrentStyle()->m_StepsType );
 
-			if( TOURNAMENT->IsTournamentMode() )
-			{
-				StepsUtil::RemoveStepsOutsideMeterRange( pSong, m_vpSteps, 
-				TOURNAMENT->GetLowLimit(), TOURNAMENT->GetHighLimit() );
-			}
 			StepsUtil::RemoveLockedSteps( pSong, m_vpSteps );
+			TOURNAMENT->RemoveStepsOutsideLimits( m_vpSteps );
 			StepsUtil::SortNotesArrayByDifficulty( m_vpSteps );
 
 			// if it's a custom, load the 'edit' banner.

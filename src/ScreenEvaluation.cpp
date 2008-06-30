@@ -12,6 +12,7 @@
 #include "GameState.h"
 #include "GrooveRadar.h"
 #include "ThemeManager.h"
+#include "TournamentManager.h"
 #include "GameSoundManager.h"
 #include "ActorUtil.h"
 #include "RageTimer.h"
@@ -92,6 +93,8 @@ REGISTER_SCREEN_CLASS( ScreenEvaluation );
 ScreenEvaluation::ScreenEvaluation( CString sClassName ) : ScreenWithMenuElements(sClassName)
 {
 	LOG->Trace( "ScreenEvaluation::ScreenEvaluation" );
+
+	TOURNAMENT->RecordMatch( STATSMAN->m_CurStageStats );
 
 	//
 	// debugging

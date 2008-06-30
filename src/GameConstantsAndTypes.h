@@ -415,6 +415,32 @@ enum Stage
 #define FOREACH_Stage( s ) FOREACH_ENUM( Stage, NUM_STAGES, s )
 const CString& StageToString( Stage s );
 
+enum TournamentRound
+{
+	ROUND_QUALIFIERS,
+	ROUND_1,
+	ROUND_2,
+	ROUND_3,
+	ROUND_4,
+	ROUND_5,
+	ROUND_6,
+	ROUND_7,
+	ROUND_8,
+	ROUND_9,
+	ROUND_10,
+	ROUND_11,
+	ROUND_12,
+	ROUND_13,
+	ROUND_QUARTERFINALS,
+	ROUND_SEMIFINALS,
+	ROUND_FINALS,
+	NUM_ROUNDS,
+	ROUND_INVALID,
+};
+#define FOREACH_TournamentRound( s ) FOREACH_ENUM( TournamentRound, NUM_ROUNDS, s )
+const CString& TournamentRoundToString( TournamentRound tr );
+
+
 
 #endif
 

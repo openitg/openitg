@@ -131,38 +131,32 @@ void StepsUtil::RemoveLockedSteps( const Song *pSong, vector<Steps*> &vpSteps )
 	}		
 }
 
-void StepsUtil::RemoveStepsOutsideMeterRange( const Song *pSong, vector<Steps*> &vpSteps, int iLow, int iHigh )
+void StepsUtil::RemoveStepsOutsideMeterRange( vector<Steps*> &vpSteps, int iLow, int iHigh )
 {
-//	for( unsigned i = 0; i < vpSteps.size(); i++ )
+	if( iLow == -1 && iHigh == -1 )
+		return;
+
 	for( int i=vpSteps.size()-1; i>=0; i-- )
 	{
 		int iMeter = vpSteps[i]->GetMeter();
-
-		if( iMeter < iLow )
-			LOG->Debug( "Song \"%s\" has steps lower than %i, rated \"%i\"; removing.",
-			pSong->GetDisplayMainTitle().c_str(), iLow, vpSteps[i]->GetMeter() );
-		else if( iMeter > iHigh )
-			LOG->Debug( "Song \"%s\" has steps higher than %i, rated \"%i\"; removing.",
-			pSong->GetDisplayMainTitle().c_str(), iHigh, vpSteps[i]->GetMeter() );
-		else
-			LOG->Debug( "Song \"%s\" has steps rated %i; not removing.",
-			pSong->GetDisplayMainTitle().c_str(), vpSteps[i]->GetMeter() );
 
 		if( iMeter < iLow || iMeter > iHigh )
 			vpSteps.erase( vpSteps.begin()+i );
 	}
 }
 
-void StepsUtil::RemoveStepsOutsideDifficultyRange( const Song *pSong, vector<Steps*> &vpSteps, Difficulty d1, Difficulty d2 )
+void StepsUtil::RemoveStepsOutsideDifficultyRange( vector<Steps*> &vpSteps, Difficulty dLow, Difficulty dHigh )
 {
-/*	for( unsigned i = 0; i < vpSteps.size(); i++ )
-	{
-		int iMeter = vpSteps[i]->GetMeter();
+	if( dLow == DIFFICULTY_INVALID && dHigh == DIFFICULTY_INVALID )
+		return;
 
-		if( iMeter < iLow || iMeter > iHigh )
+	for( int i=vpSteps.size()-1; i>=0; i-- )
+	{
+		Difficulty iDifficulty = vpSteps[i]->GetDifficulty();
+
+		if( iDifficulty < dLow || iDifficulty > dHigh )
 			vpSteps.erase( vpSteps.begin()+i );
 	}
-*/
 }
 
 

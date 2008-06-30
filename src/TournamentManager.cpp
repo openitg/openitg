@@ -20,6 +20,10 @@ TournamentManager::TournamentManager()
 
 	m_iMeterLimitLow = m_iMeterLimitHigh = -1;
 	m_DifficultyLimitLow = m_DifficultyLimitHigh = DIFFICULTY_INVALID;
+	m_pCurMatch = NULL;
+	FOREACH_PlayerNumber( pn )
+		m_pCurCompetitor[pn] = NULL;
+
 	m_Round = ROUND_QUALIFIERS;
 }
 
@@ -43,7 +47,7 @@ void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps )
 	ASSERT( m_iMeterLimitLow <= m_iMeterLimitHigh );
 	ASSERT( m_DifficultyLimitLow <= m_DifficultyLimitHigh );
 
-//	StepsUtil::RemoveStepsOutsideMeterRange( vpSteps, m_iMeterLimitLow, m_iMeterLimitHigh );
+	StepsUtil::RemoveStepsOutsideMeterRange( vpSteps, m_iMeterLimitLow, m_iMeterLimitHigh );
 	StepsUtil::RemoveStepsOutsideDifficultyRange( vpSteps, m_DifficultyLimitLow, m_DifficultyLimitHigh );
 	CHECKPOINT_M( "~RemoveSteps" );
 }
@@ -79,6 +83,9 @@ void TournamentManager::Reset()
 
 bool TournamentManager::RegisterCompetitor( CString sDisplayName, CString sHighScoreName, CString &sError )
 {
+	if( !this->IsTournamentMode() )
+		return false;
+
 	Competitor *cptr = new Competitor;
 
 	// default to Player xx if no display is given
@@ -104,52 +111,96 @@ bool TournamentManager::RegisterCompetitor( CString sDisplayName, CString sHighS
 	return true;
 }
 
-void TournamentManager::RecordMatch( StageStats &stats )
+void TournamentManager::StartMatch()
 {
-	LOG->Debug( "TournamentManager::RecordMatch()" );
+	if( !this->IsTournamentMode() )
+		return;
+
+	LOG->Debug( "TournamentManager::StartMatch()" );
+	ASSERT( m_pCurMatch == NULL );
+
+	CHECKPOINT;
+
 	TournamentMatch *match = new TournamentMatch;
+
+	CHECKPOINT;
 
 	match->sTimePlayed = DateTime::GetNowDateTime().GetString();
 	match->sRound = TournamentRoundToString( m_Round );
 
-	if( stats.playMode == PLAY_MODE_REGULAR || stats.playMode == PLAY_MODE_RAVE )
+	CHECKPOINT;
+
+	if( GAMESTATE->m_PlayMode == PLAY_MODE_REGULAR || GAMESTATE->m_PlayMode == PLAY_MODE_RAVE )
 	{
-		// fill in song data
-		match->sGroup = stats.vpPlayedSongs[0]->m_sGroupName;
-		match->sTitle = stats.vpPlayedSongs[0]->GetDisplayFullTitle();
+		// fill in song data. XXX: GameState
+		match->sGroup = GAMESTATE->m_pCurSong->m_sGroupName;
+		match->sTitle = GAMESTATE->m_pCurSong->GetDisplayFullTitle();
 	}
 	else
 	{
-		// fill in course data
+		// fill in course data. XXX: GameState
 		match->sGroup = GAMESTATE->m_pCurCourse->m_sGroupName;
-		match->sGroup = GAMESTATE->m_pCurCourse->GetDisplayFullTitle();
+		match->sTitle = GAMESTATE->m_pCurCourse->GetDisplayFullTitle();
 	}
+
+	CHECKPOINT;
 
 	FOREACH_PlayerNumber( pn )
 	{
 		match->sPlayer[pn] = PROFILEMAN->GetPlayerName(pn);
-		match->iPlayerIndex[pn] = 0; // will make this actually work later
+//		match->iSeedIndex[pn] = m_pCurCompetitor[pn]->iSeedIndex;
+	}
 
+	CHECKPOINT;
+
+	m_pCurMatch = match;
+
+	CHECKPOINT;
+}
+
+// we don't want to save this data if the player backed out.
+// delete the allocated data and re-set for a new match.
+void TournamentManager::CancelMatch()
+{
+	if( !this->IsTournamentMode() )
+		return;
+
+	LOG->Debug( "TOurnamentManager::CancelMatch()" );
+
+	SAFE_DELETE( m_pCurMatch );
+}
+
+// save all scores and game data from the stats given
+void TournamentManager::FinishMatch( StageStats &stats )
+{
+	if( !this->IsTournamentMode() )
+		return;
+
+	LOG->Debug( "TournamentManager::FinishMatch()" );
+
+	FOREACH_PlayerNumber( pn )
+	{
 		// fill in score data
-		match->iActualDancePoints[pn] = stats.m_player[pn].iActualDancePoints;
-		match->iPossibleDancePoints[pn] = stats.m_player[pn].iPossibleDancePoints;
-		
-		FOREACH_TapNoteScore( tns )
-			match->iTapNoteScores[pn][tns] = stats.m_player[pn].iTapNoteScores[tns];
-		FOREACH_HoldNoteScore( hns )
-			match->iHoldNoteScores[pn][hns] = stats.m_player[pn].iHoldNoteScores[hns];
+		m_pCurMatch->iActualPoints[pn] = stats.m_player[pn].iActualDancePoints;
+		m_pCurMatch->iPossiblePoints[pn] = stats.m_player[pn].iPossibleDancePoints;
 
 		// truncate the rest to avoid rounding errors
-		float fPercentP1 = ftruncf( stats.m_player[PLAYER_1].GetPercentDancePoints(), 0.0001 );
-		float fPercentP2 = ftruncf( stats.m_player[PLAYER_2].GetPercentDancePoints(), 0.0001 );
+		m_pCurMatch->fPercentPoints[pn] = ftruncf( stats.m_player[pn].GetPercentDancePoints(), 0.0001 );
+
+		FOREACH_TapNoteScore( tns )
+			m_pCurMatch->iTapNoteScores[pn][tns] = stats.m_player[pn].iTapNoteScores[tns];
+		FOREACH_HoldNoteScore( hns )
+			m_pCurMatch->iHoldNoteScores[pn][hns] = stats.m_player[pn].iHoldNoteScores[hns];
 
 		// neither player won
 		if( !stats.OnePassed() )
-			match->winner = PLAYER_INVALID;
+			m_pCurMatch->winner = PLAYER_INVALID;
 	}
 
-	m_pMatches.push_back( match );
-	m_Round = (TournamentRound)((int)m_Round + 1);
+	m_pMatches.push_back( m_pCurMatch );
+	m_pCurMatch = NULL;
+
+	m_Round = (TournamentRound)((int)m_Round + 1); // debugging
 }
 
 void TournamentManager::DumpMatches()
@@ -158,7 +209,7 @@ void TournamentManager::DumpMatches()
 	{
 		LOG->Debug( "Match %i: %s vs. %s, points %i vs. %i\non song %s in group %s\nPlayed on %s",
 		i+1, m_pMatches[i]->sPlayer[PLAYER_1].c_str(), m_pMatches[i]->sPlayer[PLAYER_2].c_str(),
-		m_pMatches[i]->iActualDancePoints[PLAYER_1], m_pMatches[i]->iActualDancePoints[PLAYER_2],
+		m_pMatches[i]->iActualPoints[PLAYER_1], m_pMatches[i]->iActualPoints[PLAYER_2],
 		m_pMatches[i]->sTitle.c_str(), m_pMatches[i]->sGroup.c_str(), m_pMatches[i]->sTimePlayed.c_str() );
 	}
 }
@@ -183,7 +234,7 @@ public:
 	LunaTournamentManager() { LUA->Register( Register ); }
 
 	static int GetNumCompetitors( T* p, lua_State *L )	{ lua_pushnumber( L, p->GetNumCompetitors() ); return 1; }
-	static int GetRound( T* p, lua_State *L )		{ lua_pushnumber( L, (int)p->GetRound() ); return 1; }
+	static int GetCurrentRound( T* p, lua_State *L )	{ lua_pushnumber( L, (int)p->GetCurrentRound() ); return 1; }
 	static int SetMeterLimitLow( T* p, lua_State *L )	{ p->m_iMeterLimitLow = IArg(1); return 0; }
 	static int SetMeterLimitHigh( T* p, lua_State *L )	{ p->m_iMeterLimitHigh = IArg(1); return 0; }
 	static int SetDifficultyLimitLow( T* p, lua_State *L )	{ p->m_DifficultyLimitLow = (Difficulty)IArg(1); return 0; }
@@ -194,12 +245,13 @@ public:
 	static void Register( lua_State *L )
 	{
 		ADD_METHOD( GetNumCompetitors )
-		ADD_METHOD( GetRound )
+		ADD_METHOD( GetCurrentRound )
 		ADD_METHOD( SetMeterLimitLow )
 		ADD_METHOD( SetMeterLimitHigh )
 		ADD_METHOD( SetDifficultyLimitLow )
 		ADD_METHOD( SetDifficultyLimitHigh )
 		ADD_METHOD( DumpMatches )
+		ADD_METHOD( DumpCompetitors )
 
 		Luna<T>::Register( L );
 

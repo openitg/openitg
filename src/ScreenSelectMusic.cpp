@@ -110,6 +110,8 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 
 void ScreenSelectMusic::Init()
 {
+	TOURNAMENT->CancelMatch(); // flush any old match data that wasn't saved by ScreenEvaluation
+
 	m_bSelectIsDown = false; // used by LoadHelpText which is called by ScreenWithMenuElements::Init()
 
 	ScreenWithMenuElements::Init();
@@ -1450,7 +1452,7 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 				//    --infamouspat
 				SOUND->StopMusic();
 
-				// if false and no time, set a random song that isn't a custom - those could fail
+				// if false and no time, set a random song that isn't a custom - those could fail.
 				// we may improve on this behaviour later.
 				if( (int)m_MenuTimer->GetSeconds() == 0 )
 				{
@@ -1536,6 +1538,9 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 
 	if( m_bMadeChoice )
 	{
+		// do this immediately, so our timestamp is accurate
+		TOURNAMENT->StartMatch();
+
 		TweenOffScreen();
 
 		if( OPTIONS_MENU_AVAILABLE )

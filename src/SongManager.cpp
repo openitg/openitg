@@ -550,7 +550,7 @@ static void GetSongsFromVector( const vector<Song*> &Songs, vector<Song*> &AddTo
 
 	for( unsigned i=0; i<Songs.size(); i++ )
 //		if( Songs[i]->HasStepsWithinMeterRange(TOURNAMENT->GetLowLimit(), TOURNAMENT->GetHighLimit()) )
-//x		if( Songs[i]->HasStepsWithinMeterRange(1, 8) && Songs[i]->HasStepsWithinDifficultyRange(DIFFICULTY_MEDIUM, DIFFICULTY_MEDIUM) )
+		if( Songs[i]->HasStepsWithinMeterRange(1, 8) && Songs[i]->HasStepsWithinDifficultyRange(DIFFICULTY_MEDIUM, DIFFICULTY_HARD) )
 			if( sGroupName==GROUP_ALL_MUSIC || sGroupName==Songs[i]->m_sGroupName )
 				if( SongManager::GetNumStagesForSong(Songs[i]) <= iMaxStages )
 					AddTo.push_back( Songs[i] );

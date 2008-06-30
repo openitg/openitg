@@ -35,6 +35,7 @@
 #include "Course.h"
 #include "NoteDataUtil.h"
 #include "UnlockManager.h"
+#include "TournamentManager.h"
 #include "LightsManager.h"
 #include "ProfileManager.h"
 #include "StatsManager.h"
@@ -1915,6 +1916,8 @@ void ScreenGameplay::SendCrossedMessages()
 
 void ScreenGameplay::BackOutFromGameplay()
 {
+	TOURNAMENT->CancelMatch();
+
 	m_DancingState = STATE_OUTRO;
 	AbortGiveUp( false );
 	

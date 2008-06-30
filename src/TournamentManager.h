@@ -20,11 +20,12 @@ const unsigned TOURNAMENT_MAX_PLAYERS = 256;
 struct TournamentMatch
 {
 	CString sPlayer[NUM_PLAYERS];
-	int iPlayerIndex[NUM_PLAYERS];
+	int iSeedIndex[NUM_PLAYERS];
 
 	// score data
-	int iActualDancePoints[NUM_PLAYERS];
-	int iPossibleDancePoints[NUM_PLAYERS];
+	int iActualPoints[NUM_PLAYERS];
+	int iPossiblePoints[NUM_PLAYERS];
+	float fPercentPoints[NUM_PLAYERS];
 	int iTapNoteScores[NUM_PLAYERS][NUM_TAP_NOTE_SCORES];
 	int iHoldNoteScores[NUM_PLAYERS][NUM_HOLD_NOTE_SCORES];
 
@@ -58,12 +59,20 @@ public:
 	int m_iMeterLimitLow, m_iMeterLimitHigh;
 	Difficulty m_DifficultyLimitLow, m_DifficultyLimitHigh;
 
+	// currently used data
+	Competitor *m_pCurCompetitor[NUM_PLAYERS];
+	TournamentMatch *m_pCurMatch;
+
+	void StartMatch(); 	// initialise and save date, song, etc.
+	void CancelMatch();	// delete the data and prepare for a new match	
+	void FinishMatch( StageStats &stats ); // save end-of-game data
+	
 	bool IsTournamentMode();
 
 	// remove any steps outside tournament limits
 	void RemoveStepsOutsideLimits( vector<Steps*> &vpSteps );
 
-	TournamentRound GetRound() { return m_Round; }
+	TournamentRound GetCurrentRound() { return m_Round; }
 	unsigned GetNumCompetitors() { return m_pCompetitors.size(); }
 
 	// vector search-and-find functions
@@ -72,7 +81,6 @@ public:
 
 	// attempt to add a new, unique competitor
 	bool RegisterCompetitor( CString sDisplayName, CString sHighScoreName, CString &sError );
-	void RecordMatch( StageStats &stats );
 
 	void Reset();
 	void PushSelf( lua_State *L );

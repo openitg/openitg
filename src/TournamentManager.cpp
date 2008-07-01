@@ -27,12 +27,11 @@ TournamentManager::TournamentManager()
 
 	m_Round = ROUND_QUALIFIERS;
 
-/*
 	m_iMeterLimitLow = 6;
 	m_iMeterLimitHigh = 11;
 	m_DifficultyLimitLow = DIFFICULTY_EASY;
 	m_DifficultyLimitHigh = DIFFICULTY_MEDIUM;
-*/
+
 }
 
 TournamentManager::~TournamentManager()
@@ -137,16 +136,10 @@ void TournamentManager::StartMatch()
 	LOG->Debug( "TournamentManager::StartMatch()" );
 	ASSERT( m_pCurMatch == NULL );
 
-	CHECKPOINT;
-
 	TournamentMatch *match = new TournamentMatch;
-
-	CHECKPOINT;
 
 	match->sTimePlayed = DateTime::GetNowDateTime().GetString();
 	match->sRound = TournamentRoundToString( m_Round );
-
-	CHECKPOINT;
 
 	if( GAMESTATE->m_PlayMode == PLAY_MODE_REGULAR || GAMESTATE->m_PlayMode == PLAY_MODE_RAVE )
 	{
@@ -161,19 +154,13 @@ void TournamentManager::StartMatch()
 		match->sTitle = GAMESTATE->m_pCurCourse->GetDisplayFullTitle();
 	}
 
-	CHECKPOINT;
-
 	FOREACH_PlayerNumber( pn )
 	{
 		match->sPlayer[pn] = PROFILEMAN->GetPlayerName(pn);
 //		match->iSeedIndex[pn] = m_pCurCompetitor[pn]->iSeedIndex;
 	}
 
-	CHECKPOINT;
-
 	m_pCurMatch = match;
-
-	CHECKPOINT;
 }
 
 // we don't want to save this data if the player backed out.
@@ -246,12 +233,14 @@ void TournamentManager::SetMeterLimitLow( int iLow )
 {
 	m_iMeterLimitLow = iLow;
 	CLAMP( m_iMeterLimitLow, 0, m_iMeterLimitHigh );
+	LOG->Debug( "m_iMeterLimitLow set to %i", m_iMeterLimitLow );
 }
 
 void TournamentManager::SetMeterLimitHigh( int iHigh )
 {
 	m_iMeterLimitHigh = iHigh;
 	CLAMP( m_iMeterLimitHigh, m_iMeterLimitLow, INT_MAX );
+	LOG->Debug( "m_iMeterLimitHigh set to %i", m_iMeterLimitHigh );
 }
 
 void TournamentManager::SetDifficultyLimitLow( Difficulty dLow )
@@ -259,6 +248,7 @@ void TournamentManager::SetDifficultyLimitLow( Difficulty dLow )
 	int iTemp = (int)dLow;
 	CLAMP( iTemp, 0, (int)m_DifficultyLimitHigh );
 	m_DifficultyLimitLow = (Difficulty)iTemp;
+	LOG->Debug( "m_DifficultyLimitLow set to %s", DifficultyToString(m_DifficultyLimitLow).c_str() );
 }
 
 void TournamentManager::SetDifficultyLimitHigh( Difficulty dHigh )
@@ -266,6 +256,7 @@ void TournamentManager::SetDifficultyLimitHigh( Difficulty dHigh )
 	int iTemp = (int)dHigh;
 	CLAMP( iTemp, (int)m_DifficultyLimitLow, INT_MAX );
 	m_DifficultyLimitHigh = (Difficulty)iTemp;
+	LOG->Debug( "m_DifficultyLimitHigh set to %s", DifficultyToString(m_DifficultyLimitHigh).c_str() );
 }
 
 

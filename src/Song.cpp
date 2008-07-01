@@ -1048,10 +1048,20 @@ bool Song::HasStepsTypeAndDifficulty( StepsType st, Difficulty dc ) const
 bool Song::HasStepsWithinMeterAndDifficultyRange( int iLow, int iHigh, Difficulty dLow, Difficulty dHigh, StepsType st ) const
 {
 	for( unsigned i = 0; i < m_vpSteps.size(); i++ )
-		if( st == STEPS_TYPE_INVALID | st == m_vpSteps[i]->m_StepsType )
-			if( m_vpSteps[i]->GetMeter() >= iLow && m_vpSteps[i]->GetMeter() <= iHigh )
-				if( m_vpSteps[i]->GetDifficulty() >= dLow && m_vpSteps[i]->GetDifficulty() <= dHigh )
-					return true;
+	{
+		// don't consider steps that don't match the specified type
+		if( st != STEPS_TYPE_INVALID && st != m_vpSteps[i]->m_StepsType )
+			continue;
+
+		// don't consider locked steps
+		if( UNLOCKMAN->StepsIsLocked(this, m_vpSteps[i]) )
+			continue;
+ 
+		if( m_vpSteps[i]->GetMeter() >= iLow && m_vpSteps[i]->GetMeter() <= iHigh )
+			if( m_vpSteps[i]->GetDifficulty() >= dLow && m_vpSteps[i]->GetDifficulty() <= dHigh )
+				return true;
+	}
+
 	return false;
 }
 

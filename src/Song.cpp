@@ -1045,21 +1045,13 @@ bool Song::HasStepsTypeAndDifficulty( StepsType st, Difficulty dc ) const
 	return GetOneSteps( st, dc ) != NULL;
 }
 
-bool Song::HasStepsWithinMeterRange( int iLow, int iHigh ) const
+bool Song::HasStepsWithinMeterAndDifficultyRange( int iLow, int iHigh, Difficulty dLow, Difficulty dHigh, StepsType st ) const
 {
 	for( unsigned i = 0; i < m_vpSteps.size(); i++ )
-		if( m_vpSteps[i]->GetMeter() >= iLow && m_vpSteps[i]->GetMeter() <= iHigh )
-			return true;
-
-	return false;
-}
-
-bool Song::HasStepsWithinDifficultyRange( Difficulty dLow, Difficulty dHigh ) const
-{
-	for( unsigned i = 0; i < m_vpSteps.size(); i++ )
-		if( m_vpSteps[i]->GetDifficulty() >= dLow && m_vpSteps[i]->GetDifficulty() <= dHigh )
-			return true;
-
+		if( st == STEPS_TYPE_INVALID | st == m_vpSteps[i]->m_StepsType )
+			if( m_vpSteps[i]->GetMeter() >= iLow && m_vpSteps[i]->GetMeter() <= iHigh )
+				if( m_vpSteps[i]->GetDifficulty() >= dLow && m_vpSteps[i]->GetDifficulty() <= dHigh )
+					return true;
 	return false;
 }
 

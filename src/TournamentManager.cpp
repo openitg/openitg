@@ -2,6 +2,7 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "TournamentManager.h"
+#include "PrefsManager.h"
 #include "ProfileManager.h"
 #include "GameState.h" // XXX: needed for course data
 #include "GameConstantsAndTypes.h"
@@ -25,6 +26,13 @@ TournamentManager::TournamentManager()
 		m_pCurCompetitor[pn] = NULL;
 
 	m_Round = ROUND_QUALIFIERS;
+
+/*
+	m_iMeterLimitLow = 6;
+	m_iMeterLimitHigh = 11;
+	m_DifficultyLimitLow = DIFFICULTY_EASY;
+	m_DifficultyLimitHigh = DIFFICULTY_MEDIUM;
+*/
 }
 
 TournamentManager::~TournamentManager()
@@ -36,7 +44,7 @@ TournamentManager::~TournamentManager()
 
 bool TournamentManager::IsTournamentMode()
 {
-	return true;
+	return PREFSMAN->m_bTournamentMode;
 }
 
 void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps )
@@ -52,6 +60,14 @@ void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps )
 	StepsUtil::RemoveStepsOutsideMeterRange( vpSteps, m_iMeterLimitLow, m_iMeterLimitHigh );
 	StepsUtil::RemoveStepsOutsideDifficultyRange( vpSteps, m_DifficultyLimitLow, m_DifficultyLimitHigh );
 	CHECKPOINT_M( "~RemoveSteps" );
+}
+
+bool TournamentManager::HasStepsInsideLimits( Song *pSong ) const
+{
+	ASSERT( m_iMeterLimitLow <= m_iMeterLimitHigh );
+	ASSERT( m_DifficultyLimitLow <= m_DifficultyLimitHigh );
+
+	return pSong->HasStepsWithinMeterAndDifficultyRange( m_iMeterLimitLow, m_iMeterLimitHigh, m_DifficultyLimitLow, m_DifficultyLimitHigh, STEPS_TYPE_DANCE_SINGLE );
 }
 
 int TournamentManager::FindIndexOfCompetitor( Competitor *cptr )
@@ -226,6 +242,33 @@ void TournamentManager::DumpCompetitors()
 	}
 }
 
+void TournamentManager::SetMeterLimitLow( int iLow )
+{
+	m_iMeterLimitLow = iLow;
+	CLAMP( m_iMeterLimitLow, 0, m_iMeterLimitHigh );
+}
+
+void TournamentManager::SetMeterLimitHigh( int iHigh )
+{
+	m_iMeterLimitHigh = iHigh;
+	CLAMP( m_iMeterLimitHigh, m_iMeterLimitLow, INT_MAX );
+}
+
+void TournamentManager::SetDifficultyLimitLow( Difficulty dLow )
+{
+	int iTemp = (int)dLow;
+	CLAMP( iTemp, 0, (int)m_DifficultyLimitHigh );
+	m_DifficultyLimitLow = (Difficulty)iTemp;
+}
+
+void TournamentManager::SetDifficultyLimitHigh( Difficulty dHigh )
+{
+	int iTemp = (int)dHigh;
+	CLAMP( iTemp, (int)m_DifficultyLimitLow, INT_MAX );
+	m_DifficultyLimitHigh = (Difficulty)iTemp;
+}
+
+
 // lua start
 #include "LuaBinding.h"
 
@@ -237,10 +280,10 @@ public:
 
 	static int GetNumCompetitors( T* p, lua_State *L )	{ lua_pushnumber( L, p->GetNumCompetitors() ); return 1; }
 	static int GetCurrentRound( T* p, lua_State *L )	{ lua_pushnumber( L, (int)p->GetCurrentRound() ); return 1; }
-	static int SetMeterLimitLow( T* p, lua_State *L )	{ p->m_iMeterLimitLow = IArg(1); return 0; }
-	static int SetMeterLimitHigh( T* p, lua_State *L )	{ p->m_iMeterLimitHigh = IArg(1); return 0; }
-	static int SetDifficultyLimitLow( T* p, lua_State *L )	{ p->m_DifficultyLimitLow = (Difficulty)IArg(1); return 0; }
-	static int SetDifficultyLimitHigh( T* p, lua_State *L )	{ p->m_DifficultyLimitHigh = (Difficulty)IArg(1); return 0; }
+	static int SetMeterLimitLow( T* p, lua_State *L )	{ p->SetMeterLimitLow(IArg(1)); return 0; }
+	static int SetMeterLimitHigh( T* p, lua_State *L )	{ p->SetMeterLimitHigh(IArg(1)); return 0; }
+	static int SetDifficultyLimitLow( T* p, lua_State *L )	{ p->SetDifficultyLimitLow((Difficulty)IArg(1)); return 0; }
+	static int SetDifficultyLimitHigh( T* p, lua_State *L )	{ p->SetDifficultyLimitHigh((Difficulty)IArg(1)); return 0; }
 	static int DumpMatches( T* p, lua_State *L )		{ p->DumpMatches(); return 1; }
 	static int DumpCompetitors( T* p, lua_State *L )	{ p->DumpCompetitors(); return 1; }
 

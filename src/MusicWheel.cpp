@@ -5,6 +5,7 @@
 #include "GameManager.h"
 #include "PrefsManager.h"
 #include "ScreenManager.h"	// for sending SM_PlayMusicSample
+#include "TournamentManager.h"
 #include "RageLog.h"
 #include "GameConstantsAndTypes.h"
 #include "GameState.h"
@@ -382,6 +383,13 @@ void MusicWheel::GetSongList(vector<Song*> &arraySongs, SortOrder so, CString sP
 	for( unsigned i=0; i<apAllSongs.size(); i++ )
 	{
 		Song* pSong = apAllSongs[i];
+
+		/* If we're in tournament mode and the song has no steps we can play, don't show it */
+		if( TOURNAMENT->IsTournamentMode() && !TOURNAMENT->HasStepsInsideLimits(pSong) )
+		{
+			LOG->Debug( "Not showing song \"%s\": no steps inside limits.", pSong->GetDisplayFullTitle().c_str() );
+			continue;
+		}
 
 		/* If we're on an extra stage, and this song is selected, ignore #SELECTABLE. */
 		if( pSong != GAMESTATE->m_pCurSong || 

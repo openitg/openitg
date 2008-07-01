@@ -10,6 +10,7 @@
 #include "PlayerNumber.h"
 #include <vector>
 
+class Song;
 class Steps;
 struct lua_State;
 
@@ -30,9 +31,11 @@ struct TournamentMatch
 	int iHoldNoteScores[NUM_PLAYERS][NUM_HOLD_NOTE_SCORES];
 
 	// general statistics
-	CString sGroup, sTitle;	// song or course that was played
-	CString sTimePlayed; // date and time of match
-	CString sRound; // the round this match was played in
+	CString sGroup, sTitle;
+	CString sTimePlayed;
+	CString sDifficulty;
+	CString sRound; // the round of the tournament
+	CString sStage; // the sta
 
 	PlayerNumber winner;
 };
@@ -55,13 +58,14 @@ public:
 	TournamentManager();
 	~TournamentManager();
 
-	// limitations on the playable songs + steps
-	int m_iMeterLimitLow, m_iMeterLimitHigh;
-	Difficulty m_DifficultyLimitLow, m_DifficultyLimitHigh;
-
 	// currently used data
 	Competitor *m_pCurCompetitor[NUM_PLAYERS];
 	TournamentMatch *m_pCurMatch;
+
+	void SetMeterLimitLow( int iLow );
+	void SetMeterLimitHigh( int iHigh );
+	void SetDifficultyLimitLow( Difficulty dLow );
+	void SetDifficultyLimitHigh( Difficulty dHigh );
 
 	void StartMatch(); 	// initialise and save date, song, etc.
 	void CancelMatch();	// delete the data and prepare for a new match	
@@ -69,8 +73,9 @@ public:
 	
 	bool IsTournamentMode();
 
-	// remove any steps outside tournament limits
+	// some utilities to cleanly check against tournament limits
 	void RemoveStepsOutsideLimits( vector<Steps*> &vpSteps );
+	bool HasStepsInsideLimits( Song *pSong ) const;
 
 	TournamentRound GetCurrentRound() { return m_Round; }
 	unsigned GetNumCompetitors() { return m_pCompetitors.size(); }
@@ -89,6 +94,10 @@ public:
 	void DumpMatches();
 	void DumpCompetitors();
 private:
+	// limitations on the playable songs + steps
+	int m_iMeterLimitLow, m_iMeterLimitHigh;
+	Difficulty m_DifficultyLimitLow, m_DifficultyLimitHigh;
+
 	// the current round the tournament is in
 	TournamentRound m_Round;
 

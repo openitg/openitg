@@ -191,6 +191,7 @@ PrefsManager::PrefsManager() :
 	m_bEasterEggs				( "EasterEggs",					true ),
 	m_MarvelousTiming			( "MarvelousTiming",			MARVELOUS_EVERYWHERE ),
 	m_bEventMode				( "EventMode",					false ),
+	m_bTournamentMode			( "TournamentMode",					false ),
 	m_iCoinsPerCredit			( "CoinsPerCredit",				1 ),
 	m_iSongsPerPlay				( "SongsPerPlay",				3 ),
 

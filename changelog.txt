@@ -18,8 +18,9 @@ OpenITG, alpha 7 (in development)
     "CardReadyP1", "CardReadyP2" - played when a card is verified ready
 -New preferences:
     "SoundVolumeAttract" - volume during attract sequences
-    "ThreadedLights" - self-explanatory...still experimental
-    "UseUnstablePIUIODriver" - self-explanatory...set false for old driver
+    "ThreadedLights" - run the lights outside the regular game loop, more accurate
+    "TournamentMode" - currently for testing only
+    "UseUnstablePIUIODriver" - set true to use the experimental I/O driver
 -New config options:
     "SoundVolumeAttract" - see above
 -New metrics:

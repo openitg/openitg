@@ -94,7 +94,7 @@ ScreenEvaluation::ScreenEvaluation( CString sClassName ) : ScreenWithMenuElement
 {
 	LOG->Trace( "ScreenEvaluation::ScreenEvaluation" );
 
-	TOURNAMENT->FinishMatch( STATSMAN->m_CurStageStats );
+	TOURNAMENT->FinishStage( STATSMAN->m_CurStageStats );
 
 	//
 	// debugging

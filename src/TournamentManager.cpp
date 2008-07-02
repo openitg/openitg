@@ -4,11 +4,12 @@
 #include "TournamentManager.h"
 #include "PrefsManager.h"
 #include "ProfileManager.h"
-#include "GameState.h" // XXX: needed for course data
+#include "GameState.h"
 #include "GameConstantsAndTypes.h"
 #include "StageStats.h"
 #include "Course.h"
 #include "song.h"
+#include "Steps.h"
 #include "StepsUtil.h"
 #include "DateTime.h"
 #include "PlayerNumber.h"
@@ -17,27 +18,25 @@ TournamentManager* TOURNAMENT = NULL;
 
 TournamentManager::TournamentManager()
 {
-	LOG->Debug( "TournamentManager::TournamentManager()" );
+	Init();
+}
 
+void TournamentManager::Init()
+{
 	m_iMeterLimitLow = m_iMeterLimitHigh = -1;
 	m_DifficultyLimitLow = m_DifficultyLimitHigh = DIFFICULTY_INVALID;
 	m_pCurMatch = NULL;
+	m_pCurStage = NULL;
 	FOREACH_PlayerNumber( pn )
 		m_pCurCompetitor[pn] = NULL;
 
 	m_Round = ROUND_QUALIFIERS;
-
-	m_iMeterLimitLow = 6;
-	m_iMeterLimitHigh = 11;
-	m_DifficultyLimitLow = DIFFICULTY_EASY;
-	m_DifficultyLimitHigh = DIFFICULTY_MEDIUM;
-
 }
 
 TournamentManager::~TournamentManager()
 {
-	LOG->Debug( "TournamentManager::~TournamentManager()" );
-
+	DumpCompetitors();
+	// de-allocate all matches and data
 	Reset();
 }
 
@@ -48,7 +47,6 @@ bool TournamentManager::IsTournamentMode()
 
 void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps )
 {
-	CHECKPOINT_M( "RemoveSteps" );
 	// don't apply limits if we don't need to
 	if( !this->IsTournamentMode() )
 		return;
@@ -58,21 +56,38 @@ void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps )
 
 	StepsUtil::RemoveStepsOutsideMeterRange( vpSteps, m_iMeterLimitLow, m_iMeterLimitHigh );
 	StepsUtil::RemoveStepsOutsideDifficultyRange( vpSteps, m_DifficultyLimitLow, m_DifficultyLimitHigh );
-	CHECKPOINT_M( "~RemoveSteps" );
 }
 
 bool TournamentManager::HasStepsInsideLimits( Song *pSong ) const
 {
+	
 	ASSERT( m_iMeterLimitLow <= m_iMeterLimitHigh );
 	ASSERT( m_DifficultyLimitLow <= m_DifficultyLimitHigh );
 
 	return pSong->HasStepsWithinMeterAndDifficultyRange( m_iMeterLimitLow, m_iMeterLimitHigh, m_DifficultyLimitLow, m_DifficultyLimitHigh, STEPS_TYPE_DANCE_SINGLE );
 }
 
-int TournamentManager::FindIndexOfCompetitor( Competitor *cptr )
+void TournamentManager::GetCompetitorNames( vector<CString> &vsNames, bool bDisplayIndex )
+{
+	LOG->Debug( "TournamentManager::GetCompetitorNames()" );
+	vsNames.clear();
+
+	LOG->Debug( "Size of vector: %i", m_pCompetitors.size() );
+
+	// "1: Player 1" vs. "Player 1"
+	for( unsigned i = 0; i < m_pCompetitors.size(); i++ )
+	{
+		LOG->Debug( "Iteration: %i", i );
+		CString sNewLine = bDisplayIndex ? ssprintf("%i: %s", i+1, m_pCompetitors[i]->sDisplayName.c_str()) : m_pCompetitors[i]->sDisplayName;
+		LOG->Debug( "Adding line \"%s\" to vsNames.", sNewLine.c_str() );
+		vsNames.push_back( sNewLine );
+	}
+}
+
+int TournamentManager::FindCompetitorIndex( Competitor *cptr )
 {
 	for( unsigned i = 0; i < m_pCompetitors.size(); i++ )
-		if( m_pCompetitors[i]->sDisplayName.compare(cptr->sDisplayName))
+		if( &m_pCompetitors[i] == &cptr )
 			return i;
 
 	return -1;
@@ -81,24 +96,35 @@ int TournamentManager::FindIndexOfCompetitor( Competitor *cptr )
 Competitor *TournamentManager::FindCompetitorByName( CString sName )
 {
 	for( unsigned i = 0; i < m_pCompetitors.size(); i++ )
+	{
 		if( m_pCompetitors[i]->sDisplayName.compare(sName) )
+		{
+			ssprintf("%s matches %s", m_pCompetitors[i]->sDisplayName.c_str(), sName.c_str() );
 			return m_pCompetitors[i];
+		}
+	}
 
 	return NULL;
 }
 
 void TournamentManager::Reset()
 {
+	for( unsigned i = 0; i < m_pMatches.size(); i++ )
+	{
+		// matches have pointers to stages - delete them first
+		for( unsigned j = 0; j < m_pMatches[i]->vStages.size(); j++ )
+			SAFE_DELETE( m_pMatches[i]->vStages[j] );
+
+		SAFE_DELETE( m_pMatches[i] );
+	}
+	m_pMatches.clear();
+
 	for( unsigned i = 0; i < m_pCompetitors.size(); i++ )
 		SAFE_DELETE( m_pCompetitors[i] );
 	m_pCompetitors.clear();
-
-	for( unsigned i = 0; i < m_pMatches.size(); i++ )
-		SAFE_DELETE( m_pMatches[i] );
-	m_pMatches.clear();
 }
 
-bool TournamentManager::RegisterCompetitor( CString sDisplayName, CString sHighScoreName, CString &sError )
+bool TournamentManager::RegisterCompetitor( CString sDisplayName, CString sHighScoreName, unsigned iSeed, CString &sError )
 {
 	if( !this->IsTournamentMode() )
 		return false;
@@ -110,20 +136,26 @@ bool TournamentManager::RegisterCompetitor( CString sDisplayName, CString sHighS
 	if( sDisplayName.empty() )
 		cptr->sDisplayName = ssprintf( "Player %i", m_pCompetitors.size()+1 );
 
+#if 0
 	// make sure we don't have any naming conflicts
 	Competitor *conflict = FindCompetitorByName(cptr->sDisplayName);
 
-	if( &conflict != NULL )
+	if( conflict != NULL )
 	{
-		sError = ssprintf( "same name as player %i", FindIndexOfCompetitor(conflict)+1 );
+		sError = ssprintf( "duplicate name." );
 		delete cptr; return false;
 	}
+#endif
 
 	cptr->sDisplayName = sDisplayName;
+	cptr->iSeedIndex = iSeed;
 
 	// do we need to re-enforce the high score name length here?
 	cptr->sHighScoreName = sHighScoreName;
+
 	m_pCompetitors.push_back( cptr );
+
+	DumpCompetitors();
 
 	return true;
 }
@@ -135,24 +167,13 @@ void TournamentManager::StartMatch()
 
 	LOG->Debug( "TournamentManager::StartMatch()" );
 	ASSERT( m_pCurMatch == NULL );
+	ASSERT( m_pCurStage == NULL );
 
 	TournamentMatch *match = new TournamentMatch;
+	TournamentStage *stage = new TournamentStage;
 
-	match->sTimePlayed = DateTime::GetNowDateTime().GetString();
+	// fill in new match data
 	match->sRound = TournamentRoundToString( m_Round );
-
-	if( GAMESTATE->m_PlayMode == PLAY_MODE_REGULAR || GAMESTATE->m_PlayMode == PLAY_MODE_RAVE )
-	{
-		// fill in song data. XXX: GameState
-		match->sGroup = GAMESTATE->m_pCurSong->m_sGroupName;
-		match->sTitle = GAMESTATE->m_pCurSong->GetDisplayFullTitle();
-	}
-	else
-	{
-		// fill in course data. XXX: GameState
-		match->sGroup = GAMESTATE->m_pCurCourse->m_sGroupName;
-		match->sTitle = GAMESTATE->m_pCurCourse->GetDisplayFullTitle();
-	}
 
 	FOREACH_PlayerNumber( pn )
 	{
@@ -160,56 +181,88 @@ void TournamentManager::StartMatch()
 //		match->iSeedIndex[pn] = m_pCurCompetitor[pn]->iSeedIndex;
 	}
 
+	// fill in new stage data
+	stage->sTimePlayed = DateTime::GetNowDateTime().GetString();
+
+	stage->bIsSong = GAMESTATE->m_PlayMode == PLAY_MODE_REGULAR || GAMESTATE->m_PlayMode == PLAY_MODE_RAVE;
+
+	if( stage->bIsSong )
+	{
+		// fill in song data
+		stage->sGroup = GAMESTATE->m_pCurSong->m_sGroupName;
+		stage->sTitle = GAMESTATE->m_pCurSong->GetDisplayFullTitle();
+		stage->sDifficulty = DifficultyToString(GAMESTATE->m_pCurSteps[0]->GetDifficulty());
+	}
+	else
+	{
+		// fill in course data
+		stage->sGroup = GAMESTATE->m_pCurCourse->m_sGroupName;
+		stage->sTitle = GAMESTATE->m_pCurCourse->GetDisplayFullTitle();
+		stage->sDifficulty = CourseDifficultyToString(GAMESTATE->m_pCurTrail[0]->m_CourseDifficulty);
+	}
+
 	m_pCurMatch = match;
+	m_pCurStage = stage;
 }
 
 // we don't want to save this data if the player backed out.
-// delete the allocated data and re-set for a new match.
-void TournamentManager::CancelMatch()
+// delete the allocated data and re-set for a new stage.
+void TournamentManager::CancelStage()
 {
-	if( !this->IsTournamentMode() )
+	if( m_pCurStage == NULL )
 		return;
 
-	LOG->Debug( "TOurnamentManager::CancelMatch()" );
+	LOG->Debug( "TournamentManager::CancelStage()" );
+
+	SAFE_DELETE( m_pCurStage );
+}
+
+void TournamentManager::CancelMatch()
+{
+	if( m_pCurMatch == NULL )
+		return;
+
+	// free the stages we've played in this match
+	for( unsigned i = 0; i < m_pCurMatch->vStages.size(); i++ )
+		SAFE_DELETE( m_pCurMatch->vStages[i] );
 
 	SAFE_DELETE( m_pCurMatch );
 }
 
 // save all scores and game data from the stats given
-void TournamentManager::FinishMatch( StageStats &stats )
+void TournamentManager::FinishStage( StageStats &stats )
 {
 	if( !this->IsTournamentMode() )
 		return;
 
-	LOG->Debug( "TournamentManager::FinishMatch()" );
+	LOG->Debug( "TournamentManager::FinishStage()" );
 
 	FOREACH_PlayerNumber( pn )
 	{
 		// fill in score data
-		m_pCurMatch->iActualPoints[pn] = stats.m_player[pn].iActualDancePoints;
-		m_pCurMatch->iPossiblePoints[pn] = stats.m_player[pn].iPossibleDancePoints;
+		m_pCurStage->iActualPoints[pn] = stats.m_player[pn].iActualDancePoints;
+		m_pCurStage->iPossiblePoints[pn] = stats.m_player[pn].iPossibleDancePoints;
 
 		// truncate the rest to avoid rounding errors
-		m_pCurMatch->fPercentPoints[pn] = ftruncf( stats.m_player[pn].GetPercentDancePoints(), 0.0001 );
+		m_pCurStage->fPercentPoints[pn] = ftruncf( stats.m_player[pn].GetPercentDancePoints(), 0.0001 );
 
 		FOREACH_TapNoteScore( tns )
-			m_pCurMatch->iTapNoteScores[pn][tns] = stats.m_player[pn].iTapNoteScores[tns];
+			m_pCurStage->iTapNoteScores[pn][tns] = stats.m_player[pn].iTapNoteScores[tns];
 		FOREACH_HoldNoteScore( hns )
-			m_pCurMatch->iHoldNoteScores[pn][hns] = stats.m_player[pn].iHoldNoteScores[hns];
+			m_pCurStage->iHoldNoteScores[pn][hns] = stats.m_player[pn].iHoldNoteScores[hns];
 
 		// neither player won
 		if( !stats.OnePassed() )
-			m_pCurMatch->winner = PLAYER_INVALID;
+			m_pCurStage->iWinner = -1;
 	}
 
-	m_pMatches.push_back( m_pCurMatch );
-	m_pCurMatch = NULL;
-
-	m_Round = (TournamentRound)((int)m_Round + 1); // debugging
+	m_pCurMatch->vStages.push_back( m_pCurStage );
+	m_pCurStage = NULL;
 }
 
 void TournamentManager::DumpMatches()
 {
+#if 0
 	for( unsigned i = 0; i < m_pMatches.size(); i++ )
 	{
 		LOG->Debug( "Match %i: %s vs. %s, points %i vs. %i\non song %s in group %s\nPlayed on %s",
@@ -217,6 +270,7 @@ void TournamentManager::DumpMatches()
 		m_pMatches[i]->iActualPoints[PLAYER_1], m_pMatches[i]->iActualPoints[PLAYER_2],
 		m_pMatches[i]->sTitle.c_str(), m_pMatches[i]->sGroup.c_str(), m_pMatches[i]->sTimePlayed.c_str() );
 	}
+#endif
 }
 
 void TournamentManager::DumpCompetitors()

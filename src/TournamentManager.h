@@ -16,40 +16,69 @@ struct lua_State;
 
 const unsigned TOURNAMENT_MAX_PLAYERS = 256;
 
-// a struct that holds the saved data of a tournament match;
+// a struct that holds the saved data of a single tournament stage;
 // this is sort of a watered-down PlayerStageStats
-struct TournamentMatch
+struct TournamentStage
 {
-	CString sPlayer[NUM_PLAYERS];
-	int iSeedIndex[NUM_PLAYERS];
-
 	// score data
+	CString sModifiers[NUM_PLAYERS];
 	int iActualPoints[NUM_PLAYERS];
-	int iPossiblePoints[NUM_PLAYERS];
+	int iPossiblePoints[NUM_PLAYERS]; // this may be different due to insert mods
 	float fPercentPoints[NUM_PLAYERS];
 	int iTapNoteScores[NUM_PLAYERS][NUM_TAP_NOTE_SCORES];
 	int iHoldNoteScores[NUM_PLAYERS][NUM_HOLD_NOTE_SCORES];
 
-	// general statistics
-	CString sGroup, sTitle;
-	CString sTimePlayed;
-	CString sDifficulty;
-	CString sRound; // the round of the tournament
-	CString sStage; // the sta
+	// data on the song or course played
+	bool bIsSong;
+	CString sGroup, sTitle, sDifficulty, sTimePlayed;
 
-	PlayerNumber winner;
+	// corresponds to one seed index, or -1 for a tie
+	int iWinner;
+
+	// stage of the match this was played
+	Stage stage;
+};
+
+// a struct that holds data for an entire match,
+// allowing for as many stages as needed
+struct TournamentMatch
+{
+/* I'm not sure if we need this... - Vyhd
+	~TournamentMatch()
+	{
+		for( unsigned i = 0; i < vStages.size(); i++ )
+			SAFE_DELETE( vStages[i] );
+		vStages.clear();
+	}
+*/
+
+	CString sPlayer[NUM_PLAYERS];
+	int iSeedIndex[NUM_PLAYERS];
+
+	// the round this match was held in
+	CString sRound;
+
+	std::vector<TournamentStage*> vStages;
 };
 
 // a player in the tournament format
 struct Competitor
 {
+	Competitor(): sDisplayName(""),
+	sHighScoreName(""), iSeedScorePossible(0),
+	iSeedScoreActual(0), iSeedIndex(0)
+	{ }
+
 	CString sDisplayName, sHighScoreName;
 	
 	// i prefer keeping these unsigned so we don't
 	// run into floating-point-related problems ~ Vyhd
 	unsigned iSeedScorePossible;
 	unsigned iSeedScoreActual;
-	unsigned iSeedIndex; 
+	unsigned iSeedIndex;
+
+	vector<Song*> vPlayedSongs;
+	vector<TournamentMatch*> vPlayedMatches;
 };
 
 class TournamentManager
@@ -58,20 +87,32 @@ public:
 	TournamentManager();
 	~TournamentManager();
 
-	// currently used data
+	void Init();
+
 	Competitor *m_pCurCompetitor[NUM_PLAYERS];
 	TournamentMatch *m_pCurMatch;
+	TournamentStage *m_pCurStage;
 
 	void SetMeterLimitLow( int iLow );
 	void SetMeterLimitHigh( int iHigh );
 	void SetDifficultyLimitLow( Difficulty dLow );
 	void SetDifficultyLimitHigh( Difficulty dHigh );
 
-	void StartMatch(); 	// initialise and save date, song, etc.
-	void CancelMatch();	// delete the data and prepare for a new match	
-	void FinishMatch( StageStats &stats ); // save end-of-game data
+	void StartMatch();
+	void CancelMatch();
+	void FinishMatch();
+
+	void CancelStage();
+	void FinishStage( StageStats &stats );
 	
 	bool IsTournamentMode();
+
+	void GetCompetitorNames( vector<CString> &vsNames, bool bDisplayIndex = false );
+	void GetCompetitorNamesAndIndexes( vector<CString> &vsNames ) { GetCompetitorNames( vsNames, true ); }
+
+	// vector search-and-find functions
+	int FindCompetitorIndex( Competitor *cptr );
+	Competitor *FindCompetitorByName( CString sName );
 
 	// some utilities to cleanly check against tournament limits
 	void RemoveStepsOutsideLimits( vector<Steps*> &vpSteps );
@@ -80,12 +121,8 @@ public:
 	TournamentRound GetCurrentRound() { return m_Round; }
 	unsigned GetNumCompetitors() { return m_pCompetitors.size(); }
 
-	// vector search-and-find functions
-	int FindIndexOfCompetitor( Competitor *cptr );
-	Competitor *FindCompetitorByName( CString sName );
-
 	// attempt to add a new, unique competitor
-	bool RegisterCompetitor( CString sDisplayName, CString sHighScoreName, CString &sError );
+	bool RegisterCompetitor( CString sDisplayName, CString sHighScoreName, unsigned iSeed, CString &sError );
 
 	void Reset();
 	void PushSelf( lua_State *L );
@@ -94,6 +131,10 @@ public:
 	void DumpMatches();
 	void DumpCompetitors();
 private:
+	// conditions to win
+	bool m_bChoosingPlayerLosesIfBothFail;
+	PlayerNumber m_ChoosingPlayer;
+
 	// limitations on the playable songs + steps
 	int m_iMeterLimitLow, m_iMeterLimitHigh;
 	Difficulty m_DifficultyLimitLow, m_DifficultyLimitHigh;

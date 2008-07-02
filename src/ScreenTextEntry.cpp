@@ -1,4 +1,5 @@
 #include "global.h"
+#include "RageLog.h"
 #include "ScreenTextEntry.h"
 #include "PrefsManager.h"
 #include "ScreenManager.h"
@@ -9,6 +10,7 @@
 #include "FontCharAliases.h"
 #include "ScreenDimensions.h"
 #include "ActorUtil.h"
+#include "InputMapper.h"
 
 
 static const char* g_szKeys[NUM_KEYBOARD_ROWS][KEYS_PER_ROW] =
@@ -24,6 +26,7 @@ static const char* g_szKeys[NUM_KEYBOARD_ROWS][KEYS_PER_ROW] =
 };
 
 static Preference<bool> g_bAllowOldKeyboardInput( "AllowOldKeyboardInput",	true );
+static Preference<bool> g_bTextEntryUsesArcadeInput( "TextEntryUsesArcadeInput",true );
 
 float GetButtonX( int x )
 {
@@ -131,14 +134,17 @@ void ScreenTextEntry::Init()
 	m_Cancel.Load( THEME->GetPathB(m_sName,"cancel") );
 	this->AddChild( &m_Cancel );
 
-
 	m_sndType.Load( THEME->GetPathS(m_sName,"type"), true );
 	m_sndBackspace.Load( THEME->GetPathS(m_sName,"backspace"), true );
 	m_sndChange.Load( THEME->GetPathS(m_sName,"change"), true );
+
+	// speed up repeat rate so we can enter text more quickly
+	INPUTFILTER->SetRepeatRate( 0.0f, 8, 0.4f, 25 );
 }
 
 ScreenTextEntry::~ScreenTextEntry()
 {
+	INPUTFILTER->ResetRepeatRate();
 }
 
 void ScreenTextEntry::UpdateKeyboardText()
@@ -270,7 +276,18 @@ void ScreenTextEntry::MoveX( int iDir )
 	do
 	{
 		m_iFocusX += iDir;
-		wrap( m_iFocusX, KEYS_PER_ROW );
+
+		// if we've reached the end, get to the next line
+		if( m_iFocusX >= KEYS_PER_ROW )
+		{
+			MoveY(+1);
+			wrap( m_iFocusX, KEYS_PER_ROW );
+		}
+		else if( m_iFocusX < 0 )
+		{
+			MoveY(-1);
+			m_iFocusX = KEYS_PER_ROW-1;
+		}
 
 		sKey = g_szKeys[m_iFocusY][m_iFocusX]; 
 	}
@@ -282,14 +299,16 @@ void ScreenTextEntry::MoveX( int iDir )
 
 void ScreenTextEntry::MoveY( int iDir )
 {
-	CString sKey;
-	do
-	{
-		m_iFocusY = (KeyboardRow)(m_iFocusY + iDir);
-		int iFocusY = (int)m_iFocusY;
-		wrap( iFocusY, NUM_KEYBOARD_ROWS );
-		m_iFocusY = (KeyboardRow)iFocusY;
+	m_iFocusY = (KeyboardRow)(m_iFocusY + iDir);
+	int iFocusY = (int)m_iFocusY;
+	wrap( iFocusY, NUM_KEYBOARD_ROWS );
+	m_iFocusY = (KeyboardRow)iFocusY;
 
+	m_sndChange.Play();
+	PositionCursor();
+
+// This doesn't seem to be necessary.
+#if 0
 		// HACK: Round to nearest option so that we always stop 
 		// on KEYBOARD_ROW_SPECIAL.
 		if( m_iFocusY == KEYBOARD_ROW_SPECIAL )
@@ -301,17 +320,16 @@ void ScreenTextEntry::MoveY( int iDir )
 					break;
 
 				// UGLY: Probe one space to the left before looking to the right
-				m_iFocusX += (i==0) ? -1 : +1;
+				m_iFocusX += (i==0) ? -3 : +1;
 				wrap( m_iFocusX, KEYS_PER_ROW );
 			}
 		}
 
 		sKey = g_szKeys[m_iFocusY][m_iFocusX]; 
-	}
-	while( sKey == "" );
+//	}
+//	while( sKey == "" );
 
-	m_sndChange.Play();
-	PositionCursor();
+#endif
 }
 
 void ScreenTextEntry::AppendToAnswer( CString s )
@@ -342,8 +360,66 @@ void ScreenTextEntry::BackspaceInAnswer()
 	UpdateAnswerText();
 }
 
+/* Logic for an arcade input setup:
+ * Player 1 Start = AppendToAnswer
+ * Player 1 Select (or MenuLeft+MenuRight) = BackspaceInAnswer
+ *
+ * Player 2 Start = MenuDown
+ * Player 2 Select (or ML+MR) = MenuUp
+ * Player 2 MenuLeft = MenuLeft
+ * Player 2 MenuRight = MenuRight
+*/
+void ScreenTextEntry::MenuLeft( PlayerNumber pn, const InputEventType type )
+{
+	if( type == IET_RELEASE )
+		return;
+
+	/* Treat ML+MR as Select */
+	if( INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT)) )
+		MenuSelect( pn );
+	else
+		MoveX(-1);
+}
+
+void ScreenTextEntry::MenuRight( PlayerNumber pn, const InputEventType type )
+{
+	if( type == IET_RELEASE )
+		return;
+
+	/* Treat ML+MR as Select */
+	if( INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) )
+		MenuSelect( pn );
+	else
+		MoveX(+1);
+}
+
+void ScreenTextEntry::MenuSelect( PlayerNumber pn )
+{
+	if( !g_bTextEntryUsesArcadeInput )
+		return;
+
+	switch( pn )
+	{
+	case PLAYER_1:
+		BackspaceInAnswer();
+		break;
+	case PLAYER_2:
+		MenuDown( pn );
+		break;
+	default:
+		ASSERT(0);
+	}
+}
+
 void ScreenTextEntry::MenuStart( PlayerNumber pn )
 {
+	/* If using arcade input, Player 2 moves the cursor up */
+	if( g_bTextEntryUsesArcadeInput && pn == PLAYER_2 )
+	{
+		MenuUp( pn );
+		return;
+	}
+
 	if( m_iFocusY == KEYBOARD_ROW_SPECIAL )
 	{
 		switch( m_iFocusX )

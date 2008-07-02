@@ -18,6 +18,7 @@ OpenITG, alpha 7 (in development)
     "CardReadyP1", "CardReadyP2" - played when a card is verified ready
 -New preferences:
     "SoundVolumeAttract" - volume during attract sequences
+    "TextEntryUsesArcadeInput" - use arcade-specialised input scheme for ScreenTextEntry
     "ThreadedLights" - run the lights outside the regular game loop, more accurate
     "TournamentMode" - currently for testing only
     "UseUnstablePIUIODriver" - set true to use the experimental I/O driver
@@ -28,9 +29,11 @@ OpenITG, alpha 7 (in development)
     "OptionsList" (ScreenSelectMusic) - add a side panel to change options
 	instead of the old options menu
 -New Screens:
-	"ScreenExitCommand" - Functions as ScreenExit, but with the ability to launch
-		an executable file before exiting.  Must have 'ExecPath' and 'ExecParams' in the
-		metrics entry
+    "ScreenExitCommand" - Functions as ScreenExit, but with the ability to launch
+       	an executable file before exiting.  Must have 'ExecPath' and 'ExecParams' in the
+        metrics entry
+-Changed Screens:
+    ScreenTextEntry - modified for more arcade-friendly input
 -Fixed bugs:
     (OpenGL) Arrow shader fails on full-screen, causing scrolling brackets
     Actor sounds ignore attract sound settings

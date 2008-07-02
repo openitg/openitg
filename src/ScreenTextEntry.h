@@ -57,11 +57,12 @@ protected:
 
 	void End( bool bCancelled );
 
-	virtual void MenuLeft( PlayerNumber pn )	{ MoveX(-1); }
-	virtual void MenuRight( PlayerNumber pn )	{ MoveX(+1); }
+	virtual void MenuLeft( PlayerNumber pn, const InputEventType type );
+	virtual void MenuRight( PlayerNumber pn, const InputEventType type );
 	virtual void MenuUp( PlayerNumber pn )		{ MoveY(-1); }
 	virtual void MenuDown( PlayerNumber pn )	{ MoveY(+1); }
 	virtual void MenuStart( PlayerNumber pn );
+	virtual void MenuSelect( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn );
 
 	void UpdateKeyboardText();

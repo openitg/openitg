@@ -28,7 +28,7 @@ int g_CurPlayerIndex = -1;
 enum TournamentOptionsLine
 {
 	PO_ADD_PLAYER,
-	PO_REMOVE_PLAYER,
+	PO_MODIFY_PLAYER,
 	PO_SET_QUALIFY_SONG,
 	NUM_TOURNAMENT_OPTIONS_LINES,
 };	
@@ -50,22 +50,24 @@ enum RegisterMenuChoice
 	NUM_REGISTER_MENU_CHOICES
 };
 
-/* Row definitions. UGLY: MenuRow assumes Edit mode, but this isn't. We'll fix this up sometime...  */
-MenuRow set_player_name_row	= 	MenuRow( set_player_name,	"Set player name",	true, EDIT_MODE_PRACTICE, 0 );
-MenuRow set_highscore_name_row	=	MenuRow( set_highscore_name,	"Set highscore name",	true, EDIT_MODE_PRACTICE, 0 );
-MenuRow set_seed_number_row	=	MenuRow( set_seed_number,	"Set seed (optional)",	true, EDIT_MODE_PRACTICE, 0 );
-MenuRow exit_and_register_row	=	MenuRow( exit_and_register,	"Finish registration",	(!g_sCurPlayerName.empty() && !g_sCurScoreName.empty()), EDIT_MODE_PRACTICE, 0 );
+/* Shared row definitions.
+ * UGLY: MenuRow assumes Edit mode, but this isn't. We'll fix this up sometime... */
+MenuRow set_player_name_row	= 	MenuRow( set_player_name,	"Set player name",	true, EDIT_MODE_PRACTICE, 0, g_sCurPlayerName );
+MenuRow set_highscore_name_row	=	MenuRow( set_highscore_name,	"Set highscore name",	true, EDIT_MODE_PRACTICE, 0, g_sCurScoreName );
+MenuRow set_seed_number_row	=	MenuRow( set_seed_number,	"Set seed (optional)",	true, EDIT_MODE_PRACTICE, 0, ssprintf("%i", g_iCurSeedIndex) );
+MenuRow exit_and_register_row	=	MenuRow( exit_and_register,	"Finish registration",	false, EDIT_MODE_PRACTICE, 0 );
 MenuRow exit_and_delete_row	=	MenuRow( exit_and_delete,	"Delete registration",	true, EDIT_MODE_PRACTICE, 0 );
 MenuRow exit_and_cancel_row	=	MenuRow( exit_and_cancel,	"Cancel registration",	true, EDIT_MODE_PRACTICE, 0 );
 
+// we'll dynamically set these in a bit
 static Menu g_RegisterMenu
 (
-"ScreenMiniMenuRegisterMenu",
-set_player_name_row,
-set_highscore_name_row,
-set_seed_number_row,
-exit_and_register_row,
-exit_and_cancel_row
+	"ScreenMiniMenuRegisterMenu",
+	set_player_name_row,
+	set_highscore_name_row,
+	set_seed_number_row,
+	exit_and_register_row,
+	exit_and_cancel_row
 );
 
 // this is used to cancel registrations
@@ -81,18 +83,37 @@ static Menu g_RegisterModifyMenu
 
 // helper functions
 
-void RefreshRegisterMenuText()
+//XXX: do we -really- need this...?
+void SetRegisterMenuRows()
 {
-	g_RegisterMenu.rows[set_player_name].choices.resize(1);
-	g_RegisterMenu.rows[set_player_name].choices[0] = g_sCurPlayerName;
-	g_RegisterMenu.rows[set_highscore_name].choices.resize(1);
-	g_RegisterMenu.rows[set_highscore_name].choices[0] = g_sCurScoreName;
-	g_RegisterMenu.rows[set_seed_number].choices.resize(1);
-	g_RegisterMenu.rows[set_seed_number].choices[0] = ssprintf( "%i", g_iCurSeedIndex );
+	g_RegisterMenu.rows[set_player_name] = set_player_name_row;
+	g_RegisterMenu.rows[set_highscore_name] = set_highscore_name_row;
+	g_RegisterMenu.rows[set_seed_number] = set_seed_number_row;
+	g_RegisterMenu.rows[exit_and_register] = exit_and_register_row;
+
+	// copy the rows to the modification menu
+	FOREACH_ENUM( RegisterMenuChoice, exit_and_register, row )
+		g_RegisterModifyMenu.rows[row] = g_RegisterMenu.rows[row];
 }
 
-void RefreshRegisterModifyMenuText()
+void DisplayRegisterMiniMenu( bool bModify )
 {
+	set_player_name_row.choices[0] = g_sCurPlayerName;
+	set_highscore_name_row.choices[0] = g_sCurScoreName;
+	set_seed_number_row.choices[0] = ssprintf( "%i", g_iCurSeedIndex );
+
+	// if the names are filled in, enable registration
+	if( !g_sCurPlayerName.empty() && !g_sCurScoreName.empty() )
+		exit_and_register_row.bEnabled = true;
+	else
+		exit_and_register_row.bEnabled = false;
+
+	SetRegisterMenuRows();
+
+	if( bModify )
+		SCREENMAN->MiniMenu( &g_RegisterModifyMenu, SM_BackFromRegisterMenu );
+	else
+		SCREENMAN->MiniMenu( &g_RegisterMenu, SM_BackFromRegisterMenu );
 }
 
 void LoadCompetitor( Competitor *cptr )
@@ -120,6 +141,8 @@ void ScreenTournamentOptions::Init()
 {
 	ScreenOptions::Init();
 
+	SetRegisterMenuRows();
+
 	// enable all lines for all players
 	for( unsigned i = 0; i < NUM_TOURNAMENT_OPTIONS_LINES; i++ )
 		FOREACH_PlayerNumber( pn )
@@ -127,8 +150,8 @@ void ScreenTournamentOptions::Init()
 
 	g_TournamentOptionsLines[PO_ADD_PLAYER].choices.clear();
 	g_TournamentOptionsLines[PO_ADD_PLAYER].choices.push_back( "Press START" );
-	g_TournamentOptionsLines[PO_REMOVE_PLAYER].choices.clear();
-	g_TournamentOptionsLines[PO_REMOVE_PLAYER].choices.push_back( "-NO ENTRIES-" );
+	g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices.clear();
+	g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices.push_back( "-NO ENTRIES-" );
 	g_TournamentOptionsLines[PO_SET_QUALIFY_SONG].choices.clear();
 	g_TournamentOptionsLines[PO_SET_QUALIFY_SONG].choices.push_back( "-NO ENTRIES-" );
 	
@@ -152,10 +175,12 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 		switch( ScreenMiniMenu::s_iLastRowCode )
 		{	
 		case set_player_name:
-			SCREENMAN->TextEntry( SM_SetDisplayName, ssprintf( "Player %u's name:", TOURNAMENT->GetNumCompetitors()+1), "", 12 );
+			if( g_sCurPlayerName.empty() )
+				g_sCurPlayerName = ssprintf( "Player %u", TOURNAMENT->GetNumCompetitors()+1 );
+			SCREENMAN->TextEntry( SM_SetDisplayName, ssprintf( "Player %u's name:", TOURNAMENT->GetNumCompetitors()+1), g_sCurPlayerName, 12 );
 			break;
 		case set_highscore_name:
-			SCREENMAN->TextEntry( SM_SetScoreName, ssprintf( "Highscore name for %s:", g_sCurPlayerName.c_str()),  "", 4 );
+			SCREENMAN->TextEntry( SM_SetScoreName, ssprintf( "Highscore name for %s:", g_sCurPlayerName.c_str()),  g_sCurScoreName, 4 );
 			break;
 		case set_seed_number:
 			SCREENMAN->TextEntry( SM_SetSeed, ssprintf( "Seed index for %s:", g_sCurPlayerName.c_str()), "", 3 );
@@ -166,9 +191,15 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 				bool bRegistered = TOURNAMENT->RegisterCompetitor( g_sCurPlayerName, g_sCurScoreName, g_iCurSeedIndex, sError );
 
 				if( bRegistered )
+				{
+					SCREENMAN->SystemMessage( ssprintf("Registered \"%s\" as Player %i", g_sCurPlayerName.c_str(), TOURNAMENT->GetNumCompetitors()) );
 					ResetPlayerData(); // we're registered - reset and prepare for new data	
+					ReloadScreen();
+				}
 				else
+				{
 					SCREENMAN->SystemMessage( ssprintf( "Registration error: %s", sError.c_str()) );
+				}
 			}
 			break;
 		case exit_and_delete:
@@ -185,17 +216,20 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 	{
 		if( !ScreenTextEntry::s_bCancelledLast )
 			g_sCurPlayerName = ScreenTextEntry::s_sLastAnswer;
+		DisplayRegisterMiniMenu( false ); // return to the menu
 	}
 	else if( SM == SM_SetScoreName )
 	{
 		if( !ScreenTextEntry::s_bCancelledLast )
 			g_sCurScoreName = ScreenTextEntry::s_sLastAnswer;
 		g_sCurScoreName.MakeUpper();
+		DisplayRegisterMiniMenu( false ); // return to the menu
 	}
 	else if( SM == SM_SetSeed )
 	{
 		if( !ScreenTextEntry::s_bCancelledLast )
 			g_iCurSeedIndex = (int) strtof( ScreenTextEntry::s_sLastAnswer, NULL );
+		DisplayRegisterMiniMenu( false ); // return to the menu
 	}
 	else if( SM == SM_GoToNextScreen || SM == SM_GoToPrevScreen )
 	{
@@ -212,8 +246,7 @@ void ScreenTournamentOptions::MenuStart( PlayerNumber pn, const InputEventType t
 	{
 	case PO_ADD_PLAYER:
 		{
-			RefreshRegisterMenuText();
-			SCREENMAN->MiniMenu( &g_RegisterMenu, SM_BackFromRegisterMenu );
+			DisplayRegisterMiniMenu( false );
 		}
 		break;
 	default:
@@ -237,13 +270,12 @@ void ScreenTournamentOptions::ImportOptions( int row, const vector<PlayerNumber>
 
 	switch( row )
 	{
-	case PO_REMOVE_PLAYER:
+	case PO_MODIFY_PLAYER:
 		{
-			LOG->Debug( "Getting indexes and names." );
-			TOURNAMENT->GetCompetitorNames( g_TournamentOptionsLines[PO_REMOVE_PLAYER].choices, true );
+			TOURNAMENT->GetCompetitorNames( g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices, true );
 
-			for( unsigned i = 0; i < g_TournamentOptionsLines[PO_REMOVE_PLAYER].choices.size(); i++ )
-				ssprintf( "Choice %i: %s", i+1, g_TournamentOptionsLines[PO_REMOVE_PLAYER].choices[i].c_str() );	
+			for( unsigned i = 0; i < g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices.size(); i++ )
+				ssprintf( "Choice %i: %s", i+1, g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices[i].c_str() );	
 		}
 		break;
 	}			
@@ -251,7 +283,19 @@ void ScreenTournamentOptions::ImportOptions( int row, const vector<PlayerNumber>
 
 void ScreenTournamentOptions::ExportOptions( int row, const vector<PlayerNumber> &vpns )
 {
+	LOG->Debug( "ScreenTournamentOptions::ImportOptions( %i, vpns )", row );
 
+	switch( row )
+	{
+	case PO_MODIFY_PLAYER:
+		{
+			TOURNAMENT->GetCompetitorNames( g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices, true );
+
+			for( unsigned i = 0; i < g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices.size(); i++ )
+				ssprintf( "Choice %i: %s", i+1, g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices[i].c_str() );	
+		}
+		break;
+	}			
 }
 
 void ScreenTournamentOptions::GoToPrevScreen()
@@ -262,4 +306,9 @@ void ScreenTournamentOptions::GoToPrevScreen()
 void ScreenTournamentOptions::GoToNextScreen()
 {
 	SCREENMAN->SetNewScreen( NEXT_SCREEN );
+}
+
+void ScreenTournamentOptions::ReloadScreen()
+{
+	SCREENMAN->SetNewScreen( m_sName );
 }

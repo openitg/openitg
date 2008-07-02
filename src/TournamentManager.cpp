@@ -69,15 +69,11 @@ bool TournamentManager::HasStepsInsideLimits( Song *pSong ) const
 
 void TournamentManager::GetCompetitorNames( vector<CString> &vsNames, bool bDisplayIndex )
 {
-	LOG->Debug( "TournamentManager::GetCompetitorNames()" );
 	vsNames.clear();
-
-	LOG->Debug( "Size of vector: %i", m_pCompetitors.size() );
 
 	// "1: Player 1" vs. "Player 1"
 	for( unsigned i = 0; i < m_pCompetitors.size(); i++ )
 	{
-		LOG->Debug( "Iteration: %i", i );
 		CString sNewLine = bDisplayIndex ? ssprintf("%i: %s", i+1, m_pCompetitors[i]->sDisplayName.c_str()) : m_pCompetitors[i]->sDisplayName;
 		LOG->Debug( "Adding line \"%s\" to vsNames.", sNewLine.c_str() );
 		vsNames.push_back( sNewLine );

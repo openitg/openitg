@@ -33,6 +33,7 @@ private:
 
 	virtual void GoToNextScreen();
 	virtual void GoToPrevScreen();
+	virtual void ReloadScreen();
 };
 
 #endif // SCREEN_TOURNAMENT_OPTIONS_H

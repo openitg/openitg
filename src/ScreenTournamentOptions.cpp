@@ -148,8 +148,9 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 {
 	if( SM == SM_BackFromRegisterMenu )
 	{
+		LOG->Debug( "Row code: %i", ScreenMiniMenu::s_iLastRowCode );
 		switch( ScreenMiniMenu::s_iLastRowCode )
-		{
+		{	
 		case set_player_name:
 			SCREENMAN->TextEntry( SM_SetDisplayName, ssprintf( "Player %u's name:", TOURNAMENT->GetNumCompetitors()+1), "", 12 );
 			break;
@@ -212,7 +213,7 @@ void ScreenTournamentOptions::MenuStart( PlayerNumber pn, const InputEventType t
 	case PO_ADD_PLAYER:
 		{
 			RefreshRegisterMenuText();
-			SCREENMAN->MiniMenu( &g_RegisterMenu, SM_RegisterPlayer );
+			SCREENMAN->MiniMenu( &g_RegisterMenu, SM_BackFromRegisterMenu );
 		}
 		break;
 	default:

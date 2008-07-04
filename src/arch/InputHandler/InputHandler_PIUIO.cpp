@@ -147,7 +147,7 @@ void InputHandler_PIUIO::HandleInputInternalUnstable()
 
 		// figure out which sensors were enabled
 		for( int j = 0; j < 32; j++ )
-			if( m_iInputData[j] & (1 << 32-j) )
+			if( m_iInputData[i] & (1 << 32-j) )
 				m_bInputs[j][i] = true;
 	}
 }
@@ -172,7 +172,7 @@ void InputHandler_PIUIO::HandleInputInternal()
 
 		/* Toggle sensor bits - Left, Right, Up, Down */
 		for( int j = 0; j < 32; j++ )
-			if( m_iInputData[j] & (1 << 32-j) )
+			if( m_iInputData[i] & (1 << 32-j) )
 				m_bInputs[j][i] = true;
 	}
 

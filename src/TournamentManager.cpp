@@ -44,10 +44,10 @@ TournamentManager::~TournamentManager()
 	Reset();
 }
 
-void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps )
+void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps ) const
 {
 	// don't apply limits if we don't need to
-	if( !this->IsTournamentMode() )
+	if( !TOURNAMENT->IsTournamentMode() )
 		return;
 
 	ASSERT( m_iMeterLimitLow <= m_iMeterLimitHigh );
@@ -90,7 +90,7 @@ int TournamentManager::FindCompetitorIndex( Competitor *cptr )
 	return -1;
 }
 
-Competitor *TournamentManager::FindCompetitorByName( CString sName )
+Competitor *TournamentManager::GetCompetitorByName( CString sName )
 {
 	for( unsigned i = 0; i < m_pCompetitors.size(); i++ )
 	{
@@ -259,7 +259,7 @@ void TournamentManager::FinishStage( StageStats &stats )
 	m_pCurStage = NULL;
 }
 
-void TournamentManager::DumpMatches()
+void TournamentManager::DumpMatches() const
 {
 #if 0
 	for( unsigned i = 0; i < m_pMatches.size(); i++ )
@@ -272,7 +272,7 @@ void TournamentManager::DumpMatches()
 #endif
 }
 
-void TournamentManager::DumpCompetitors()
+void TournamentManager::DumpCompetitors() const
 {
 	for( unsigned i = 0; i < m_pCompetitors.size(); i++ )
 	{
@@ -313,6 +313,7 @@ void TournamentManager::SetDifficultyLimitHigh( Difficulty dHigh )
 }
 
 
+#if 0
 // lua start
 #include "LuaBinding.h"
 
@@ -354,3 +355,4 @@ public:
 };
 
 LUA_REGISTER_CLASS( TournamentManager )
+#endif

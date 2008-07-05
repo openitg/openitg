@@ -102,21 +102,23 @@ public:
 	void StartTournament() { m_bTournamentMode = true; }
 	void EndTournament() { m_bTournamentMode = false; }
 
-	bool IsTournamentMode() { return m_bTournamentMode; }
+	bool IsTournamentMode() const { return m_bTournamentMode; }
 
 	void GetCompetitorNames( vector<CString> &vsNames, bool bDisplayIndex = false );
 	void GetCompetitorNamesAndIndexes( vector<CString> &vsNames ) { GetCompetitorNames( vsNames, true ); }
 
-	// vector search-and-find functions
+	// vector search-and-return functions
 	int FindCompetitorIndex( Competitor *cptr );
-	Competitor *FindCompetitorByName( CString sName );
+
+	Competitor *GetCompetitorByName( CString sName );
+	Competitor *GetCompetitorByIndex( int i ) { return m_pCompetitors[i]; }
 
 	// some utilities to cleanly check against tournament limits
-	void RemoveStepsOutsideLimits( vector<Steps*> &vpSteps );
+	void RemoveStepsOutsideLimits( vector<Steps*> &vpSteps ) const;
 	bool HasStepsInsideLimits( Song *pSong ) const;
 
-	TournamentRound GetCurrentRound() { return m_Round; }
-	unsigned GetNumCompetitors() { return m_pCompetitors.size(); }
+	TournamentRound GetCurrentRound() const { return m_Round; }
+	unsigned GetNumCompetitors() const { return m_pCompetitors.size(); }
 
 	// attempt to add a new, unique competitor
 	bool RegisterCompetitor( CString sDisplayName, CString sHighScoreName, unsigned iSeed, CString &sError );
@@ -125,8 +127,8 @@ public:
 	void PushSelf( lua_State *L );
 
 	// debugging
-	void DumpMatches();
-	void DumpCompetitors();
+	void DumpMatches() const;
+	void DumpCompetitors() const;
 private:
 	bool m_bTournamentMode;
 

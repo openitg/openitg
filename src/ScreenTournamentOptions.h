@@ -9,6 +9,7 @@ class ScreenTournamentOptions : public ScreenOptions
 {
 public:
 	ScreenTournamentOptions( CString sName );
+	~ScreenTournamentOptions();
 
 	virtual void Init();
 

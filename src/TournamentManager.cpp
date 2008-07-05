@@ -23,8 +23,12 @@ TournamentManager::TournamentManager()
 
 void TournamentManager::Init()
 {
-	m_iMeterLimitLow = m_iMeterLimitHigh = -1;
-	m_DifficultyLimitLow = m_DifficultyLimitHigh = DIFFICULTY_INVALID;
+	m_bTournamentMode = false;
+
+	m_iMeterLimitLow = -1;
+	m_iMeterLimitHigh = INT_MAX;
+	m_DifficultyLimitLow = DIFFICULTY_BEGINNER;
+	m_DifficultyLimitHigh = DIFFICULTY_INVALID;
 	m_pCurMatch = NULL;
 	m_pCurStage = NULL;
 	FOREACH_PlayerNumber( pn )
@@ -38,11 +42,6 @@ TournamentManager::~TournamentManager()
 	DumpCompetitors();
 	// de-allocate all matches and data
 	Reset();
-}
-
-bool TournamentManager::IsTournamentMode()
-{
-	return PREFSMAN->m_bTournamentMode;
 }
 
 void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps )
@@ -60,7 +59,9 @@ void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps )
 
 bool TournamentManager::HasStepsInsideLimits( Song *pSong ) const
 {
-	
+	if( !(const TournamentManager *)TOURNAMENT->IsTournamentMode() )
+		return true;
+
 	ASSERT( m_iMeterLimitLow <= m_iMeterLimitHigh );
 	ASSERT( m_DifficultyLimitLow <= m_DifficultyLimitHigh );
 
@@ -217,6 +218,8 @@ void TournamentManager::CancelMatch()
 {
 	if( m_pCurMatch == NULL )
 		return;
+
+	LOG->Debug( "TournamentManager::CancelMatch()" );
 
 	// free the stages we've played in this match
 	for( unsigned i = 0; i < m_pCurMatch->vStages.size(); i++ )

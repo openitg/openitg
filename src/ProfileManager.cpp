@@ -206,6 +206,36 @@ bool ProfileManager::LoadProfileFromMemoryCard( PlayerNumber pn )
 
 	return true; // If a card is inserted, we want to use the memory card to save - even if the Profile load failed.
 }
+
+/* Load editable data without actually loading a profile */
+Profile::LoadResult ProfileManager::LoadEditableDataFromMemoryCard( PlayerNumber pn, Profile *pProfile )
+{
+	Profile::LoadResult lr = Profile::failed_no_profile;
+
+	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
+		return lr;
+
+	vector<CString> asDirsToTry;
+	GetMemoryCardProfileDirectoriesToTry( asDirsToTry );
+
+	for( unsigned i = 0; i < asDirsToTry.size(); i++ )
+	{
+		const CString &sSubdir = asDirsToTry[i];
+
+		CString sDir = MEM_CARD_MOUNT_POINT[pn] + sSubdir + "/";
+
+		MEMCARDMAN->MountCard( pn, 10 );
+		lr = pProfile->LoadEditableDataFromDir( sDir );
+		MEMCARDMAN->UnmountCard( pn );
+
+		// early abort if we can't find anything
+		if( lr == Profile::success )
+			return lr;
+	}
+
+	// fall-through for a bad condition
+	return lr;
+}
 			
 bool ProfileManager::LoadFirstAvailableProfile( PlayerNumber pn )
 {

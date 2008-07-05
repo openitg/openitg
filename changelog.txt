@@ -36,6 +36,7 @@ OpenITG, alpha 7 (in development)
 -Changed Screens:
     ScreenTextEntry - modified for more arcade-friendly input
 -Fixed bugs:
+    "nomines" and "nostretch" transforms have no effect in the editor menu
     (OpenGL) Arrow shader fails on full-screen, causing scrolling brackets
     Actor sounds ignore attract sound settings
     After switching themes, OpenITG crashes on the songwheel

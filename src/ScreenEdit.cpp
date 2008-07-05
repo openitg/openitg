@@ -2386,7 +2386,7 @@ void ScreenEdit::HandleAreaMenuChoice( AreaMenuChoice c, const vector<int> &iAns
 				switch( tt )
 				{
 				case noholds:	NoteDataUtil::RemoveHoldNotes( m_NoteDataEdit, iBeginRow, iEndRow );	break;
-				case nomines:	NoteDataUtil::RemoveMines( m_NoteDataEdit, iBeginRow, iBeginRow );	break;
+				case nomines:	NoteDataUtil::RemoveMines( m_NoteDataEdit, iBeginRow, iEndRow );	break;
 				case little:	NoteDataUtil::Little( m_NoteDataEdit, iBeginRow, iEndRow );	break;
 				case wide:		NoteDataUtil::Wide( m_NoteDataEdit, iBeginRow, iEndRow );	break;
 				case big:		NoteDataUtil::Big( m_NoteDataEdit, iBeginRow, iEndRow );		break;
@@ -2401,7 +2401,7 @@ void ScreenEdit::HandleAreaMenuChoice( AreaMenuChoice c, const vector<int> &iAns
 				case nojumps:	NoteDataUtil::RemoveJumps( m_NoteDataEdit, iBeginRow, iEndRow );	break;
 				case nohands:	NoteDataUtil::RemoveHands( m_NoteDataEdit, iBeginRow, iEndRow );	break;
 				case noquads:	NoteDataUtil::RemoveQuads( m_NoteDataEdit, iBeginRow, iEndRow );	break;
-				case nostretch:	NoteDataUtil::RemoveStretch( m_NoteDataEdit, st, iBeginRow, iBeginRow );	break;
+				case nostretch:	NoteDataUtil::RemoveStretch( m_NoteDataEdit, st, iBeginRow, iEndRow );	break;
 				default:		ASSERT(0);
 				}
 

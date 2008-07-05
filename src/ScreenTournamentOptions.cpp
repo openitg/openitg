@@ -1,10 +1,12 @@
 #include "global.h"
 #include "RageLog.h"
 #include "TournamentManager.h"
+#include "ProfileManager.h"
 #include "ScreenManager.h"
 #include "ScreenTextEntry.h"
 #include "ScreenMiniMenu.h"
 #include "ScreenTournamentOptions.h"
+#include "Profile.h"
 #include "PlayerNumber.h"
 
 #define PREV_SCREEN		THEME->GetMetric( m_sName, "PrevScreen" )
@@ -14,6 +16,7 @@ REGISTER_SCREEN_CLASS( ScreenTournamentOptions );
 
 AutoScreenMessage( SM_BackFromRegisterMenu );
 
+AutoScreenMessage( SM_LoadFromUSB );
 AutoScreenMessage( SM_SetDisplayName );
 AutoScreenMessage( SM_SetScoreName );
 AutoScreenMessage( SM_SetSeed );
@@ -29,18 +32,18 @@ enum TournamentOptionsLine
 {
 	PO_ADD_PLAYER,
 	PO_MODIFY_PLAYER,
-	PO_SET_QUALIFY_SONG,
 	NUM_TOURNAMENT_OPTIONS_LINES,
 };	
 
-OptionRowDefinition g_TournamentOptionsLines[NUM_TOURNAMENT_OPTIONS_LINES] = {
+OptionRowDefinition g_TournamentOptionsLines[NUM_TOURNAMENT_OPTIONS_LINES] =
+{
 	OptionRowDefinition( "AddPlayer", true, "Press START" ),
 	OptionRowDefinition( "ModifyPlayer", true ),
-	OptionRowDefinition( "SetQualifier", true )
 };
 
 enum RegisterMenuChoice
 {
+	load_from_usb,
 	set_player_name,
 	set_highscore_name,
 	set_seed_number,
@@ -52,6 +55,7 @@ enum RegisterMenuChoice
 
 /* Shared row definitions.
  * UGLY: MenuRow assumes Edit mode, but this isn't. We'll fix this up sometime... */
+MenuRow load_from_usb_row	=	MenuRow( load_from_usb,		"Load from USB",	true, EDIT_MODE_PRACTICE, 0 );
 MenuRow set_player_name_row	= 	MenuRow( set_player_name,	"Set player name",	true, EDIT_MODE_PRACTICE, 0, g_sCurPlayerName );
 MenuRow set_highscore_name_row	=	MenuRow( set_highscore_name,	"Set highscore name",	true, EDIT_MODE_PRACTICE, 0, g_sCurScoreName );
 MenuRow set_seed_number_row	=	MenuRow( set_seed_number,	"Set seed (optional)",	true, EDIT_MODE_PRACTICE, 0, ssprintf("%i", g_iCurSeedIndex) );
@@ -63,6 +67,7 @@ MenuRow exit_and_cancel_row	=	MenuRow( exit_and_cancel,	"Cancel registration",	t
 static Menu g_RegisterMenu
 (
 	"ScreenMiniMenuRegisterMenu",
+	load_from_usb_row,
 	set_player_name_row,
 	set_highscore_name_row,
 	set_seed_number_row,
@@ -81,22 +86,8 @@ static Menu g_RegisterModifyMenu
 	exit_and_delete_row
 );
 
-// helper functions
-
-//XXX: do we -really- need this...?
-void SetRegisterMenuRows()
-{
-	g_RegisterMenu.rows[set_player_name] = set_player_name_row;
-	g_RegisterMenu.rows[set_highscore_name] = set_highscore_name_row;
-	g_RegisterMenu.rows[set_seed_number] = set_seed_number_row;
-	g_RegisterMenu.rows[exit_and_register] = exit_and_register_row;
-
-	// copy the rows to the modification menu
-	FOREACH_ENUM( RegisterMenuChoice, exit_and_register, row )
-		g_RegisterModifyMenu.rows[row] = g_RegisterMenu.rows[row];
-}
-
-void DisplayRegisterMiniMenu( bool bModify )
+// helper functions for menu rendering
+void RefreshRegisterMenuRows()
 {
 	set_player_name_row.choices[0] = g_sCurPlayerName;
 	set_highscore_name_row.choices[0] = g_sCurScoreName;
@@ -107,21 +98,47 @@ void DisplayRegisterMiniMenu( bool bModify )
 		exit_and_register_row.bEnabled = true;
 	else
 		exit_and_register_row.bEnabled = false;
+}
 
+void SetRegisterMenuRows()
+{
+	g_RegisterMenu.rows[set_player_name] = set_player_name_row;
+	g_RegisterMenu.rows[set_highscore_name] = set_highscore_name_row;
+	g_RegisterMenu.rows[set_seed_number] = set_seed_number_row;
+	g_RegisterMenu.rows[exit_and_register] = exit_and_register_row;
+
+	for( RegisterMenuChoice r = set_player_name; r >= exit_and_register; enum_add<RegisterMenuChoice>(r, 1) )
+		g_RegisterModifyMenu.rows[r] = g_RegisterMenu.rows[r];
+}
+
+void DisplayRegisterMiniMenu( bool bModifyMenu )
+{
+	RefreshRegisterMenuRows();
 	SetRegisterMenuRows();
 
-	if( bModify )
+	if( bModifyMenu )
 		SCREENMAN->MiniMenu( &g_RegisterModifyMenu, SM_BackFromRegisterMenu );
 	else
 		SCREENMAN->MiniMenu( &g_RegisterMenu, SM_BackFromRegisterMenu );
 }
 
-void LoadCompetitor( Competitor *cptr )
+void LoadPlayerDataFromCompetitor( Competitor *cptr )
 {
 	g_sCurPlayerName = cptr->sDisplayName;
 	g_sCurScoreName = cptr->sHighScoreName;
 	g_iCurSeedIndex = cptr->iSeedIndex;
 	g_CurPlayerIndex = TOURNAMENT->FindCompetitorIndex( cptr );
+}
+
+void LoadPlayerDataFromProfile( void *pDataPointer )
+{
+	Profile *pProfile = (Profile *)pDataPointer;
+
+	if( pProfile == NULL )
+		return;
+
+	g_sCurPlayerName = pProfile->GetDisplayName();
+	g_sCurScoreName = pProfile->m_sLastUsedHighScoreName;
 }
 
 void ResetPlayerData()
@@ -135,6 +152,8 @@ void ResetPlayerData()
 ScreenTournamentOptions::ScreenTournamentOptions( CString sClassName ) : ScreenOptions( sClassName )
 {
 	LOG->Debug( "ScreenTournamentOptions::ScreenTournamentOptions()" );
+
+	TOURNAMENT->StartTournament();
 }
 
 void ScreenTournamentOptions::Init()
@@ -150,10 +169,14 @@ void ScreenTournamentOptions::Init()
 
 	g_TournamentOptionsLines[PO_ADD_PLAYER].choices.clear();
 	g_TournamentOptionsLines[PO_ADD_PLAYER].choices.push_back( "Press START" );
+
+
 	g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices.clear();
-	g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices.push_back( "-NO ENTRIES-" );
-	g_TournamentOptionsLines[PO_SET_QUALIFY_SONG].choices.clear();
-	g_TournamentOptionsLines[PO_SET_QUALIFY_SONG].choices.push_back( "-NO ENTRIES-" );
+
+	if( TOURNAMENT->GetNumCompetitors() > 0 )
+		TOURNAMENT->GetCompetitorNames( g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices, true );
+	else
+		g_TournamentOptionsLines[PO_MODIFY_PLAYER].choices.push_back( "-NO ENTRIES-" );
 	
 	vector<OptionRowDefinition> vDefs( &g_TournamentOptionsLines[0], &g_TournamentOptionsLines[ARRAYSIZE(g_TournamentOptionsLines)] );
 	vector<OptionRowHandler*> vHands( vDefs.size(), NULL );
@@ -173,10 +196,45 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 	{
 		LOG->Debug( "Row code: %i", ScreenMiniMenu::s_iLastRowCode );
 		switch( ScreenMiniMenu::s_iLastRowCode )
-		{	
+		{
+		case load_from_usb:
+			{
+				// this must remain in memory
+				static Profile profile;
+
+				CString sMessage;
+				PromptType pt = PROMPT_OK;
+
+				FOREACH_PlayerNumber( pn )
+				{
+					Profile::LoadResult lr = PROFILEMAN->LoadEditableDataFromMemoryCard(pn, &profile);
+
+					if( lr == Profile::failed_tampered )
+					{
+						sMessage = ssprintf( "Could not load data for Player %i.", pn+1 );
+						break;
+					}
+					else if( lr == Profile::failed_no_profile )
+					{
+						sMessage = ssprintf( "No profile found on Player %i's card.", pn+1 );
+						continue;
+					}
+					else if( lr == Profile::success )
+					{
+						pt = PROMPT_YES_NO;
+						sMessage = ssprintf( "Player name: %s\nScore name: %s\n\nIs this correct?", 
+							profile.GetDisplayName().c_str(), profile.m_sLastUsedHighScoreName.c_str() );
+						break;
+					}
+				}
+
+				if( sMessage.empty() )
+					sMessage = "No cards available to load data from!";
+
+				SCREENMAN->Prompt( SM_LoadFromUSB, sMessage, pt, ANSWER_NO, &LoadPlayerDataFromProfile, NULL, (void *)&profile );
+			}
+			break;
 		case set_player_name:
-			if( g_sCurPlayerName.empty() )
-				g_sCurPlayerName = ssprintf( "Player %u", TOURNAMENT->GetNumCompetitors()+1 );
 			SCREENMAN->TextEntry( SM_SetDisplayName, ssprintf( "Player %u's name:", TOURNAMENT->GetNumCompetitors()+1), g_sCurPlayerName, 12 );
 			break;
 		case set_highscore_name:
@@ -231,9 +289,17 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 			g_iCurSeedIndex = (int) strtof( ScreenTextEntry::s_sLastAnswer, NULL );
 		DisplayRegisterMiniMenu( false ); // return to the menu
 	}
-	else if( SM == SM_GoToNextScreen || SM == SM_GoToPrevScreen )
+	else if( SM == SM_LoadFromUSB )
+	{
+		DisplayRegisterMiniMenu( false );
+	}
+	else if( SM == SM_GoToPrevScreen )
 	{
 		SCREENMAN->SetNewScreen( PREV_SCREEN );
+	}
+	else if( SM == SM_GoToNextScreen )
+	{
+		SCREENMAN->SetNewScreen( NEXT_SCREEN );
 	}
 }
 
@@ -310,5 +376,6 @@ void ScreenTournamentOptions::GoToNextScreen()
 
 void ScreenTournamentOptions::ReloadScreen()
 {
+	LOG->Debug( "ScreenTournamentOptions::ReloadScreen()" );
 	SCREENMAN->SetNewScreen( m_sName );
 }

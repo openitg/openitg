@@ -17,17 +17,7 @@ public:
 
 	virtual void MenuStart( PlayerNumber pn, const InputEventType type );
 	virtual void MenuBack( PlayerNumber pn, const InputEventType type );
-/*
-	virtual void MenuLeft( PlayerNumber pn, const InputEventType type ) { LOG->Debug( "MenuLeft(%i)", pn+1); }
-	virtual void MenuRight( PlayerNumber pn, const InputEventType type ) { LOG->Debug( "MenuRight(%i)", pn+1); }
-	virtual void MenuUp( PlayerNumber pn, const InputEventType type ) { LOG->Debug( "MenuUp(%i)", pn+1); }
-	virtual void MenuDown( PlayerNumber pn, const InputEventType type ) { LOG->Debug( "MenuDown(%i)", pn+1); }
-*/
-
 private:
-	CString m_sPlayerName, m_sPlayerScoreName;
-	bool RegistrationValid();
-
 	virtual void ImportOptions( int row, const vector<PlayerNumber> &vpns );
 	virtual void ExportOptions( int row, const vector<PlayerNumber> &vpns );
 

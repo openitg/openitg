@@ -29,10 +29,12 @@ public:
 	bool LoadFirstAvailableProfile( PlayerNumber pn );	// memory card or local profile
 	bool LoadLocalProfileFromMachine( PlayerNumber pn );
 	bool LoadProfileFromMemoryCard( PlayerNumber pn );
+	Profile::LoadResult LoadEditableDataFromMemoryCard( PlayerNumber pn, Profile *pProfile );
 	bool FastLoadProfileNameFromMemoryCard( CString sRootDir, CString &sName ) const;
 	void SaveAllProfiles() const;
 	bool SaveProfile( PlayerNumber pn ) const;
 	void UnloadProfile( PlayerNumber pn );
+
 	
 	//
 	// General data

@@ -71,9 +71,9 @@ public:
 	{
 		ASSERT( sParam.size() );
 
-		if(		 sParam.CompareNoCase("NoteSkins")==0 )		{ FillNoteSkins( defOut, sParam );		return; }
+		if( sParam.CompareNoCase("NoteSkins")==0 )		{ FillNoteSkins( defOut, sParam );		return; }
 		// we want to lock steps together if we're in tournament mode
-		else if( sParam.CompareNoCase("Steps")==0 )			{ FillSteps( defOut, sParam, TOURNAMENT->IsTournamentMode() );	return; }
+		else if( sParam.CompareNoCase("Steps")==0 )		{ FillSteps( defOut, sParam, TOURNAMENT->IsTournamentMode() );	return; }
 		else if( sParam.CompareNoCase("StepsLocked")==0 )	{ FillSteps( defOut, sParam, true );	return; }
 		else if( sParam.CompareNoCase("Characters")==0 )	{ FillCharacters( defOut, sParam );		return; }
 		else if( sParam.CompareNoCase("Styles")==0 )		{ FillStyles( defOut, sParam );			return; }

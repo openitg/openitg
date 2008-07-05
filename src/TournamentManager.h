@@ -43,21 +43,13 @@ struct TournamentStage
 // allowing for as many stages as needed
 struct TournamentMatch
 {
-/* I'm not sure if we need this... - Vyhd
-	~TournamentMatch()
-	{
-		for( unsigned i = 0; i < vStages.size(); i++ )
-			SAFE_DELETE( vStages[i] );
-		vStages.clear();
-	}
-*/
-
 	CString sPlayer[NUM_PLAYERS];
 	int iSeedIndex[NUM_PLAYERS];
 
 	// the round this match was held in
 	CString sRound;
 
+	// all stages played during this match
 	std::vector<TournamentStage*> vStages;
 };
 
@@ -77,7 +69,9 @@ struct Competitor
 	unsigned iSeedScoreActual;
 	unsigned iSeedIndex;
 
+	// holds data on every song played
 	vector<Song*> vPlayedSongs;
+	// holds data on every match played
 	vector<TournamentMatch*> vPlayedMatches;
 };
 
@@ -105,7 +99,10 @@ public:
 	void CancelStage();
 	void FinishStage( StageStats &stats );
 	
-	bool IsTournamentMode();
+	void StartTournament() { m_bTournamentMode = true; }
+	void EndTournament() { m_bTournamentMode = false; }
+
+	bool IsTournamentMode() { return m_bTournamentMode; }
 
 	void GetCompetitorNames( vector<CString> &vsNames, bool bDisplayIndex = false );
 	void GetCompetitorNamesAndIndexes( vector<CString> &vsNames ) { GetCompetitorNames( vsNames, true ); }
@@ -131,6 +128,8 @@ public:
 	void DumpMatches();
 	void DumpCompetitors();
 private:
+	bool m_bTournamentMode;
+
 	// conditions to win
 	bool m_bChoosingPlayerLosesIfBothFail;
 	PlayerNumber m_ChoosingPlayer;

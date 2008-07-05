@@ -164,7 +164,6 @@ public:
 	enum MarvelousTiming { MARVELOUS_NEVER, MARVELOUS_COURSES_ONLY, MARVELOUS_EVERYWHERE };
 	Preference<MarvelousTiming>		m_MarvelousTiming;
 	Preference<bool>	m_bEventMode;
-	Preference<bool>	m_bTournamentMode;
 	Preference<int>		m_iCoinsPerCredit;
 	Preference<int>		m_iSongsPerPlay;
 

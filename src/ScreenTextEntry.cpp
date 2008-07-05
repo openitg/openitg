@@ -308,6 +308,7 @@ void ScreenTextEntry::MoveY( int iDir )
 	PositionCursor();
 
 // This doesn't seem to be necessary.
+// It just causes crashes...
 #if 0
 		// HACK: Round to nearest option so that we always stop 
 		// on KEYBOARD_ROW_SPECIAL.
@@ -374,11 +375,11 @@ void ScreenTextEntry::MenuLeft( PlayerNumber pn, const InputEventType type )
 	if( type == IET_RELEASE )
 		return;
 
-	/* Treat ML+MR as Select */
-	if( INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT)) )
-		MenuSelect( pn );
-	else
+	if( !INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT)) )
 		MoveX(-1);
+	/* Treat ML+MR as Select, but only if it's the first press */
+	else if( pn == PLAYER_2 && type == IET_FIRST_PRESS )
+		MenuSelect( pn );
 }
 
 void ScreenTextEntry::MenuRight( PlayerNumber pn, const InputEventType type )
@@ -386,11 +387,11 @@ void ScreenTextEntry::MenuRight( PlayerNumber pn, const InputEventType type )
 	if( type == IET_RELEASE )
 		return;
 
-	/* Treat ML+MR as Select */
-	if( INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) )
-		MenuSelect( pn );
-	else
+	if( !INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) )
 		MoveX(+1);
+	/* Treat ML+MR as Select, but only if it's the first press */
+	else if( pn == PLAYER_2 && type == IET_FIRST_PRESS )
+		MenuSelect( pn );
 }
 
 void ScreenTextEntry::MenuSelect( PlayerNumber pn )

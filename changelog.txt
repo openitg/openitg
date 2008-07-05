@@ -11,7 +11,7 @@ OpenITG, alpha 7 (in development)
     IsUsingMemoryCard(PlayerNumber) - self-explanatory
     Debug() - output debugging lines regardless of log settings
 -New LUA globals:
-    IsOpenITG - can be used for compatibility with ITG2 AC scripts
+    IsOpenITG (boolean) - can be used for compatibility with ITG2 AC scripts
 -New (major) code functions:
     StepsUtil::RemoveStepsOutsideMeterRange()
     StepsUtil::RemoveStepsOutsideDifficultyRange()

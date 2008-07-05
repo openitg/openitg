@@ -276,6 +276,11 @@ CString GetInputType()
 	return sType;
 }
 
+void IsOpenITG( lua_State* L )
+{
+	LUA->SetGlobal( "IsOpenITG", true );
+}
+
 /*
  * [ScreenArcadeDiagnostics]
  *
@@ -298,6 +303,8 @@ CString GetInputType()
  * this doesn't belong in LuaManager.cpp --infamouspat
  */
 #include "LuaFunctions.h"
+#include "LuaManager.h"
+
 // Added by Matt1360
 LuaFunction_NoArgs( GetProductName	, CString( PRODUCT_NAME_VER ) ); // Return the product's name from ProductInfo.h [ScreenArcadeDiagnostics]
 LuaFunction_NoArgs( GetRevision	, GetRevision() ); // Return current Revision ( ProductInfo.h ) [ScreenArcadeDiagnostics]
@@ -312,8 +319,7 @@ LuaFunction_NoArgs( GetSerialNumber, GetSerialNumber() ); // returns serial from
 LuaFunction_NoArgs( GetNumIOErrors, ITGIO::m_iInputErrorCount ); // Call the number of I/O errors
 LuaFunction_NoArgs( GetInputType, GetInputType() ); // grabs from RageInput's global variable
 LuaFunction_NoArgs( HubIsConnected, HubIsConnected() );
-
-
+REGISTER_WITH_LUA_FUNCTION( IsOpenITG );
 /*
  * (c) 2008 BoXoRRoXoRs
  * All rights reserved.

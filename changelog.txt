@@ -10,17 +10,18 @@ OpenITG, alpha 7 (in development)
 -New LUA functions:
     IsUsingMemoryCard(PlayerNumber) - self-explanatory
     Debug() - output debugging lines regardless of log settings
--New code functions:
-    StepsUtil::RemoveStepsOutsideMeterRange() - self-explanatory
-    StepsUtil::RemoveStepsOutsideDifficultyRange() - see above
-    Song::HasStepsWithinMeterRange() - see above
+-New LUA globals:
+    IsOpenITG - can be used for compatibility with ITG2 AC scripts
+-New (major) code functions:
+    StepsUtil::RemoveStepsOutsideMeterRange()
+    StepsUtil::RemoveStepsOutsideDifficultyRange()
+    Song::HasStepsWithinMeterRange()
 -New messages:
     "CardReadyP1", "CardReadyP2" - played when a card is verified ready
 -New preferences:
     "SoundVolumeAttract" - volume during attract sequences
     "TextEntryUsesArcadeInput" - use arcade-specialised input scheme for ScreenTextEntry
     "ThreadedLights" - run the lights outside the regular game loop, more accurate
-    "TournamentMode" - currently for testing only
     "UseUnstablePIUIODriver" - set true to use the experimental I/O driver
 -New config options:
     "SoundVolumeAttract" - see above
@@ -43,6 +44,7 @@ OpenITG, alpha 7 (in development)
     ScreenArcadeStart loops endlessly until manual exit
 -Fixed mistakes:
     Removed some personalized testing code
+    Removed some annoying opendir() error messages
 
 OpenITG, alpha 6 (May 30th, 2008)
 ---------------------------------

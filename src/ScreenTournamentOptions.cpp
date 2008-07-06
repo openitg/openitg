@@ -299,7 +299,9 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 					ASSERT( g_pCurCompetitor );
 					SavePlayerDataToCompetitor();
 					ResetPlayerData();
-					// do something
+
+					// reload any new data we've been given
+					ReloadScreen();
 				}
 			}
 			break;
@@ -315,10 +317,6 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 			ResetPlayerData();
 			break;
 		}
-
-		// reload any new data we've been given
-		if( SM_BackFromModifyMenu )
-			ReloadScreen();
 	}
 	else if( SM == SM_SetDisplayName )
 	{

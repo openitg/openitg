@@ -1,5 +1,4 @@
 #include "global.h"
-#include "RageLog.h"
 #include "ScreenTextEntry.h"
 #include "PrefsManager.h"
 #include "ScreenManager.h"
@@ -10,7 +9,6 @@
 #include "FontCharAliases.h"
 #include "ScreenDimensions.h"
 #include "ActorUtil.h"
-#include "InputMapper.h"
 
 
 static const char* g_szKeys[NUM_KEYBOARD_ROWS][KEYS_PER_ROW] =
@@ -26,7 +24,6 @@ static const char* g_szKeys[NUM_KEYBOARD_ROWS][KEYS_PER_ROW] =
 };
 
 static Preference<bool> g_bAllowOldKeyboardInput( "AllowOldKeyboardInput",	true );
-static Preference<bool> g_bTextEntryUsesArcadeInput( "TextEntryUsesArcadeInput",true );
 
 float GetButtonX( int x )
 {
@@ -107,21 +104,10 @@ void ScreenTextEntry::Init()
 	m_iFocusX = 0;
 	m_iFocusY = (KeyboardRow)0;
 
-
-	// Init keyboard
-	FOREACH_KeyboardRow( r )
-	{
-		for( int x=0; x<KEYS_PER_ROW; ++x )
-		{
-			BitmapText &bt = m_textKeyboardChars[r][x];
-			bt.LoadFromFont( THEME->GetPathF(m_sName,"keyboard") );
-			bt.SetXY( GetButtonX(x), GetButtonY(r) );
-			this->AddChild( &bt );
-		}
-	}
-
-	UpdateKeyboardText();
-
+	// load the most derived versions
+	this->InitKeyboard();
+	this->UpdateKeyboardText();
+	
 	PositionCursor();
 
 	m_In.Load( THEME->GetPathB(m_sName,"in") );
@@ -134,17 +120,28 @@ void ScreenTextEntry::Init()
 	m_Cancel.Load( THEME->GetPathB(m_sName,"cancel") );
 	this->AddChild( &m_Cancel );
 
+
 	m_sndType.Load( THEME->GetPathS(m_sName,"type"), true );
 	m_sndBackspace.Load( THEME->GetPathS(m_sName,"backspace"), true );
 	m_sndChange.Load( THEME->GetPathS(m_sName,"change"), true );
-
-	// speed up repeat rate so we can enter text more quickly
-	INPUTFILTER->SetRepeatRate( 0.0f, 8, 0.4f, 25 );
 }
 
 ScreenTextEntry::~ScreenTextEntry()
 {
-	INPUTFILTER->ResetRepeatRate();
+}
+
+void ScreenTextEntry::InitKeyboard()
+{
+	FOREACH_KeyboardRow( r )
+	{
+		for( int x=0; x<KEYS_PER_ROW; ++x )
+		{
+			BitmapText &bt = m_textKeyboardChars[r][x];
+			bt.LoadFromFont( THEME->GetPathF(m_sName,"keyboard") );
+			bt.SetXY( GetButtonX(x), GetButtonY(r) );
+			this->AddChild( &bt );
+		}
+	}
 }
 
 void ScreenTextEntry::UpdateKeyboardText()
@@ -246,7 +243,7 @@ void ScreenTextEntry::Input( const DeviceInput& DeviceI, const InputEventType ty
 			m_iFocusY = KEYBOARD_ROW_SPECIAL;
 			m_iFocusX = DONE;
 
-			UpdateKeyboardText();
+			this->UpdateKeyboardText();
 			PositionCursor();
 		}
 	}
@@ -276,18 +273,7 @@ void ScreenTextEntry::MoveX( int iDir )
 	do
 	{
 		m_iFocusX += iDir;
-
-		// if we've reached the end, get to the next line
-		if( m_iFocusX >= KEYS_PER_ROW )
-		{
-			MoveY(+1);
-			wrap( m_iFocusX, KEYS_PER_ROW );
-		}
-		else if( m_iFocusX < 0 )
-		{
-			MoveY(-1);
-			m_iFocusX = KEYS_PER_ROW-1;
-		}
+		wrap( m_iFocusX, KEYS_PER_ROW );
 
 		sKey = g_szKeys[m_iFocusY][m_iFocusX]; 
 	}
@@ -299,17 +285,12 @@ void ScreenTextEntry::MoveX( int iDir )
 
 void ScreenTextEntry::MoveY( int iDir )
 {
-	m_iFocusY = (KeyboardRow)(m_iFocusY + iDir);
-	int iFocusY = (int)m_iFocusY;
-	wrap( iFocusY, NUM_KEYBOARD_ROWS );
-	m_iFocusY = (KeyboardRow)iFocusY;
+	CString sKey;
+	do
+	{
+		m_iFocusY = (KeyboardRow)(m_iFocusY + iDir);
+		wrap( (int&)m_iFocusY, NUM_KEYBOARD_ROWS );
 
-	m_sndChange.Play();
-	PositionCursor();
-
-// This doesn't seem to be necessary.
-// It just causes crashes...
-#if 0
 		// HACK: Round to nearest option so that we always stop 
 		// on KEYBOARD_ROW_SPECIAL.
 		if( m_iFocusY == KEYBOARD_ROW_SPECIAL )
@@ -321,16 +302,17 @@ void ScreenTextEntry::MoveY( int iDir )
 					break;
 
 				// UGLY: Probe one space to the left before looking to the right
-				m_iFocusX += (i==0) ? -3 : +1;
+				m_iFocusX += (i==0) ? -1 : +1;
 				wrap( m_iFocusX, KEYS_PER_ROW );
 			}
 		}
 
 		sKey = g_szKeys[m_iFocusY][m_iFocusX]; 
-//	}
-//	while( sKey == "" );
+	}
+	while( sKey == "" );
 
-#endif
+	m_sndChange.Play();
+	PositionCursor();
 }
 
 void ScreenTextEntry::AppendToAnswer( CString s )
@@ -346,7 +328,7 @@ void ScreenTextEntry::AppendToAnswer( CString s )
 	m_sndType.Play();
 	UpdateAnswerText();
 
-	UpdateKeyboardText();
+	this->UpdateKeyboardText();
 }
 
 void ScreenTextEntry::BackspaceInAnswer()
@@ -361,66 +343,8 @@ void ScreenTextEntry::BackspaceInAnswer()
 	UpdateAnswerText();
 }
 
-/* Logic for an arcade input setup:
- * Player 1 Start = AppendToAnswer
- * Player 1 Select (or MenuLeft+MenuRight) = BackspaceInAnswer
- *
- * Player 2 Start = MenuDown
- * Player 2 Select (or ML+MR) = MenuUp
- * Player 2 MenuLeft = MenuLeft
- * Player 2 MenuRight = MenuRight
-*/
-void ScreenTextEntry::MenuLeft( PlayerNumber pn, const InputEventType type )
-{
-	if( type == IET_RELEASE )
-		return;
-
-	if( !INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT)) )
-		MoveX(-1);
-	/* Treat ML+MR as Select, but only if it's the first press */
-	else if( pn == PLAYER_2 && type == IET_FIRST_PRESS )
-		MenuSelect( pn );
-}
-
-void ScreenTextEntry::MenuRight( PlayerNumber pn, const InputEventType type )
-{
-	if( type == IET_RELEASE )
-		return;
-
-	if( !INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) )
-		MoveX(+1);
-	/* Treat ML+MR as Select, but only if it's the first press */
-	else if( pn == PLAYER_2 && type == IET_FIRST_PRESS )
-		MenuSelect( pn );
-}
-
-void ScreenTextEntry::MenuSelect( PlayerNumber pn )
-{
-	if( !g_bTextEntryUsesArcadeInput )
-		return;
-
-	switch( pn )
-	{
-	case PLAYER_1:
-		BackspaceInAnswer();
-		break;
-	case PLAYER_2:
-		MenuDown( pn );
-		break;
-	default:
-		ASSERT(0);
-	}
-}
-
 void ScreenTextEntry::MenuStart( PlayerNumber pn )
 {
-	/* If using arcade input, Player 2 moves the cursor up */
-	if( g_bTextEntryUsesArcadeInput && pn == PLAYER_2 )
-	{
-		MenuUp( pn );
-		return;
-	}
-
 	if( m_iFocusY == KEYBOARD_ROW_SPECIAL )
 	{
 		switch( m_iFocusX )

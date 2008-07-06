@@ -111,7 +111,12 @@ public:
 	int FindCompetitorIndex( Competitor *cptr );
 
 	Competitor *GetCompetitorByName( CString sName );
-	Competitor *GetCompetitorByIndex( int i ) { return m_pCompetitors[i]; }
+	Competitor *GetCompetitorByIndex( unsigned i ) { return m_pCompetitors[i]; }
+
+	bool CompetitorWithNameExists( CString sName );
+
+	bool DeleteCompetitor( Competitor *cptr );
+	bool DeleteCompetitorByIndex( unsigned i );
 
 	// some utilities to cleanly check against tournament limits
 	void RemoveStepsOutsideLimits( vector<Steps*> &vpSteps ) const;

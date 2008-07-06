@@ -49,24 +49,25 @@ public:
 	static bool s_bCancelledLast;
 
 protected:
-	void MoveX( int iDir );
-	void MoveY( int iDir );
+	virtual void InitKeyboard();
+
+	virtual void MoveX( int iDir );
+	virtual void MoveY( int iDir );
 	
-	void AppendToAnswer( CString s );
-	void BackspaceInAnswer();
+	virtual void AppendToAnswer( CString s );
+	virtual void BackspaceInAnswer();
 
-	void End( bool bCancelled );
+	virtual void End( bool bCancelled );
 
-	virtual void MenuLeft( PlayerNumber pn, const InputEventType type );
-	virtual void MenuRight( PlayerNumber pn, const InputEventType type );
+	virtual void MenuLeft( PlayerNumber pn )	{ MoveX(-1); }
+	virtual void MenuRight( PlayerNumber pn )	{ MoveX(+1); }
 	virtual void MenuUp( PlayerNumber pn )		{ MoveY(-1); }
 	virtual void MenuDown( PlayerNumber pn )	{ MoveY(+1); }
 	virtual void MenuStart( PlayerNumber pn );
-	virtual void MenuSelect( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn );
 
-	void UpdateKeyboardText();
-	void UpdateAnswerText();
+	virtual void UpdateKeyboardText();
+	virtual void UpdateAnswerText();
 
 	ScreenMessage	m_smSendOnPop;
 	CString			m_sQuestion;

@@ -21,6 +21,13 @@ TournamentManager::TournamentManager()
 	Init();
 }
 
+TournamentManager::~TournamentManager()
+{
+	DumpCompetitors(); // debugging
+	// de-allocate all matches and data
+	Reset();
+}
+
 void TournamentManager::Init()
 {
 	m_bTournamentMode = false;
@@ -37,11 +44,21 @@ void TournamentManager::Init()
 	m_Round = ROUND_QUALIFIERS;
 }
 
-TournamentManager::~TournamentManager()
+void TournamentManager::Reset()
 {
-	DumpCompetitors();
-	// de-allocate all matches and data
-	Reset();
+	for( unsigned i = 0; i < m_pMatches.size(); i++ )
+	{
+		// matches have pointers to stages - delete them first
+		for( unsigned j = 0; j < m_pMatches[i]->vStages.size(); j++ )
+			SAFE_DELETE( m_pMatches[i]->vStages[j] );
+
+		SAFE_DELETE( m_pMatches[i] );
+	}
+	m_pMatches.clear();
+
+	for( unsigned i = 0; i < m_pCompetitors.size(); i++ )
+		SAFE_DELETE( m_pCompetitors[i] );
+	m_pCompetitors.clear();
 }
 
 void TournamentManager::RemoveStepsOutsideLimits( vector<Steps*> &vpSteps ) const
@@ -104,23 +121,6 @@ Competitor *TournamentManager::GetCompetitorByName( CString sName )
 	return NULL;
 }
 
-void TournamentManager::Reset()
-{
-	for( unsigned i = 0; i < m_pMatches.size(); i++ )
-	{
-		// matches have pointers to stages - delete them first
-		for( unsigned j = 0; j < m_pMatches[i]->vStages.size(); j++ )
-			SAFE_DELETE( m_pMatches[i]->vStages[j] );
-
-		SAFE_DELETE( m_pMatches[i] );
-	}
-	m_pMatches.clear();
-
-	for( unsigned i = 0; i < m_pCompetitors.size(); i++ )
-		SAFE_DELETE( m_pCompetitors[i] );
-	m_pCompetitors.clear();
-}
-
 bool TournamentManager::RegisterCompetitor( CString sDisplayName, CString sHighScoreName, unsigned iSeed, CString &sError )
 {
 	if( !this->IsTournamentMode() )
@@ -154,6 +154,38 @@ bool TournamentManager::RegisterCompetitor( CString sDisplayName, CString sHighS
 
 	DumpCompetitors();
 
+	return true;
+}
+
+// returns false if the competitor was not found
+bool TournamentManager::DeleteCompetitor( Competitor *cptr )
+{
+	std::vector<Competitor*>::iterator iter;
+	for( iter = m_pCompetitors.begin(); iter != m_pCompetitors.end(); iter++ )
+	{
+		LOG->Debug( "iter points to %p, cptr points to %p", *iter, cptr );
+
+		if( *iter == cptr )
+			break;
+	}
+
+	// not found
+	if( iter == m_pCompetitors.end() )
+		return false;
+
+	SAFE_DELETE( *iter );
+
+	m_pCompetitors.erase( iter );
+	return true;
+}
+
+bool TournamentManager::DeleteCompetitorByIndex( unsigned i )
+{
+	ASSERT( i <= m_pCompetitors.size() );
+
+	SAFE_DELETE( m_pCompetitors[i] );
+
+	m_pCompetitors.erase( m_pCompetitors.begin() + i );
 	return true;
 }
 

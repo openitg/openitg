@@ -23,11 +23,13 @@ AutoScreenMessage( SM_SetDisplayName );
 AutoScreenMessage( SM_SetScoreName );
 AutoScreenMessage( SM_SetSeed );
 AutoScreenMessage( SM_RegisterPlayer );
+AutoScreenMessage( SM_DeletePlayer );
 
 // globals to store current player data
 CString g_sCurPlayerName = "";
 CString g_sCurScoreName = "";
 unsigned g_iCurSeedIndex = 0;
+bool g_bRegistered = false;
 int g_iCurPlayerIndex = -1;
 
 Profile *g_pCurProfile;
@@ -60,60 +62,57 @@ enum RegisterMenuChoice
 
 /* Shared row definitions.
  * UGLY: MenuRow assumes Edit mode, but this isn't. We'll fix this up sometime... */
-MenuRow load_from_usb_row	=	MenuRow( load_from_usb,		"Load from USB",	true, EDIT_MODE_PRACTICE, 0 );
-MenuRow set_player_name_row	= 	MenuRow( set_player_name,	"Set display name",	true, EDIT_MODE_PRACTICE, 0, g_sCurPlayerName );
-MenuRow set_highscore_name_row	=	MenuRow( set_highscore_name,	"Set highscore name",	true, EDIT_MODE_PRACTICE, 0, g_sCurScoreName );
-MenuRow set_seed_number_row	=	MenuRow( set_seed_number,	"Set seed (optional)",	true, EDIT_MODE_PRACTICE, 0, ssprintf("%i", g_iCurSeedIndex) );
-MenuRow exit_and_register_row	=	MenuRow( exit_and_register,	"Finish",		false, EDIT_MODE_PRACTICE, 0 );
-MenuRow exit_and_cancel_row	=	MenuRow( exit_and_cancel,	"Cancel",		true, EDIT_MODE_PRACTICE, 0 );
-MenuRow exit_and_delete_row	=	MenuRow( exit_and_delete,	"Delete",		true, EDIT_MODE_PRACTICE, 0 );
+MenuRow g_RegisterMenuRows[NUM_REGISTER_MENU_CHOICES] =
+{
+	MenuRow( load_from_usb,		"Load from USB",	true, 	EDIT_MODE_PRACTICE, 0 ),
+	MenuRow( set_player_name,	"Set display name",	true, 	EDIT_MODE_PRACTICE, 0, g_sCurPlayerName ),
+	MenuRow( set_highscore_name,	"Set highscore name",	true, 	EDIT_MODE_PRACTICE, 0, g_sCurScoreName ),
+	MenuRow( set_seed_number,	"Set seed (optional)",	true, 	EDIT_MODE_PRACTICE, 0, ssprintf("%i", g_iCurSeedIndex) ),
+	MenuRow( exit_and_register,	"Finish",		false,	EDIT_MODE_PRACTICE, 0 ),
+	MenuRow( exit_and_cancel,	"Cancel",		true, 	EDIT_MODE_PRACTICE, 0 ),
+	MenuRow( exit_and_delete,	"Delete",		true, 	EDIT_MODE_PRACTICE, 0 ),
+};
 
-// we'll dynamically set these in a bit
+// used to load a new registrant
 static Menu g_RegisterMenu
 (
 	"ScreenMiniMenuRegisterMenu",
-	load_from_usb_row,
-	set_player_name_row,
-	set_highscore_name_row,
-	set_seed_number_row,
-	exit_and_register_row,
-	exit_and_cancel_row
+	g_RegisterMenuRows[load_from_usb],
+	g_RegisterMenuRows[set_player_name],
+	g_RegisterMenuRows[set_highscore_name],
+	g_RegisterMenuRows[set_seed_number],
+	g_RegisterMenuRows[exit_and_register],
+	g_RegisterMenuRows[exit_and_cancel]
 );
 
-// this is used to cancel registrations
+// used to modify or cancel - has a different setup
 static Menu g_RegisterModifyMenu
 (
 	"ScreenMiniMenuRegisterModifyMenu",
-	set_player_name_row,
-	set_highscore_name_row,
-	set_seed_number_row,
-	exit_and_register_row,
-	exit_and_cancel_row,
-	exit_and_delete_row
+	g_RegisterMenuRows[set_player_name],
+	g_RegisterMenuRows[set_highscore_name],
+	g_RegisterMenuRows[set_seed_number],
+	g_RegisterMenuRows[exit_and_register],
+	g_RegisterMenuRows[exit_and_cancel],
+	g_RegisterMenuRows[exit_and_delete]
 );
 
 // helper functions for menu rendering
 void RefreshRegisterMenuRows()
 {
 	// set the values for each row accordingly
-	set_player_name_row.choices[0] = g_sCurPlayerName;
-	set_highscore_name_row.choices[0] = g_sCurScoreName;
-	set_seed_number_row.choices[0] = ssprintf( "%i", g_iCurSeedIndex );
+	g_RegisterMenuRows[set_player_name].choices[0] = g_sCurPlayerName;
+	g_RegisterMenuRows[set_highscore_name].choices[0] = g_sCurScoreName;
+	g_RegisterMenuRows[set_seed_number].choices[0] = ssprintf( "%i", g_iCurSeedIndex );
 
 	// if the names are filled in, enable registration
-	if( !g_sCurPlayerName.empty() && !g_sCurScoreName.empty() )
-		exit_and_register_row.bEnabled = true;
-	else
-		exit_and_register_row.bEnabled = false;
+	g_RegisterMenuRows[exit_and_register].bEnabled = (!g_sCurPlayerName.empty() && !g_sCurScoreName.empty());
 
-	// copy over the new settings to each Menu
-	g_RegisterMenu.rows[set_player_name] = set_player_name_row;
-	g_RegisterMenu.rows[set_highscore_name] = set_highscore_name_row;
-	g_RegisterMenu.rows[set_seed_number] = set_seed_number_row;
-	g_RegisterMenu.rows[exit_and_register] = exit_and_register_row;
-
-	for( RegisterMenuChoice r = set_player_name; r >= exit_and_register; enum_add<RegisterMenuChoice>(r, 1) )
-		g_RegisterModifyMenu.rows[r] = g_RegisterMenu.rows[r];
+	for( RegisterMenuChoice r = set_player_name; r <= exit_and_register; enum_add<RegisterMenuChoice>(r, 1) )
+	{
+		g_RegisterMenu.rows[r] = g_RegisterMenuRows[r];
+		g_RegisterModifyMenu.rows[r] = g_RegisterMenuRows[r];
+	}
 }
 
 void DisplayRegisterMiniMenu( bool bModifyMenu )
@@ -132,6 +131,7 @@ void LoadPlayerDataFromCompetitor()
 	g_sCurPlayerName = g_pCurCompetitor->sDisplayName;
 	g_sCurScoreName = g_pCurCompetitor->sHighScoreName;
 	g_iCurSeedIndex = g_pCurCompetitor->iSeedIndex;
+	g_bRegistered = true;
 	LOG->Debug( "Player data: %s, %s, %i", g_sCurPlayerName.c_str(), g_sCurScoreName.c_str(), g_iCurSeedIndex );
 
 	if( g_iCurPlayerIndex == -1 )
@@ -146,6 +146,14 @@ void SavePlayerDataToCompetitor()
 }
 
 // this requires a void* argument due to ScreenPrompt
+void DeleteCompetitor( void *pThrowAway )
+{
+	// debugging
+	if( !TOURNAMENT->DeleteCompetitor(g_pCurCompetitor) )
+		SCREENMAN->SystemMessage( "Unable to delete competitor." );
+}
+
+// this requires a void* argument due to ScreenPrompt
 void LoadPlayerDataFromProfile( void *pThrowAway )
 {
 	g_sCurPlayerName = g_pCurProfile->GetDisplayName();
@@ -157,6 +165,7 @@ void ResetPlayerData()
 	g_sCurPlayerName = "";
 	g_sCurScoreName = "";
 	g_iCurSeedIndex = 0;
+	g_bRegistered = false;
 	g_iCurPlayerIndex = -1;
 }
 
@@ -169,7 +178,7 @@ ScreenTournamentOptions::ScreenTournamentOptions( CString sClassName ) : ScreenO
 
 ScreenTournamentOptions::~ScreenTournamentOptions()
 {
-	LOG->Debug( "ScreenTournamentOptions::ScreenTournamentOptions()" );
+	LOG->Debug( "ScreenTournamentOptions::~ScreenTournamentOptions()" );
 	SAFE_DELETE( g_pCurProfile );
 }
 
@@ -216,14 +225,12 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 {
 	if( SM == SM_BackFromRegisterMenu || SM == SM_BackFromModifyMenu )
 	{
-		LOG->Debug( "Row code: %i", ScreenMiniMenu::s_iLastRowCode );
 		switch( ScreenMiniMenu::s_iLastRowCode )
 		{
 		case load_from_usb:
 			{
 				// we shouldn't be here
-				if( SM == SM_BackFromModifyMenu )
-					ASSERT(0);
+				ASSERT( !g_bRegistered );
 
 				g_pCurProfile->InitEditableData(); // clobber any previous data
 
@@ -289,12 +296,18 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 				}
 				else if( SM == SM_BackFromModifyMenu )
 				{
+					ASSERT( g_pCurCompetitor );
+					SavePlayerDataToCompetitor();
+					ResetPlayerData();
 					// do something
 				}
 			}
 			break;
 		case exit_and_delete:
 			{
+				CString sMessage = ssprintf( "Are you sure you want to delete\nPlayer %i (\"%s\")?", 
+					g_iCurPlayerIndex+1, g_pCurCompetitor->sDisplayName.c_str() );
+				SCREENMAN->Prompt( SM_DeletePlayer, sMessage, PROMPT_YES_NO, ANSWER_NO, &DeleteCompetitor );
 			}
 			break;
 		case exit_and_cancel:
@@ -302,29 +315,37 @@ void ScreenTournamentOptions::HandleScreenMessage( const ScreenMessage SM )
 			ResetPlayerData();
 			break;
 		}
+
+		// reload any new data we've been given
+		if( SM_BackFromModifyMenu )
+			ReloadScreen();
 	}
 	else if( SM == SM_SetDisplayName )
 	{
 		if( !ScreenTextEntry::s_bCancelledLast )
 			g_sCurPlayerName = ScreenTextEntry::s_sLastAnswer;
-		DisplayRegisterMiniMenu( false ); // return to the menu
+		DisplayRegisterMiniMenu( g_bRegistered ); // return to the menu
 	}
 	else if( SM == SM_SetScoreName )
 	{
 		if( !ScreenTextEntry::s_bCancelledLast )
 			g_sCurScoreName = ScreenTextEntry::s_sLastAnswer;
 		g_sCurScoreName.MakeUpper();
-		DisplayRegisterMiniMenu( false ); // return to the menu
+		DisplayRegisterMiniMenu( g_bRegistered ); // return to the menu
 	}
 	else if( SM == SM_SetSeed )
 	{
 		if( !ScreenTextEntry::s_bCancelledLast )
 			g_iCurSeedIndex = (int) strtof( ScreenTextEntry::s_sLastAnswer, NULL );
-		DisplayRegisterMiniMenu( false ); // return to the menu
+		DisplayRegisterMiniMenu( g_bRegistered ); // return to the menu
 	}
 	else if( SM == SM_LoadFromUSB )
 	{
 		DisplayRegisterMiniMenu( false );
+	}
+	else if( SM == SM_DeletePlayer )
+	{
+		ReloadScreen();
 	}
 	else if( SM == SM_GoToPrevScreen )
 	{

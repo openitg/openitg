@@ -319,8 +319,8 @@ void SetDeviceInfo( UsbStorageDevice &usbd, CString sPath )
 			asBits.clear();
 			split( sHostPort, ".", asBits );
 
-			for( unsigned i = 0; i < asBits.size(); i++ )
-				LOG->Debug( "asBits[%i]: %s", i, asBits[i].c_str() );
+			//for( unsigned i = 0; i < asBits.size(); i++ )
+				//LOG->Debug( "asBits[%i]: %s", i, asBits[i].c_str() );
 
 			if( asBits.size() > 1 )
 			{
@@ -389,7 +389,11 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 				continue;
 
 			/* Not having the '1' breaks memory cards for me. -- Vyhd */
+#ifdef ITG_ARCADE
+			usbd.sDevice = "/dev/" + sDevice;
+#else
 			usbd.sDevice = "/dev/" + sDevice + "1";
+#endif
 
 			SetDeviceInfo( usbd, sPath );
 

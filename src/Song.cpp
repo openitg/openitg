@@ -26,7 +26,6 @@
 #include "UnlockManager.h"
 #include "BackgroundUtil.h"
 #include "PlayerNumber.h"
-#include "ThemeManager.h"
 
 #include "NotesLoaderSM.h"
 #include "NotesLoaderDWI.h"
@@ -194,10 +193,6 @@ NotesLoader *Song::MakeLoader( CString sDir ) const
 	if(ret->Loadable( sDir )) return ret;
 	delete ret;
 
-	// if a custom, cut out here - we don't accept non-SMs
-	if( m_bIsCustomSong )
-		return NULL;
-
 	ret = new DWILoader;
 	if(ret->Loadable( sDir )) return ret;
 	delete ret;
@@ -359,10 +354,10 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 	}
 
 	// these won't load anyway -  don't bother
-	m_sBannerFile = THEME->GetPathG( "banner", "custom" );
+	m_sBannerFile = "";
 	m_sBackgroundFile = "";
 
-	CString sExtension = "."; sExtension += m_sMusicFile.Right(3);
+	CString sExtension = "." + m_sMusicFile.Right(3);
 	m_sGameplayMusic = CUSTOM_SONG_PATH + "music" + sExtension;
 
 	return true;

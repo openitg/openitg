@@ -121,6 +121,16 @@ Competitor *TournamentManager::GetCompetitorByName( CString sName )
 	return NULL;
 }
 
+bool TournamentManager::CompetitorExistsWithName( CString sName )
+{
+	Competitor *cptr = GetCompetitorByName( sName );
+
+	if( cptr != NULL )
+		return true;
+	else
+		return false;
+}
+
 bool TournamentManager::RegisterCompetitor( CString sDisplayName, CString sHighScoreName, unsigned iSeed, CString &sError )
 {
 	if( !this->IsTournamentMode() )
@@ -151,8 +161,6 @@ bool TournamentManager::RegisterCompetitor( CString sDisplayName, CString sHighS
 	cptr->sHighScoreName = sHighScoreName;
 
 	m_pCompetitors.push_back( cptr );
-
-	DumpCompetitors();
 
 	return true;
 }
@@ -293,15 +301,37 @@ void TournamentManager::FinishStage( StageStats &stats )
 
 void TournamentManager::DumpMatches() const
 {
-#if 0
 	for( unsigned i = 0; i < m_pMatches.size(); i++ )
 	{
-		LOG->Debug( "Match %i: %s vs. %s, points %i vs. %i\non song %s in group %s\nPlayed on %s",
-		i+1, m_pMatches[i]->sPlayer[PLAYER_1].c_str(), m_pMatches[i]->sPlayer[PLAYER_2].c_str(),
-		m_pMatches[i]->iActualPoints[PLAYER_1], m_pMatches[i]->iActualPoints[PLAYER_2],
-		m_pMatches[i]->sTitle.c_str(), m_pMatches[i]->sGroup.c_str(), m_pMatches[i]->sTimePlayed.c_str() );
+		LOG->Debug( "Match %i: %s vs. %s, during round %s", i+1, m_pMatches[i]->sPlayer[PLAYER_1].c_str(), 
+			m_pMatches[i]->sPlayer[PLAYER_2].c_str(), TournamentRoundToString(m_Round).c_str() );
+
+		// output stage data for this match
+		for( unsigned j = 0; j < m_pMatches[i]->vStages.size(); j++ )
+		{
+			// just for the sake of shortening this...
+			TournamentStage *stage = m_pMatches[i]->vStages[j];
+
+			LOG->Debug( "----Stage %i: played on %s \"%s\", %s, at %s", j+1, stage->bIsSong ? "song" : "course", 
+				stage->sTitle.c_str(), stage->sDifficulty.c_str(), stage->sTimePlayed.c_str() );
+
+			// score overview
+			LOG->Debug( "--------Score: %f (%i/%i) vs. %f (%i/%i)",
+				stage->fPercentPoints[PLAYER_1], stage->iActualPoints[PLAYER_1], stage->iPossiblePoints[PLAYER_1],
+				stage->fPercentPoints[PLAYER_2], stage->iActualPoints[PLAYER_2], stage->iPossiblePoints[PLAYER_2] );
+
+			// output detailed breakdown for this stage
+			FOREACH_PlayerNumber( pn )
+			{
+				LOG->Debug( "------------Player %i:", pn+1 );
+
+				FOREACH_TapNoteScore( tns )
+					LOG->Debug( "----------------%s: %i", TapNoteScoreToString(tns).c_str(), stage->iTapNoteScores[pn][tns] );
+				FOREACH_HoldNoteScore( hns )
+					LOG->Debug( "----------------%s: %i", HoldNoteScoreToString(hns).c_str(), stage->iHoldNoteScores[pn][hns] );
+			}
+		}
 	}
-#endif
 }
 
 void TournamentManager::DumpCompetitors() const
@@ -345,7 +375,6 @@ void TournamentManager::SetDifficultyLimitHigh( Difficulty dHigh )
 }
 
 
-#if 0
 // lua start
 #include "LuaBinding.h"
 
@@ -387,4 +416,3 @@ public:
 };
 
 LUA_REGISTER_CLASS( TournamentManager )
-#endif

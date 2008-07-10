@@ -388,12 +388,8 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 			if( atoi(sBuf) != 1 )
 				continue;
 
-			/* Not having the '1' breaks memory cards for me. -- Vyhd */
-#ifdef ITG_ARCADE
-			usbd.sDevice = "/dev/" + sDevice;
-#else
+			/* Okay, let me rephrase. Not having the "1" breaks cards on ITG. -- Vyhd */
 			usbd.sDevice = "/dev/" + sDevice + "1";
-#endif
 
 			SetDeviceInfo( usbd, sPath );
 

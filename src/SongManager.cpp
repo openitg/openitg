@@ -235,8 +235,6 @@ void SongManager::LoadStepManiaSongDir( CString sDir, LoadingWindow *ld )
 
 void SongManager::LoadPlayerSongs( PlayerNumber pn )
 {
-	LOG->Trace( "SongManager::LoadPlayerSongs( %i )", pn );
-
 	// if the memory card isn't here, don't bother
 	if( !PROFILEMAN->IsPersistentProfile(pn) )
 		return;
@@ -245,13 +243,14 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 	if( !PREFSMAN->m_bCustomSongs )
 		return;
 
+	LOG->Trace( "SongManager::LoadPlayerSongs( %i )", pn );
+
 	CString sDir = PROFILEMAN->GetProfileDir( (ProfileSlot)pn );
 	if( sDir.Right(1) != "/" )
 		sDir += "/";
 	sDir = sDir + "Songs/";
 
-	CString sGroupName;
-	CString sDisplayName;
+	CString sDisplayName, sGroupName;
 
 	Profile* p = PROFILEMAN->GetProfile( pn );
 

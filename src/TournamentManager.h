@@ -104,17 +104,18 @@ public:
 
 	bool IsTournamentMode() const { return m_bTournamentMode; }
 
+	bool CompetitorExistsWithName( CString sName );
+
+	// vector serialize-and-return functions
 	void GetCompetitorNames( vector<CString> &vsNames, bool bDisplayIndex = false );
 	void GetCompetitorNamesAndIndexes( vector<CString> &vsNames ) { GetCompetitorNames( vsNames, true ); }
 
 	// vector search-and-return functions
 	int FindCompetitorIndex( Competitor *cptr );
-
 	Competitor *GetCompetitorByName( CString sName );
 	Competitor *GetCompetitorByIndex( unsigned i ) { return m_pCompetitors[i]; }
 
-	bool CompetitorWithNameExists( CString sName );
-
+	// vector search-and-delete functions
 	bool DeleteCompetitor( Competitor *cptr );
 	bool DeleteCompetitorByIndex( unsigned i );
 

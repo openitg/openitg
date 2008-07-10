@@ -277,14 +277,12 @@ void ScreenSystemLayer::HandleMessage( const CString &sMessage )
 	}
 	else if( sMessage == "OverlayMessage" )
 	{
-//		m_OverlayQuad.SetDiffuseAlpha( 0.5 );
 		m_OverlayQuad.SetHidden( false );
 		m_OverlayText.SetText( SCREENMAN->GetCurrentOverlayMessage() );
 		m_OverlayText.SetHidden( false );
 	}
 	else if( sMessage == "HideOverlayMessage" )
 	{
-//		m_OverlayQuad.SetDiffuseAlpha( 0 );
 		m_OverlayQuad.SetHidden( true );
 		m_OverlayText.SetHidden( true );
 	}

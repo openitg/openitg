@@ -379,7 +379,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
-				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
+				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib;dxerr8.lib"
 				ProgramDatabaseFile="../Release/OpenITG-PC.pdb"
 				GenerateMapFile="TRUE"
 				MapFileName="$(IntDir)\$(TargetName).map"
@@ -394,7 +394,9 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				TypeLibraryName=".\../StepMania.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\OpenITG-PC.vdi&quot;"/>
+				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\OpenITG-PC.vdi&quot;
+copy /Y &quot;$(TargetDir)\OpenITG-PC.vdi&quot; &quot;C:\OpenITG-alpha6-dev\Program\&quot;
+copy /Y &quot;$(TargetDir)\OpenITG-PC.exe&quot; &quot;C:\OpenITG-alpha6-dev\Program\&quot;"/>
 			<Tool
 				Name="VCPreBuildEventTool"
 				CommandLine="archutils\Win32\verinc

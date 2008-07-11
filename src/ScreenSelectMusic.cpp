@@ -2106,7 +2106,14 @@ void ScreenSelectMusic::AfterMusicChange()
 	g_bSampleMusicWaiting = false;
 
 	// However, if it is a custom song, force a reload so we get new timing data.
-	if( !m_MusicWheel.IsRouletting() && (SOUND->GetMusicPath() != m_sSampleMusicToPlay || !PREFSMAN->m_bCustomSongPreviews && pSong->IsCustomSong()) )
+	if( m_MusicWheel.GetSelectedType() == TYPE_SONG && !PREFSMAN->m_bCustomSongPreviews && pSong->IsCustomSong() )
+	{
+		SOUND->StopMusic();
+		if( !m_sSampleMusicToPlay.empty() )
+			g_bSampleMusicWaiting = true;
+	}
+
+	if( !m_MusicWheel.IsRouletting() && SOUND->GetMusicPath() != m_sSampleMusicToPlay )
 	{
 		SOUND->StopMusic();
 		if( !m_sSampleMusicToPlay.empty() )

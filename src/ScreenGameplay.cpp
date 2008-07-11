@@ -1226,13 +1226,11 @@ void ScreenGameplay::CompareScores()
 
 	// keep these in memory, so we don't re-init each time
 	static float fPercentP1, fPercentP2;
-	PlayerNumber pn_higher;
+	static PlayerNumber pn_higher;
 	
 	// XXX: make this based off something less hard-coded.
 	fPercentP1 = ftruncf( STATSMAN->m_CurStageStats.m_player[PLAYER_1].GetPercentDancePoints(), 0.0001 );
 	fPercentP2 = ftruncf( STATSMAN->m_CurStageStats.m_player[PLAYER_2].GetPercentDancePoints(), 0.0001 );
-
-	LOG->Debug( "P1: %f, P2: %f", fPercentP1, fPercentP2 );
 
 	if( fPercentP1 == fPercentP2 )
 		pn_higher = PLAYER_INVALID; /* tie sentinel */

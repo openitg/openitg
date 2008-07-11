@@ -5,7 +5,8 @@
 #include "RageInput.h" /* for g_sInputType */
 #include "ProfileManager.h"
 #include "SongManager.h"
-#include "MiscITG.h"
+#include "LuaManager.h"
+#include "DiagnosticsUtil.h"
 
 #include "XmlFile.h"
 #include "ProductInfo.h"
@@ -21,6 +22,7 @@ extern "C" {
 }
 #endif
 
+// include Linux networking functions/types
 #ifndef WIN32
 extern "C" {
 #include <ifaddrs.h>
@@ -31,7 +33,6 @@ extern "C" {
 }
 #endif
 
-// See where to look for all this stuff
 // "Stats" is mounted to "Data" in the VFS for non-arcade
 #if defined(ITG_ARCADE) && !defined(WIN32)
 #define STATS_DIR_PATH CString("/rootfs/stats/")
@@ -41,29 +42,23 @@ extern "C" {
 
 extern CString g_sInputType;
 
-int GetNumCrashLogs()
+int DiagnosticsUtil::GetNumCrashLogs()
 {
-	// Give ourselves a variable.
 	CStringArray aLogs;
-	
-	// Get them all.
 	GetDirListing( STATS_DIR_PATH + "crashinfo-*.txt" , aLogs );
-	
 	return aLogs.size();
 }
 
-int GetNumMachineEdits()
+int DiagnosticsUtil::GetNumMachineEdits()
 {
 	CStringArray aEdits;
 	CString sDir = PROFILEMAN->GetProfileDir(PROFILE_SLOT_MACHINE) + EDIT_SUBDIR;
-	
 	GetDirListing( sDir , aEdits );
-	
 	return aEdits.size();
 }
 
 // XXX: Win32 compatibility
-CString GetIP()
+CString DiagnosticsUtil::GetIP()
 {
 #ifndef WIN32
 	struct ifaddrs *ifaces;
@@ -86,6 +81,7 @@ CString GetIP()
 		freeifaddrs(ifaces);
 		return result;
 	}
+
 	freeifaddrs(ifaces);
 #else
 	// Win32 code goes here
@@ -95,7 +91,7 @@ CString GetIP()
 	return "Network interface disabled";
 }
 
-int GetRevision()
+int DiagnosticsUtil::GetRevision()
 {
 	CString sPath = STATS_DIR_PATH + "patch/patch.xml";
 
@@ -133,9 +129,7 @@ int GetRevision()
 	return iRevision;
 }
 
-/* Make sure you delete anything you new!
- * Otherwise, memory leaks may occur -- Vyhd */
-int GetNumMachineScores()
+int DiagnosticsUtil::GetNumMachineScores()
 {
 	CString sXMLPath = STATS_DIR_PATH + "/MachineProfile/Stats.xml";
 
@@ -168,7 +162,6 @@ int GetNumMachineScores()
 		return 0;
 	}
 	
-	/* Even I'll admit this change is pedantic... -- Vyhd */
 	unsigned int iScoreCount = 0;
 	
 	// Named here, for LoadFromFile() renames it to "Stats"
@@ -178,14 +171,15 @@ int GetNumMachineScores()
 	FOREACH_CONST_Child( pData , p )
 		iScoreCount++;
 
-	/* Can't forget about this! Remember to SAFE_DELETE 'new' objects. */
 	SAFE_DELETE( xml ); 
 
 	return iScoreCount;
 }
 
-CString GetSerialNumber()
+CString DiagnosticsUtil::GetSerialNumber()
 {
+	static CString g_SerialNum;
+
 	if ( !g_SerialNum.empty() )
 		return g_SerialNum;
 
@@ -215,13 +209,15 @@ CString GetSerialNumber()
 	return sNewSerial;
 #endif
 
-	return GenerateDebugSerial();
+	g_SerialNum = GenerateDebugSerial();
+
+	return g_SerialNum;
 }
 
 /* this allows us to use the serial numbers on builds for
  * more helpful debugging information. PRODUCT_BUILD_DATE
  * is defined in ProductInfo.h */
-CString GenerateDebugSerial()
+CString DiagnosticsUtil::GenerateDebugSerial()
 {
 	CString sSerial, sSystem, sBuildType;
 
@@ -251,7 +247,7 @@ CString GenerateDebugSerial()
 	return sSerial;
 }
 
-bool HubIsConnected()
+bool DiagnosticsUtil::HubIsConnected()
 {
 	vector<USBDevice> vDevices;
 	GetUSBDeviceList( vDevices );
@@ -267,59 +263,39 @@ bool HubIsConnected()
 	return false;
 }
 
-// stupid workaround
-CString GetInputType()
+CString DiagnosticsUtil::GetInputType()
 {
-	CString sType = g_sInputType;
-	//LOG->Debug( "GetInputType() == %s", sType.c_str() );
-	if (!sType.CompareNoCase("null")) return "";
-	return sType;
+	return g_sInputType;
 }
 
-void IsOpenITG( lua_State* L )
+void SetProgramGlobal( lua_State* L )
 {
-	LUA->SetGlobal( "IsOpenITG", true );
+	LUA->SetGlobal( "OPENITG", true );
 }
 
-/*
- * [ScreenArcadeDiagnostics]
- *
- * All ITG2AC Functions here
- * Mostly...Implemented
- *
- * Work Log!
- *
- * Work started 2/9/08, after 10 PM - 2:30 AM
- *  ProductName, Revision, Uptime, Crashlogs,
- *  Machine edits, done!
- *
- * Work, 2/10/08 7 PM - 9:30 PM
- *  Did work on GetNumMachineScores() ... That sucked
- *  Somewhat complete...Can't do IO Errors, an ITG-IO
- *  exclusive, it seems.
- *
- * Total Hours: ~6
- * 
- * this doesn't belong in LuaManager.cpp --infamouspat
- */
+// LUA bindings for diagnostics functions
+
 #include "LuaFunctions.h"
-#include "LuaManager.h"
 
-// Added by Matt1360
-LuaFunction_NoArgs( GetProductName	, CString( PRODUCT_NAME_VER ) ); // Return the product's name from ProductInfo.h [ScreenArcadeDiagnostics]
-LuaFunction_NoArgs( GetRevision	, GetRevision() ); // Return current Revision ( ProductInfo.h ) [ScreenArcadeDiagnostics]
-LuaFunction_NoArgs( GetUptime		, SecondsToHHMMSS( RageTimer::GetTimeSinceStart() ) ); // Uptime calling [ScreenArcadeDiagnostics]
-LuaFunction_NoArgs( GetIP		, GetIP() ); // Calling the IP [ScreenArcadeDiagnostics]
-LuaFunction_NoArgs( GetNumCrashLogs	, GetNumCrashLogs() ); // Count the crashlogs [ScreenArcadeDiagnostics]
-LuaFunction_NoArgs( GetNumMachineEdits	, GetNumMachineEdits() ); // Count the machine edits [ScreenArcadeDiagnostics]
-LuaFunction_NoArgs( GetNumMachineScores, GetNumMachineScores() ); // Call the machine score count [ScreenArcadeDiagnostics]
-// added by infamouspat
-LuaFunction_NoArgs( GetSerialNumber, GetSerialNumber() ); // returns serial from page 9 on dongle
-// added by Vyhd, if it matters that much :P
-LuaFunction_NoArgs( GetNumIOErrors, ITGIO::m_iInputErrorCount ); // Call the number of I/O errors
-LuaFunction_NoArgs( GetInputType, GetInputType() ); // grabs from RageInput's global variable
-LuaFunction_NoArgs( HubIsConnected, HubIsConnected() );
-REGISTER_WITH_LUA_FUNCTION( IsOpenITG );
+LuaFunction_NoArgs( GetProductName,		CString( PRODUCT_NAME_VER ) ); // Return the product's name from ProductInfo.h
+LuaFunction_NoArgs( GetUptime,			SecondsToHHMMSS( RageTimer::GetTimeSinceStart() ) ); 
+
+LuaFunction_NoArgs( GetNumIOErrors,		ITGIO::m_iInputErrorCount );
+
+// diagnostics enumeration functions
+LuaFunction_NoArgs( GetNumCrashLogs,		DiagnosticsUtil::GetNumCrashLogs() );
+LuaFunction_NoArgs( GetNumMachineScores,	DiagnosticsUtil::GetNumMachineScores() );
+LuaFunction_NoArgs( GetNumMachineEdits, 	DiagnosticsUtil::GetNumMachineEdits() );
+LuaFunction_NoArgs( GetRevision,		DiagnosticsUtil::GetRevision() );
+
+// arcade diagnostics
+LuaFunction_NoArgs( GetIP,			DiagnosticsUtil::GetIP() );
+LuaFunction_NoArgs( GetSerialNumber,		DiagnosticsUtil::GetSerialNumber() );
+LuaFunction_NoArgs( HubIsConnected,		DiagnosticsUtil::HubIsConnected() );
+LuaFunction_NoArgs( GetInputType,		DiagnosticsUtil::GetInputType() );
+
+// set "OPENITG" as a global boolean for usage in scripting
+REGISTER_WITH_LUA_FUNCTION( SetProgramGlobal );
 /*
  * (c) 2008 BoXoRRoXoRs
  * All rights reserved.

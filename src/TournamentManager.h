@@ -159,7 +159,7 @@ extern TournamentManager*	TOURNAMENT;
 #endif
 
 /*
- * (c) 2003-2004 Chris Danford
+ * (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

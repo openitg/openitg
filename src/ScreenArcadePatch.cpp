@@ -18,7 +18,7 @@
 #include "CryptHelpers.h"
 #include "RageFileDriverZip.h"
 #include "XmlFile.h"
-#include "MiscITG.h"
+#include "DiagnosticsUtil.h"
 
 #include "arch/ArchHooks/ArchHooks.h" // for HOOKS->SystemReboot()
 
@@ -372,7 +372,7 @@ bool ScreenArcadePatch::FinalizePatch()
 	CHECKPOINT;
 
 	
-	if (! rfdZip->Load(fScl))
+	if( !rfdZip->Load(fScl) )
 	{
 	CHECKPOINT;
 		g_sStatus = "Patch XML data check failed, could not load patch file.";
@@ -385,7 +385,7 @@ bool ScreenArcadePatch::FinalizePatch()
 	fXml = rfdZip->Open("patch.xml", RageFile::READ, iErr );
 
 	CHECKPOINT;
-	if (fXml == NULL)
+	if( fXml == NULL )
 	{
 	CHECKPOINT;
 		g_sStatus = "Patch XML data check failed, Could not open patch.xml.";
@@ -399,8 +399,7 @@ bool ScreenArcadePatch::FinalizePatch()
 	rNode->LoadFromFile(*fXml);
 	CHECKPOINT;
 
-	//if (rNode->GetChild("Game")==NULL || rNode->GetChild("Revision")==NULL || rNode->GetChild("Message")==NULL)
-	if ( !rNode->GetChild("Game") || !rNode->GetChild("Revision") || !rNode->GetChild("Message") )
+	if( !rNode->GetChild("Game") || !rNode->GetChild("Revision") || !rNode->GetChild("Message") )
 	{
 		g_sStatus = "Cannot proceed update, patch.xml corrupt.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
@@ -410,7 +409,7 @@ bool ScreenArcadePatch::FinalizePatch()
 	CString sGame = rNode->GetChildValue("Game");
 
 	/* accept patches for either */
-	if ( sGame != "OpenITG" && sGame != "In The Groove 2" )
+	if( sGame != "OpenITG" && sGame != "In The Groove 2" )
 	{
 			g_sStatus = ssprintf( "Cannot proceed update, revision is for another game\n(\"%s\").", rNode->GetChildValue("Game") );
 			m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
@@ -419,7 +418,7 @@ bool ScreenArcadePatch::FinalizePatch()
 
 	rNode->GetChild("Revision")->GetValue(iRevNum);
 
-	if (GetRevision() == iRevNum)
+	if( DiagnosticsUtil::GetRevision() == iRevNum )
 	{
 		g_sStatus = "Cannot proceed update, revision on USB card\nis the same as the machine revision.";
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );
@@ -430,7 +429,7 @@ bool ScreenArcadePatch::FinalizePatch()
 
 	
 	/* Copy the contents to the patch directory to finish up */
-	delete rfdZip;
+	SAFE_DELETE( rfdZip );
 
 	rfdZip = new RageFileDriverZip;
 	vector<CString> patchDirs;

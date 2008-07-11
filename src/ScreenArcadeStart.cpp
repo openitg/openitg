@@ -8,7 +8,7 @@
 #include "ScreenArcadeStart.h"
 
 /* Serial number functions */
-#include "MiscITG.h"
+#include "DiagnosticsUtil.h"
 
 /* USBDevice tests */
 #include "io/USBDevice.h"
@@ -38,7 +38,7 @@ ScreenArcadeStart::ScreenArcadeStart( CString sClassName ) : ScreenWithMenuEleme
 
 void ScreenArcadeStart::Init()
 {
-	CString sGameSerial = GetSerialNumber();
+	CString sGameSerial = DiagnosticsUtil::GetSerialNumber();
 
 	ScreenWithMenuElements::Init();
 
@@ -132,7 +132,7 @@ bool ScreenArcadeStart::Refresh()
 
 	CLAMP( fTimer, 0.0f, TIMEOUT);
 
-	if( !HubIsConnected() )
+	if( !DiagnosticsUtil::HubIsConnected() )
 	{
 		m_sMessage = ssprintf(
 			"The memory card hub is not connected.\nPlease consult the service manual for details.\n\n"

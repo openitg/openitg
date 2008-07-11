@@ -36,6 +36,7 @@
 #include "InputQueue.h"
 #include "OptionsList.h"
 #include "FontCharAliases.h" // XXX
+#include "DiagnosticsUtil.h" // XXX
 
 const int NUM_SCORE_DIGITS	=	9;
 
@@ -47,6 +48,12 @@ const int NUM_SCORE_DIGITS	=	9;
 #define METER_TYPE							THEME->GetMetric (m_sName,"MeterType")
 #define SHOW_OPTIONS_MESSAGE_SECONDS		THEME->GetMetricF(m_sName,"ShowOptionsMessageSeconds")
 #define TWEEN_OFF_OPTIONS_MESSAGE_IMMEDIATELY	THEME->GetMetricB(m_sName,"TweenOptionsMessageOffImmediately")
+
+// XXX: we can't declare these in the class because of UpdateLoadProgress.
+// ...If nothing else, this is better than declaring static metrics.
+// - Vyhd
+//ThemeMetric<CString>	CUSTOM_SONG_WAIT_TEXT;
+//ThemeMetric<CString>	CUSTOM_SONG_CANCEL_TEXT;
 
 AutoScreenMessage( SM_AllowOptionsMenuRepeat )
 AutoScreenMessage( SM_SongChanged )
@@ -88,6 +95,8 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 	MODE_MENU_AVAILABLE( m_sName, "ModeMenuAvailable" ),
         USE_OPTIONS_LIST( m_sName, "UseOptionsList" )
 {
+//	CUSTOM_SONG_WAIT_TEXT.Load( m_sName, "CustomSongWaitText" );
+//	CUSTOM_SONG_CANCEL_TEXT.Load( m_sName, "CustomSongCancelText" );
 	LOG->Trace( "ScreenSelectMusic::ScreenSelectMusic()" );
 
 	LIGHTSMAN->SetLightsMode( LIGHTSMODE_MENU );
@@ -786,17 +795,12 @@ void ScreenSelectMusic::Update( float fDeltaTime )
 	m_bgOptionsOut.Update( fDeltaTime );
 	m_bgNoOptionsOut.Update( fDeltaTime );
 	m_sprOptionsMessage.Update( fDeltaTime );
-	//SCREENMAN->SystemMessageNoAnimate( ssprintf("currentIndex: %d, songsPerPlay: %d\nfinal: %s", GAMESTATE->m_iCurrentStageIndex,
-			//PREFSMAN->m_iSongsPerPlay.Get(), GAMESTATE->IsFinalStage() ? "true" : "false" ) );
 
 	CheckBackgroundRequests();
 }
 
 void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
-	DeviceInput di = DeviceI;
-	//LOG->Debug( "ScreenSelectMusic::Input( %s )", di.toString().c_str() );
-
 	// debugging?
 	// I just like being able to see untransliterated titles occasionally.
 	if( DeviceI.device == DEVICE_KEYBOARD && DeviceI.button == KEY_F9 )
@@ -1242,6 +1246,8 @@ void ScreenSelectMusic::HandleScreenMessage( const ScreenMessage SM )
 				break;
 			}
 			MenuStart(PLAYER_INVALID);
+			m_MenuTimer->SetSeconds( 15 );
+			m_MenuTimer->Start();
 		}
 		return;
 	}
@@ -1302,46 +1308,37 @@ void ScreenSelectMusic::HandleScreenMessage( const ScreenMessage SM )
 	Screen::HandleScreenMessage( SM );
 }
 
-// Windows build has been debugged, it looks, so we can clean this.
+// XXX: lots of ctors/dtors and redundant calls. How can we best fix this?
 void UpdateLoadProgress( float fPercent )
 {
 	LOG->Trace( "UpdateLoadProgress( %f )", fPercent );
-	PlayerNumber pn = GAMESTATE->m_pCurSong->m_SongOwner;
 
-	CString sName = PROFILEMAN->GetPlayerName( pn );
+//	CString sMessage = ssprintf( "%s\n%i%%\n%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
+//		(int)fPercent, CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
 
-	if( sName == "" ) // NoName
-		sName = ssprintf( "Player %d", pn+1 );
+	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n\n", (int)fPercent );
 
-/*
-	CString sText = ssprintf( "Please wait ...\n%u%%\n\n\n"
-		"Removing %s's USB drive\nwill cancel this selection.", 
-		(int)(fPercent), sName.c_str() );
-*/
-	// We'll make this themeable soon.
-	CString sText = ssprintf( "Please wait ...\n%u%%\n\n\n", (int)(fPercent) );
+	// this will be themeable soon, ideally. for now, assume Select is available unless ITGIO is loaded
+	static CString sCancelText = ssprintf( "Pressing %s will cancel this selection.\n\n",
+		DiagnosticsUtil::GetInputType() == "ITGIO" ? "&MENULEFT; + &MENURIGHT;" : "&SELECT;" );
 
-	static CString sCancelText = "Pressing &SELECT; or &MENULEFT; + &MENURIGHT; will cancel this selection.\n\n";
 	FontCharAliases::ReplaceMarkers( sCancelText );
 
-	sText += sCancelText;
+	sMessage += sCancelText;
 
-	if( !g_bGoToOptions ) // not true yet - keep checking
+	// Simulate buffered-read functionality PIUIO has spoiled people to...
+	if( !g_bGoToOptions )
 	{
 		// UGLY: send a manual update to INPUTFILTER to check state
 		INPUTFILTER->Update( 0 );
 
-		// check for any input and pass it back later - make sure we don't
-		// accidently assign it false again if the first player is true
 		FOREACH_EnabledPlayer( pn )
 			g_bGoToOptions |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_START) );
 	}
 
-	LOG->Trace( "Loading %s: %f%%", GAMESTATE->m_pCurSong->GetDisplayFullTitle().c_str(), fPercent );
-
 	bool bInterrupt = false;
 
-	// if a player presses Select, stop loading the song.
+	// if a player presses Select or ML+MR, stop loading the song.
 	FOREACH_EnabledPlayer( pn )
 		bInterrupt |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) ) ||
 			( INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) &&
@@ -1349,11 +1346,10 @@ void UpdateLoadProgress( float fPercent )
 
 	g_bInterruptCopy = bInterrupt;
 
-	if( g_bInterruptCopy )
-		LOG->Debug( "bInterrupt detected." );
+	if( bInterrupt )
+		LOG->Debug( "Load interrupted." );
 
-	SCREENMAN->OverlayMessage( sText );
-
+	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();
 }
 
@@ -1363,9 +1359,10 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 {
 	LOG->Trace( "ScreenSelectMusic::ValidateCustomSong()" );
 
-	// set a message and draw it
-	CString sPleaseWait = "Please wait ...";
-	SCREENMAN->OverlayMessage( sPleaseWait );
+	// Interesting hack: I can't get this to work properly except through a new CString.
+//	CString sMessage = ssprintf( "%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str() );
+	CString sMessage = ssprintf( "Please wait ..." );
+	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();
 
 	// whoever owns the song we're reading, mount their card.
@@ -1399,13 +1396,9 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 		bCopied = CopyWithProgress( GAMESTATE->m_pCurSong->GetMusicPath(), 
 		GAMESTATE->m_pCurSong->m_sGameplayMusic, &UpdateLoadProgress, sError );
 
-		if( !bCopied ) // failed, most likely a permissions error
-		{
-			if( !sError.empty() )
-				SCREENMAN->SystemMessage( ssprintf("Copying error: %s.", sError.c_str()) );
-			else
-				SCREENMAN->SystemMessage( "Song selection canceled." );
-		}
+		// failed, most likely a permissions error
+		if( !bCopied && !sError.empty() )
+			SCREENMAN->SystemMessage( ssprintf("Copying error: %s.", sError.c_str()) );
 	}
 
 	// ...and unmount, now that we're done.
@@ -1413,10 +1406,11 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 	if( !PREFSMAN->m_bCustomSongPreviews )
 		MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
 #endif
-
-	//INPUTFILTER->Reset();
-
 	SCREENMAN->HideOverlayMessage();
+
+	// if the menu timer isn't disabled, then subtract our time spent from it
+	if( m_MenuTimer->GetSeconds() != 99.99f )
+
 
 	// force a zero on next update so the animation doesn't
 	// skip - we spent a lot of time loading.
@@ -1440,12 +1434,8 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 	case TYPE_SONG:
 	case TYPE_PORTAL:
 		{
-			// re-arranged for more logical announcer compatibility.
-			// play the "start" sound here, for ITG emulation - if the song is
-			// invalid, it'll just go back to the selection screen.
 			SCREENMAN->PlayStartSound();
 
-			// accept as valid only if it's a machine song, or if the file checks out.
 			if( m_MusicWheel.GetSelectedSong()->IsCustomSong() ) // a song we need to test
 			{
 				// playing the preview while attempting to copy the song from USB = bad
@@ -1453,17 +1443,16 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 				SOUND->StopMusic();
 
 				// if false and no time, set a random song that isn't a custom - those could fail.
-				// we may improve on this behaviour later.
 				if( (int)m_MenuTimer->GetSeconds() == 0 )
 				{
 					m_MusicWheel.StartRandom();
-					// XXX: what happens if this fails?
 					m_bMadeChoice = m_MusicWheel.Select();
 				}
 				else
 					m_bMadeChoice = ValidateCustomSong( m_MusicWheel.GetSelectedSong() );
-					if (m_bMadeChoice) m_bGoToOptions = false;
-					g_bGoToOptions = false;
+
+				if(m_bMadeChoice) m_bGoToOptions = false;
+				g_bGoToOptions = false;
 			}
 			else
 				m_bMadeChoice = true;
@@ -1508,7 +1497,6 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 
 	case TYPE_COURSE:
 		{
-			// I have no idea how I missed this...
 			SCREENMAN->PlayStartSound();
 
 			SOUND->PlayOnceFromAnnouncer( "select course comment general" );
@@ -2116,7 +2104,9 @@ void ScreenSelectMusic::AfterMusicChange()
 
 	// Don't stop music if it's already playing the right file.
 	g_bSampleMusicWaiting = false;
-	if( !m_MusicWheel.IsRouletting() && SOUND->GetMusicPath() != m_sSampleMusicToPlay )
+
+	// However, if it is a custom song, force a reload so we get new timing data.
+	if( !m_MusicWheel.IsRouletting() && (SOUND->GetMusicPath() != m_sSampleMusicToPlay || !PREFSMAN->m_bCustomSongPreviews && pSong->IsCustomSong()) )
 	{
 		SOUND->StopMusic();
 		if( !m_sSampleMusicToPlay.empty() )

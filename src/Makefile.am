@@ -74,6 +74,7 @@ Character.cpp Character.h \
 CodeDetector.cpp CodeDetector.h \
 Command.cpp Command.h \
 CommonMetrics.cpp CommonMetrics.h \
+DiagnosticsUtil.cpp DiagnosticsUtil.h \
 Difficulty.cpp Difficulty.h EnumHelper.cpp EnumHelper.h Course.cpp Course.h \
 CourseUtil.cpp CourseUtil.h DateTime.cpp DateTime.h Font.cpp Font.h FontCharAliases.cpp FontCharAliases.h \
 FontCharmaps.cpp FontCharmaps.h Game.cpp Game.h GameCommand.cpp GameCommand.h \
@@ -106,7 +107,6 @@ FileTypes = IniFile.cpp IniFile.h \
 
 StepMania = StdString.h \
 		StepMania.cpp StepMania.h \
-		MiscITG.cpp MiscITG.h \
 		global.cpp global.h
 
 LoadingWindow = arch/LoadingWindow/LoadingWindow.h \

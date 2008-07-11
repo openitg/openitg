@@ -1,24 +1,25 @@
-#ifndef MISC_ITG_H
-#define MISC_ITG_H
+#ifndef DIAGNOSTICS_UTIL_H
+#define DIAGNOSTICS_UTIL_H
 
 #include "StdString.h"
 
-int GetNumCrashLogs();
-int GetNumMachineEdits();
-int GetNumMachineScores();
+namespace DiagnosticsUtil
+{
+	int GetNumCrashLogs();
+	int GetNumMachineEdits();
+	int GetNumMachineScores();
+	int GetRevision();
 
-CString GetIP();
-int GetRevision();
+	CString GetIP();
+	CString GetInputType();
+	CString GetSerialNumber();
+	CString GenerateDebugSerial();
 
-CString GetSerialNumber();
-CString GenerateDebugSerial();
-bool HubIsConnected();
+	bool HubIsConnected();
+}
 
-bool HubIsConnected();
 
-static CString g_SerialNum;
-
-#endif // MISC_ITG_H
+#endif // DIAGNOSTICS_UTIL_H
 
 /*
  * Copyright (c) 2008 BoXoRRoXoRs

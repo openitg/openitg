@@ -11,7 +11,7 @@ OpenITG, alpha 7 (in development)
     IsUsingMemoryCard(PlayerNumber) - self-explanatory
     Debug() - output debugging lines regardless of log settings
 -New LUA globals:
-    IsOpenITG (boolean) - can be used for compatibility with ITG2 AC scripts
+    "OPENITG" (boolean) - can be used for compatibility with ITG2 AC scripts
 -New (major) code functions:
     StepsUtil::RemoveStepsOutsideMeterRange()
     StepsUtil::RemoveStepsOutsideDifficultyRange()
@@ -34,6 +34,8 @@ OpenITG, alpha 7 (in development)
         metrics entry
     "ScreenTextEntryArcade" - a more arcade-friendly text entry screen (WIP)
 -Fixed bugs:
+    BGCHANGES2 charts don't play properly
+    Timer is stuck at 0 if timer runs out on "Chance"
     "nomines" and "nostretch" transforms have no effect in the editor menu
     (OpenGL) Arrow shader fails on full-screen, causing scrolling brackets
     Actor sounds ignore attract sound settings
@@ -41,9 +43,12 @@ OpenITG, alpha 7 (in development)
     Theme switching sometimes causes failed asserts
     Phantom input when canceling custom song loads
     ScreenArcadeStart loops endlessly until manual exit
+    Without song previews, custom song lights don't properly load
 -Fixed mistakes:
     Removed some personalized testing code
     Removed some annoying opendir() error messages
+-Code structure changes:
+    "MiscITG" moved to "DiagnosticsUtil"
 
 OpenITG, alpha 6 (May 30th, 2008)
 ---------------------------------

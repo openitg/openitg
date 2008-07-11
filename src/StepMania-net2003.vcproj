@@ -954,6 +954,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="DateTime.h">
 			</File>
 			<File
+				RelativePath="DiagnosticsUtil.cpp">
+			</File>
+			<File
+				RelativePath="DiagnosticsUtil.h">
+			</File>
+			<File
 				RelativePath="Difficulty.cpp">
 			</File>
 			<File
@@ -1054,12 +1060,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="MenuInput.h">
-			</File>
-			<File
-				RelativePath="MiscITG.cpp">
-			</File>
-			<File
-				RelativePath="MiscITG.h">
 			</File>
 			<File
 				RelativePath="NoteData.cpp">

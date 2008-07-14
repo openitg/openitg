@@ -1408,10 +1408,6 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 #endif
 	SCREENMAN->HideOverlayMessage();
 
-	// if the menu timer isn't disabled, then subtract our time spent from it
-	if( m_MenuTimer->GetSeconds() != 99.99f )
-
-
 	// force a zero on next update so the animation doesn't
 	// skip - we spent a lot of time loading.
 	SCREENMAN->ZeroNextUpdate();

@@ -52,17 +52,18 @@ void ScreenAttract::SetAttractVolume( bool bInAttract )
 {
 	LOG->Debug( "ScreenAttract::SetAttractVolume( %s )", bInAttract ? "true" : "false" );
 
-	if( bInAttract )
+	// ignore attract volume settings if we have the -1 sentinel (see GameState)
+	if( !bInAttract || (GAMESTATE->m_iNumTimesThroughAttract == -1) )
+	{
+		// set the regular volume
+		SOUNDMAN->SetPrefs( PREFSMAN->GetSoundVolume() ); 
+	}
+	else // we're in attract mode - set the volume
 	{
 		if( GAMESTATE->IsTimeToPlayAttractSounds() )
 			SOUNDMAN->SetPrefs( PREFSMAN->GetSoundVolumeAttract() );
 		else
-			SOUNDMAN->SetPrefs( 0 ); // mute most sounds
-	}
-	else
-	{
-		// set the regular volume
-		SOUNDMAN->SetPrefs( PREFSMAN->GetSoundVolume() ); 
+			SOUNDMAN->SetPrefs( 0 ); // mutes most sounds
 	}
 
 	LOG->Debug( "New mixer volume: %f", SOUNDMAN->GetMixVolume() );

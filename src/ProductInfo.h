@@ -9,11 +9,11 @@
 
 /* The name of the build and its current version */
 #define PRODUCT_NAME "OpenITG"
-#define PRODUCT_VER "alpha 7"
+#define PRODUCT_VER "alpha 8 DEV"
 
 /* Build date, in MMDDYYYY - used for serials. We/I need to remember
  * to update this every time a new revision is added ... */
-#define PRODUCT_BUILD_DATE "07112008"
+#define PRODUCT_BUILD_DATE "07132008"
 
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"

@@ -37,6 +37,7 @@ void ScreenOptionsMaster::Init()
 {
 	ScreenOptions::Init();
 
+	LOG->Debug( "ScreenOptionsMaster::Init()" );
 	ScreenAttract::SetAttractVolume( false );
 
 	CStringArray asLineNames;

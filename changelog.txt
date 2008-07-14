@@ -1,5 +1,13 @@
-OpenITG, alpha 7 (in development)
+OpenITG, alpha 8 (in development)
 ---------------------------------
+-Fixed mistakes:
+    SCREENMAN doesn't zero update after custom song loading
+-Fixed bugs:
+    Attract volume immediately resets after round
+    Crash on non-song wheel items after highlighted custom songs
+
+OpenITG, alpha 7 (July 11th, 2008)
+----------------------------------
 -Preliminary, hacky lights-cabinet support in theme SM files
 -Barebones work on tournament mode (it's still a while away)
 -Input changes:

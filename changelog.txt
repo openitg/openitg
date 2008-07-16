@@ -1,5 +1,8 @@
 OpenITG, alpha 8 (in development)
 ---------------------------------
+-Added Features:
+    HoldsToRolls, a reversed No Rolls, to make Bend Your Mind a
+    Living hell.
 -Fixed mistakes:
     SCREENMAN doesn't zero update after custom song loading
 -Fixed bugs:

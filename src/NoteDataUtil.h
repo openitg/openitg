@@ -35,6 +35,7 @@ namespace NoteDataUtil
 	void CalculateRadarValues( const NoteData &in, float fSongSeconds, RadarValues& out );
 
 	void RemoveHoldNotes( NoteData &inout, int iStartIndex = 0, int iEndIndex = MAX_NOTE_ROW );
+	void ChangeHoldsToRolls( NoteData &in, int iStartIndex, int iEndIndex );
 	void ChangeRollsToHolds( NoteData &in, int iStartIndex, int iEndIndex );
 	void RemoveSimultaneousNotes( NoteData &inout, int iMaxSimultaneous, int iStartIndex = 0, int iEndIndex = MAX_NOTE_ROW );
 	void RemoveJumps( NoteData &inout, int iStartIndex = 0, int iEndIndex = MAX_NOTE_ROW );

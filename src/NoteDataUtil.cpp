@@ -697,6 +697,22 @@ void NoteDataUtil::RemoveHoldNotes( NoteData &in, int iStartIndex, int iEndIndex
 	}
 }
 
+void NoteDataUtil::ChangeHoldsToRolls( NoteData &in, int iStartIndex, int iEndIndex )
+{
+	for( int t=0; t<in.GetNumTracks(); t++ )
+	{
+		NoteData::iterator begin, end;
+		in.GetTapNoteRangeInclusive( t,iStartIndex, iEndIndex, begin, end );
+		for( ; begin != end; begin++ )
+		{
+			if( begin->second.type != TapNote::hold_head ||
+				begin->second.subType != TapNote::hold_head_hold )
+				continue;
+			begin->second.subType = TapNote::hold_head_roll;
+		}
+	}
+}
+
 void NoteDataUtil::ChangeRollsToHolds( NoteData &in, int iStartIndex, int iEndIndex )
 {
 	for( int t=0; t<in.GetNumTracks(); ++t )
@@ -1774,6 +1790,7 @@ void NoteDataUtil::TransformNoteData( NoteData &nd, const PlayerOptions &po, Ste
 	// notes we just inserted.  Apply TRANSFORM_NOROLLS before TRANSFORM_NOHOLDS,
 	// since NOROLLS creates holds.
 	if( po.m_bTransforms[PlayerOptions::TRANSFORM_LITTLE] )		NoteDataUtil::Little( nd, iStartIndex, iEndIndex );
+	if( po.m_bTransforms[PlayerOptions::TRANSFORM_HOLDSTOROLLS] )	NoteDataUtil::ChangeHoldsToRolls( nd, iStartIndex, iEndIndex );
 	if( po.m_bTransforms[PlayerOptions::TRANSFORM_NOROLLS] )	NoteDataUtil::ChangeRollsToHolds( nd, iStartIndex, iEndIndex );
 	if( po.m_bTransforms[PlayerOptions::TRANSFORM_NOHOLDS] )	NoteDataUtil::RemoveHoldNotes( nd, iStartIndex, iEndIndex );
 	if( po.m_bTransforms[PlayerOptions::TRANSFORM_NOMINES] )	NoteDataUtil::RemoveMines( nd, iStartIndex, iEndIndex );

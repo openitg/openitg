@@ -154,6 +154,7 @@ void PlayerOptions::GetMods( vector<CString> &AddTo ) const
 	if( m_bTurns[TURN_SUPER_SHUFFLE] )	AddTo.push_back( "SuperShuffle" );
 
 	if( m_bTransforms[TRANSFORM_NOHOLDS] )	AddTo.push_back( "NoHolds" );
+	if( m_bTransforms[TRANSFORM_HOLDSTOROLLS] ) AddTo.push_back( "HoldsToRolls" );
 	if( m_bTransforms[TRANSFORM_NOROLLS] )	AddTo.push_back( "NoRolls" );
 	if( m_bTransforms[TRANSFORM_NOMINES] )	AddTo.push_back( "NoMines" );
 	if( m_bTransforms[TRANSFORM_LITTLE] )	AddTo.push_back( "Little" );
@@ -317,6 +318,7 @@ void PlayerOptions::FromString( CString sOptions, bool bWarnOnInvalid )
 		else if( sBit == "cross" )		SET_FLOAT( fScrolls[SCROLL_CROSS] )
 		else if( sBit == "centered" || sBit == "converge" )	SET_FLOAT( fScrolls[SCROLL_CENTERED] )
 		else if( sBit == "noholds" || sBit == "nofreeze" )	m_bTransforms[TRANSFORM_NOHOLDS] = on;
+		else if( sBit == "holdstorolls" ) m_bTransforms[TRANSFORM_HOLDSTOROLLS] = on;
 		else if( sBit == "norolls" )	m_bTransforms[TRANSFORM_NOROLLS] = on;
 		else if( sBit == "nomines" )	m_bTransforms[TRANSFORM_NOMINES] = on;
 		else if( sBit == "nostretch" )	m_bTransforms[TRANSFORM_NOSTRETCH] = on;
@@ -672,6 +674,7 @@ CString PlayerOptions::GetSavedPrefsString() const
 	SAVE( m_fScrolls[SCROLL_REVERSE] );
 	SAVE( m_fPerspectiveTilt );
 	SAVE( m_bTransforms[TRANSFORM_NOHOLDS] );
+	SAVE( m_bTransforms[TRANSFORM_HOLDSTOROLLS] );
 	SAVE( m_bTransforms[TRANSFORM_NOROLLS] );
 	SAVE( m_bTransforms[TRANSFORM_NOMINES] );
 	SAVE( m_bTransforms[TRANSFORM_NOJUMPS] );
@@ -694,6 +697,7 @@ void PlayerOptions::ResetSavedPrefs()
 	CPY( m_fScrolls[SCROLL_REVERSE] );
 	CPY( m_fPerspectiveTilt );
 	CPY( m_bTransforms[TRANSFORM_NOHOLDS] );
+	CPY( m_bTransforms[TRANSFORM_HOLDSTOROLLS] );
 	CPY( m_bTransforms[TRANSFORM_NOROLLS] );
 	CPY( m_bTransforms[TRANSFORM_NOMINES] );
 	CPY( m_bTransforms[TRANSFORM_NOJUMPS] );

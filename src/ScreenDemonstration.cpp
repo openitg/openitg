@@ -48,7 +48,13 @@ void ScreenDemonstration::Init()
 				vStylePossible.erase( vStylePossible.begin()+i );
 		}
 
-		ASSERT( vStylePossible.size() > 0 );
+		if (vStylePossible.size() == 0) // no styles
+		{
+			HandleScreenMessage(SM_GoToNextScreen );
+			return;
+		}
+
+		//ASSERT( vStylePossible.size() > 0 );
 		const Style* pStyle = vStylePossible[ rand() % vStylePossible.size() ];
 		GAMESTATE->m_pCurStyle.Set( pStyle );
 	}

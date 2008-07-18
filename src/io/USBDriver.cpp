@@ -20,14 +20,13 @@ bool USBDriver::Matches( int idVendor, int idProduct ) const
 	return false;
 }
 
-/* XXX: is this even used? */
 struct usb_device *USBDriver::FindDevice()
 {
-	LOG->Trace( "USBDriver::FindDevice()." );
+	LOG->Trace( "USBDriver::FindDevice()" );
 
 	for( usb_bus *bus = usb_get_busses(); bus; bus = bus->next )
 		for( struct usb_device *dev = bus->devices; dev; dev = dev->next )
-			if( Matches(dev->descriptor.idVendor, dev->descriptor.idProduct) )
+			if( this->Matches(dev->descriptor.idVendor, dev->descriptor.idProduct) )
 				return dev;
 
 	// fall through
@@ -67,46 +66,41 @@ bool USBDriver::Open()
 		return false;
 	}
 	
-	if( !usb_get_busses() )
-		return false;
+	struct usb_device *dev = FindDevice();
 
-	for (usb_bus *bus = usb_get_busses(); bus; bus = bus->next)
+	if( dev == NULL )
 	{
-		for (struct usb_device *dev = bus->devices; dev; dev = dev->next)
+		LOG->Warn( "USBDriver::Open(): no device found." );
+		return false;
+	}
+
+	m_pHandle = usb_open( dev );
+
+	if( m_pHandle == NULL )
+	{
+		LOG->Warn( "USBDriver::Open(): usb_open: %s", usb_strerror() );
+		return false;
+	}
+
+	if ( usb_set_configuration(m_pHandle, dev->config->bConfigurationValue) < 0 )
+	{
+		LOG->Warn( "USBDriver::Open(): usb_set_configuration: %s", usb_strerror() );
+		Close();
+		return false;
+	}
+	
+	// claim all interfaces for this device
+	for( unsigned i = 0; i < dev->config->bNumInterfaces; i++ )
+	{
+		if ( usb_claim_interface(m_pHandle, i) < 0 )
 		{
-			if ( Matches(dev->descriptor.idVendor, dev->descriptor.idProduct) )
-			{
-				// if we can't open it, try the next device
-				m_pHandle = usb_open(dev);
-				if (m_pHandle)
-				{
-					if ( usb_set_configuration(m_pHandle, dev->config->bConfigurationValue) < 0 )
-					{
-						LOG->Warn( "USBDriver::Open(): usb_set_configuration: %s", usb_strerror() );
-						Close();
-						return false;
-					}
-					if ( usb_claim_interface(m_pHandle, dev->config->interface->altsetting->bInterfaceNumber) < 0 )
-					{
-						LOG->Warn( "USBDriver::Open(): usb_claim_interface: %s", usb_strerror() );
-						Close();
-						return false;
-					}
-					m_iInterfaceNum = dev->config->interface->altsetting->bInterfaceNumber;
-					m_iIdVendor = dev->descriptor.idVendor;
-					m_iIdProduct = dev->descriptor.idProduct;
-					return true;
-				}
-				else
-				{
-					LOG->Warn( "USBDriver::Open(): usb_open: %s", usb_strerror() );
-				}
-			}
+			LOG->Warn( "USBDriver::Open(): usb_claim_interface(%i): %s", i, usb_strerror() );
+			Close();
+			return false;
 		}
 	}
 
-	// nothing usable found
-	return false;
+	return true;
 }
 
 /*

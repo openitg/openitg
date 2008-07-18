@@ -1,5 +1,5 @@
-#ifndef INPUT_HANDLER_USBDRIVER_H
-#define INPUT_HANDLER_USBDRIVER_H
+#ifndef USBDRIVER_H
+#define USBDRIVER_H
 
 #include <usb.h>
 
@@ -13,14 +13,10 @@ public:
 	void Close();
 
 protected:
-	struct usb_device *FindDevice();
-
 	virtual bool Matches(int idVendor, int idProduct) const;
 
+	struct usb_device *FindDevice();
 	usb_dev_handle *m_pHandle;
-	int m_iInterfaceNum;
-	int m_iIdVendor;
-	int m_iIdProduct;
 };
 
 #endif

@@ -26,9 +26,6 @@ private:
 	vector<InputHandler *> m_pDevices;
 };
 
-// XXX: not sure where to put this -- Vyhd
-extern CString	g_sInputType;
-
 extern RageInput*			INPUTMAN;	// global and accessable from anywhere in our program
 
 #endif

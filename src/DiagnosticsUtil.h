@@ -15,6 +15,8 @@ namespace DiagnosticsUtil
 	CString GetSerialNumber();
 	CString GenerateDebugSerial();
 
+	void SetInputType( CString sType );
+
 	bool HubIsConnected();
 }
 

@@ -34,6 +34,9 @@ public:
 
 	bool IsMapped( DeviceInput DeviceI );
 	bool IsMapped( GameInput GameI );
+	bool IsMapped( StyleInput StyleI );
+
+	bool IsMappedForStyle( DeviceInput DeviceI );
 	
 	bool DeviceToGame( DeviceInput DeviceI, GameInput& GameI );	// return true if there is a mapping from device to pad
 	bool GameToDevice( GameInput GameI, int iSoltNum, DeviceInput& DeviceI );	// return true if there is a mapping from pad to device

@@ -8,8 +8,6 @@
 
 RageInput*		INPUTMAN	= NULL;		// globally accessable input device
 
-CString g_sInputType = "";
-
 RageInput::RageInput( CString sDriverList )
 {
 	LOG->Trace( "RageInput::RageInput()" );

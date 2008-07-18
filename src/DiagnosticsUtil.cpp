@@ -2,7 +2,6 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "RageTimer.h"
-#include "RageInput.h" /* for g_sInputType */
 #include "ProfileManager.h"
 #include "SongManager.h"
 #include "LuaManager.h"
@@ -39,8 +38,6 @@ extern "C" {
 #else
 #define STATS_DIR_PATH CString("Data/")
 #endif
-
-extern CString g_sInputType;
 
 int DiagnosticsUtil::GetNumCrashLogs()
 {
@@ -263,9 +260,16 @@ bool DiagnosticsUtil::HubIsConnected()
 	return false;
 }
 
+CString m_sInputType = "";
+
 CString DiagnosticsUtil::GetInputType()
 {
-	return g_sInputType;
+	return m_sInputType;
+}
+
+void DiagnosticsUtil::SetInputType( CString sType )
+{
+	m_sInputType = sType;
 }
 
 void SetProgramGlobal( lua_State* L )

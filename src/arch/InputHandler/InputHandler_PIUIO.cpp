@@ -2,8 +2,8 @@
 
 #include "global.h"
 #include "RageLog.h"
-#include "RageInput.h" // for g_sInputType
 #include "RageUtil.h"
+#include "DiagnosticsUtil.h"
 
 #include "PrefsManager.h" // for m_bDebugUSBInput
 #include "ScreenManager.h"
@@ -17,14 +17,13 @@
 #include "InputHandler_PIUIO.h"
 
 extern LightsState g_LightsState; // from LightsDriver_External
-extern CString g_sInputType; // from RageInput
 
 Preference<bool>	g_bUseUnstable( "UseUnstablePIUIODriver", false );
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
 	m_bShutdown = false;
-	g_sInputType = "PIUIO";
+	DiagnosticsUtil::SetInputType( "PIUIO" );
 
 	// device found and set
 	if( !Board.Open() )

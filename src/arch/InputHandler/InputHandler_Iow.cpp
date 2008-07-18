@@ -1,21 +1,20 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-#include "RageInput.h" // for g_sInputType
 #include "PrefsManager.h" // for m_bDebugUSBInput
 #include "LightsManager.h"
+#include "DiagnosticsUtil.h"
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_Iow.h"
 
 extern LightsState g_LightsState;
-extern CString g_sInputType;
 
 // Iow lights thread is disabled for now: causes major, major input problems
 
 InputHandler_Iow::InputHandler_Iow()
 {
 	m_bShutdown = false;
-	g_sInputType = "ITGIO";
+	DiagnosticsUtil::SetInputType("ITGIO");
 
 	if( !IOBoard.Open() )
 	{

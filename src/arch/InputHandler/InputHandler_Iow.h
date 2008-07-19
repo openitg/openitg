@@ -23,22 +23,19 @@ public:
 private:
 	ITGIO IOBoard;
 	RageThread InputThread;
-	RageThread LightsThread;
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;
 
-	uint32_t m_iInputData;
-	uint32_t m_iLastInput;
+	uint32_t m_iReadData;
+	uint32_t m_iLastRead;
 
 	uint32_t m_iWriteData;
 	uint32_t m_iLastWrite;
 
 	static int InputThread_Start( void *p );
-	static int LightsThread_Start( void *p );
 
 	void InputThreadMain();
-	void LightsThreadMain();
 
 	void HandleInput();
 	// allow this driver to update lights with "ext"

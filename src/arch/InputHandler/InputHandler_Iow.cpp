@@ -2,6 +2,7 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "PrefsManager.h" // for m_bDebugUSBInput
+#include "ScreenManager.h" // XXX
 #include "LightsManager.h"
 #include "DiagnosticsUtil.h"
 #include "arch/Lights/LightsDriver_External.h"
@@ -30,9 +31,7 @@ InputHandler_Iow::InputHandler_Iow()
 		LOG->Warn( "\"ext\" is not an enabled LightsDriver. The I/O board cannot run lights." );
 
 	InputThread.SetName( "Iow thread" );
-	LightsThread.SetName( "Iow lights thread" );
 	InputThread.Create( InputThread_Start, this );
-	LightsThread.Create( LightsThread_Start, this );
 }
 
 InputHandler_Iow::~InputHandler_Iow()
@@ -46,9 +45,6 @@ InputHandler_Iow::~InputHandler_Iow()
 
 	if( InputThread.IsCreated() )
 		InputThread.Wait();
-
-	if( LightsThread.IsCreated() )
-		LightsThread.Wait();
 
 	LOG->Trace( "Iow threads shut down." );
 
@@ -72,41 +68,31 @@ int InputHandler_Iow::InputThread_Start( void *p )
 	return 0;
 }
 
-int InputHandler_Iow::LightsThread_Start( void *p )
-{
-	((InputHandler_Iow *) p)->LightsThreadMain();
-	return 0;
-}
-
 void InputHandler_Iow::InputThreadMain()
 {
 	while( !m_bShutdown )
 	{
-		IOBoard.Read( &m_iInputData );
+		UpdateLights();
+//		IOBoard.Write( 0xFFFFFFFF );
+		IOBoard.Write( 0xFFFF0000 | m_iWriteData );
 
-		m_iInputData = ~m_iInputData;
+		IOBoard.Read( &m_iReadData );
+
+		// ITGIO opens high - flip the bit values
+		m_iReadData = ~m_iReadData;
+
+		if( SCREENMAN )
+			SCREENMAN->SystemMessageNoAnimate( ssprintf( "%#2x", m_iReadData ) );
 
 		HandleInput();
-
-//		UpdateLights();
-//		IOBoard.Write( m_iWriteData );
-	}
-}
-
-void InputHandler_Iow::LightsThreadMain()
-{
-	while( !m_bShutdown )
-	{
-		UpdateLights();
-		// TEST: Do we need to re-write input?
-		IOBoard.Write( m_iWriteData );
-//		IOBoard.Write( m_iInputData | m_iWriteData );
 	}
 }
 
 void InputHandler_Iow::HandleInput()
 {
 	uint32_t i = 1; // convenience hack
+
+	// filter out the data we've written
 
 	static const uint32_t iInputBits[NUM_IO_BUTTONS] = {
 	/* Player 1 - left, right, up, down */
@@ -125,23 +111,23 @@ void InputHandler_Iow::HandleInput()
 	// XXX: service is untested
 	(i << 30), (i << 31)	};
 
-	if( PREFSMAN->m_bDebugUSBInput && (m_iInputData != 0) )
+	if( PREFSMAN->m_bDebugUSBInput && (m_iReadData != 0) )
 	{
 		if( LOG )
-			LOG->Info( "Input: %i", m_iInputData );
+			LOG->Info( "Input: %i", m_iReadData );
 
 		CString sInputs;
 
 		for( unsigned x = 0; x < 32; x++ )
 		{
 			/* the bit we expect isn't in the data */
-			if( !(m_iInputData & (i << x)) )
+			if( !(m_iReadData & (i << x)) )
 				continue;
 
 			if( sInputs == "" )
-				sInputs = ssprintf( "Inputs: (1 << %i)", x );
+				sInputs = ssprintf( "Inputs: %i", x );
 			else
-				sInputs += ssprintf( ", (1 << %i)", x );
+				sInputs += ssprintf( ", %i", x );
 		}
 
 		if( LOG )
@@ -157,36 +143,28 @@ void InputHandler_Iow::HandleInput()
 		if( InputThread.IsCreated() )
 			di.ts.Touch();
 
-		ButtonPressed( di, (m_iInputData & iInputBits[iButton]) );
+		ButtonPressed( di, (m_iReadData & iInputBits[iButton]) );
 	}
 }
 
 /* Requires "LightsDriver=ext" */
 void InputHandler_Iow::UpdateLights()
 {
-	/* To do:
-	 - Does Iow crash if lights never change? [possible Write() problem]
-	 - See if this can accidentally set input states
-	*/
-
-	// We don't know these anyway...no loss wiping them.
-	// TEST: does the input problem occur if we write all 0s?
 	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] = {
 	/* Upper-left, upper-right, lower-left, lower-right marquee */
-	0, 0, 0, 0,
+	(1 << 8), (1 << 10), (1 << 9), (1 << 11),
 
 	/* P1 select, P2 select, both bass */
-	0, 0, 0, 0	};
+	(1 << 13), (1 << 12), (1 << 15), (1 << 15)	};
 
 	static const uint32_t iPadBits[2][4] =
 	{
 		/* Left, right, up, down */
-		{ 0, 0, 0, 0 }, /* Player 1 */
-		{ 0, 0, 0, 0 }, /* Player 2 */
+		{ (1 << 1), (1 << 0), (1 << 3), (1 << 2) }, /* Player 1 */
+		{ (1 << 5), (1 << 4), (1 << 7), (1 << 6) }, /* Player 2 */
 	};
 
 	m_iLastWrite = m_iWriteData;
-
 	m_iWriteData = 0;
 
 	/* Something about the coin counter here */

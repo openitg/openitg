@@ -10,6 +10,8 @@
 
 extern LightsState g_LightsState;
 
+const int NUM_PAD_LIGHTS = 4;
+
 // Iow lights thread is disabled for now: causes major, major input problems
 
 InputHandler_Iow::InputHandler_Iow()
@@ -73,16 +75,13 @@ void InputHandler_Iow::InputThreadMain()
 	while( !m_bShutdown )
 	{
 		UpdateLights();
-//		IOBoard.Write( 0xFFFFFFFF );
+
+		// this appears to be AND'd over input (bits 1-16)
 		IOBoard.Write( 0xFFFF0000 | m_iWriteData );
 
-		IOBoard.Read( &m_iReadData );
-
 		// ITGIO opens high - flip the bit values
+		IOBoard.Read( &m_iReadData );
 		m_iReadData = ~m_iReadData;
-
-		if( SCREENMAN )
-			SCREENMAN->SystemMessageNoAnimate( ssprintf( "%#2x", m_iReadData ) );
 
 		HandleInput();
 	}
@@ -93,35 +92,14 @@ void InputHandler_Iow::HandleInput()
 	uint32_t i = 1; // convenience hack
 
 	// filter out the data we've written
-
-	static const uint32_t iInputBits[NUM_IO_BUTTONS] = {
-	/* Player 1 - left, right, up, down */
-	(i << 18), (i << 19), (i << 16), (i << 17),
-
-	/* Player 1 - Select (unused), Start, MenuLeft, MenuRight */
-	0, (i << 20), (i << 21), (i << 22),
-
-	/* Player 2 - left, right, up, down */
-	(i << 25), (i << 26), (i << 23), (i << 24),
-
-	/* Player 2 - Select (unused), Start, MenuLeft, MenuRight */
-	0, (i << 27), (i << 28), (i << 29),
-
-	/* Service, coin insert */
-	// XXX: service is untested
-	(i << 30), (i << 31)	};
-
 	if( PREFSMAN->m_bDebugUSBInput && (m_iReadData != 0) )
 	{
-		if( LOG )
-			LOG->Info( "Input: %i", m_iReadData );
-
 		CString sInputs;
 
-		for( unsigned x = 0; x < 32; x++ )
+		for( unsigned x = 0; x < 16; x++ )
 		{
 			/* the bit we expect isn't in the data */
-			if( !(m_iReadData & (i << x)) )
+			if( !(m_iReadData & (i << (31-x))) )
 				continue;
 
 			if( sInputs == "" )
@@ -134,30 +112,33 @@ void InputHandler_Iow::HandleInput()
 			LOG->Info( sInputs );
 	}
 
-	InputDevice id = DEVICE_ITGIO;
+	DeviceInput di = DeviceInput( DEVICE_JOY1, JOY_1 );
 
-	for( int iButton = 0; iButton < NUM_IO_BUTTONS; iButton++ )
+	// ITGIO only reads the first 16 bits
+	for( int iButton = 0; iButton < 16; iButton++ )
 	{
-		DeviceInput di(id, iButton);
+		di.button = JOY_1+iButton;
 
 		if( InputThread.IsCreated() )
 			di.ts.Touch();
 
-		ButtonPressed( di, (m_iReadData & iInputBits[iButton]) );
+		ButtonPressed( di, m_iReadData & (1 << (31-iButton)) );
 	}
 }
 
 /* Requires "LightsDriver=ext" */
 void InputHandler_Iow::UpdateLights()
 {
-	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] = {
-	/* Upper-left, upper-right, lower-left, lower-right marquee */
-	(1 << 8), (1 << 10), (1 << 9), (1 << 11),
+	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] =
+	{
+		/* Upper-left, upper-right, lower-left, lower-right marquee */
+		(1 << 8), (1 << 10), (1 << 9), (1 << 11),
 
-	/* P1 select, P2 select, both bass */
-	(1 << 13), (1 << 12), (1 << 15), (1 << 15)	};
+		/* P1 select, P2 select, both bass */
+		(1 << 13), (1 << 12), (1 << 15), (1 << 15)
+	};
 
-	static const uint32_t iPadBits[2][4] =
+	static const uint32_t iPadBits[MAX_GAME_CONTROLLERS][NUM_PAD_LIGHTS] =
 	{
 		/* Left, right, up, down */
 		{ (1 << 1), (1 << 0), (1 << 3), (1 << 2) }, /* Player 1 */
@@ -176,10 +157,10 @@ void InputHandler_Iow::UpdateLights()
 
 	// update the four lights on each pad
 	FOREACH_GameController( gc )
-		FOREACH_ENUM( GameButton, 4, gb )
+		FOREACH_ENUM( GameButton, NUM_PAD_LIGHTS, gb )
 			if( g_LightsState.m_bGameButtonLights[gc][gb] )
 				m_iWriteData |= iPadBits[gc][gb];
 
 	if( m_iWriteData != m_iLastWrite )
-		LOG->Trace( "Iow lights: setting %i", m_iWriteData );
+		LOG->Debug( "Iow lights: setting %i", m_iWriteData );
 }

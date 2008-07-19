@@ -17,9 +17,10 @@ Testers:
  - mDaWg
  - Darklink
  - Wanny
- - Beaver Valley Mall
+ - JJSz / Beaver Valley Mall
  - Rhythmatic.net/ITGFreak.com
  - Boxorroxors.net
+
 
 additional credits (in terms of source additions):
  - PIUIO/ITGIO hardware support: Vyhd, infamouspat

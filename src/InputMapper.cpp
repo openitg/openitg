@@ -74,6 +74,35 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 {
 	{
 		"dance",
+		"ITGIO",
+		"ITG input device",
+		{
+			/* Player 1 */
+			{ 0, JOY_13,		DANCE_BUTTON_LEFT,		false },
+			{ 0, JOY_14,		DANCE_BUTTON_RIGHT,		false },
+			{ 0, JOY_16,		DANCE_BUTTON_UP,		false },
+			{ 0, JOY_15,		DANCE_BUTTON_DOWN,		false },
+			{ 0, JOY_12,		DANCE_BUTTON_START,		false },
+			{ 0, JOY_11,		DANCE_BUTTON_MENULEFT,		false },
+			{ 0, JOY_10,		DANCE_BUTTON_MENURIGHT,		false },
+
+			/* Player 2 */
+			{ 1, JOY_7,		DANCE_BUTTON_LEFT,		true },
+			{ 1, JOY_6,		DANCE_BUTTON_RIGHT,		true },
+			{ 1, JOY_9,		DANCE_BUTTON_UP,		true },
+			{ 1, JOY_8,		DANCE_BUTTON_DOWN,		true },
+			{ 1, JOY_5,		DANCE_BUTTON_START,		true },
+			{ 1, JOY_4,		DANCE_BUTTON_MENULEFT,		true },
+			{ 1, JOY_3,		DANCE_BUTTON_MENURIGHT,		true },
+
+			/* Other controls */
+			{ 0, JOY_2,		DANCE_BUTTON_OPERATOR,		false },
+			{ 0, JOY_1,		DANCE_BUTTON_COIN,		false },
+			END_MARKER
+		}
+	},
+	{
+		"dance",
 		"PIUIO",
 		"ITG input device",
 		{
@@ -101,37 +130,6 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, JOY_23,		DANCE_BUTTON_OPERATOR,		false },
 			{ 1, JOY_18,		DANCE_BUTTON_OPERATOR,		false },
 			{ 0, JOY_22,		DANCE_BUTTON_COIN,		false },
-			END_MARKER
-		}
-	},
-	{
-		"dance",
-		"ITGIO",
-		"ITG input device",
-		{
-			/* Player 1 */
-			{ 0, IO_P1_LEFT,	DANCE_BUTTON_LEFT,		false },
-			{ 0, IO_P1_RIGHT,	DANCE_BUTTON_RIGHT,		false },
-			{ 0, IO_P1_UP,		DANCE_BUTTON_UP,		false },
-			{ 0, IO_P1_DOWN,	DANCE_BUTTON_DOWN,		false },
-			{ 0, IO_P1_SELECT,	DANCE_BUTTON_SELECT,		false },
-			{ 0, IO_P1_START,	DANCE_BUTTON_START,		false },
-			{ 0, IO_P1_MENU_LEFT,	DANCE_BUTTON_MENULEFT,		false },
-			{ 0, IO_P1_MENU_RIGHT,	DANCE_BUTTON_MENURIGHT,		false },
-
-			/* Player 2 */
-			{ 1, IO_P2_LEFT,	DANCE_BUTTON_LEFT,		true },
-			{ 1, IO_P2_RIGHT,	DANCE_BUTTON_RIGHT,		true },
-			{ 1, IO_P2_UP,		DANCE_BUTTON_UP,		true },
-			{ 1, IO_P2_DOWN,	DANCE_BUTTON_DOWN,		true },
-			{ 1, IO_P2_SELECT,	DANCE_BUTTON_SELECT,		true },
-			{ 1, IO_P2_START,	DANCE_BUTTON_START,		true },
-			{ 1, IO_P2_MENU_LEFT,	DANCE_BUTTON_MENULEFT,		true },
-			{ 1, IO_P2_MENU_RIGHT,	DANCE_BUTTON_MENURIGHT,		true },
-
-			/* Other controls */
-			{ 0, IO_OPERATOR_MENU,	DANCE_BUTTON_OPERATOR,		false },
-			{ 0, IO_INSERT_COIN,	DANCE_BUTTON_COIN,		false },
 			END_MARKER
 		}
 	},

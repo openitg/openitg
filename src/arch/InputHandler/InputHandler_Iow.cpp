@@ -59,7 +59,7 @@ void InputHandler_Iow::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesO
 {
 	if( m_bFoundDevice )
 	{
-		vDevicesOut.push_back( InputDevice(DEVICE_ITGIO) );
+		vDevicesOut.push_back( InputDevice(DEVICE_JOY1) );
 		vDescriptionsOut.push_back( "ITGIO" );
 	}
 }

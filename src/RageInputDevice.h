@@ -31,8 +31,6 @@ enum InputDevice {
 	DEVICE_PUMP2,
 	DEVICE_MIDI,
 	DEVICE_PARA1,
-	DEVICE_PIUIO,
-	DEVICE_ITGIO,
 	NUM_INPUT_DEVICES,	// leave this at the end
 	DEVICE_NONE			// means this is NULL
 };
@@ -297,35 +295,6 @@ enum ParaPadButton {
 const CString& ParaPadButtonToString( ParaPadButton i );
 ParaPadButton StringToParaPadButton( const CString& s );
 
-/* XXX: I'm not sure what the best name for this is. -- Vyhd */
-enum IOBoardButton {
-	IO_P1_LEFT,
-	IO_P1_RIGHT,
-	IO_P1_UP,
-	IO_P1_DOWN,
-	IO_P1_SELECT,
-	IO_P1_START,
-	IO_P1_MENU_LEFT,
-	IO_P1_MENU_RIGHT,
-
-	IO_P2_LEFT,
-	IO_P2_RIGHT,
-	IO_P2_UP,
-	IO_P2_DOWN,
-	IO_P2_SELECT,
-	IO_P2_START,
-	IO_P2_MENU_LEFT,
-	IO_P2_MENU_RIGHT,
-
-	IO_OPERATOR_MENU,
-	IO_INSERT_COIN,
-
-	NUM_IO_BUTTONS,
-	IO_BUTTON_INVALID
-};
-const CString& IOBoardButtonToString( IOBoardButton i );
-IOBoardButton StringToIOBoardButton( const CString& s );
-
 typedef int DeviceButton;
 //CString DeviceButtonToString( InputDevice device, DeviceButton i );
 //DeviceButton StringToDeviceButton( InputDevice device, const CString& s );
@@ -355,8 +324,6 @@ inline int GetNumDeviceButtons( InputDevice device )
 	case DEVICE_PUMP2:	return NUM_PUMP_PAD_BUTTONS;
 	case DEVICE_MIDI:	return NUM_MIDI_CHANNELS;
 	case DEVICE_PARA1:	return NUM_PARA_PAD_BUTTONS;
-	case DEVICE_PIUIO:
-	case DEVICE_ITGIO:	return NUM_IO_BUTTONS;
 	default:	ASSERT(0);	return 0;
 	}
 };

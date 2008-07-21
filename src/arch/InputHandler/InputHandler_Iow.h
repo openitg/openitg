@@ -21,7 +21,7 @@ public:
 //	void Update( float fDeltaTime );
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
-	ITGIO IOBoard;
+	ITGIO Board;
 	RageThread InputThread;
 
 	bool m_bFoundDevice;

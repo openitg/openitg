@@ -42,9 +42,6 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 
 	// figure out which inputs we should report sensors on - pads only
 	// XXX: make this refresh whenever mappings have changed!
-	InputDevice id = InputDevice( DEVICE_JOY1 );
-
-	// for now, we do this. make this dynamic and Style-based in the near future.
 	for( int i = 0; i < 32; i++ )
 		m_bReportSensor[i] = true;
 
@@ -61,6 +58,10 @@ InputHandler_PIUIO::~InputHandler_PIUIO()
 		InputThread.Wait();
 		LOG->Trace( "PIUIO thread shut down." );
 	}
+
+	// reset all lights and unclaim
+	if( m_bFoundDevice )
+		Board.Write( 0 );
 
 	Board.Close();
 }

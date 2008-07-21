@@ -19,7 +19,7 @@ InputHandler_Iow::InputHandler_Iow()
 	m_bShutdown = false;
 	DiagnosticsUtil::SetInputType("ITGIO");
 
-	if( !IOBoard.Open() )
+	if( !Board.Open() )
 	{
 		LOG->Warn( "OpenITG could not establish a connection with ITGIO." );
 		return;
@@ -51,8 +51,10 @@ InputHandler_Iow::~InputHandler_Iow()
 	LOG->Trace( "Iow threads shut down." );
 
 	/* Reset all lights to off and close it */
-	IOBoard.Write( 0 );
-	IOBoard.Close();
+	if( m_bFoundDevice )
+		Board.Write( 0 );
+
+	Board.Close();
 }
 
 void InputHandler_Iow::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )
@@ -77,10 +79,10 @@ void InputHandler_Iow::InputThreadMain()
 		UpdateLights();
 
 		// this appears to be AND'd over input (bits 1-16)
-		IOBoard.Write( 0xFFFF0000 | m_iWriteData );
+		Board.Write( 0xFFFF0000 | m_iWriteData );
 
 		// ITGIO opens high - flip the bit values
-		IOBoard.Read( &m_iReadData );
+		Board.Read( &m_iReadData );
 		m_iReadData = ~m_iReadData;
 
 		HandleInput();

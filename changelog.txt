@@ -1,12 +1,16 @@
 OpenITG, alpha 8 (in development)
 ---------------------------------
--Added Features:
-    HoldsToRolls, a reversed No Rolls, to make Bend Your Mind a
-    Living hell.
+-ITGIO changes:
+    Softcoded ITGIO input and including default mappings
+    Added mappings for all cabinet lighting
+    Fixed "no output on ITGIO" issue
+-Added features:
+    HoldsToRolls, a reversed No Rolls (make Bend Your Mind a living hell!)
 -Fixed mistakes:
     SCREENMAN doesn't zero update after custom song loading
 -Fixed bugs:
     Attract volume immediately resets after round
+    Attract volume isn't properly reset when entering operator menu
     Crash on non-song wheel items after highlighted custom songs
 
 OpenITG, alpha 7 (July 11th, 2008)

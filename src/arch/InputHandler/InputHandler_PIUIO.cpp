@@ -61,9 +61,10 @@ InputHandler_PIUIO::~InputHandler_PIUIO()
 
 	// reset all lights and unclaim
 	if( m_bFoundDevice )
+	{
 		Board.Write( 0 );
-
-	Board.Close();
+		Board.Close();
+	}
 }
 
 void InputHandler_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )

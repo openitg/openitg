@@ -6,6 +6,10 @@
 #define USB_DIR_OUT 0x00
 #define USB_DIR_IN 0x80
 
+// addresses sent for USB control messages
+const int IFACE_IN  = 256;
+const int IFACE_OUT = 512;
+
 CString ITGIO::m_sInputError;
 int ITGIO::m_iInputErrorCount = 0;
 
@@ -26,8 +30,7 @@ bool ITGIO::Read( uint32_t *pData )
 
 	while( 1 )
 	{
-		/* XXX: I hate magic values. What do these mean? -- Vyhd */
-		iResult = usb_control_msg(m_pHandle, USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE, 1, 256, 0, (char *)pData, 4, 1000 );
+		iResult = usb_control_msg(m_pHandle, USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE, 1, IFACE_IN, 0, (char *)pData, 4, 1000 );
 		if( iResult == 4 ) // all data read
 			break;
 
@@ -45,9 +48,7 @@ bool ITGIO::Write( uint32_t iData )
 
 	while( 1 )
 	{
-		//iResult = usb_control_msg(m_pHandle, 33, 9, 512, 0, (char *)&iData, 4, 1000 );
-		// how did i not pick this up before?
-		iResult = usb_control_msg(m_pHandle, 33, 9, 512, 0, (char *)&iData, 4, 1000 );
+		iResult = usb_control_msg(m_pHandle, USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE, 9, IFACE_OUT, 0, (char *)&iData, 4, 1000 );
 	
 		if( iResult == 4 ) // all data read
 			break;

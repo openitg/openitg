@@ -11,7 +11,6 @@ public:
 
 	bool Open();
 	void Close();
-
 protected:
 	virtual bool Matches(int idVendor, int idProduct) const;
 

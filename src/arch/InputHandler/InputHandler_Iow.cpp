@@ -2,7 +2,6 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "PrefsManager.h" // for m_bDebugUSBInput
-#include "ScreenManager.h" // XXX
 #include "LightsManager.h"
 #include "DiagnosticsUtil.h"
 #include "arch/Lights/LightsDriver_External.h"
@@ -43,18 +42,16 @@ InputHandler_Iow::~InputHandler_Iow()
 
 	m_bShutdown = true;
 
-	LOG->Trace( "Shutting down Iow threads..." );
-
-	if( InputThread.IsCreated() )
-		InputThread.Wait();
-
-	LOG->Trace( "Iow threads shut down." );
+	LOG->Trace( "Shutting down Iow thread..." );
+	InputThread.Wait();
+	LOG->Trace( "Iow thread shut down." );
 
 	/* Reset all lights to off and close it */
 	if( m_bFoundDevice )
+	{
 		Board.Write( 0 );
-
-	Board.Close();
+		Board.Close();
+	}
 }
 
 void InputHandler_Iow::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )

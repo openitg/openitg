@@ -3,6 +3,7 @@
 #ifndef LightsDriver_External_H
 #define LightsDriver_External_H
 
+#include "RageLog.h"
 #include "LightsDriver.h"
 
 class LightsDriver_External: public LightsDriver
@@ -10,8 +11,17 @@ class LightsDriver_External: public LightsDriver
 public:
 	LightsDriver_External();
 	~LightsDriver_External();
-	
+
 	void Set( const LightsState *ls );
+
+	// pass a const reference to the lights state
+	static const LightsState *Get()
+	{
+		LOG->Debug( "LightsDriver_External::Get()" );
+		return &m_LightsState;
+	}
+private:
+	static LightsState m_LightsState;
 };
 
 #define USE_LIGHTS_DRIVER_EXTERNAL

@@ -10,18 +10,14 @@
 #include "LightsManager.h"
 #include "InputMapper.h"
 
-#include "GameInput.h"
-#include "Preference.h"
-
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_PIUIO.h"
 
 extern LightsState g_LightsState; // from LightsDriver_External
 
-static bool g_bUnstableAvailable; // determine which handling code to use
-
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
+	m_bFoundDevice = false;
 	m_bShutdown = false;
 	DiagnosticsUtil::SetInputType( "PIUIO" );
 
@@ -39,19 +35,17 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 	if( PREFSMAN->GetLightsDriver().Find("ext") == -1 )
 		LOG->Warn( "\"ext\" is not an enabled LightsDriver. The I/O board cannot run lights." );
 
-// HELL YES PAT FINALLY MADE A DECENT COMMITABLE CHANGE AFTER MONTHS OF NOT DOING SO :D
+// use the kernel hack code if the r16 module is loaded
 #ifdef LINUX
-	// use the kernel hack code if the r16 module is loaded
-	if( GetHashForFile("/rootfs/stats/patch/modules/usbcore.ko") == 2101124880 )
-		this->InternalInputHandler = &InputHandler_PIUIO::HandleInputKernel;
+	LOG->Debug( "GetHashForFile: %i", GetHashForFile("/rootfs/stats/patch/modules/usbcore.ko") );
+
+	if( GetHashForFile("/rootfs/stats/patch/modules/usbcore.ko") == 1205299645 )
+		InternalInputHandler = &InputHandler_PIUIO::HandleInputKernel;
 	else
 #endif
 		InternalInputHandler = &InputHandler_PIUIO::HandleInputNormal;
 
-	// figure out which inputs we should report sensors on - pads only
-	// XXX: make this refresh whenever mappings have changed!
-	for( int i = 0; i < 32; i++ )
-		m_bReportSensor[i] = true;
+	ReloadSensorReports();
 
 	InputThread.SetName( "PIUIO thread" );
 	InputThread.Create( InputThread_Start, this );
@@ -82,6 +76,17 @@ void InputHandler_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& vDevice
 		vDevicesOut.push_back( InputDevice(DEVICE_JOY1) );
 		vDescriptionsOut.push_back( "PIUIO" );
 	}
+}
+
+void InputHandler_PIUIO::ReloadSensorReports()
+{
+	if( !INPUTMAPPER )
+		return;
+
+	// figure out which inputs we should report sensors on - pads only
+	// XXX: make this refresh whenever mappings have changed!
+	for( int i = 0; i < 32; i++ )
+		m_bReportSensor[i] = INPUTMAPPER->IsMappedForStyle( DeviceInput(DEVICE_JOY1, JOY_1+i) );
 }
 
 int InputHandler_PIUIO::InputThread_Start( void *p )
@@ -128,9 +133,30 @@ static CString GetSensorDescription( bool *bSensorArray )
 	return join(", ", retSensors);
 }
 
+// XXX: phase out as soon as possible
+const bool IsPadInput( int iButton )
+{
+	switch( iButton+1 )
+	{
+	case 13: case 14: case 15: case 16: /* Player 2 */
+	case 29: case 30: case 31: case 32: /* Player 1 */
+		return true;
+		break;
+	default:
+		return false;
+	}
+
+	return false;
+}
+
 /* code to handle the r16 kernel hack */
 void InputHandler_PIUIO::HandleInputKernel()
 {
+	ZERO( m_iBulkReadData );
+	ZERO( m_iInputField );
+
+	CHECKPOINT;
+
 	m_iLightData &= 0xFFFCFFFC;
 
 	// write each light state at once - array members 0, 2, 4, and 6
@@ -158,6 +184,11 @@ void InputHandler_PIUIO::HandleInputKernel()
 /* this is the input-reading logic that we know works */
 void InputHandler_PIUIO::HandleInputNormal()
 {
+	ZERO( m_iInputData );
+	ZERO( m_iInputField );
+
+	CHECKPOINT;
+
 	for (uint32_t i = 0; i < 4; i++)
 	{
 		// write which sensors to report from
@@ -179,37 +210,17 @@ void InputHandler_PIUIO::HandleInputNormal()
 
 }
 
-// XXX: phase out as soon as possible
-const bool IsPadInput( int iButton )
-{
-	switch( iButton+1 )
-	{
-	case 13: case 14: case 15: case 16: /* Player 2 */
-	case 29: case 30: case 31: case 32: /* Player 1 */
-		return true;
-		break;
-	default:
-		return false;
-	}
-
-	return false;
-}
-
 // XXX fixed 4/7/08.  Game.  Set.  Match.  --infamouspat
 // ITT history :D  -- vyhd
 void InputHandler_PIUIO::HandleInput()
 {
 	m_InputTimer.Touch();
-	uint32_t i = 1; // convenience hack
-
-	bool bInputIsNonZero = false, bInputChanged = false;
 
 	// reset
-	ZERO( m_iInputData );
 	ZERO( m_bInputs );
 
 	// sets up m_iInputField for usage
-	this->InternalInputHandler;
+	(this->*InternalInputHandler)();
 
 	/* Flag coin events */
 //	if( m_iInputData[0] & )
@@ -217,63 +228,38 @@ void InputHandler_PIUIO::HandleInput()
 
 	/* If they asked for it... */
 	if( PREFSMAN->m_bDebugUSBInput && SCREENMAN )
-			SCREENMAN->SystemMessageNoAnimate( InputToBinary(m_iInputField) );
+		SCREENMAN->SystemMessageNoAnimate( InputToBinary(m_iInputField) );
 
-	InputDevice id = DEVICE_JOY1;
+	// construct outside the loop, to save some processor time
+	DeviceInput di(DEVICE_JOY1, JOY_1);
 
 	/* Actually handle the input now */
 	for( int iButton = 0; iButton < 32; iButton++ )
 	{
-		DeviceInput di(id, JOY_1+iButton);
+		di.button = JOY_1+iButton;
 
 		/* If we're in a thread, our timestamp is accurate */
 		if( InputThread.IsCreated() )
 			di.ts.Touch();
 
 		/* Set a description of detected sensors to the arrows */
-		// XXX: set this to pad-only ( StyleI.IsValid()? )
+		// XXX: phase out ASAP!
 		if( IsPadInput(iButton) )
-			INPUTFILTER->SetButtonComment(di, GetSensorDescription( m_bInputs[iButton] ));
+			INPUTFILTER->SetButtonComment( di, GetSensorDescription(m_bInputs[iButton]) );
 
 		/* Is the button we're looking for flagged in the input data? */
 		ButtonPressed( di, m_iInputField & (1 << (31-iButton)) );
 	}
 
-	/* from here on, it's all debug/timing stuff */
-	if( !PREFSMAN->m_bDebugUSBInput )
-		return;
-
-	/*
-	 * Begin debug code!
-	 */
-
-	float fReadTime = m_InputTimer.GetDeltaTime();
-
-	/* loading latency or something similar - discard */
-	if( fReadTime > 0.1f )
-		return;
-
-	m_fTotalReadTime += fReadTime;
-	m_iReadCount++;
-
-	/* we take the average every 1,000 reads */
-	if( m_iReadCount < 1000 )
-		return;
-
-	/* even if the count is off for some value,
-	 * this will still work as expected. */
-	float fAverage = m_fTotalReadTime / (float)m_iReadCount;
-
-	LOG->Info( "PIUIO read average: %f seconds in %i reads. (approx. %i reads per second)", fAverage, m_iReadCount, (int)(1.0f/fAverage) );
-
-	/* reset */
-	m_iReadCount = 0;
-	m_fTotalReadTime = 0;
+	RunTimingCode();
 }
 
 /* Requires "LightsDriver=ext" */
 void InputHandler_PIUIO::UpdateLights()
 {
+	// set a const pointer to the "ext" LightsState to read from
+	static const LightsState *m_LightsState = LightsDriver_External::Get();
+
 	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] = 
 	{
 		/* UL, UR, LL, LR marquee lights */
@@ -298,18 +284,48 @@ void InputHandler_PIUIO::UpdateLights()
 
 	// update marquee lights
 	FOREACH_CabinetLight( cl )
-		if( g_LightsState.m_bCabinetLights[cl] )
+		if( m_LightsState->m_bCabinetLights[cl] )
 			m_iLightData |= iCabinetBits[cl];
 
 	// update the four pad lights on both game controllers
 	FOREACH_GameController( gc )
 		FOREACH_ENUM( GameButton, 4, gb )
-			if( g_LightsState.m_bGameButtonLights[gc][gb] )
+			if( m_LightsState->m_bGameButtonLights[gc][gb] )
 				m_iLightData |= iPadBits[gc][gb];
 
 	// pulse the coin counter if we have an event
 	if( m_bCoinEvent )
 		m_iLightData |= iCoinBit;
+}
+
+// temporary debug function
+void InputHandler_PIUIO::RunTimingCode()
+{
+	if( !PREFSMAN->m_bDebugUSBInput )
+		return;
+
+	float fReadTime = m_InputTimer.GetDeltaTime();
+
+	/* loading latency or something similar - discard */
+	if( fReadTime > 0.1f )
+		return;
+
+	m_fTotalReadTime += fReadTime;
+	m_iReadCount++;
+
+	/* we take the average every 1,000 reads */
+	if( m_iReadCount < 1000 )
+		return;
+
+	/* even if the count is off for some value,
+	 * this will still work as expected. */
+	float fAverage = m_fTotalReadTime / (float)m_iReadCount;
+
+	LOG->Info( "PIUIO read average: %f seconds in %i reads. (approx. %i reads per second)", fAverage, m_iReadCount, (int)(1.0f/fAverage) );
+
+	/* reset */
+	m_iReadCount = 0;
+	m_fTotalReadTime = 0;
 }
 
 /*

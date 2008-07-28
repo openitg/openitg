@@ -19,6 +19,7 @@ public:
 	~InputHandler_PIUIO();
 
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
+	void ReloadSensorReports();
 private:
 	PIUIO Board;
 	RageThread InputThread;
@@ -60,6 +61,7 @@ private:
 	bool m_bCoinEvent;
 
 	/* debug code */
+	void RunTimingCode();
 	RageTimer m_InputTimer;
 	RageTimer m_USBTimer;
 	unsigned int m_iReadCount;

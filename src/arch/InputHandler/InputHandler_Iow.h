@@ -1,5 +1,5 @@
-#ifndef INPUT_HANDLER_LINUX_IOW_H
-#define INPUT_HANDLER_LINUX_IOW_H
+#ifndef INPUT_HANDLER_IOW_H
+#define INPUT_HANDLER_IOW_H
 
 #ifdef WIN32
 #include <windows.h>
@@ -17,8 +17,6 @@ public:
 	InputHandler_Iow();
 	~InputHandler_Iow();
 
-//	for non-threaded input...should we even bother?
-//	void Update( float fDeltaTime );
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
 	ITGIO Board;
@@ -28,23 +26,18 @@ private:
 	bool m_bShutdown;
 
 	uint32_t m_iReadData;
-	uint32_t m_iLastRead;
-
 	uint32_t m_iWriteData;
-	uint32_t m_iLastWrite;
-
-	static int InputThread_Start( void *p );
 
 	void InputThreadMain();
+	static int InputThread_Start( void *p );
 
 	void HandleInput();
-	// allow this driver to update lights with "ext"
 	void UpdateLights();
 };
 
 #define USE_INPUT_HANDLER_IOW
 
-#endif
+#endif // INPUT_HANDLER_IOW
 
 /*
  * (c) 2008 BoXoRRoXoRs

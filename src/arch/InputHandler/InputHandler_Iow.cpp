@@ -1,17 +1,20 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageUtil.h"
+#include "DiagnosticsUtil.h"
+
 #include "PrefsManager.h" // for m_bDebugUSBInput
 #include "LightsManager.h"
-#include "DiagnosticsUtil.h"
 #include "arch/Lights/LightsDriver_External.h"
-#include "InputHandler_Iow.h"
 
-extern LightsState g_LightsState;
+#include "InputHandler_Iow.h"
 
 const int NUM_PAD_LIGHTS = 4;
 
-// Iow lights thread is disabled for now: causes major, major input problems
+/* TODO:
+ * -Clean up debugging code
+ * -Shift input data >> 16
+ */
 
 InputHandler_Iow::InputHandler_Iow()
 {
@@ -128,6 +131,9 @@ void InputHandler_Iow::HandleInput()
 /* Requires "LightsDriver=ext" */
 void InputHandler_Iow::UpdateLights()
 {
+	// set a pointer to the "ext" LightsState for use
+	static const LightsState *m_LightsState = LightsDriver_External::Get();
+
 	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] =
 	{
 		/* Upper-left, upper-right, lower-left, lower-right marquee */
@@ -144,22 +150,16 @@ void InputHandler_Iow::UpdateLights()
 		{ (1 << 5), (1 << 4), (1 << 7), (1 << 6) }, /* Player 2 */
 	};
 
-	m_iLastWrite = m_iWriteData;
-	m_iWriteData = 0;
-
-	/* Something about the coin counter here */
+	ZERO( m_iWriteData );
 
 	// update cabinet lighting
 	FOREACH_CabinetLight( cl )
-		if( g_LightsState.m_bCabinetLights[cl] )
+		if( m_LightsState->m_bCabinetLights[cl] )
 			m_iWriteData |= iCabinetBits[cl];
 
 	// update the four lights on each pad
 	FOREACH_GameController( gc )
 		FOREACH_ENUM( GameButton, NUM_PAD_LIGHTS, gb )
-			if( g_LightsState.m_bGameButtonLights[gc][gb] )
+			if( m_LightsState->m_bGameButtonLights[gc][gb] )
 				m_iWriteData |= iPadBits[gc][gb];
-
-	if( m_iWriteData != m_iLastWrite )
-		LOG->Debug( "Iow lights: setting %i", m_iWriteData );
 }

@@ -1,4 +1,4 @@
-// An indirect lights driver that can be redirected elsewhere
+// an indirect lights driver that can be accessed elsewhere
 
 #include "global.h"
 
@@ -6,12 +6,12 @@
 #include "RageUtil.h"
 #include "LightsDriver_External.h"
 
-LightsState g_LightsState;
+LightsState LightsDriver_External::m_LightsState;
 
 LightsDriver_External::LightsDriver_External()
 {
-	ZERO( g_LightsState );
-	LOG->Trace( "LightsDriver_External::LightsDriver_External()" );
+	ZERO( m_LightsState );
+	LOG->Debug( "LightsDriver_External::LightsDriver_External()" );
 }
 
 LightsDriver_External::~LightsDriver_External()
@@ -20,7 +20,7 @@ LightsDriver_External::~LightsDriver_External()
 
 void LightsDriver_External::Set( const LightsState *ls )
 {
-	g_LightsState = *ls;
+	m_LightsState = *ls;
 }
 
 /*

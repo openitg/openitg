@@ -54,8 +54,9 @@ private:
 	/* temp workaround to keep a dev driver while
 	 * maintaining a working release driver - to use
 	 * Unstable, set UseUnstablePIUIODriver to true */
-	void HandleInputInternal();
-	void HandleInputInternalUnstable();
+	void __cdecl HandleInputInternal();
+	void __cdecl HandleInputInternalUnstable();
+	void (__cdecl InputHandler_PIUIO::*pHandleInput)(void);
 
 	// allow this driver to update lights with "ext"
 	void UpdateLights();

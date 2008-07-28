@@ -19,6 +19,8 @@
 extern LightsState g_LightsState; // from LightsDriver_External
 
 Preference<bool>	g_bUseUnstable( "UseUnstablePIUIODriver", false );
+static bool g_bUnstableAvailable;
+//void(InputHandler_PIUIO::pHandleInput)(void);
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
@@ -38,6 +40,18 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 	/* warn if "ext" isn't enabled */
 	if( PREFSMAN->GetLightsDriver().Find("ext") == -1 )
 		LOG->Warn( "\"ext\" is not an enabled LightsDriver. The I/O board cannot run lights." );
+
+	/* read the input and handle the sensor logic */
+#ifdef LINUX // HELL YES PAT FINALLY MADE A DECENT COMMITABLE CHANGE AFTER MONTHS OF NOT DOING SO :D
+
+	// XXX: softcode (if possible?)
+	if( g_bUseUnstable.Get() && GetHashForFile("/rootfs/lib/modules/2.6.12-rc3/kernel/drivers/usb/usbcore.ko") == 2101124880 )
+		pHandleInput = HandleInputInternalUnstable;
+	else
+#endif
+		pHandleInput = HandleInputInternal;
+
+
 
 
 	// figure out which inputs we should report sensors on - pads only
@@ -232,13 +246,7 @@ void InputHandler_PIUIO::HandleInput()
 	ZERO( m_iInputData );
 	ZERO( m_bInputs );
 
-	/* read the input and handle the sensor logic */
-#ifdef LINUX // HELL YES PAT FINALLY MADE A DECENT COMMITABLE CHANGE AFTER MONTHS OF NOT DOING SO :D
-	if( g_bUseUnstable.Get() )
-		HandleInputInternalUnstable();
-	else
-#endif
-		HandleInputInternal();
+	*(pHandleInput)();
 
 	/* Flag coin events */
 //	if( m_iInputData[0] & )

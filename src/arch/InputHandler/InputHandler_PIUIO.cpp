@@ -18,9 +18,7 @@
 
 extern LightsState g_LightsState; // from LightsDriver_External
 
-Preference<bool>	g_bUseUnstable( "UseUnstablePIUIODriver", false );
-static bool g_bUnstableAvailable;
-//void(InputHandler_PIUIO::pHandleInput)(void);
+static bool g_bUnstableAvailable; // determine which handling code to use
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
@@ -41,18 +39,14 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 	if( PREFSMAN->GetLightsDriver().Find("ext") == -1 )
 		LOG->Warn( "\"ext\" is not an enabled LightsDriver. The I/O board cannot run lights." );
 
-	/* read the input and handle the sensor logic */
-#ifdef LINUX // HELL YES PAT FINALLY MADE A DECENT COMMITABLE CHANGE AFTER MONTHS OF NOT DOING SO :D
-
-	// XXX: softcode (if possible?)
-	if( g_bUseUnstable.Get() && GetHashForFile("/rootfs/lib/modules/2.6.12-rc3/kernel/drivers/usb/usbcore.ko") == 2101124880 )
-		pHandleInput = HandleInputInternalUnstable;
+// HELL YES PAT FINALLY MADE A DECENT COMMITABLE CHANGE AFTER MONTHS OF NOT DOING SO :D
+#ifdef LINUX
+	// use the kernel hack code if the r16 module is loaded
+	if( GetHashForFile("/rootfs/stats/patch/modules/usbcore.ko") == 2101124880 )
+		this->InternalInputHandler = &InputHandler_PIUIO::HandleInputKernel;
 	else
 #endif
-		pHandleInput = HandleInputInternal;
-
-
-
+		InternalInputHandler = &InputHandler_PIUIO::HandleInputNormal;
 
 	// figure out which inputs we should report sensors on - pads only
 	// XXX: make this refresh whenever mappings have changed!
@@ -108,20 +102,16 @@ void InputHandler_PIUIO::InputThreadMain()
 	}
 }
 
-static CString ShortArrayToBin( uint32_t arr[8] )
+static CString InputToBinary( uint32_t array )
 {
 	CString result;
-	uint32_t one = 1;
-	for (int i = 0; i < 8; i++)
+	uint32_t one = 1; // convenience hack
+	for (int i = 31; i >= 0; i--)
 	{
-		for (int j = 31; j >= 0; j--)
-		{
-			if (arr[i] & (one << j))
-				result += "1";
-			else
-				result += "0";
-		}
-		result += "\n";
+		if (one << i)
+			result += "1";
+		else
+			result += "0";
 	}
 	return result;
 }
@@ -133,54 +123,50 @@ static CString GetSensorDescription( bool *bSensorArray )
 	CStringArray retSensors;
 
 	for( int i = 0; i < 4; i++ )
-		if( bSensorArray[i] )
-			retSensors.push_back( SensorNames[i] );
+		if( bSensorArray[i] ) retSensors.push_back( SensorNames[i] );
 
 	return join(", ", retSensors);
 }
 
-/* this is the input-reading logic that needs tested */
-void InputHandler_PIUIO::HandleInputInternalUnstable()
+/* code to handle the r16 kernel hack */
+void InputHandler_PIUIO::HandleInputKernel()
 {
-	uint32_t iNewLightData = 0;
+	m_iLightData &= 0xFFFCFFFC;
 
-	// write each light state at once
+	// write each light state at once - array members 0, 2, 4, and 6
 	for (uint32_t i = 0; i < 4; i++)
-	{
-		iNewLightData = m_iLightData & 0xfffcfffc;
-		iNewLightData |= (i | (i << 16));
+		m_iBulkReadData[i*2] = m_iLightData | (i | (i << 16));
 
-		m_iInputData[i] = iNewLightData;
-	}
+	Board.BulkReadWrite( m_iBulkReadData );
 
-	Board.BulkReadWrite( m_iInputData );
-
+	// process the input we were given
 	for (uint32_t i = 0; i < 4; i++)
 	{
 		/* PIUIO opens high - for more logical processing, invert it */
-		m_iInputData[i] = ~m_iInputData[i];
+		m_iBulkReadData[i*2+1] = ~m_iBulkReadData[i*2+1];
+
+		// add this set into the input field
+		m_iInputField |= m_iBulkReadData[i*2+1];
 
 		// figure out which sensors were enabled
 		for( int j = 0; j < 32; j++ )
-			if( m_iInputData[i] & (1 << 32-j) )
+			if( m_iBulkReadData[i*2+1] & (1 << 32-j) )
 				m_bInputs[j][i] = true;
 	}
 }
 
 /* this is the input-reading logic that we know works */
-void InputHandler_PIUIO::HandleInputInternal()
+void InputHandler_PIUIO::HandleInputNormal()
 {
-	uint32_t iNewLightData = 0;
-
 	for (uint32_t i = 0; i < 4; i++)
 	{
-		iNewLightData = m_iLightData & 0xfffcfffc;
-		iNewLightData |= (i | (i << 16));
+		// write which sensors to report from
+		m_iLightData &= 0xFFFCFFFC;
+		m_iLightData |= (i | (i << 16));
 
-		m_iInputData[i] = iNewLightData;
-
-		Board.Write( iNewLightData );
-		Board.Read( &(m_iInputData[i]) );
+		// do one write/read cycle to get this set of sensors
+		Board.Write( m_iLightData );
+		Board.Read( &m_iInputData[i] );
 
 		/* PIUIO opens high - for more logical processing, invert it */
 		m_iInputData[i] = ~m_iInputData[i];
@@ -192,30 +178,6 @@ void InputHandler_PIUIO::HandleInputInternal()
 	}
 
 }
-
-#if 0
-	/* Easy to access if needed --Vyhd */
-	static const uint32_t iInputBits[NUM_IO_BUTTONS] =
-	{
-		/* Player 1 */
-		//Left, right, up, down arrows
-		(i << 2), (i << 3), (i << 0), (i << 1),
-
-		// Select, Start, MenuLeft, MenuRight
-		(i << 5), (i << 4), (i << 6), (i << 7),
-
-		/* Player 2 */
-		// Left, right, up, down arrows
-		(i << 18), (i << 19), (i << 16), (i << 17),
-
-		// Select, Start, MenuLeft, MenuRight
-		(i << 21), (i << 20), (i << 22), (i << 23),
-
-		/* General input */
-		// Service button, Coin event
-		(i << 9) | (i << 14), (i << 10)
-	};
-#endif
 
 // XXX: phase out as soon as possible
 const bool IsPadInput( int iButton )
@@ -246,34 +208,16 @@ void InputHandler_PIUIO::HandleInput()
 	ZERO( m_iInputData );
 	ZERO( m_bInputs );
 
-	*(pHandleInput)();
+	// sets up m_iInputField for usage
+	this->InternalInputHandler;
 
 	/* Flag coin events */
 //	if( m_iInputData[0] & )
 //		m_bCoinEvent = true;
 
-	for (int j = 0; j < 4; j++)
-	{
-		if (m_iInputData[j] != 0)
-			bInputIsNonZero = true;
-		if (m_iInputData[j] != m_iLastInputData[j])
-			bInputChanged = true;
-	}
-
 	/* If they asked for it... */
-	if( PREFSMAN->m_bDebugUSBInput)
-	{
-		if ( bInputIsNonZero && bInputChanged )
-			LOG->Trace( "Input: %s", ShortArrayToBin(m_iInputData).c_str() );
-
-		if( SCREENMAN )
-			SCREENMAN->SystemMessageNoAnimate( ShortArrayToBin(m_iInputData) );
-	}
-
-	uint32_t iInputBitField = 0;
-
-	for (int j = 0; j < 4; j++)
-		iInputBitField |= m_iInputData[j];
+	if( PREFSMAN->m_bDebugUSBInput && SCREENMAN )
+			SCREENMAN->SystemMessageNoAnimate( InputToBinary(m_iInputField) );
 
 	InputDevice id = DEVICE_JOY1;
 
@@ -292,12 +236,8 @@ void InputHandler_PIUIO::HandleInput()
 			INPUTFILTER->SetButtonComment(di, GetSensorDescription( m_bInputs[iButton] ));
 
 		/* Is the button we're looking for flagged in the input data? */
-		ButtonPressed( di, iInputBitField & (1 << (31-iButton)) );
+		ButtonPressed( di, m_iInputField & (1 << (31-iButton)) );
 	}
-
-	/* assign our last input */
-	for (int j = 0; j < 4; j++)
-		m_iLastInputData[j] = m_iInputData[j];
 
 	/* from here on, it's all debug/timing stuff */
 	if( !PREFSMAN->m_bDebugUSBInput )

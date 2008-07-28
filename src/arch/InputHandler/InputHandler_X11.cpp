@@ -124,9 +124,14 @@ static RageKeySym XSymToKeySym( int key )
 
 InputHandler_X11::InputHandler_X11()
 {
+	// save the original keyboard repeat setting
+	XKeyboardState InitialState;
+	XGetKeyboardControl( X11Helper::Dpy, &InitialState );
+	m_iRepeatSetting = InitialState.global_auto_repeat;
+
 	XKeyboardControl state;
 	state.auto_repeat_mode = AutoRepeatModeOff;
-	XChangeKeyboardControl(X11Helper::Dpy,KBAutoRepeatMode,&state);
+	XChangeKeyboardControl( X11Helper::Dpy, KBAutoRepeatMode, &state );
 	X11Helper::Go();
 	X11Helper::OpenMask(KeyPressMask); X11Helper::OpenMask(KeyReleaseMask);
 }
@@ -134,8 +139,8 @@ InputHandler_X11::InputHandler_X11()
 InputHandler_X11::~InputHandler_X11()
 {
 	XKeyboardControl state;
-	state.auto_repeat_mode = AutoRepeatModeDefault;
-	XChangeKeyboardControl(X11Helper::Dpy,KBAutoRepeatMode,&state);
+	state.auto_repeat_mode = m_iRepeatSetting;
+	XChangeKeyboardControl( X11Helper::Dpy, KBAutoRepeatMode, &state );
 	X11Helper::CloseMask(KeyPressMask); X11Helper::CloseMask(KeyReleaseMask);
 	X11Helper::Stop();
 }

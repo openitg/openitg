@@ -23,11 +23,37 @@ private:
 	PIUIO Board;
 	RageThread InputThread;
 
+	void HandleInput();
+
+	void HandleInputNormal();
+	void HandleInputKernel();
+
+	// a function pointer to which of the two input handlers we use
+	void (InputHandler_PIUIO::*InternalInputHandler)();
+
+	// allow this driver to update lights with "ext"
+	void UpdateLights();
+
+	static int InputThread_Start( void *p );
+	void InputThreadMain();
+
 	// keeps track of which sensors are on for each input
 	bool m_bInputs[32][4];
 
 	// used to determine which inputs have sensor comments
 	bool m_bReportSensor[32];
+
+	/* the fully combined bit field that input is read from */
+	uint32_t m_iInputField;
+
+	/* used for normal reads - one uint32_t per sensor set */
+	uint32_t m_iInputData[4];
+
+	/* array used for bulk read/write sessions */
+	uint32_t m_iBulkReadData[8];
+
+	/* data that will be written to PIUIO */
+	uint32_t m_iLightData;
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;
@@ -39,27 +65,6 @@ private:
 	unsigned int m_iReadCount;
 	float m_fTotalReadTime;
 
-	/* one uint32_t per sensor set */
-	uint32_t m_iInputData[4];
-	uint32_t m_iLastInputData[4];
-
-	uint32_t m_iLightData;
-	uint32_t m_iLastLightData;
-
-	static int InputThread_Start( void *p );
-	void InputThreadMain();
-
-	void HandleInput();
-
-	/* temp workaround to keep a dev driver while
-	 * maintaining a working release driver - to use
-	 * Unstable, set UseUnstablePIUIODriver to true */
-	void __cdecl HandleInputInternal();
-	void __cdecl HandleInputInternalUnstable();
-	void (__cdecl InputHandler_PIUIO::*pHandleInput)(void);
-
-	// allow this driver to update lights with "ext"
-	void UpdateLights();
 };
 
 #define USE_INPUT_HANDLER_PIUIO

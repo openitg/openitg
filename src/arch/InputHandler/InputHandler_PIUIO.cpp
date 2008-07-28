@@ -233,9 +233,11 @@ void InputHandler_PIUIO::HandleInput()
 	ZERO( m_bInputs );
 
 	/* read the input and handle the sensor logic */
+#ifdef LINUX // HELL YES PAT FINALLY MADE A DECENT COMMITABLE CHANGE AFTER MONTHS OF NOT DOING SO :D
 	if( g_bUseUnstable.Get() )
 		HandleInputInternalUnstable();
 	else
+#endif
 		HandleInputInternal();
 
 	/* Flag coin events */

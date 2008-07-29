@@ -45,7 +45,7 @@ void CoinQueue::Stop()
 }
 
 // XXX: make this not suck
-void CoinQueue::Run() // i hate penises
+void CoinQueue::Run()
 {
 	CQThread.Create( CoinQueue_Start, this );
 }

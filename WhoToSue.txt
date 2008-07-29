@@ -21,6 +21,12 @@ Testers:
  - Rhythmatic.net/ITGFreak.com
  - Boxorroxors.net
 
+Special Thanks:
+ - KholdFuzion
+ - bacon
+ - Spectere and friends at Spectere.net
+ - StepMania team for making an awesome framework
+ - StepMania.com
 
 additional credits (in terms of source additions):
  - PIUIO/ITGIO hardware support: Vyhd, infamouspat

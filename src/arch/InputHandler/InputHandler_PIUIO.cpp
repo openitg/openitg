@@ -9,11 +9,46 @@
 #include "ScreenManager.h"
 #include "LightsManager.h"
 #include "InputMapper.h"
+#include "StepMania.h"
 
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_PIUIO.h"
 
 extern LightsState g_LightsState; // from LightsDriver_External
+
+/* This oughtta take care of the dropped coin woes --infamouspat */
+int CoinQueue::CoinQueue_Start( void *p )
+{
+	((CoinQueue*)p)->CoinQueue_ThreadMain();
+	return 0;
+}
+
+void CoinQueue::CoinQueue_ThreadMain()
+{
+	while( !m_bShutdown )
+	{
+		if (m_iCoins > 0)
+		{
+			// TODO: make this go through INPUTFILTER?
+			InsertCoin(1, true);
+			m_iCoins--;
+		}
+		// possible thread issues?  better safe than sorry :/
+		if (m_iCoins < 0) m_iCoins = 0;
+		usleep(1000);
+	}
+}
+
+void CoinQueue::Stop()
+{
+	m_bShutdown = true;
+}
+
+// XXX: make this not suck
+void CoinQueue::Run() // i hate penises
+{
+	CQThread.Create( CoinQueue_Start, this );
+}
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
@@ -97,6 +132,7 @@ int InputHandler_PIUIO::InputThread_Start( void *p )
 
 void InputHandler_PIUIO::InputThreadMain()
 {
+	m_CoinQueue.Run();
 	while( !m_bShutdown )
 	{
 		/* Figure out the lights and write them */
@@ -223,8 +259,8 @@ void InputHandler_PIUIO::HandleInput()
 	(this->*InternalInputHandler)();
 
 	/* Flag coin events */
-//	if( m_iInputData[0] & )
-//		m_bCoinEvent = true;
+	if( m_iInputData[0] & (1 << 28))
+		m_CoinQueue.AddCoin();
 
 	/* If they asked for it... */
 	if( PREFSMAN->m_bDebugUSBInput && SCREENMAN )

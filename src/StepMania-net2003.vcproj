@@ -473,7 +473,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
 				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile="../Program/OpenITG-PC-SSE2.pdb"
 				GenerateMapFile="TRUE"
 				MapFileName="$(IntDir)\$(TargetName).map"

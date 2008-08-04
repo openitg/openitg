@@ -1,29 +1,18 @@
-#ifndef COINQUEUE_H
-#define COINQUEUE_H
+#ifndef IO_PACDRIVE_H
+#define IO_PACDRIVE_H
 
-// Experimental data type to reconcile coins entered during loads
-// on threaded drivers (which are potentially lost).
+#include "USBDriver.h"
 
-class CoinQueue
+class PacDrive: public USBDriver
 {
 public:
-	CoinQueue() { m_iCoins = 0; m_bShutdown = false; }
-	void AddCoin() { m_iCoins++; }
-	void operator++() { AddCoin(); }	// alias
+	bool Write( uint16_t iData );
 
-	void StartThread();
-	void StopThread();
-private:
-	int m_iCoins;
-	bool m_bShutdown;
-	CString m_sThreadName;
-	RageThread m_QueueThread;
-
-	static int QueueThread_Start( void *p );
-	void QueueThread_ThreadMain();
+protected:
+	bool Matches( int idVendor, int idProduct ) const;
 };
 
-#endif // COINQUEUE_H
+#endif /* IO_PACDRIVE_H */
 
 /*
  * Copyright (c) 2008 BoXoRRoXoRs
@@ -49,3 +38,4 @@ private:
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+

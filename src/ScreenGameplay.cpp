@@ -65,10 +65,6 @@
 #define COMPARE_SCORES						THEME->GetMetricB(m_sName, "CompareScores" )
 
 // set an adjusted limit based off the song allowance
-// XXX: if OpenITG crashes, blame this first.
-//
-// YYY: yes, it crashes because a const variable was assigned a value from
-//      a non const field, so I turned it into a macro for the time being --infamouspat
 #define MAX_CUSTOM_LENGTH ((float)(PREFSMAN->m_iCustomMaxSeconds + 10))
 
 static ThemeMetric<float> INITIAL_BACKGROUND_BRIGHTNESS	("ScreenGameplay","InitialBackgroundBrightness");

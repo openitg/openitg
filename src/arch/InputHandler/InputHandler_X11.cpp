@@ -129,6 +129,8 @@ InputHandler_X11::InputHandler_X11()
 	XGetKeyboardControl( X11Helper::Dpy, &InitialState );
 	m_iRepeatSetting = InitialState.global_auto_repeat;
 
+	LOG->Warn( "Initial state: %i", m_iRepeatSetting );
+
 	XKeyboardControl state;
 	state.auto_repeat_mode = AutoRepeatModeOff;
 	XChangeKeyboardControl( X11Helper::Dpy, KBAutoRepeatMode, &state );
@@ -140,6 +142,8 @@ InputHandler_X11::~InputHandler_X11()
 {
 	XKeyboardControl state;
 	state.auto_repeat_mode = m_iRepeatSetting;
+	LOG->Warn( "Setting state: %i", state.auto_repeat_mode );
+
 	XChangeKeyboardControl( X11Helper::Dpy, KBAutoRepeatMode, &state );
 	X11Helper::CloseMask(KeyPressMask); X11Helper::CloseMask(KeyReleaseMask);
 	X11Helper::Stop();

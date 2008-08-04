@@ -1,29 +1,47 @@
-#ifndef COINQUEUE_H
-#define COINQUEUE_H
+#include "global.h"
+#include "RageLog.h"
+#include "PacDrive.h"
 
-// Experimental data type to reconcile coins entered during loads
-// on threaded drivers (which are potentially lost).
+/* TODO: define these for all USBDriver code. */
+#define HID_GET_REPORT 0x01
+#define HID_SET_REPORT 0x09
 
-class CoinQueue
+const int IFACE_IN = 256;
+const int IFACE_OUT = 512;
+
+bool PacDrive::Matches( int idVendor, int idProduct ) const
 {
-public:
-	CoinQueue() { m_iCoins = 0; m_bShutdown = false; }
-	void AddCoin() { m_iCoins++; }
-	void operator++() { AddCoin(); }	// alias
+	if( idVendor != 0xd209 )
+		return false;
 
-	void StartThread();
-	void StopThread();
-private:
-	int m_iCoins;
-	bool m_bShutdown;
-	CString m_sThreadName;
-	RageThread m_QueueThread;
+	/* PacDrives have PIDs 1500-1508 */
+	if( (idProduct & ~0x07) != 0x1500 )
+		return false;
 
-	static int QueueThread_Start( void *p );
-	void QueueThread_ThreadMain();
-};
+	return true;
+}
 
-#endif // COINQUEUE_H
+/* While waiting for this to reconnect, we would likely run into a condition
+ * where LightsDriver::Set() is being called constantly and none of the calls
+ * actually terminate. If this write fails, assume it's lost and don't reconnect.
+ */
+bool PacDrive::Write( uint16_t iData )
+{
+	uint32_t data = (iData << 16);
+
+	LOG->Debug( "%#8x", data );
+
+	// output is within the first 16 bits - accept a 16-bit arg and cast it, for simplicity's sake.
+	int iReturn = usb_control_msg( m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+		HID_SET_REPORT, IFACE_OUT, 0, (char *)&data, 4, 10000 );
+
+	if( iReturn == 4 )
+		return true;
+
+	LOG->Warn( "PacDrive writing failed, returned %i: %s", iReturn, usb_strerror() );
+
+	return false;
+}
 
 /*
  * Copyright (c) 2008 BoXoRRoXoRs

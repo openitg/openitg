@@ -3,7 +3,6 @@
 #ifndef LightsManager_H
 #define LightsManager_H
 
-#include "RageLog.h" // XXX
 #include "RageThreads.h"
 #include "PlayerNumber.h"
 #include "GameInput.h"

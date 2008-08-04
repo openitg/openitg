@@ -1,29 +1,24 @@
-#ifndef COINQUEUE_H
-#define COINQUEUE_H
+#ifndef LIGHTSDRIVER_PACDRIVE_H
+#define LIGHTSDRIVER_PACDRIVE_H
 
-// Experimental data type to reconcile coins entered during loads
-// on threaded drivers (which are potentially lost).
+#include "LightsDriver.h"
+#include "io/PacDrive.h"
 
-class CoinQueue
+class LightsDriver_PacDrive: public LightsDriver
 {
 public:
-	CoinQueue() { m_iCoins = 0; m_bShutdown = false; }
-	void AddCoin() { m_iCoins++; }
-	void operator++() { AddCoin(); }	// alias
+	LightsDriver_PacDrive();
+	~LightsDriver_PacDrive();
 
-	void StartThread();
-	void StopThread();
+	void Set( const LightsState *ls );
 private:
-	int m_iCoins;
-	bool m_bShutdown;
-	CString m_sThreadName;
-	RageThread m_QueueThread;
-
-	static int QueueThread_Start( void *p );
-	void QueueThread_ThreadMain();
+	PacDrive Board;
+	bool m_bHasDevice;
 };
 
-#endif // COINQUEUE_H
+#define USE_LIGHTS_DRIVER_PACDRIVE
+
+#endif // LIGHTSDRIVER_PACDRIVE_H
 
 /*
  * Copyright (c) 2008 BoXoRRoXoRs

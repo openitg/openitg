@@ -11,6 +11,7 @@
 // These are confirmed cross-platform
 #include "InputHandler_Iow.h"
 #include "InputHandler_PIUIO.h"
+#include "InputHandler_MK6IO.h"
 
 #ifdef HAVE_LINUXKERNEL
 #include "InputHandler_Linux_Joystick.h"

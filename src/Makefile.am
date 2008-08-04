@@ -118,6 +118,7 @@ LIBS += -lusb
 DataStructures += io/USBDriver.cpp io/USBDriver.h \
 		  io/PIUIO.cpp io/PIUIO.h \
 		  io/ITGIO.cpp io/ITGIO.h \
+		  io/PacDrive.cpp io/PacDrive.h \
 		  io/USBDevice.h
 
 # these both use the same .h file
@@ -168,7 +169,8 @@ MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture
 
 Lights = arch/Lights/LightsDriver.h \
 		arch/Lights/LightsDriver_SystemMessage.cpp arch/Lights/LightsDriver_SystemMessage.h \
-		arch/Lights/LightsDriver_External.cpp arch/Lights/LightsDriver_External.h
+		arch/Lights/LightsDriver_External.cpp arch/Lights/LightsDriver_External.h \
+		arch/Lights/LightsDriver_PacDrive.cpp arch/Lights/LightsDriver_PacDrive.h
 
 MemoryCard = arch/MemoryCard/MemoryCardDriver.cpp arch/MemoryCard/MemoryCardDriver.h
 LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.h

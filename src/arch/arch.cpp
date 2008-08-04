@@ -53,7 +53,6 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
 #endif
 #ifdef USE_INPUT_HANDLER_PIUIO
 		if(!s->CompareNoCase("PIUIO") )		ret = new InputHandler_PIUIO;
-#endif
 #ifdef USE_INPUT_HANDLER_IOW
 		if(!s->CompareNoCase("IOW") )		ret = new InputHandler_Iow;
 #endif
@@ -77,6 +76,9 @@ void MakeLightsDrivers(CString driver, vector<LightsDriver *> &Add)
 
 #ifdef USE_LIGHTS_DRIVER_EXTERNAL
 	if( !driver.CompareNoCase("Ext") )		ret = new LightsDriver_External;
+#endif
+#ifdef USE_LIGHTS_DRIVER_PACDRIVE
+	if( !driver.CompareNoCase("PacDrive") )		ret = new LightsDriver_PacDrive;
 #endif
 #ifdef USE_LIGHTS_DRIVER_LINUX_PARALLEL
 	if( !driver.CompareNoCase("LinuxParallel") )	ret = new LightsDriver_LinuxParallel;

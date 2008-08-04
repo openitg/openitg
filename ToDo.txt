@@ -1,7 +1,6 @@
 /* More-or-less in order of priority. */
 
 /* Major bug fixing */
--Switching between charts in editor (F5-F6) eats charts
 -Switching modes on the main menu causes OpenITG to hang
 -Figure out what the hell's up with saving USB stats
 

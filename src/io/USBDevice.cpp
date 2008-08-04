@@ -80,20 +80,12 @@ bool USBDevice::IsHub()
 
 bool USBDevice::IsITGIO()
 {
-//	return ITGIO::DeviceMatches( m_iIdVendor, m_iIdProduct );
-	if ( m_iIdVendor == 0x7c0 )
-	{
-		if (m_iIdProduct == 0x1501 || m_iIdProduct == 0x1582 || m_iIdProduct == 0x1584)
-			return true;
-	}
-	return false;
+	return ITGIO::DeviceMatches( m_iIdVendor, m_iIdProduct );
 }
 
 bool USBDevice::IsPIUIO()
 {
-	// return PIUIO::DeviceMatches( m_iIdVendor, m_iIdProduct );
-	if ( m_iIdVendor == 0x547 && m_iIdProduct == 0x1002 ) return true;
-	return false;
+	return PIUIO::DeviceMatches( m_iIdVendor, m_iIdProduct );
 }
 
 bool USBDevice::Load(const CString &nDeviceDir, const vector<CString> &interfaces)

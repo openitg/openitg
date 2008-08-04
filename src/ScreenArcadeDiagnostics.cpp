@@ -50,7 +50,6 @@ void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 {
 	this->PlayCommand( "Refresh" ); // This updates our uptime.
 
-	/* Any reason this was at the end? If so, sorry for moving it. */
 	Screen::Update( fDeltaTime );
 
 	vector<USBDevice> vDevList;

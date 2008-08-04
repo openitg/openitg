@@ -3,6 +3,13 @@
 
 #include <usb.h>
 
+const int HID_GET_REPORT = 0x01;
+const int HID_SET_REPORT = 0x09;
+
+// For HIDs, these addresses are used for interface-level I/O.
+const int HID_IFACE_IN = 256;
+const int HID_IFACE_OUT = 512;
+
 class USBDriver
 {
 public:

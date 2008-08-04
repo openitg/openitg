@@ -160,8 +160,6 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 
 		if ( ! IsADirectory( "/rootfs/sys/bus/usb/devices/" + components[0] ) ) continue;
 
-		//LOG->Info("GetUSBDeviceList(): Found USB Device Entry %s", sDirEntry.c_str() );
-
 		// I win --infamouspat
 		sDevInterfaceList[components[0]].push_back(components[1]);
 
@@ -171,22 +169,14 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
  
 	for(iter = sDevInterfaceList.begin(); iter != sDevInterfaceList.end(); iter++)
 	{
-		CHECKPOINT;
 		USBDevice newDev;
 		CString sDevName = iter->first;
-		CHECKPOINT;
 		vector<CString> sDevChildren = iter->second;
-		CHECKPOINT;
 		
-		//LOG->Info("Loading USB device %s", sDevName.c_str() );
-		//for (unsigned j = 0; j < sDevChildren.size(); j++)
-		//{
-		//	LOG->Info( "\t%s :: %s", sDevName.c_str(), sDevChildren[j].c_str() );
-		//}
-
-		if ( newDev.Load(sDevName, sDevChildren) ) pDevList.push_back(newDev);
-		CHECKPOINT;
+		if ( newDev.Load(sDevName, sDevChildren) )
+			pDevList.push_back(newDev);
 	}
+
 	return true;
 }
 

@@ -2,13 +2,6 @@
 #include "RageLog.h"
 #include "PacDrive.h"
 
-/* TODO: define these for all USBDriver code. */
-#define HID_GET_REPORT 0x01
-#define HID_SET_REPORT 0x09
-
-const int IFACE_IN = 256;
-const int IFACE_OUT = 512;
-
 bool PacDrive::Matches( int idVendor, int idProduct ) const
 {
 	if( idVendor != 0xd209 )
@@ -27,13 +20,12 @@ bool PacDrive::Matches( int idVendor, int idProduct ) const
  */
 bool PacDrive::Write( uint16_t iData )
 {
+	// output is within the first 16 bits - accept a
+	// 16-bit arg and cast it, for simplicity's sake.
 	uint32_t data = (iData << 16);
 
-	LOG->Debug( "%#8x", data );
-
-	// output is within the first 16 bits - accept a 16-bit arg and cast it, for simplicity's sake.
 	int iReturn = usb_control_msg( m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-		HID_SET_REPORT, IFACE_OUT, 0, (char *)&data, 4, 10000 );
+		HID_SET_REPORT, HID_IFACE_OUT, 0, (char *)&data, 4, 10000 );
 
 	if( iReturn == 4 )
 		return true;

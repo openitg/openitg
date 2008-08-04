@@ -145,12 +145,7 @@ bool USBDevice::Load( struct usb_device *dev )
 		LOG->Warn( "Invalid usb_device passed to Load()." );
 		return false;
 	}
-
 	
-	/* Irrelevant USB objects... */
-	/* if( m_iIdVendor == 0 || m_iIdProduct == 0 )
-		return false; */
-
 	CString buf;
 
 	if( GetDeviceProperty("idVendor", buf) )
@@ -194,19 +189,14 @@ bool USBDevice::Load( struct usb_device *dev )
 }
 
 // this is the diary of a mad man
-/* I'm keeping the checkpoints for now, just to make sure. -- Vyhd */
-bool GetUSBDeviceList(vector<USBDevice> &pDevList)
+bool USBDevice::GetUSBDeviceList(vector<USBDevice> &pDevList)
 {
 	usb_init();
 	usb_find_busses();
 	usb_find_devices();
 	
-	//CHECKPOINT_M( "USB initiated" );
-
 	vector<struct usb_device> vDevices;
 	vector<CString>	vDeviceDirs;
-
-	//CHECKPOINT_M( "Device created" );
 
 	/* get all devices on the system */
 	for( struct usb_bus *bus = usb_get_busses(); bus; bus = bus->next )
@@ -216,45 +206,26 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 		else
 			for( struct usb_device *dev = bus->devices; dev; dev->next )
 				vDevices.push_back( *dev );
-
-		//CHECKPOINT_M( ssprintf( "%i devices set", vDevices.size()) );
 	}
 
 	/* get their children - in other cases, this could be an accidental
 	 * infinite loop, but here, it works out nicely as a recursion process. */
 	for( unsigned i = 0; i < vDevices.size(); i++ )
-	{
 		for( unsigned j = 0; j < vDevices[i].num_children; j++ )
-		{
-			/* Talk about a dumb oversight, huh. */
 			if( vDevices[i].children[j] )
 				vDevices.push_back( *vDevices[i].children[j] );
 
-			//CHECKPOINT_M( ssprintf("Child %i on %i set", j, i) );
-		}
-	}
-
 	for( unsigned i = 0; i < vDevices.size(); i++ )
 	{
-		//CHECKPOINT_M( ssprintf( "Assigning device %i of %i", i, vDevices.size()) );
 		USBDevice newDev;
 
 		if (vDevices[i].descriptor.idVendor == 0 || vDevices[i].descriptor.idProduct == 0) continue;
 
-		//LOG->Trace( "Attempting to load from idVendor %x, idProduct %x",
-			//vDevices[i].descriptor.idVendor, 
-			//vDevices[i].descriptor.idProduct );
-
 		if ( newDev.Load( &vDevices[i] ) )
-		{
 			pDevList.push_back( newDev );
-			//CHECKPOINT_M( ssprintf( "Device %i of %i assigned", i, vDevices.size()) );
-		}
 		else
-		{
 			if( vDevices[i].descriptor.idVendor != 0 && vDevices[i].descriptor.idProduct != 0 )
 				LOG->Warn( "Loading failed: %x, %x", vDevices[i].descriptor.idVendor, vDevices[i].descriptor.idProduct );
-		}
 	}
 
 	return true;

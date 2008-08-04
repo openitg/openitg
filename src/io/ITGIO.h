@@ -6,10 +6,7 @@
 class ITGIO: public USBDriver
 {
 public:
-
-//	I'd like to implement this, so our "IsITGIO" declarations are
-//	all in one place. It's not important right now, though. - Vyhd
-//	static bool DeviceMatches( int idVendor, int idProduct );
+	static bool DeviceMatches( int idVendor, int idProduct );
 
 	bool Read( uint32_t *pData );
 	bool Write( uint32_t iData );

@@ -6,6 +6,8 @@
 class PIUIO: public USBDriver
 {
 public:
+	static bool DeviceMatches( int idVendor, int idProduct );
+
 	bool Read( uint32_t *pData );
 	bool Write( uint32_t iData );
 	bool BulkReadWrite( uint32_t pData[4] );

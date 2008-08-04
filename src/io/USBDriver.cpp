@@ -83,22 +83,25 @@ bool USBDriver::Open()
 	}
 
 #ifdef LIBUSB_HAS_DETACH_KERNEL_DRIVER_NP
-
 		// The device may be claimed by a kernel driver. Attempt to reclaim it.
 		// This macro is self-porting, so no ifdef LINUX should be needed.
-		LOG->Debug( "USBDriver::Open(): attempting to detach kernel drivers..." );
-
 		for( unsigned i = 0; i < dev->config->bNumInterfaces; i++ )
 		{
 			int iResult = usb_detach_kernel_driver_np( m_pHandle, i );
 
-			LOG->Debug( "iResult: %i", iResult );
-
-			// ignore "No data available" - means there was no driver claiming it
-			if( iResult != 0 && iResult != -61 )
+			switch( iResult )
 			{
+			// no kernel drivers needed detached ("No data available") - continue
+			case -61:
+				LOG->Debug( "No kernel drivers needed detached." );
+			// no error
+			case 0:
+				continue;
+				break;
+			default:
 				LOG->Warn( "USBDriver::Open(): usb_detach_kernel_driver_np: %s", usb_strerror() );
 				return false;
+				break;
 			}
 		}
 

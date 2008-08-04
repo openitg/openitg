@@ -3,17 +3,10 @@
 
 #include "io/ITGIO.h"
 
-#define USB_DIR_OUT 0x00
-#define USB_DIR_IN 0x80
-
-// addresses sent for USB control messages
-const int IFACE_IN  = 256;
-const int IFACE_OUT = 512;
-
 CString ITGIO::m_sInputError;
 int ITGIO::m_iInputErrorCount = 0;
 
-bool ITGIO::Matches( int idVendor, int idProduct ) const
+bool ITGIO::DeviceMatches( int idVendor, int idProduct )
 {
 	if ( idVendor == 0x7c0 )
 	{
@@ -24,13 +17,20 @@ bool ITGIO::Matches( int idVendor, int idProduct ) const
 	return false;
 }
 
+// redirect for USBDriver's Open() code
+bool ITGIO::Matches( int idVendor, int idProduct ) const
+{
+	return ITGIO::DeviceMatches( idVendor, idProduct );
+}
+
 bool ITGIO::Read( uint32_t *pData )
 {
 	int iResult;
 
 	while( 1 )
 	{
-		iResult = usb_control_msg(m_pHandle, USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE, 1, IFACE_IN, 0, (char *)pData, 4, 1000 );
+		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+			HID_GET_REPORT, HID_IFACE_IN, 0, (char *)pData, 4, 1000 );
 		if( iResult == 4 ) // all data read
 			break;
 
@@ -48,7 +48,8 @@ bool ITGIO::Write( uint32_t iData )
 
 	while( 1 )
 	{
-		iResult = usb_control_msg(m_pHandle, USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE, 9, IFACE_OUT, 0, (char *)&iData, 4, 1000 );
+		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+			HID_SET_REPORT, HID_IFACE_OUT, 0, (char *)&iData, 4, 1000 );
 	
 		if( iResult == 4 ) // all data read
 			break;

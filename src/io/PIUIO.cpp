@@ -3,15 +3,17 @@
 
 #include "io/PIUIO.h"
 
-#define USB_DIR_OUT 0x00
-#define USB_DIR_IN 0x80
-
-bool PIUIO::Matches( int idVendor, int idProduct ) const
+bool PIUIO::DeviceMatches( int idVendor, int idProduct )
 {
 	if( idVendor == 0x547 && idProduct == 0x1002 )
 		return true;
 
 	return false;
+}
+
+bool PIUIO::Matches( int idVendor, int idProduct ) const
+{
+	return PIUIO::DeviceMatches( idVendor, idProduct );
 }
 
 bool PIUIO::Read( uint32_t *pData )
@@ -20,7 +22,7 @@ bool PIUIO::Read( uint32_t *pData )
 
 	while( 1 )
 	{
-		iResult = usb_control_msg(m_pHandle, USB_DIR_IN | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)pData, 8, 10000);
+		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_IN | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)pData, 8, 10000);
 		if( iResult == 8 ) // all data read
 			break;
 
@@ -41,7 +43,7 @@ bool PIUIO::Write( uint32_t iData )
 
 	while( 1 )
 	{
-		iResult = usb_control_msg(m_pHandle, USB_DIR_OUT | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)&iData, 8, 10000 );
+		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)&iData, 8, 10000 );
 		
 		if( iResult == 8 )
 			break;

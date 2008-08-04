@@ -43,21 +43,15 @@ void LightsDriver_PacDrive::Set( const LightsState *ls )
 		if( ls->m_bCabinetLights[cl] )
 			iCabinetData |= (1 << cl);
 
-	LOG->Debug( "iCabinetData: %#2x", iCabinetData );
-
-	// Lights 9-13 for P1 pad, 14-18 for P2 pad
+	// Lights 9-12 for P1 pad, 13-16 for P2 pad
 	// FIXME: make this work for all game-types?
 	FOREACH_GameController( gc )
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( ls->m_bGameButtonLights[gc][gb] )
 				iPadData |= (1 << (gb + gc*4));
 
-	LOG->Debug( "iPadData: %#2x", iPadData );
-
 	// combine the data set above
 	uint16_t iData = (uint16_t)(iCabinetData << 8) | iPadData;
-
-	LOG->Debug( "Writing %#4x to PacDrive.", iData );
 
 	// write the data - if it fails, stop updating
 	if( !Board.Write(iData) )

@@ -53,6 +53,7 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
 #endif
 #ifdef USE_INPUT_HANDLER_PIUIO
 		if(!s->CompareNoCase("PIUIO") )		ret = new InputHandler_PIUIO;
+#endif
 #ifdef USE_INPUT_HANDLER_IOW
 		if(!s->CompareNoCase("IOW") )		ret = new InputHandler_Iow;
 #endif

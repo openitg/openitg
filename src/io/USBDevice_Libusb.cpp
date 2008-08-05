@@ -181,7 +181,7 @@ bool USBDevice::Load( struct usb_device *dev )
 }
 
 // this is the diary of a mad man
-bool USBDevice::GetUSBDeviceList(vector<USBDevice> &pDevList)
+bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 {
 	usb_init();
 	usb_find_busses();

@@ -24,11 +24,13 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
+				OptimizeForProcessor="3"
 				AdditionalIncludeDirectories="libusb\include;.;vorbis;libjpeg;&quot;lua-5.0\include&quot;"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,WINDOWS,DEBUG"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
+				EnableEnhancedInstructionSet="2"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile="$(IntDir)/StepMania.pch"
 				AssemblerListingLocation=".\../Debug/"
@@ -44,12 +46,13 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 &quot;$(intdir)\verstub.obj&quot; /FORCE:MULTIPLE"
 				AdditionalDependencies="libusb.lib"
-				OutputFile="../Program/StepMania-debug.exe"
+				OutputFile="../Program/OpenITG-debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;C:\openitg-src\src\libusb\lib\msvc&quot;"
 				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
+				AssemblyDebug="1"
 				ProgramDatabaseFile="../Debug/StepMania-debug.pdb"
 				GenerateMapFile="TRUE"
 				MapFileName="$(IntDir)\$(TargetName).map"
@@ -64,7 +67,7 @@
 				TypeLibraryName=".\../StepMania.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\StepMania.vdi&quot;"/>
+				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\OpenITG-debug.vdi&quot;"/>
 			<Tool
 				Name="VCPreBuildEventTool"
 				CommandLine="archutils\Win32\verinc
@@ -467,7 +470,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 &quot;$(intdir)\verstub.obj&quot;"
 				AdditionalDependencies="libusb.lib"
-				ShowProgress="1"
+				ShowProgress="0"
 				OutputFile="../Program/OpenITG-PC-SSE2.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -1129,12 +1132,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="Inventory.h">
 			</File>
 			<File
-				RelativePath="io\ITGIO.cpp">
-			</File>
-			<File
-				RelativePath="io\ITGIO.h">
-			</File>
-			<File
 				RelativePath="LuaBinding.h">
 			</File>
 			<File
@@ -1232,12 +1229,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="OptionRowHandler.h">
-			</File>
-			<File
-				RelativePath="io\PIUIO.cpp">
-			</File>
-			<File
-				RelativePath="io\PIUIO.h">
 			</File>
 			<File
 				RelativePath="PlayerAI.cpp">
@@ -1663,6 +1654,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					</File>
 					<File
 						RelativePath="arch\Lights\LightsDriver_Null.h">
+					</File>
+					<File
+						RelativePath=".\arch\Lights\LightsDriver_PacDrive.cpp">
+					</File>
+					<File
+						RelativePath=".\arch\Lights\LightsDriver_PacDrive.h">
 					</File>
 					<File
 						RelativePath="arch\Lights\LightsDriver_SystemMessage.cpp">
@@ -3255,6 +3252,28 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath=".\ibutton\win32lnk.c">
+			</File>
+		</Filter>
+		<Filter
+			Name="Special I/O"
+			Filter="">
+			<File
+				RelativePath="io\ITGIO.cpp">
+			</File>
+			<File
+				RelativePath="io\ITGIO.h">
+			</File>
+			<File
+				RelativePath=".\io\PacDrive.cpp">
+			</File>
+			<File
+				RelativePath=".\io\PacDrive.h">
+			</File>
+			<File
+				RelativePath="io\PIUIO.cpp">
+			</File>
+			<File
+				RelativePath="io\PIUIO.h">
 			</File>
 		</Filter>
 		<File

@@ -207,8 +207,10 @@ OptionsList::~OptionsList()
 
 void OptionsList::Load( CString sType, PlayerNumber pn )
 {
+	LOG->Debug("OptionsList,sType: %s", sType.c_str());
 	TOP_MENU.Load( sType, "TopMenu" );
 
+	LOG->Debug("OptionsList,TopMenu: %s", TOP_MENU.GetValue().c_str() );
 	m_pn = pn;
 	m_bStartIsDown = false;
 
@@ -253,8 +255,9 @@ void OptionsList::Load( CString sType, PlayerNumber pn )
 		OptionRowHandler *pHand = OptionRowHandlerUtil::Make( cmds.v[0], *ord );
 		if( pHand == NULL )
 			RageException::Throw( "Invalid OptionRowHandler '%s' in %s::Line%s", cmds.v[0].GetOriginalCommandString().c_str(), m_sName.c_str(), sLineName.c_str() );
-
+		LOG->Debug("OptionRowDefinition ord: %s", ord->name.c_str());
 		m_Rows[sLineName] = pHand;
+		
 		m_RowDefs[pHand] = ord;
 		m_asLoadedRows.push_back( sLineName );
 		ImportRow( sLineName );
@@ -593,15 +596,25 @@ void OptionsList::SetDefaultCurrentRow()
 	/* If all items on the row just point to other menus, default to 0. */
 	m_iMenuStackSelection = 0;
 
+	ASSERT_M( m_asMenuStack.size() > 0, "Dumbass, you don't even have any row options available." );
+	CHECKPOINT_M( ssprintf("%d",m_asMenuStack.size()) );
 	const CString &sCurrentRow = m_asMenuStack.back();
-	OptionRowHandler *pHandler = m_Rows.find(sCurrentRow)->second;
+	CHECKPOINT_M( ssprintf("%s",sCurrentRow.c_str()) );
+	//OptionRowHandler *pHandler = m_Rows.find(sCurrentRow)->second;
+	ASSERT( m_Rows.find(sCurrentRow) != m_Rows.end() );
+	OptionRowHandler *pHandler = m_Rows[sCurrentRow];
+	ASSERT( pHandler );
+	LOG->Debug("pHandler: %s", pHandler->m_sName.c_str());
+	CHECKPOINT_M( ssprintf("%d",m_RowDefs.size()) );
 	if( m_RowDefs[pHandler]->selectType == SELECT_ONE )
 	{
+		CHECKPOINT;
 		/* One item is selected, so position the cursor on it. */
 		m_iMenuStackSelection = GetOneSelection( sCurrentRow, true );
 		if( m_iMenuStackSelection == -1 )
 			m_iMenuStackSelection = 0;
 	}
+	CHECKPOINT;
 }
 
 int OptionsList::FindScreenInHandler( OptionRowDefinition *pDef, const OptionRowHandler *pHandler, CString sScreen )

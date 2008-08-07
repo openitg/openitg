@@ -42,9 +42,8 @@ class InputFilter
 {
 	struct ButtonState
 	{
-		ButtonState() { m_BeingHeld = m_bLastReportedHeld = false; m_fSecsHeld = m_Level = m_LastLevel = 0; }
-		bool m_BeingHeld, m_bLastReportedHeld;
-		RageTimer m_BeingHeldTime, m_LastReportTime, m_LastInputTime;
+		ButtonState() { m_BeingHeld = false; m_fSecsHeld = m_Level = m_LastLevel = 0; }
+		bool m_BeingHeld;
 		CString m_sComment;
 		float m_fSecsHeld;
 		float m_Level, m_LastLevel;
@@ -56,7 +55,6 @@ class InputFilter
 
 public:
 	void ButtonPressed( DeviceInput di, bool Down );
-	void CheckButtonChange( ButtonState &bs, DeviceInput di, const RageTimer &now, bool Down );
 	void SetButtonComment( DeviceInput di, const CString &sComment = "" );
 	void ResetDevice( InputDevice dev );
 
@@ -76,9 +74,7 @@ public:
 	void GetInputEvents( InputEventArray &array );
 };
 
-
 extern InputFilter*	INPUTFILTER;	// global and accessable from anywhere in our program
-
 
 #endif
 

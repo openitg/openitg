@@ -12,9 +12,6 @@
 #include "Preference.h"
 #include "RageLog.h"
 
-// these locations are always relative regardless of the architecture, 
-//   so keep them in the Data/ folder --infamouspat
-
 #define DEFAULTS_INI_PATH	"Data/Defaults.ini"	// these can be overridden
 #define STEPMANIA_INI_PATH	"Data/StepMania.ini"	// overlay on Defaults.ini, contains the user's choices
 #define STATIC_INI_PATH		"Data/Static.ini"	// overlay on the 2 above, can't be overridden
@@ -271,6 +268,7 @@ PrefsManager::PrefsManager() :
 
 	m_fConstantUpdateDeltaSeconds	( "ConstantUpdateDeltaSeconds",	0 ),
 	m_fPadStickSeconds				( "PadStickSeconds",			0 ),
+	m_fInputDebounceTime			( "InputDebounceTime",		0 ),
 	m_bForceMipMaps					( "ForceMipMaps",				0 ),
 	m_bTrilinearFiltering			( "TrilinearFiltering",			0 ),
 	m_bAnisotropicFiltering			( "AnisotropicFiltering",		0 ),
@@ -306,7 +304,6 @@ PrefsManager::PrefsManager() :
 	m_bBlinkGameplayButtonLightsOnNote	( "BlinkGameplayButtonLightsOnNote",false ),
 	m_bAllowUnacceleratedRenderer	( "AllowUnacceleratedRenderer",	false ),
 	m_bThreadedInput				( "ThreadedInput",				true ),
-	m_bThreadedLights				( "ThreadedLights",				true ),
 	m_bThreadedMovieDecode			( "ThreadedMovieDecode",		true ),
 	m_bScreenTestMode				( "ScreenTestMode",				false ),
 	m_bDebugUSBInput				( "DebugUSBInput",		false ),

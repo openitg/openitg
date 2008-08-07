@@ -4,7 +4,6 @@
 #include "RageInput.h"
 #include "RageUtil.h"
 #include "RageThreads.h"
-#include "Preference.h"
 
 InputFilter*	INPUTFILTER = NULL;	// global and accessable from anywhere in our program
 
@@ -16,7 +15,6 @@ static const float FAST_REPEATS_PER_SEC = 8;
 
 static float g_fTimeBeforeSlow, g_fTimeBeforeFast, g_fTimeBetweenSlow, g_fTimeBetweenFast;
 
-Preference<float>	g_fInputDebounceTime( "InputDebounceTime", 0 );
 
 InputFilter::InputFilter()
 {
@@ -67,50 +65,19 @@ void InputFilter::ButtonPressed( DeviceInput di, bool Down )
 		LOG->Warn( "Invalid button %i,%i", di.button, GetNumDeviceButtons(di.device) );
 		return;
 	}
-	RageTimer now;
 
 	ButtonState &bs = m_ButtonState[di.device][di.button];
-//	CheckButtonChange( bs, di, now, Down );
 
 	bs.m_Level = di.level;
 
-	if( bs.m_BeingHeld != Down )
-	{
-		bs.m_BeingHeld = Down;
-		bs.m_BeingHeldTime = di.ts;
-	}
-
-	CheckButtonChange( bs, di, now, Down );
-}
-
-void InputFilter::CheckButtonChange( ButtonState &bs, DeviceInput di, const RageTimer &now, bool Down )
-{
-	if( bs.m_BeingHeld == bs.m_bLastReportedHeld )
+	if( bs.m_BeingHeld == Down )
 		return;
 
-	// XXX: InputDebounce totally borked input on one of my win32 setups --infamouspat
-	if ( di.device != DEVICE_KEYBOARD )
-	{
-		if( now - bs.m_LastReportTime < g_fInputDebounceTime )
-		{
-			LOG->Warn( "Debouncing %s: last report was %f ago (now = %f)", di.toString().c_str(), bs.m_LastReportTime.Ago(), now.Ago() );
-			return;
-		}
-	}
-
-	bs.m_LastReportTime = now;
-	bs.m_bLastReportedHeld = bs.m_BeingHeld;
+	bs.m_BeingHeld = Down;
 	bs.m_fSecsHeld = 0;
-	bs.m_LastInputTime = bs.m_BeingHeldTime;
-
-	di.ts = bs.m_BeingHeldTime;
-
-	if( !bs.m_bLastReportedHeld )
-		di.level = 0;
 
 	queue.push_back( InputEvent(di,Down? IET_FIRST_PRESS:IET_RELEASE) );
 }
-	
 
 void InputFilter::SetButtonComment( DeviceInput di, const CString &sComment )
 {
@@ -252,3 +219,4 @@ void InputFilter::GetInputEvents( InputEventArray &array )
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+

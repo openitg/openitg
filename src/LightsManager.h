@@ -3,7 +3,6 @@
 #ifndef LightsManager_H
 #define LightsManager_H
 
-#include "RageThreads.h"
 #include "PlayerNumber.h"
 #include "GameInput.h"
 #include "EnumHelper.h"
@@ -83,9 +82,6 @@ private:
 	void ChangeTestCabinetLight( int iDir );
 	void ChangeTestGameButtonLight( int iDir );
 
-	void LightsThread();
-	static int LightsThread_Start( void *p );
-
 	float m_fSecsLeftInCabinetLightBlink[NUM_CABINET_LIGHTS];
 	float m_fSecsLeftInGameButtonBlink[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];
 	float m_fActorLights[NUM_CABINET_LIGHTS];	// current "power" of each actor light
@@ -94,9 +90,6 @@ private:
 	vector<LightsDriver*> m_vpDrivers;
 	LightsMode m_LightsMode;
 	LightsState m_LightsState;
-
-	bool m_bShutdown;
-	RageThread m_LightsThread;
 
 	int GetTestAutoCycleCurrentIndex() { return (int)m_fTestAutoCycleCurrentIndex; }
 

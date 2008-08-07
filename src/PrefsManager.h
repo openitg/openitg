@@ -259,6 +259,9 @@ public:
 	// Number of seconds it takes for a button on the controller to release
 	// after pressed.
 	Preference<float>	m_fPadStickSeconds;
+	
+	// Number of seconds to keep a button held before releasing.
+	Preference<float>	m_fInputDebounceTime;
 
 	// Useful for non 4:3 displays and resolutions < 640x480 where texels don't
 	// map directly to pixels.
@@ -318,7 +321,6 @@ public:
 	Preference<bool>	m_bBlinkGameplayButtonLightsOnNote;
 	Preference<bool>	m_bAllowUnacceleratedRenderer;
 	Preference<bool>	m_bThreadedInput;
-	Preference<bool>	m_bThreadedLights;
 	Preference<bool>	m_bThreadedMovieDecode;
 	Preference<bool>	m_bScreenTestMode;
 	Preference<bool>	m_bDebugUSBInput;

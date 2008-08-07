@@ -200,6 +200,9 @@ void InputHandler_PIUIO::HandleInputNormal()
 		/* PIUIO opens high - for more logical processing, invert it */
 		m_iInputData[i] = ~m_iInputData[i];
 
+		// add this set into the input field
+		m_iInputField |= m_iInputData[i];
+
 		/* Toggle sensor bits - Left, Right, Up, Down */
 		for( int j = 0; j < 32; j++ )
 			if( m_iInputData[i] & (1 << 32-j) )

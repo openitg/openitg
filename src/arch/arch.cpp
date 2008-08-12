@@ -69,33 +69,46 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
 }
 
 #include "Lights/Selector_LightsDriver.h"
-void MakeLightsDrivers(CString driver, vector<LightsDriver *> &Add)
+void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add)
 {
-	LOG->Trace( "Initializing lights driver: %s", driver.c_str() );
+	CStringArray DriversToTry;
+	split(drivers, ",", DriversToTry, true);
 
-	LightsDriver *ret = NULL;
+	ASSERT( DriversToTry.size() != 0 );
+
+	FOREACH_CONST( CString, DriversToTry, s )
+	{
+		LOG->Debug( "Initializing lights driver: %s", s->c_str() );
+		LightsDriver *ret = NULL;
 
 #ifdef USE_LIGHTS_DRIVER_EXTERNAL
-	if( !driver.CompareNoCase("Ext") )		ret = new LightsDriver_External;
+		if( !s->CompareNoCase("Ext") )
+			ret = new LightsDriver_External;
 #endif
 #ifdef USE_LIGHTS_DRIVER_PACDRIVE
-	if( !driver.CompareNoCase("PacDrive") )		ret = new LightsDriver_PacDrive;
+		if( !s->CompareNoCase("PacDrive") )
+			ret = new LightsDriver_PacDrive;
 #endif
 #ifdef USE_LIGHTS_DRIVER_LINUX_PARALLEL
-	if( !driver.CompareNoCase("LinuxParallel") )	ret = new LightsDriver_LinuxParallel;
+		if( !s->CompareNoCase("LinuxParallel") )
+			ret = new LightsDriver_LinuxParallel;
 #endif
 #ifdef USE_LIGHTS_DRIVER_LINUX_WEEDTECH
-	if( !driver.CompareNoCase("WeedTech") )		ret = new LightsDriver_LinuxWeedTech;
+		if( !s->CompareNoCase("WeedTech") )
+			ret = new LightsDriver_LinuxWeedTech;
 #endif
 #ifdef USE_LIGHTS_DRIVER_WIN32_PARALLEL
-	if( !driver.CompareNoCase("Parallel") )		ret = new LightsDriver_Win32Parallel;
+		if( !s->CompareNoCase("Parallel") )
+			ret = new LightsDriver_Win32Parallel;
 #endif
 
-	if( ret == NULL )
-		LOG->Warn( "Unknown lights driver name: %s", driver.c_str() );
-	else
-		Add.push_back( ret );
+		if( ret == NULL )
+			LOG->Warn( "Unknown lights driver name: %s", s->c_str() );
+		else
+			Add.push_back( ret );
+	}
 
+	// always add system message
 	Add.push_back( new LightsDriver_SystemMessage );
 }
 

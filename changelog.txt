@@ -3,6 +3,8 @@ OpenITG, alpha 8 (in development)
 -Lots of code cleanup
 -New LightsDriver:
     PacDrive ("pacdrive") - run lights using an Ultimarc PacDrive
+-Misc. changes:
+    Allow multiple lights drivers (use at your own risk)
 -ITGIO changes:
     Softcoded ITGIO input and added default mappings
     Added mappings for all cabinet lighting

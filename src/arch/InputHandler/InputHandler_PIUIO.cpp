@@ -33,15 +33,19 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 	if( PREFSMAN->GetLightsDriver().Find("ext") == -1 )
 		LOG->Warn( "\"ext\" is not an enabled LightsDriver. The I/O board cannot run lights." );
 
-// use the kernel hack code if the r16 module is loaded
+// use the kernel hack code if the r16 module is seen
 #ifdef LINUX
-	LOG->Debug( "GetHashForFile: %i", GetHashForFile("/rootfs/stats/patch/modules/usbcore.ko") );
-
-	if( GetHashForFile("/rootfs/stats/patch/modules/usbcore.ko") == 1205299645 )
+	if( IsAFile("/rootfs/stats/patch/modules/usbcore.ko") )
+	{
+		LOG->Debug( "Found usbcore.ko. Assuming r16 kernel hack." );
 		InternalInputHandler = &InputHandler_PIUIO::HandleInputKernel;
+	}
 	else
 #endif
+	{
+		LOG->Debug( "usbcore.ko not found - using normal handler." );
 		InternalInputHandler = &InputHandler_PIUIO::HandleInputNormal;
+	}
 
 	ReloadSensorReports();
 
@@ -161,20 +165,27 @@ void InputHandler_PIUIO::HandleInputKernel()
 	for (uint32_t i = 0; i < 4; i++)
 		m_iBulkReadData[i*2] = m_iLightData | (i | (i << 16));
 
+	/* WARNING: SCIENCE CONTENT!
+	 * We write each output set in members 0, 2, 4, and 6 of a uint32_t array.
+	 * The BulkReadWrite sends four asynchronous write/read requests that end
+	 * up overwriting the data we write with the data that's read.
+	 *
+	 * I'm not sure why we need an 8-member array. Oh well. */
+
 	Board.BulkReadWrite( m_iBulkReadData );
 
 	// process the input we were given
 	for (uint32_t i = 0; i < 4; i++)
 	{
 		/* PIUIO opens high - for more logical processing, invert it */
-		m_iBulkReadData[i*2+1] = ~m_iBulkReadData[i*2+1];
+		m_iBulkReadData[i*2] = ~m_iBulkReadData[i*2];
 
 		// add this set into the input field
-		m_iInputField |= m_iBulkReadData[i*2+1];
+		m_iInputField |= m_iBulkReadData[i*2];
 
 		// figure out which sensors were enabled
 		for( int j = 0; j < 32; j++ )
-			if( m_iBulkReadData[i*2+1] & (1 << 32-j) )
+			if( m_iBulkReadData[i*2] & (1 << 32-j) )
 				m_bInputs[j][i] = true;
 	}
 }

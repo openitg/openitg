@@ -427,12 +427,21 @@ void FileWrite(RageFileBasic& f, int iWrite);
 void FileWrite(RageFileBasic& f, size_t uWrite);
 void FileWrite(RageFileBasic& f, float fWrite);
 
+// stops a currently-running copy operation
+void InterruptCopy();
+
 bool FileCopy( CString sSrcFile, CString sDstFile );
 bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bReadError = NULL );
 bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float), CString &sError );
-/* We will probably never need to use this. */
-//bool CopyWithProgress( RageFileBasic &in, RageFileBasic &out, RageFileBasic &read,
-//		       CString &sError, void(*OnUpdate)(float), bool *bReadError = NULL );
+
+
+// a few bitwise operators that may come in handy
+template<class T>
+void SetBit( T data, short bit, bool on );
+template<class T>
+bool IsBitSet( T data, short bit );
+template<class T>
+CString BitsToString( T data );
 
 #endif
 

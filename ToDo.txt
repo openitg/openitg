@@ -4,9 +4,6 @@
 -Switching modes on the main menu causes OpenITG to hang
 -Figure out what the hell's up with saving USB stats
 
-/* Things to test on the arcade */
--See if separate coin counters have separate bit mappings
-
 /* Minor bug fixing */
 -InputHandler_PIUIO's coin code is broken
 -"Random" selections for non-existant BGVids always return the same video

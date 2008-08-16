@@ -2,6 +2,7 @@
 #define SCREENPLAYEROPTIONS_H
 
 #include "ScreenOptionsMaster.h"
+#include "PlayerOptions.h"
 
 AutoScreenMessage( SM_BackFromPlayerOptions )
 
@@ -20,7 +21,6 @@ private:
 	void GoToNextScreen();
 	void GoToPrevScreen();
 
-	vector<bool>	m_bRowCausesDisqualified[NUM_PLAYERS];
 	void UpdateDisqualified( int row, PlayerNumber pn );
 
 	bool        m_bAcceptedChoices;
@@ -29,8 +29,10 @@ private:
 	Sprite      m_sprOptionsMessage;
 
 	RageSound	m_CancelAll;
-	
 	AutoActor	m_sprCancelAll[NUM_PLAYERS];
+
+	// used to restore options if we back out
+	PlayerOptions	m_OriginalOptions[NUM_PLAYERS];
 };
 
 #endif

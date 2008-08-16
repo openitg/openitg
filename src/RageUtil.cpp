@@ -10,9 +10,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-// a global flag used to interrupt a currently-running copy dialog.
-bool g_bInterruptCopy;
-
 int randseed = time(NULL);
 
 // From "Numerical Recipes in C".
@@ -1487,8 +1484,18 @@ void FileWrite(RageFileBasic& f, float fWrite)
 	f.PutLine( ssprintf("%f", fWrite) );
 }
 
+// a flag that can be used to interrupt a current copy operation
+bool g_bInterruptCopy = false;
+
+void InterruptCopy()
+{
+	g_bInterruptCopy = true;
+}
+
 bool FileCopy( CString sSrcFile, CString sDstFile )
 {
+	g_bInterruptCopy = false;
+
 	if( !sSrcFile.CompareNoCase(sDstFile) )
 	{
 		LOG->Warn( "Tried to copy \"%s\" over itself", sSrcFile.c_str() );
@@ -1514,10 +1521,10 @@ bool FileCopy( CString sSrcFile, CString sDstFile )
 	return true;
 }
 
-// This is, admittedly, ugly, but given the circumstances, this is the easiest
-// way to get this to work. Occam's Razor has never failed me before...
 bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float), CString &sError )
 {
+	g_bInterruptCopy = false;
+
 	if( !sSrcFile.CompareNoCase(sDstFile) )
 	{
 		sError = ssprintf( "Tried to copy \"%s\" over itself", sSrcFile.c_str() );
@@ -1594,6 +1601,8 @@ bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float
 
 bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bReadError )
 {
+	g_bInterruptCopy = false;
+
 	while( !g_bInterruptCopy )
 	{
 		CString data;
@@ -1633,6 +1642,34 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bRe
 	}
 
 	return true;
+}
+
+template<class T>
+bool IsBitSet( T data, short bit )
+{
+	int iBits = sizeof(T) * 8;
+	ASSERT_M( iBits > bit, "bit out of range" );
+
+	return data && ((T)1 << (iBits-bit));
+}
+
+template<class T>
+void SetBit( T &data, short bit, bool on )
+{
+	int iBits = sizeof(T) * 8;
+	ASSERT_M( iBits > bit, "bit out of range" );
+}
+
+template<class T>
+CString BitsToString( T data )
+{
+	int iBits = sizeof(T) * 8;
+	CString ret;
+
+	for( int i = 0; i < iBits; i++ )
+		ret.Insert( IsBitSet<T>( data, i ) ? "1" : "0" );
+
+	return ret;
 }
 
 /*

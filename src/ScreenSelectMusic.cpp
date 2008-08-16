@@ -70,8 +70,6 @@ static bool g_bSampleMusicWaiting = false;
 static RageTimer g_StartedLoadingAt(RageZeroTimer);
 static bool g_bGoToOptions = false;
 
-extern bool g_bInterruptCopy; // from RageUtil
-
 REGISTER_SCREEN_CLASS( ScreenSelectMusic );
 ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuElements( sClassName ),
 	FOV( m_sName, "FOV" ),
@@ -1344,10 +1342,11 @@ void UpdateLoadProgress( float fPercent )
 			( INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) &&
 			INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT)) );
 
-	g_bInterruptCopy = bInterrupt;
-
 	if( bInterrupt )
-		LOG->Debug( "Load interrupted." );
+	{
+		InterruptCopy();
+		LOG->Warn( "Custom song load interrupted." );
+	}
 
 	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();

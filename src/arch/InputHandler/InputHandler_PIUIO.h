@@ -19,9 +19,8 @@ public:
 	~InputHandler_PIUIO();
 
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
-	void ReloadSensorReports();
 private:
-	
+
 	PIUIO Board;
 	RageThread InputThread;
 
@@ -40,10 +39,7 @@ private:
 	void InputThreadMain();
 
 	// keeps track of which sensors are on for each input
-	bool m_bInputs[32][4];
-
-	// used to determine which inputs have sensor comments
-	bool m_bReportSensor[32];
+	bool m_bSensors[32][4];
 
 	/* the fully combined bit field that input is read from */
 	uint32_t m_iInputField;
@@ -67,7 +63,6 @@ private:
 	RageTimer m_USBTimer;
 	unsigned int m_iReadCount;
 	float m_fTotalReadTime;
-
 };
 
 

@@ -29,9 +29,6 @@ public:
 	virtual ~InputHandler() { }
 	virtual void Update( float fDeltaTime ) { }
 	virtual void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut ) = 0;
-	/* Devices that report sensors may need to determine which buttons to report for,
-	 * and it'd be too slow to poll. Call manually as needed. */
-	virtual void ReloadSensorReports() { }
 
 	/* In Windows, some devices need to be recreated if we recreate our main window.
 	 * Override this if you need to do that. */

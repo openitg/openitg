@@ -600,19 +600,6 @@ bool InputMapper::IsMapped( StyleInput StyleI )
 	return IsMapped( GameI );
 }
 
-// XXX: There *must* be a better way to do this...
-bool InputMapper::IsMappedForStyle( DeviceInput DeviceI )
-{
-	if( !GAMESTATE->m_pCurStyle )
-		return false;
-
-	GameInput GameI;
-	DeviceToGame( DeviceI, GameI );
-	
-	StyleInput StyleI = GAMESTATE->m_pCurStyle->GameInputToStyleInput( GameI );
-	return StyleI.IsValid();
-}
-
 void InputMapper::UpdateTempDItoGI()
 {
 	// clear out m_tempDItoGI

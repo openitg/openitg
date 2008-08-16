@@ -67,7 +67,9 @@ void ScreenPlayerOptions::Init()
 
 	FOREACH_HumanPlayer( p )
 	{
-		m_bRowCausesDisqualified[p].resize( m_Rows.size(), false );
+		// save original player options 
+		m_OriginalOptions[p] = GAMESTATE->m_pPlayerState[p]->m_PlayerOptions;
+
 		for( unsigned r=0; r<m_Rows.size(); r++ )
 			UpdateDisqualified( r, p );
 	}
@@ -76,6 +78,10 @@ void ScreenPlayerOptions::Init()
 
 void ScreenPlayerOptions::GoToPrevScreen()
 {
+	// restore the last-saved player options
+	FOREACH_HumanPlayer( p )
+		GAMESTATE->m_pPlayerState[p]->m_PlayerOptions = m_OriginalOptions[p];
+
 	if( SCREENMAN->IsStackedScreen(this) )
 	{
 		SCREENMAN->PopTopScreen( SM_BackFromPlayerOptions );
@@ -199,32 +205,15 @@ void ScreenPlayerOptions::UpdateDisqualified( int row, PlayerNumber pn )
 {
 	ASSERT( GAMESTATE->IsHumanPlayer(pn) );
 
-	// save original player options 
-	PlayerOptions poOrig = GAMESTATE->m_pPlayerState[pn]->m_PlayerOptions;
-
 	// Find out if the current row when exprorted causes disqualification.
 	// Exporting the row will fill GAMESTATE->m_PlayerOptions.
-	GAMESTATE->m_pPlayerState[pn]->m_PlayerOptions = PlayerOptions();
 	vector<PlayerNumber> v;
 	v.push_back( pn );
 	ExportOptions( row, v );
-	bool bRowCausesDisqualified = GAMESTATE->IsDisqualified( pn );
-	m_bRowCausesDisqualified[pn][row] = bRowCausesDisqualified;
 
-	// Update disqualified graphic
-	bool bDisqualified = false;
-	FOREACH_CONST( bool, m_bRowCausesDisqualified[pn], b )
-	{
-		if( *b )
-		{
-			bDisqualified = true;
-			break;
-		}
-	}
-	m_sprDisqualify[pn]->SetHidden( !bDisqualified );
-
-	// restore previous player options in case the user escapes back after this
-	GAMESTATE->m_pPlayerState[pn]->m_PlayerOptions = poOrig;
+	// for song options, one change may disqualify both players - update each sprite
+	FOREACH_PlayerNumber( p )
+		m_sprDisqualify[p]->SetVisible( GAMESTATE->IsDisqualified(p) );
 }
 
 /*

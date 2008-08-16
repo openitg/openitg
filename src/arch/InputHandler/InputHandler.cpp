@@ -17,7 +17,9 @@ void InputHandler::UpdateTimer()
 
 void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 {
-	//LOG->Debug( "%s %s", di.toString().c_str(), Down ? "pressed" : "released" );
+	// this gets spammed a lot.
+	if( di.button != KEY_SPACE )
+		LOG->Debug( "%s %s", di.toString().c_str(), Down ? "pressed" : "released" );
 
 	if( di.ts.IsZero() )
 	{

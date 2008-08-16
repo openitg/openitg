@@ -47,8 +47,6 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 		InternalInputHandler = &InputHandler_PIUIO::HandleInputNormal;
 	}
 
-	ReloadSensorReports();
-
 	InputThread.SetName( "PIUIO thread" );
 	InputThread.Create( InputThread_Start, this );
 }
@@ -78,17 +76,6 @@ void InputHandler_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& vDevice
 		vDevicesOut.push_back( InputDevice(DEVICE_JOY1) );
 		vDescriptionsOut.push_back( "PIUIO" );
 	}
-}
-
-void InputHandler_PIUIO::ReloadSensorReports()
-{
-	if( !INPUTMAPPER )
-		return;
-
-	// figure out which inputs we should report sensors on - pads only
-	// XXX: make this refresh whenever mappings have changed!
-	for( int i = 0; i < 32; i++ )
-		m_bReportSensor[i] = INPUTMAPPER->IsMappedForStyle( DeviceInput(DEVICE_JOY1, JOY_1+i) );
 }
 
 int InputHandler_PIUIO::InputThread_Start( void *p )
@@ -125,39 +112,25 @@ static CString InputToBinary( uint32_t array )
 
 static CString SensorNames[] = { "right", "left", "bottom", "top" };
 
-static CString GetSensorDescription( bool *bSensorArray )
+static CString GetSensorDescription( bool *bArray )
 {
-	CStringArray retSensors;
+	CStringArray sensors;
 
 	for( int i = 0; i < 4; i++ )
-		if( bSensorArray[i] ) retSensors.push_back( SensorNames[i] );
+		if( bArray[i] ) sensors.push_back( SensorNames[i] );
 
-	return join(", ", retSensors);
-}
+	/* HACK: if all sensors are reporting, then don't return anything.
+	 * On PIUIO, all buttons always return all sensors except pads. */
+	if( sensors.size() == 4 )
+		return "";
 
-// XXX: phase out as soon as possible
-const bool IsPadInput( int iButton )
-{
-	switch( iButton+1 )
-	{
-	case 13: case 14: case 15: case 16: /* Player 2 */
-	case 29: case 30: case 31: case 32: /* Player 1 */
-		return true;
-		break;
-	default:
-		return false;
-	}
-
-	return false;
+	return join(", ", sensors);
 }
 
 /* code to handle the r16 kernel hack */
 void InputHandler_PIUIO::HandleInputKernel()
 {
 	ZERO( m_iBulkReadData );
-	ZERO( m_iInputField );
-
-	CHECKPOINT;
 
 	m_iLightData &= 0xFFFCFFFC;
 
@@ -186,7 +159,7 @@ void InputHandler_PIUIO::HandleInputKernel()
 		// figure out which sensors were enabled
 		for( int j = 0; j < 32; j++ )
 			if( m_iBulkReadData[i*2] & (1 << 32-j) )
-				m_bInputs[j][i] = true;
+				m_bSensors[j][i] = true;
 	}
 }
 
@@ -194,9 +167,6 @@ void InputHandler_PIUIO::HandleInputKernel()
 void InputHandler_PIUIO::HandleInputNormal()
 {
 	ZERO( m_iInputData );
-	ZERO( m_iInputField );
-
-	CHECKPOINT;
 
 	for (uint32_t i = 0; i < 4; i++)
 	{
@@ -217,19 +187,18 @@ void InputHandler_PIUIO::HandleInputNormal()
 		/* Toggle sensor bits - Left, Right, Up, Down */
 		for( int j = 0; j < 32; j++ )
 			if( m_iInputData[i] & (1 << 32-j) )
-				m_bInputs[j][i] = true;
+				m_bSensors[j][i] = true;
 	}
 
 }
 
-// XXX fixed 4/7/08.  Game.  Set.  Match.  --infamouspat
-// ITT history :D  -- vyhd
 void InputHandler_PIUIO::HandleInput()
 {
 	m_InputTimer.Touch();
 
-	// reset
-	ZERO( m_bInputs );
+	// reset our reading data
+	ZERO( m_bSensors );
+	ZERO( m_iInputField );
 
 	// sets up m_iInputField for usage
 	(this->*InternalInputHandler)();
@@ -241,7 +210,6 @@ void InputHandler_PIUIO::HandleInput()
 	// construct outside the loop, to save some processor time
 	DeviceInput di(DEVICE_JOY1, JOY_1);
 
-	/* Actually handle the input now */
 	for( int iButton = 0; iButton < 32; iButton++ )
 	{
 		di.button = JOY_1+iButton;
@@ -251,9 +219,7 @@ void InputHandler_PIUIO::HandleInput()
 			di.ts.Touch();
 
 		/* Set a description of detected sensors to the arrows */
-		// XXX: phase out ASAP!
-		if( IsPadInput(iButton) )
-			INPUTFILTER->SetButtonComment( di, GetSensorDescription(m_bInputs[iButton]) );
+		INPUTFILTER->SetButtonComment( di, GetSensorDescription(m_bSensors[iButton]) );
 
 		/* Is the button we're looking for flagged in the input data? */
 		ButtonPressed( di, m_iInputField & (1 << (31-iButton)) );

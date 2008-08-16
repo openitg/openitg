@@ -1087,6 +1087,9 @@ bool GameState::IsDisqualified( PlayerNumber pn )
 	if( !PREFSMAN->m_bDisqualification )
 		return false;
 
+	if( GAMESTATE->m_SongOptions.m_fMusicRate < 1.0f )
+		return true;
+
 	if( GAMESTATE->IsCourseMode() )
 	{
 		return GAMESTATE->m_pPlayerState[pn]->m_PlayerOptions.IsEasierForCourseAndTrail( 

@@ -23,6 +23,7 @@ static const CString RESET_ROW = "ResetOptions";
 
 void OptionListRow::Load( OptionsList *pOptions, const CString &sType )
 {
+	m_sType = sType;
 	m_pOptions = pOptions;
 	ITEMS_SPACING_Y	.Load(sType,"ItemsSpacingY");
 
@@ -30,7 +31,6 @@ void OptionListRow::Load( OptionsList *pOptions, const CString &sType )
 	m_Text[0].LoadFromFont( THEME->GetPathF(sType, "normal") );
 	m_Text[0].SetName( "Text" );
 	ActorUtil::LoadAllCommands( m_Text[0], sType );
-	CHECKPOINT_M( m_Text[0].m_pFont->path );
 
 	m_Underlines.resize( 1 );
 	m_Underlines[0].Load( THEME->GetPathG(sType, "underline") );
@@ -57,13 +57,25 @@ void OptionListRow::SetFromHandler( const OptionRowHandler *cpHandler )
 
 	int iNum = max( m_pOptions->m_RowDefs[pHandler]->choices.size(), m_Text.size() )+1;
 	BitmapText defText = m_Text[0];
-	CHECKPOINT_M( m_Text[0].m_pFont->path );
 	m_Text.resize( iNum, defText );
 	m_Underlines.resize( iNum, m_Underlines[0] );
-	CHECKPOINT_M( m_Text[iNum-1].m_pFont->path );
 
+	/*
+		it ain't over yet
+
+		there's something missing in AutoActor's operator=() taken from
+		SM 4.0 that might've been accidentally thrown out.
+
+		TODO: clean up AutoActor so resize() actually works
+
+		--infamouspat
+	*/
 	for( unsigned i = 0; i < m_pOptions->m_RowDefs[pHandler]->choices.size(); ++i )
 	{
+		m_Underlines[i].Load( THEME->GetPathG(m_sType, "underline") );
+		m_Underlines[i]->SetName( "Underline" );
+		ActorUtil::LoadAllCommands( *m_Underlines[i], m_sType );
+
 		// init underlines
 		this->AddChild( m_Underlines[i] );
 
@@ -123,7 +135,6 @@ void OptionListRow::SetTextFromHandler( const OptionRowHandler *cpHandler )
 		//CString sText = pHandler->GetThemedItemText( i );
 		// XXX: localize somehow --infamouspat
 		CString sText = m_pOptions->m_RowDefs[pHandler]->choices[i];
-		CHECKPOINT_M( sText );
 
 		CString sDest = pHandler->GetScreen( i );
 		if( m_pOptions->m_setDirectRows.find(sDest) != m_pOptions->m_setDirectRows.end() && sDest.size() )
@@ -137,7 +148,6 @@ void OptionListRow::SetTextFromHandler( const OptionRowHandler *cpHandler )
 			}
 		}
 
-		CHECKPOINT_M( ssprintf( "%s, selection: %d, size: %d", m_Text[i].m_pFont->path.c_str(), i, m_Text.size()) );
 		m_Text[i].SetText( sText );
 	}
 }
@@ -147,7 +157,7 @@ void OptionListRow::SetUnderlines( const vector<bool> &aSelections, const Option
 	OptionRowHandler *pHandler = (OptionRowHandler *)cpHandler;
 	for( unsigned i = 0; i < aSelections.size(); ++i )
 	{
-		Actor *pActor = m_Underlines[i];
+		//AutoActor pActor = m_Underlines[i];
 
 		bool bSelected = aSelections[i];
 		CString sDest = pHandler->GetScreen( i );
@@ -177,7 +187,8 @@ void OptionListRow::SetUnderlines( const vector<bool> &aSelections, const Option
 			}
 		}
 
-		pActor->PlayCommand( bSelected?"Show":"Hide" );
+		//pActor->PlayCommand( bSelected?"Show":"Hide" );
+		m_Underlines[i]->PlayCommand( bSelected?"Show":"Hide" );
 	}
 }
 
@@ -207,10 +218,8 @@ OptionsList::~OptionsList()
 
 void OptionsList::Load( CString sType, PlayerNumber pn )
 {
-	LOG->Debug("OptionsList,sType: %s", sType.c_str());
 	TOP_MENU.Load( sType, "TopMenu" );
 
-	LOG->Debug("OptionsList,TopMenu: %s", TOP_MENU.GetValue().c_str() );
 	m_pn = pn;
 	m_bStartIsDown = false;
 
@@ -255,7 +264,6 @@ void OptionsList::Load( CString sType, PlayerNumber pn )
 		OptionRowHandler *pHand = OptionRowHandlerUtil::Make( cmds.v[0], *ord );
 		if( pHand == NULL )
 			RageException::Throw( "Invalid OptionRowHandler '%s' in %s::Line%s", cmds.v[0].GetOriginalCommandString().c_str(), m_sName.c_str(), sLineName.c_str() );
-		LOG->Debug("OptionRowDefinition ord: %s", ord->name.c_str());
 		m_Rows[sLineName] = pHand;
 		
 		m_RowDefs[pHand] = ord;
@@ -285,7 +293,6 @@ void OptionsList::Load( CString sType, PlayerNumber pn )
 
 void OptionsList::Reset()
 {
-	LOG->Debug("OptionsList::Reset() called");
 	/* Import options. */
 	FOREACHM( CString, OptionRowHandler *, m_Rows, hand )
 	{
@@ -391,7 +398,6 @@ void OptionsList::SwitchMenu( int iDir )
 	}
 
 	SetDefaultCurrentRow();
-	CHECKPOINT;
 	SwitchToCurrentRow();
 	TweenOnCurrentRow( iDir > 0 );
 }
@@ -414,7 +420,6 @@ CString InputTypeToString(InputEventType type)
 
 void OptionsList::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
-	//LOG->Debug("OptionsList::Input()");
 	PlayerNumber pn = GAMESTATE->GetCurrentStyle()->ControllerToPlayerNumber( GameI.controller );
 
 	CString msg;
@@ -597,24 +602,18 @@ void OptionsList::SetDefaultCurrentRow()
 	m_iMenuStackSelection = 0;
 
 	ASSERT_M( m_asMenuStack.size() > 0, "Dumbass, you don't even have any row options available." );
-	CHECKPOINT_M( ssprintf("%d",m_asMenuStack.size()) );
 	const CString &sCurrentRow = m_asMenuStack.back();
-	CHECKPOINT_M( ssprintf("%s",sCurrentRow.c_str()) );
 	//OptionRowHandler *pHandler = m_Rows.find(sCurrentRow)->second;
 	ASSERT( m_Rows.find(sCurrentRow) != m_Rows.end() );
 	OptionRowHandler *pHandler = m_Rows[sCurrentRow];
 	ASSERT( pHandler );
-	LOG->Debug("pHandler: %s", pHandler->m_sName.c_str());
-	CHECKPOINT_M( ssprintf("%d",m_RowDefs.size()) );
 	if( m_RowDefs[pHandler]->selectType == SELECT_ONE )
 	{
-		CHECKPOINT;
 		/* One item is selected, so position the cursor on it. */
 		m_iMenuStackSelection = GetOneSelection( sCurrentRow, true );
 		if( m_iMenuStackSelection == -1 )
 			m_iMenuStackSelection = 0;
 	}
-	CHECKPOINT;
 }
 
 int OptionsList::FindScreenInHandler( OptionRowDefinition *pDef, const OptionRowHandler *pHandler, CString sScreen )

@@ -10,6 +10,7 @@
 #include "OptionsCursor.h"
 #include "ThemeMetric.h"
 #include "RageSound.h"
+#include "Sprite.h"
 
 class OptionsList;
 class OptionListRow: public ActorFrame
@@ -26,6 +27,8 @@ public:
 
 private:
 	OptionsList *m_pOptions;
+
+	CString m_sType;
 
 	vector<BitmapText> m_Text;
 	// underline for each ("self or child has selection")

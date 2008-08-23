@@ -7,7 +7,7 @@
 #include <map>
 
 /* This code is taken from CNLohr's 3.9 AC build. */
-map< int, RageTimer > m_LastHit;
+map<int, RageTimer> m_LastHit;
 
 void InputHandler::UpdateTimer()
 {
@@ -17,17 +17,18 @@ void InputHandler::UpdateTimer()
 
 void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 {
-	// this gets spammed a lot.
-	/*
-	if( di.button != KEY_SPACE )
-		LOG->Debug( "%s %s", di.toString().c_str(), Down ? "pressed" : "released" );
-	*/
-
 	if( di.ts.IsZero() )
 	{
 		di.ts = m_LastUpdate.Half();
 		++m_iInputsSinceUpdate;
 	}
+
+	// uncomment if you need to check timestamps on input...
+	// threaded input should never pass 0.000010 or so.
+	/*
+	if( di.button != KEY_SPACE )
+		LOG->Debug( "%s %s - timestamp, %f", di.toString().c_str(), Down ? "pressed" : "released", di.ts.Ago() );
+	*/
 
 	if( !Down )
 	{

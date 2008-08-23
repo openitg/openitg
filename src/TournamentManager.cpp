@@ -182,8 +182,8 @@ bool TournamentManager::DeleteCompetitor( Competitor *cptr )
 		return false;
 
 	SAFE_DELETE( *iter );
-
 	m_pCompetitors.erase( iter );
+
 	return true;
 }
 
@@ -192,8 +192,8 @@ bool TournamentManager::DeleteCompetitorByIndex( unsigned i )
 	ASSERT( i <= m_pCompetitors.size() );
 
 	SAFE_DELETE( m_pCompetitors[i] );
-
 	m_pCompetitors.erase( m_pCompetitors.begin() + i );
+
 	return true;
 }
 

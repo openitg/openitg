@@ -5,11 +5,9 @@
 -Figure out what the hell's up with saving USB stats
 
 /* Minor bug fixing */
--InputHandler_PIUIO's coin code is broken
 -"Random" selections for non-existant BGVids always return the same video
--OptionsList: linear tweening is borked despite every other command working
 -Recalculate precentages correctly with removal mods and negative BPMs
--Full Screen -> Full Screen switch does not actually reset resolution, rather just the window size
+- [Linux] Full Screen -> Full Screen switch does not actually reset resolution, rather just the window size
 
 /* Minor feature additions */
 -Include ThemeInfo.ini support (is this still needed?)

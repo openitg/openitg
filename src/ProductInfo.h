@@ -27,7 +27,7 @@
 #define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER
 
 /* A central location from which we can update crash handler data... */
-#define CRASH_REPORT_URL "http://boxorroxors.net/forum/viewtopic.php?t=881"
+#define CRASH_REPORT_URL "http://boxorroxors.net/forum/viewtopic.php?t=971"
 
 #endif
 

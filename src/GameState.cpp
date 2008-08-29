@@ -365,7 +365,17 @@ void GameState::PlayersFinalized()
 
 		PROFILEMAN->LoadFirstAvailableProfile( pn );	// load full profile
 
-		SONGMAN->LoadPlayerSongs( pn );		// load custom songs, if any
+		if (PREFSMAN->m_bCustomSongs && !GAMESTATE->IsCourseMode())
+		{
+			CHECKPOINT_M("Entering Player Songs");
+			SONGMAN->LoadPlayerSongs( pn );		// load custom songs, if any
+		}
+		else if (PREFSMAN->m_bCustomCourses && GAMESTATE->IsCourseMode())
+		{
+			CHECKPOINT_M("Entering Player Courses");
+			SONGMAN->LoadPlayerCourses( pn );
+		}
+		CHECKPOINT_M("End Custom Data");
 
 		MEMCARDMAN->UnmountCard( pn );
 

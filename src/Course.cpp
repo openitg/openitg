@@ -91,6 +91,8 @@ void Course::LoadFromCRSFile( CString sPath )
 		split( sPath, "/", parts, false );
 		if( parts.size() >= 4 )		// e.g. "/Courses/blah/fun.cvs"
 			m_sGroupName = parts[parts.size()-2];
+
+		CHECKPOINT_M( m_sGroupName.c_str() );
 	}
 
 

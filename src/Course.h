@@ -95,6 +95,7 @@ public:
 
 	bool		m_bRepeat;	// repeat after last song?  "Endless"
 	bool		m_bRandomize;	// play the songs in a random order
+	bool		m_bIsCustomCourse;
 	int			m_iLives;	// -1 means use bar life meter
 	int			m_iCustomMeter[NUM_DIFFICULTIES];	// -1 = no meter specified
 	bool		m_bSortByMeter;

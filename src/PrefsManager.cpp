@@ -206,8 +206,9 @@ PrefsManager::PrefsManager() :
 	m_iCustomMaxSeconds	( "CustomMaxSeconds", 120 ),
 	m_iCustomMaxSizeMB	( "CustomMaxSizeMB", 5 ),
 	m_iCustomMaxStepsSizeKB	( "CustomMaxStepSizeKB", 100 ),
-
 	m_bAllowExtraPlayerOptions ( "AllowExtraPlayerOptions", false ),
+
+	m_bCustomCourses	( "CourseEdits", false ),
 
 	m_bComboContinuesBetweenSongs	( "ComboContinuesBetweenSongs",	false ),
 	m_fLongVerSongSeconds			( "LongVerSongSeconds",			60*2.5f ),	// Dynamite Rave is 2:55

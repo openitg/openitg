@@ -42,6 +42,7 @@ public:
 	void FreeAllLoadedPlayerSongs();
 
 	void LoadPlayerSongs( PlayerNumber pn );
+	void LoadPlayerCourses( PlayerNumber pn );
 
 	void LoadGroupSymLinks( CString sDir, CString sGroupFolder );
 

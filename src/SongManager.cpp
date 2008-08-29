@@ -233,13 +233,100 @@ void SongManager::LoadStepManiaSongDir( CString sDir, LoadingWindow *ld )
 	}
 }
 
+void SongManager::LoadPlayerCourses( PlayerNumber pn )
+{
+	LOG->Debug( "SongManager::LoadPlayerCourses( %i )", pn );
+
+	// if the memory card isn't here, don't bother
+	if( !PROFILEMAN->IsPersistentProfile(pn) )
+	{
+		CHECKPOINT;
+		return;
+	}
+
+	// sanity check (should always be true though)
+	if( !PREFSMAN->m_bCustomCourses )
+	{
+		CHECKPOINT;
+		return;
+	}
+
+	CString sDir = PROFILEMAN->GetProfileDir( (ProfileSlot)pn );
+	if( sDir.Right(1) != "/" )
+		sDir += "/";
+	sDir = sDir + "Courses/";
+
+	CHECKPOINT_M( sDir.c_str() );
+
+	CStringArray arrayProfileCourses;
+	GetDirListing( sDir + "/*.crs", arrayProfileCourses, false, true );
+	SortCStringArray( arrayProfileCourses );
+
+	CHECKPOINT_M( ssprintf("%d",arrayProfileCourses.size()) );
+
+	CString sDisplayName, sGroupName;
+
+	Profile* p = PROFILEMAN->GetProfile( pn );
+
+	if( p->GetDisplayName().empty() ) // no name
+		sDisplayName = ssprintf( "Player %d", pn+1 );
+	else
+		sDisplayName = p->GetDisplayName();
+
+	TrimLeft(sDisplayName);
+	TrimRight(sDisplayName);
+
+	sGroupName = sDisplayName + "\'s Courses";
+
+	unsigned i = 0;
+	for (i; i < arrayProfileCourses.size(); i++)
+	{
+		Course *crs = new Course;
+		crs->LoadFromCRSFile( arrayProfileCourses[i] );
+		crs->m_sGroupName = sGroupName;
+		CHECKPOINT_M( crs->GetDisplayFullTitle().c_str() );
+
+		crs->m_bIsCustomCourse = true;
+
+		// is there already a course under the same name?
+		if ( FindCourse( crs->GetDisplayFullTitle() ) != NULL )
+		{
+			CHECKPOINT;
+			delete crs;
+			continue;	
+		}
+
+		// for now, only accept Marathons
+		if ( crs->GetCourseType() != COURSE_TYPE_NONSTOP )
+		{
+			CHECKPOINT;
+			delete crs;
+			continue;
+		}
+		
+		// TODO: softcode this to a settable preference
+		if ( crs->GetEstimatedNumStages() > 5 )
+		{
+			CHECKPOINT;
+			delete crs;
+			continue;
+		}
+
+		CHECKPOINT;
+		// TODO: make sure songs exist and are not custom songs --infamouspat
+
+		m_pCourses.push_back( crs );
+	}
+	if (i > 0) m_sCourseGroupNames.push_back( sGroupName );
+}
+
 void SongManager::LoadPlayerSongs( PlayerNumber pn )
 {
 	// if the memory card isn't here, don't bother
 	if( !PROFILEMAN->IsPersistentProfile(pn) )
 		return;
 
-	// likewise if customs are disabled
+	// likewise if customs are disabled (sanity check as of now)
 	if( !PREFSMAN->m_bCustomSongs )
 		return;
 

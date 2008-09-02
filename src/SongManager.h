@@ -40,6 +40,7 @@ public:
 	int GetNumStepsLoadedFromProfile();
 	void FreeAllLoadedFromProfile( ProfileSlot slot = PROFILE_SLOT_INVALID );
 	void FreeAllLoadedPlayerSongs();
+	void FreeAllLoadedPlayerCourses();
 
 	void LoadPlayerSongs( PlayerNumber pn );
 	void LoadPlayerCourses( PlayerNumber pn );

@@ -347,6 +347,7 @@ void GameState::PlayersFinalized()
 		return;
 
 	SONGMAN->FreeAllLoadedPlayerSongs(); // avoid duplicates
+	SONGMAN->FreeAllLoadedPlayerCourses();
 
 	MESSAGEMAN->Broadcast( MESSAGE_PLAYERS_FINALIZED );
 

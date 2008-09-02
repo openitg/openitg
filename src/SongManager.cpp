@@ -1463,6 +1463,21 @@ int SongManager::GetNumEditsLoadedFromProfile( ProfileSlot slot ) const
 	return iCount;
 }
 
+void SongManager::FreeAllLoadedPlayerCourses()
+{
+	LOG->Trace( "SongManager::FreeAllLoadedPlayerCourses()" );
+	vector<Course *> m_pSavedCourses;
+
+	for ( unsigned i = 0; i < m_pCourses.size(); i++ )
+		if (! m_pCourses[i]->m_bIsCustomCourse )
+			m_pSavedCourses.push_back( m_pCourses[i] );
+
+	m_pCourses.clear();
+
+	for ( unsigned i = 0; i < m_pSavedCourses.size(); i++ )
+		m_pCourses.push_back( m_pSavedCourses[i] );
+}
+
 void SongManager::FreeAllLoadedPlayerSongs()
 {
 	LOG->Trace( "SongManager::FreeAllLoadedPlayerSongs()" );

@@ -1498,6 +1498,47 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 
 			Course *pCourse = m_MusicWheel.GetSelectedCourse();
 			ASSERT( pCourse );
+
+			bool bError = false;
+			CString sError;
+			if ( pCourse->m_bIsCustomCourse )
+			{
+				for (unsigned i = 0; i < pCourse->m_entries.size(); i++)
+				{
+					Song *pSong = pCourse->m_entries[i].pSong;
+					if (pSong->IsCustomSong())
+					{
+						LOG->Debug("Course entry: %s, custom: %d, owner: P%d", pSong->GetDisplayFullTitle().c_str(), pSong->IsCustomSong() ? 1:0, (PlayerNumber)(pSong->m_SongOwner+1));
+						// TODO: not hardcode storage dir
+						CString sNewPath = ssprintf("/rootfs/tmp/crsmusic%d%s",i+1,pSong->m_sExtension.c_str());
+						LOG->Debug("Changing song path \"%s\" to \"%s\"", pSong->GetMusicPath().c_str(), sNewPath.c_str());
+
+#ifndef WIN32
+						MEMCARDMAN->MountCard( pSong->m_SongOwner, 20 );
+#endif
+
+						bError = !pSong->CheckCustomSong( sError );
+						// TODO: give custom song for course xfer its own progress function
+						if (!bError) bError = !CopyWithProgress( pSong->GetMusicPath(), sNewPath, &UpdateLoadProgress, sError );
+#ifndef WIN32
+						MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
+#endif
+						if ( bError ) break;
+						pSong->m_sGameplayMusic = sNewPath;
+						pSong->m_sBackgroundFile = THEME->GetPathG( "Common", "fallback background" );
+					}
+				}
+				g_bGoToOptions = false;
+				SCREENMAN->HideOverlayMessage();
+				SCREENMAN->ZeroNextUpdate();
+			}
+			if ( bError )
+			{
+				SCREENMAN->SystemMessage( sError );
+				m_bMadeChoice = false;
+				break;
+			}
+
 			GAMESTATE->m_PlayMode = pCourse->GetPlayMode();
 
 			// apply #LIVES

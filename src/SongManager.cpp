@@ -235,7 +235,7 @@ void SongManager::LoadStepManiaSongDir( CString sDir, LoadingWindow *ld )
 
 void SongManager::LoadPlayerCourses( PlayerNumber pn )
 {
-	LOG->Debug( "SongManager::LoadPlayerCourses( %i )", pn );
+	LOG->Trace( "SongManager::LoadPlayerCourses( %i )", pn );
 
 	// if the memory card isn't here, don't bother
 	if( !PROFILEMAN->IsPersistentProfile(pn) )
@@ -259,7 +259,7 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 	CHECKPOINT_M( sDir.c_str() );
 
 	CStringArray arrayProfileCourses;
-	GetDirListing( sDir + "/*.crs", arrayProfileCourses, false, true );
+	GetDirListing( sDir + "/*.crs", arrayProfileCourses, false, true ); /**/
 	SortCStringArray( arrayProfileCourses );
 
 	CHECKPOINT_M( ssprintf("%d",arrayProfileCourses.size()) );
@@ -282,11 +282,12 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 	for (i; i < arrayProfileCourses.size(); i++)
 	{
 		Course *crs = new Course;
-		crs->LoadFromCRSFile( arrayProfileCourses[i] );
+		crs->LoadFromCRSFile( arrayProfileCourses[i], true );
 		crs->m_sGroupName = sGroupName;
 		CHECKPOINT_M( crs->GetDisplayFullTitle().c_str() );
 
 		crs->m_bIsCustomCourse = true;
+		crs->m_CourseOwner = pn;
 
 		// is there already a course under the same name?
 		if ( FindCourse( crs->GetDisplayFullTitle() ) != NULL )
@@ -315,6 +316,7 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 		CHECKPOINT;
 		// TODO: make sure songs exist and are not custom songs --infamouspat
 
+		LOG->Debug( "Adding custom course \"%s\"", crs->GetDisplayFullTitle().c_str() );
 		m_pCourses.push_back( crs );
 	}
 	if (i > 0) m_sCourseGroupNames.push_back( sGroupName );
@@ -417,6 +419,7 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 			continue;
 		}
 		
+		LOG->Debug( "Loading custom song '%s'...", pNewSong->m_sMainTitle.c_str() );
 		m_pSongs.push_back( pNewSong );
 		iSongsLoaded++;
 	}

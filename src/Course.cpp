@@ -79,24 +79,32 @@ CString CourseEntryTypeToString( CourseEntryType cet )
 	}
 }
 
-void Course::LoadFromCRSFile( CString sPath )
+void Course::LoadFromCRSFile( CString sPath, bool bIsCustom )
 {
 	Init();
 
 	m_sPath = sPath;	// save path
 
 	// save group name
+	if ( !bIsCustom )
 	{
 		CStringArray parts;
 		split( sPath, "/", parts, false );
 		if( parts.size() >= 4 )		// e.g. "/Courses/blah/fun.cvs"
 			m_sGroupName = parts[parts.size()-2];
-
-		CHECKPOINT_M( m_sGroupName.c_str() );
 	}
+	else
+	{
+		// TODO: "{Player}'s Courses" as group name
+		m_sGroupName = "Custom Courses";
+	}
+	CHECKPOINT_M( m_sGroupName.c_str() );
 
 
-	bool bUseCache = true;
+	//bool bUseCache = true;
+	bool bUseCache = !bIsCustom;
+
+	if ( bUseCache )
 	{
 		/* First look in the cache for this course.  Don't bother
 		 * honoring FastLoad for checking the course hash, since
@@ -407,6 +415,8 @@ void Course::Init()
 	m_sBannerPath = "";
 	m_sCDTitlePath = "";
 	m_iTrailCacheSeed = 0;
+	m_bIsCustomCourse = false;
+	m_CourseOwner = PLAYER_INVALID;
 }
 
 void Course::Save( CString sPath, bool bSavingCache )

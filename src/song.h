@@ -143,6 +143,7 @@ public:
 	CString m_sGameplayMusic;
 	bool m_bIsCustomSong;
 	PlayerNumber m_SongOwner;
+	CString m_sExtension;
 	
 	bool CheckCustomSong( CString &sError );
 

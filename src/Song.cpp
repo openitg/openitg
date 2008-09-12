@@ -357,8 +357,8 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 	m_sBannerFile = "";
 	m_sBackgroundFile = "";
 
-	CString sExtension = "." + m_sMusicFile.Right(3);
-	m_sGameplayMusic = CUSTOM_SONG_PATH + "music" + sExtension;
+	m_sExtension = "." + m_sMusicFile.Right(3);
+	m_sGameplayMusic = CUSTOM_SONG_PATH + "music" + m_sExtension;
 
 	return true;
 }

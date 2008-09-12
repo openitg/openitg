@@ -96,8 +96,9 @@ public:
 	bool		m_bRepeat;	// repeat after last song?  "Endless"
 	bool		m_bRandomize;	// play the songs in a random order
 	bool		m_bIsCustomCourse;
-	int			m_iLives;	// -1 means use bar life meter
-	int			m_iCustomMeter[NUM_DIFFICULTIES];	// -1 = no meter specified
+	PlayerNumber	m_CourseOwner;
+	int		m_iLives;	// -1 means use bar life meter
+	int		m_iCustomMeter[NUM_DIFFICULTIES];	// -1 = no meter specified
 	bool		m_bSortByMeter;
 
 	vector<CourseEntry> m_entries;
@@ -139,7 +140,7 @@ public:
 
 	bool ShowInDemonstrationAndRanking() const;
 
-	void LoadFromCRSFile( CString sPath );
+	void LoadFromCRSFile( CString sPath, bool bIsCustom=false );
 	void RevertFromDisk();
 	void Init();
 	void Save( CString sPath = "", bool bSavingCache=false ); /* default is source file */

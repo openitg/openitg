@@ -368,15 +368,14 @@ void GameState::PlayersFinalized()
 
 		if (PREFSMAN->m_bCustomSongs && !GAMESTATE->IsCourseMode())
 		{
-			CHECKPOINT_M("Entering Player Songs");
 			SONGMAN->LoadPlayerSongs( pn );		// load custom songs, if any
 		}
 		else if (PREFSMAN->m_bCustomCourses && GAMESTATE->IsCourseMode())
 		{
-			CHECKPOINT_M("Entering Player Courses");
+			// XXX LoadPlayerSongs(): should we be loading courses first to a temporary queue or something?
+			SONGMAN->LoadPlayerSongs( pn );
 			SONGMAN->LoadPlayerCourses( pn );
 		}
-		CHECKPOINT_M("End Custom Data");
 
 		MEMCARDMAN->UnmountCard( pn );
 

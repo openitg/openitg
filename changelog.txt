@@ -1,5 +1,18 @@
-OpenITG, alpha 8 (in development)
----------------------------------
+OpenITG, beta 1 (in development)
+--------------------------------
+-Misc. changes:
+     Added coin counter functionality to LIGHTSMAN
+-PIUIO changes:
+     Tentative fix for sensor-read problems
+     Added coin counter functionality
+-Fixed bugs:
+     Failed 'pTrail' assertion in Marathon mode
+     Accidental PIUIO coin counter activation
+-Profile changes:
+     Added custom courses ( /ProfileFolder/Courses/ ) - experimental
+
+OpenITG, alpha 8 (August 29th, 2008)
+------------------------------------
 -Lots of code cleanup
 -New LightsDriver:
     PacDrive ("pacdrive") - run lights using an Ultimarc PacDrive

@@ -254,7 +254,7 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 	CString sDir = PROFILEMAN->GetProfileDir( (ProfileSlot)pn );
 	if( sDir.Right(1) != "/" )
 		sDir += "/";
-	sDir = sDir + "Courses/";
+	sDir = sDir + COURSES_DIR;
 
 	CHECKPOINT_M( sDir.c_str() );
 
@@ -337,7 +337,7 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 	CString sDir = PROFILEMAN->GetProfileDir( (ProfileSlot)pn );
 	if( sDir.Right(1) != "/" )
 		sDir += "/";
-	sDir = sDir + "Songs/";
+	sDir = sDir + SONGS_DIR;
 
 	CString sDisplayName, sGroupName;
 
@@ -374,7 +374,7 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 	/* We want subdirectories loaded first. Since the for() operator just	*
 	 * goes through the vector, create a final vector and append both. I've	*
 	 * heard this is faster than the vector insert() function. It's kind of *
-	 * ugly, but we'll go with it.						*/
+	 * ugly, but we'll go with it.							*/
 
 	CStringArray arraySongDirs;
 	for( unsigned m=0; m < arraySongSubDirs.size(); m++ )

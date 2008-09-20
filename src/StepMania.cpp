@@ -1338,8 +1338,12 @@ void InsertCoin( int iNum, bool bRecord )
 	GAMESTATE->m_iCoins += iNum;
 	LOG->Trace("%i coins inserted, %i needed to play", GAMESTATE->m_iCoins, PREFSMAN->m_iCoinsPerCredit.Get() );
 
+	// ignore software coin inserts
 	if( bRecord )
+	{
+		LIGHTSMAN->PulseCoinCounter();
 		BOOKKEEPER->CoinInserted();
+	}
 
 	SCREENMAN->RefreshCreditsMessages();
 	SCREENMAN->PlayCoinSound();

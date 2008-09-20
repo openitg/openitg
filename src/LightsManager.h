@@ -3,6 +3,7 @@
 #ifndef LightsManager_H
 #define LightsManager_H
 
+#include "RageTimer.h"
 #include "PlayerNumber.h"
 #include "GameInput.h"
 #include "EnumHelper.h"

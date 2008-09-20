@@ -58,7 +58,7 @@ protected:
 class PacDrive: public USBDriver
 {
 public:
-	bool Read( uint32_t *pData ) { return; }
+	bool Read( uint32_t *pData ) { return false; }
 	bool Write( uint32_t iData );
 
 protected:
@@ -72,7 +72,7 @@ enum Board
 	BOARD_PACDRIVE,
 	NUM_BOARDS,
 	BOARD_INVALID
-);
+};
 
 // Global functions that may be useful.
 namespace USBIO
@@ -88,6 +88,7 @@ namespace USBIO
 };
 
 #endif /* USBIO_H */
+
 
 /*
  * Copyright (c) 2008 BoXoRRoXoRs

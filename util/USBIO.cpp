@@ -10,7 +10,7 @@
 USBDriver *USBIO::TryBoardType( Board type )
 {
 	USBDriver *pDriver = NULL;
-	switch( Board )
+	switch( type )
 	{
 	case BOARD_ITGIO:		pDriver = new ITGIO;	break;
 	case BOARD_PIUIO:		pDriver = new PIUIO;	break;
@@ -61,13 +61,13 @@ void USBIO::MaskOutput( Board type, uint32_t *pData )
 	switch( type )
 	{
 	// the first 16 seem to enable input.
-	case BOARD_ITGIO:		pData |= 0xFFFF0000;	break;
+	case BOARD_ITGIO:		*pData |= 0xFFFF0000;	break;
 
 	// avoid pulsing the coin counter and missetting the sensors
-	case BOARD_PIUIO:		pData &= E7FCFFFC;	break;
+	case BOARD_PIUIO:		*pData &= 0xE7FCFFFC;	break;
 
 	// I'm not sure what happens when we write past 16, but don't do it.
-	case BOARD_PACDRIVE:	pData &= 0xFFFF0000;	break;
+	case BOARD_PACDRIVE:	*pData &= 0xFFFF0000;	break;
 	}
 }
 
@@ -134,10 +134,7 @@ bool USBDriver::Open()
 	struct usb_device *dev = FindDevice();
 
 	if( dev == NULL )
-	{
-		printf( "USBDriver::Open(): no device found.\n" );
 		return false;
-	}
 
 	m_pHandle = usb_open( dev );
 
@@ -248,15 +245,15 @@ bool ITGIO::Write( uint32_t iData )
 }
 void ITGIO::Reconnect()
 {
-	printf( "ITG I/O error: %s\n, usb_strerror() );
+	printf( "ITG I/O error: %s\n", usb_strerror() );
 	Close();
 
-	printf( "Attempting to reconnect...\n );
+	printf( "Attempting to reconnect...\n" );
 
 	while( !Open() )
 		sleep( 1 );
 
-	printf( "Successfully reconnected.\n );
+	printf( "Successfully reconnected.\n" );
 }
 
 /*

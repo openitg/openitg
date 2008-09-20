@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include "USBIO.h"
 
-int main( int argc, char argv[] )
+int main( int argc, char *argv[] )
 {
 	if( argc != 2 )
 	{
@@ -17,7 +17,7 @@ int main( int argc, char argv[] )
 
 	USBDriver *pDriver;
 	Board BoardType;
-	pDriver = USBIO::FindBoard( &BoardType );
+	pDriver = USBIO::FindBoard( BoardType );
 
 	if( pDriver == NULL )
 	{
@@ -26,7 +26,7 @@ int main( int argc, char argv[] )
 	}
 
 	// mask the values as needed for each board
-	USBIO::MaskOutput( type, iData );
+	USBIO::MaskOutput( BoardType, &iData );
 	printf( "New output data: %#8x\n", iData );
 
 	// not sure why this would fail now, but better check.

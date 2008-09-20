@@ -1,11 +1,13 @@
 #include <cstdio>
 #include "USBIO.h"
 
+/*
 void LongToBitString( uint32_t data, char *str )
 {
 	for( int i = 0; i < 32; i++ )
-		str[i] = (data & (1<<(32-i)) ? "1" : "0";
+		str[i] = (data & (1<<(32-i))) ? "1" : "0";
 }
+*/
 
 int main()
 {
@@ -13,7 +15,7 @@ int main()
 	USBDriver *pDriver;
 	Board BoardType;
 
-	pDriver = USBIO::FindBoard( &BoardType );
+	pDriver = USBIO::FindBoard( BoardType );
 
 	if( pDriver == NULL )
 	{
@@ -36,16 +38,18 @@ int main()
 
 	// initialization write
 	uint32_t iWrite = 0xFFFFFFFF;
-	USBIO::MaskOutput( iWrite );
+	USBIO::MaskOutput( BoardType, &iWrite );
 	pDriver->Write( iWrite );
 
 	uint32_t iData;
-	char[32] sBits;
+	char sBits[32];
 	while( 1 )
 	{
 		pDriver->Read( &iData );
 		iData = ~iData;
-		printf( "%s\n", LongToBitString(iData, &sBits) );
+		printf( "%8#x\r", iData );
+//		LongToBitString( iData, &sBits );
+//		printf( "%s\n", sBits );
 	}
 
 	pDriver->Write( 0 );

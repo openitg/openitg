@@ -55,7 +55,6 @@ private:
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;
-	bool m_bCoinEvent;
 
 	/* debug code */
 	void RunTimingCode();

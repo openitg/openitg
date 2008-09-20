@@ -121,8 +121,8 @@ static CString GetSensorDescription( bool *bArray )
 
 	/* HACK: if all sensors are reporting, then don't return anything.
 	 * On PIUIO, all buttons always return all sensors except pads. */
-	if( sensors.size() == 4 )
-		return "";
+//	if( sensors.size() == 4 )
+//		return "";
 
 	return join(", ", sensors);
 }
@@ -234,7 +234,7 @@ void InputHandler_PIUIO::UpdateLights()
 	// set a const pointer to the "ext" LightsState to read from
 	static const LightsState *m_LightsState = LightsDriver_External::Get();
 
-	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] = 
+	static const uint32_t iCabinetLights[NUM_CABINET_LIGHTS] = 
 	{
 		/* UL, UR, LL, LR marquee lights */
 		(1 << 23), (1 << 26), (1 << 25), (1 << 24),
@@ -243,15 +243,17 @@ void InputHandler_PIUIO::UpdateLights()
 		0, 0, (1 << 10), (1 << 10)
 	};
 
-	static const uint32_t iPadBits[2][4] = 
+	static const uint32_t iPadLights[2][4] = 
 	{
 		/* Left, Right, Up, Down */
 		{ (1 << 20), (1 << 21), (1 << 18), (1 << 19) },	/* Player 1 */
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
-	// XXX: this should work, but doesn't. Why not?
-	static const uint32_t iCoinBit = (1 << 28);
+	// iCoinPulseOn is sent whenever a coin is recorded.
+	// iCoinPulseOff is sent whenever a coin is not being recorded.
+	static const uint32_t iCoinPulseOn = (1 << 28);
+	static const uint32_t iCoinPulseOff = (1 << 27);
 
 	// reset
 	m_iLightData = 0;
@@ -259,17 +261,18 @@ void InputHandler_PIUIO::UpdateLights()
 	// update marquee lights
 	FOREACH_CabinetLight( cl )
 		if( m_LightsState->m_bCabinetLights[cl] )
-			m_iLightData |= iCabinetBits[cl];
+			m_iLightData |= iCabinetLights[cl];
 
 	// update the four pad lights on both game controllers
 	FOREACH_GameController( gc )
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iLightData |= iPadBits[gc][gb];
+				m_iLightData |= iPadLights[gc][gb];
 
-	// pulse the coin counter if we have an event
-	if( m_bCoinEvent )
-		m_iLightData |= iCoinBit;
+	/* The coin counter moves halfway if we send bit 4, then the
+	 * rest of the way (or not at all) if we send bit 5. Send bit
+	 * 5 unless we have a coin event being recorded. */
+	m_iLightData |= m_LightsState->m_bCoinCounter ? iCoinPulseOn : iCoinPulseOff;
 }
 
 // temporary debug function

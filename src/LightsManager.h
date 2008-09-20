@@ -49,6 +49,9 @@ struct LightsState
 {
 	bool m_bCabinetLights[NUM_CABINET_LIGHTS];
 	bool m_bGameButtonLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];
+
+	// This isn't actually a light, but it's typically implemented in the same way.
+	bool m_bCoinCounter;
 };
 
 class LightsDriver;
@@ -65,6 +68,7 @@ public:
 	void BlinkCabinetLight( CabinetLight cl );
 	void BlinkGameButton( GameInput gi );
 	void BlinkActorLight( CabinetLight cl );
+	void PulseCoinCounter() { ++m_iQueuedCoinCounterPulses; }
 	float GetActorLightLatencySeconds() const;
 
 	void SetLightsMode( LightsMode lm );
@@ -90,6 +94,9 @@ private:
 	vector<LightsDriver*> m_vpDrivers;
 	LightsMode m_LightsMode;
 	LightsState m_LightsState;
+
+	int m_iQueuedCoinCounterPulses;
+	RageTimer m_CoinCounterTimer;
 
 	int GetTestAutoCycleCurrentIndex() { return (int)m_fTestAutoCycleCurrentIndex; }
 

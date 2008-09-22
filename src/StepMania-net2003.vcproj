@@ -3215,10 +3215,10 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath=".\ibutton\ds2480ut.c">
 			</File>
 			<File
-				RelativePath=".\ibutton\getkey.cpp">
+				RelativePath=".\ibutton\ibutton.cpp">
 			</File>
 			<File
-				RelativePath=".\ibutton\getkey.h">
+				RelativePath=".\ibutton\ibutton.h">
 			</File>
 			<File
 				RelativePath=".\ibutton\owerr.c">

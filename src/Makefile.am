@@ -360,7 +360,7 @@ ibutton = \
 ibutton/owerr.c ibutton/ownetu.c ibutton/ownet.h ibutton/owllu.c \
 ibutton/owsesu.c ibutton/owtrnu.c ibutton/owfile.h ibutton/crcutil.c \
 ibutton/ds2480ut.c ibutton/ds2480.h ibutton/linuxlnk.c ibutton/sha18.c \
-ibutton/shaib.c ibutton/shaib.h ibutton/getkey.cpp ibutton/getkey.h
+ibutton/shaib.c ibutton/shaib.h ibutton/ibutton.cpp ibutton/ibutton.h
 
 aes = \
 aes/aescrypt.c aes/aeskey.c aes/aestab.c aes/aesopt.h aes/aes.h

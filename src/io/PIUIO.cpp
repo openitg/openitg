@@ -64,7 +64,8 @@ bool PIUIO::BulkReadWrite( uint32_t *pData )
 
 	while ( 1 )
 	{
-		// XXX: what are the reason(s) for the first 2 numbers being 0?
+		// this is caught by the r16 kernel hack, using '10011' as
+		// a sentinel. the rest of the USB parameters aren't used.
 		iResult = usb_control_msg(m_pHandle, 0, 0, 0, 0, (char*)(pData), 32, 10011);
 
 		if ( iResult == 32 )

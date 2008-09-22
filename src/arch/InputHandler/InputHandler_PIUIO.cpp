@@ -158,7 +158,7 @@ void InputHandler_PIUIO::HandleInputKernel()
 
 		// figure out which sensors were enabled
 		for( int j = 0; j < 32; j++ )
-			if( m_iBulkReadData[i*2] & (1 << 32-j) )
+			if( m_iBulkReadData[i*2] & (1 << (32-j)) )
 				m_bSensors[j][i] = true;
 	}
 }
@@ -186,7 +186,7 @@ void InputHandler_PIUIO::HandleInputNormal()
 
 		/* Toggle sensor bits - Left, Right, Up, Down */
 		for( int j = 0; j < 32; j++ )
-			if( m_iInputData[i] & (1 << 32-j) )
+			if( m_iInputData[i] & (1 << (32-j)) )
 				m_bSensors[j][i] = true;
 	}
 
@@ -222,7 +222,7 @@ void InputHandler_PIUIO::HandleInput()
 		INPUTFILTER->SetButtonComment( di, GetSensorDescription(m_bSensors[iButton]) );
 
 		/* Is the button we're looking for flagged in the input data? */
-		ButtonPressed( di, m_iInputField & (1 << (31-iButton)) );
+		ButtonPressed( di, (m_iInputField & (1 << (31-iButton))) );
 	}
 
 	RunTimingCode();

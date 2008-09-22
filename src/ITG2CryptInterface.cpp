@@ -4,7 +4,7 @@
 #include "aes/aes.h"
 #include "crypto/CryptSH512.h"
 #include "ITG2CryptInterface.h"
-#include "ibutton/getkey.h"
+#include "ibutton/ibutton.h"
 #include <cstdio>
 
 /* courtesy of random.org. -- Vyhd */
@@ -136,7 +136,7 @@ crypt_file *ITG2CryptInterface::crypt_open(CString name, CString secret)
 
 int ITG2CryptInterface::GetKeyFromDongle(const unsigned char *subkey, unsigned char *aeskey)
 {
-	return getKey(subkey, aeskey);
+	return iButton::GetAESKey(subkey, aeskey);
 }
 
 int ITG2CryptInterface::crypt_read(crypt_file *cf, void *buf, int size)

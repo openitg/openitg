@@ -384,7 +384,7 @@ static void child_process()
 	if ( stat("/tmp/no-crash-reboot", &ncr) != 0 )
 	{
 		sync();
-		sleep(2);
+		sleep(5);
 		reboot(RB_AUTOBOOT);
 	}
 #endif

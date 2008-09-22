@@ -6,6 +6,7 @@
 #include "ScreenWithMenuElements.h"
 #include "PlayerNumber.h"
 #include "song.h"
+#include "RageThreads.h"
 
 class ScreenAddSongs : public ScreenWithMenuElements
 {
@@ -23,7 +24,12 @@ public:
 	virtual void MenuStart( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn );
 
+	void StartSongThread();
+	bool m_bStopThread;
+
 private:
+	void LoadAddedSongs();
+
 	CStringArray m_vsLoadedSongs;
 	vector<Song *> m_vLoadedSongs;
 	BitmapText m_AddedSongList;
@@ -34,6 +40,8 @@ private:
 	bool m_bRefreshSongMan;
 
 	bool m_bCardMounted[NUM_PLAYERS];
+	RageThread m_PlayerSongLoadThread;
+
 };
 
 #endif

@@ -1,8 +1,6 @@
 #ifndef IBUTTON_H
 #define IBUTTON_H
 
-#include "shaib.h"
-
 #ifndef OW_UCHAR
 #define OW_UCHAR
 typedef unsigned char uchar;

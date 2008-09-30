@@ -195,10 +195,11 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 	if ( SM == SM_AnswerConfirmAddGroups )
 	{
 		if (ScreenPrompt::s_LastAnswer == ANSWER_NO) return;
-
-		// TODO: Song adding code goes here
-
 		m_bPrompt = false;
+		m_PlayerSongLoadThread.Wait();
+
+		// TODO: Song xferring code goes here
+
 	}
 	switch( SM )
 	{

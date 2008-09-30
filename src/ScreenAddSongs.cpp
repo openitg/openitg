@@ -2,6 +2,7 @@
 #include "HelpDisplay.h"
 #include "ScreenAddSongs.h"
 #include "Screen.h"
+#include "ScreenPrompt.h"
 #include "ScreenWithMenuElements.h"
 #include "PlayerNumber.h"
 #include "SongManager.h"
@@ -17,9 +18,15 @@ static RageMutex MountMutex("ITGDataMount");
 
 REGISTER_SCREEN_CLASS( ScreenAddSongs );
 
+AutoScreenMessage( SM_ConfirmAddGroups );
+AutoScreenMessage( SM_AnswerConfirmAddGroups );
+
+PlayerNumber g_CurrentPlayer;
+
 ScreenAddSongs::ScreenAddSongs( CString sName ) : ScreenWithMenuElements( sName )
 {
 	m_bRefreshSongMan = false;
+	m_bPrompt = false;
 }
 
 ScreenAddSongs::~ScreenAddSongs()
@@ -35,28 +42,12 @@ ScreenAddSongs::~ScreenAddSongs()
 		SONGMAN->Reload();
 }
 
-void ScreenAddSongs::LoadAddedSongs()
+/**
+	Ok I know what you're thinking Mark, and yes, this will be expanded upon --infamouspat
+*/
+void ScreenAddSongs::LoadAddedGroups()
 {
-	CStringArray asGroups;
-	FILEMAN->GetDirListing( "/AdditionalSongs/*", asGroups, true, false );
-	for (unsigned i = 0; i < asGroups.size(); i++)
-	{
-		LOG->Debug("Found group: %s", asGroups[i].c_str());
-		CStringArray asCandidateSongs;
-		FILEMAN->GetDirListing( "/AdditionalSongs/" + asGroups[i] + "/*", asCandidateSongs, true, false );
-		for( unsigned j = 0; j < asCandidateSongs.size(); j++ )
-		{
-			LOG->Debug("Found song: %s", ("/AdditionalSongs/" + asGroups[i] + "/" + asCandidateSongs[j] + "/").c_str() );
-			Song *pSong = new Song;
-			if ( pSong->LoadFromCustomSongDir( "/AdditionalSongs/" + asGroups[i] + "/" + asCandidateSongs[j] + "/", asGroups[i], PLAYER_1 ) )
-			{
-				m_vLoadedSongs.push_back( pSong );
-				m_vsLoadedSongs.push_back( pSong->m_sGroupName + " / " + pSong->GetTranslitFullTitle() );
-			}
-			else
-				delete pSong;
-		}
-	}
+	FILEMAN->GetDirListing( "/AdditionalSongs/*", m_asAddedGroups, true, false );
 }
 
 int InitSASSongThread( void *pSAS )
@@ -69,25 +60,25 @@ void ScreenAddSongs::Init()
 {
 	ScreenWithMenuElements::Init();
 
-	LoadAddedSongs();
+	LoadAddedGroups();
 
-	m_AddedSongList.SetName( "LoadedSongList" );
+	m_AddedGroupList.SetName( "LoadedSongList" );
 	///////XXX TEST CODE//////
-	m_AddedSongList.LoadFromFont( THEME->GetPathF("Common","normal") );
-	m_AddedSongList.SetXY( SCREEN_CENTER_X + 140, SCREEN_CENTER_Y );
-	m_AddedSongList.SetText( join("\n", m_vsLoadedSongs) );
-	m_AddedSongList.SetZoom( 0.4f );
+	m_AddedGroupList.LoadFromFont( THEME->GetPathF("Common","normal") );
+	m_AddedGroupList.SetXY( SCREEN_CENTER_X + 140, SCREEN_CENTER_Y );
+	m_AddedGroupList.SetText( join("\n", m_asAddedGroups) );
+	m_AddedGroupList.SetZoom( 0.4f );
 	//////////////////////////
-	this->AddChild( &m_AddedSongList );
+	this->AddChild( &m_AddedGroupList );
 
-	m_AddableSongSelection.SetName( "AddableSongList" );
+	m_AddableGroupSelection.SetName( "AddableSongList" );
 	///////XXX TEST CODE//////
-	m_AddableSongSelection.LoadFromFont( THEME->GetPathF("Common","normal") );
-	m_AddableSongSelection.SetXY( SCREEN_CENTER_X - 140, SCREEN_CENTER_Y );
-	m_AddableSongSelection.SetText( "Please insert memory card with additional songs for transfer" );
-	m_AddableSongSelection.SetZoom( 0.4f );
+	m_AddableGroupSelection.LoadFromFont( THEME->GetPathF("Common","normal") );
+	m_AddableGroupSelection.SetXY( SCREEN_CENTER_X - 140, SCREEN_CENTER_Y );
+	m_AddableGroupSelection.SetText( "Please insert memory card with additional songs for transfer" );
+	m_AddableGroupSelection.SetZoom( 0.4f );
 	//////////////////////////
-	this->AddChild( &m_AddableSongSelection );
+	this->AddChild( &m_AddableGroupSelection );
 	this->SortByDrawOrder();
 
 	m_bStopThread = false;
@@ -99,56 +90,82 @@ void ScreenAddSongs::StartSongThread()
 {
 	while ( !m_bStopThread )
 	{
+		bool bLaunchPrompt = false;
+		if (m_bPrompt)
+		{
+			usleep( 1000 );
+			continue;
+		}
 		FOREACH_PlayerNumber( pn )
 		{
 			MemoryCardState PCardState = MEMCARDMAN->GetCardState(pn);
 			if (PCardState == MEMORY_CARD_STATE_READY && !m_bCardMounted[pn])
 			{
 				if( !PROFILEMAN->LoadProfileFromMemoryCard(pn) || !PROFILEMAN->IsPersistentProfile(pn) ) continue;
-				LOG->Debug("Mounting memory card for player %d", pn+1);
-				m_AddableSongSelection.SetText( ssprintf("Loading Player %d songs...", pn+1) );
-				m_asAddableSongs[pn].clear();
+				m_AddableGroupSelection.SetText( m_AddableGroupSelection.GetText() + "\n" + ssprintf("Loading Player %d songs...\n", pn+1) );
+				m_asAddableGroups[pn].clear();
 				MEMCARDMAN->LockCards();
 				MEMCARDMAN->MountCard(pn);
 				
 				CStringArray asGroups;
 				CString sDir = PROFILEMAN->GetProfileDir(pn) + "/AdditionalSongs";
-				LOG->Debug("Checking %s for additional songs...", sDir.c_str());
 				GetDirListing( sDir+"/*", asGroups, true, false );
 				for (unsigned i = 0; i < asGroups.size(); i++)
 				{
+					bool bAdd = true;
+
+					// don't add duplicate groups
+					// TODO: support for overlaying songs into already existing groups
+					for (unsigned x = 0; x < m_asAddedGroups.size(); x++)
+						if ( m_asAddedGroups[x] == asGroups[i] ) bAdd = false;
+					if (!bAdd) continue;
+
 					CStringArray asCandidateSongs;
 					GetDirListing( sDir+"/"+asGroups[i]+"/*", asCandidateSongs, true, true );
+					if ( asCandidateSongs.size() == 0 ) continue;
 					for (unsigned j = 0; j < asCandidateSongs.size(); j++)
 					{
 						Song *pSong = new Song;
-						if ( pSong->LoadFromCustomSongDir( asCandidateSongs[j] + "/", asGroups[i], pn ) )
-							m_asAddableSongs[pn].push_back(pSong->m_sGroupName + " / " + pSong->GetTranslitFullTitle());
+						if ( ! pSong->LoadFromCustomSongDir( asCandidateSongs[j] + "/", asGroups[i], pn ) )
+							bAdd = false;
 						delete pSong;
 					}
+					if (bAdd) m_asAddableGroups[pn].push_back( asGroups[i] );
 				}
 				
 				MEMCARDMAN->UnmountCard(pn);
 				MEMCARDMAN->UnlockCards();
 				m_bCardMounted[pn] = true;
+				g_CurrentPlayer = pn;
+				bLaunchPrompt = true;
 			}
 			if (PCardState == MEMORY_CARD_STATE_NO_CARD && m_bCardMounted[pn])
 			{
 				LOG->Debug("Unmounting memory card for player %d", pn+1);
-				m_asAddableSongs[pn].clear();
+				m_asAddableGroups[pn].clear();
 				m_bCardMounted[pn] = false;
 			}
 		}
 	
+#if 0
 		SCREENMAN->SystemMessageNoAnimate( ssprintf("Player1: %d, Player2: %d", 
 				m_bCardMounted[0], 
 				m_bCardMounted[1]
 		));
+#endif
 	
-		if ( m_asAddableSongs[PLAYER_1].size() + m_asAddableSongs[PLAYER_2].size() > 0 )
-			m_AddableSongSelection.SetText( join("\n", m_asAddableSongs[PLAYER_1]) + "\n" + join("\n", m_asAddableSongs[PLAYER_2]) );
+		if ( m_asAddableGroups[PLAYER_1].size() + m_asAddableGroups[PLAYER_2].size() > 0 )
+		{
+			m_AddableGroupSelection.SetText( join("\n", m_asAddableGroups[PLAYER_1]) + "\n" + join("\n", m_asAddableGroups[PLAYER_2]) );
+
+			if (bLaunchPrompt)
+			{
+				this->PostScreenMessage( SM_ConfirmAddGroups, 0.0f );
+				m_bPrompt = true;
+			}
+		}
 		else
-			m_AddableSongSelection.SetText( "Please insert memory card with additional songs for transfer" );
+			m_AddableGroupSelection.SetText( "Please insert memory card with additional songs for transfer" );
 	
 		usleep( 1000 );
 	}
@@ -169,6 +186,17 @@ void ScreenAddSongs::Input( const DeviceInput& DeviceI, const InputEventType typ
 
 void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 {
+	if ( SM == SM_ConfirmAddGroups )
+	{
+		SCREENMAN->Prompt( SM_AnswerConfirmAddGroups, 
+			m_AddableGroupSelection.GetText() + "\n\nProceed to add song packs to machine?",
+		PROMPT_YES_NO, ANSWER_NO );
+	}
+	if ( SM == SM_AnswerConfirmAddGroups )
+	{
+		
+		m_bPrompt = false;
+	}
 	switch( SM )
 	{
 	case SM_GoToNextScreen:

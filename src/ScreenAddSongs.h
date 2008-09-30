@@ -28,19 +28,20 @@ public:
 	bool m_bStopThread;
 
 private:
-	void LoadAddedSongs();
+	void LoadAddedGroups();
 
-	CStringArray m_vsLoadedSongs;
-	vector<Song *> m_vLoadedSongs;
-	BitmapText m_AddedSongList;
+	CStringArray m_asAddedGroups;
+	BitmapText m_AddedGroupList;
 
-	CStringArray m_asAddableSongs[NUM_PLAYERS];
-	BitmapText m_AddableSongSelection;
+	CStringArray m_asAddableGroups[NUM_PLAYERS];
+	BitmapText m_AddableGroupSelection;
 
 	bool m_bRefreshSongMan;
 
 	bool m_bCardMounted[NUM_PLAYERS];
 	RageThread m_PlayerSongLoadThread;
+	PlayerNumber m_CurrentPlayer;
+	bool m_bPrompt;
 
 };
 

@@ -1176,7 +1176,19 @@ int main(int argc, char* argv[])
 	
 	/* depends on SONGINDEX: */
 	SONGMAN		= new SongManager();
+
+	//
+	// 9/25/08: moved the cache sink to /itgdata because
+	//    it would fill up all of stats if the user has too many songs
+	//       --infamouspat
+	//
+#ifdef ITG_ARCADE	
+	system( "mount -o remount,rw /itgdata" );
+#endif
 	SONGMAN->InitAll( loading_window );		// this takes a long time
+#ifdef ITG_ARCADE
+	system( "mount -o remount,ro /itgdata" );
+#endif
 	CRYPTMAN	= new CryptManager;	// need to do this before ProfileMan
 	MEMCARDMAN	= new MemoryCardManager;
 	PROFILEMAN	= new ProfileManager;

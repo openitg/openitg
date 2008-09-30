@@ -283,7 +283,9 @@ void RageFileManager::MountInitialFilesystems()
 	// do not overlap /CryptPackages, that's already declared in StepMania.cpp, keep to /Packages
 	//    --infamouspat
 	RageFileManager::Mount( "kry", "/itgdata", "/Packages" );
-	RageFileManager::Mount( "dir", "/stats/cache-sink", "/Cache" );
+
+	// here goes nothing... --infamouspat
+	RageFileManager::Mount( "dir", "/itgdata/cache-sink", "/Cache" );
 #else
 	//RageFileManager::Mount( "kry", Root + "/CryptPackages", "/CryptPackages" );
 	/* This mounts everything else, including Data, etc. */

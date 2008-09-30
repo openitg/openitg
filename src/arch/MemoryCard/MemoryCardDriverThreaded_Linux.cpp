@@ -397,7 +397,7 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 			*   =   === === =  =     =   === = =
 			*       -- infamouspat
 			*/
-			if ( IsAFile( "/dev/" + sDevice + "1" ) )
+			if ( IsAFile( "/rootfs/dev/" + sDevice + "1" ) )
 				usbd.sDevice = "/dev/" + sDevice + "1";
 			else
 				usbd.sDevice = "/dev/" + sDevice;

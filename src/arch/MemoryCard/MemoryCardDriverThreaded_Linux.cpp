@@ -389,7 +389,18 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 				continue;
 
 			/* Okay, let me rephrase. Not having the "1" breaks cards on ITG. -- Vyhd */
-			usbd.sDevice = "/dev/" + sDevice + "1";
+			/**
+			*   === = = === =  =   =   = ===  =
+			*   =   = = =   = =     = =  =   = =
+			*   === = = =   ==       =   === ===
+			*   =   = = =   = =      =   =   = =
+			*   =   === === =  =     =   === = =
+			*       -- infamouspat
+			*/
+			if ( IsAFile( "/dev/" + sDevice + "1" ) )
+				usbd.sDevice = "/dev/" + sDevice + "1";
+			else
+				usbd.sDevice = "/dev/" + sDevice;
 
 			SetDeviceInfo( usbd, sPath );
 

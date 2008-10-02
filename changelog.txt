@@ -8,6 +8,7 @@ OpenITG, beta 1 (in development)
 -Fixed bugs:
      Failed 'pTrail' assertion in Marathon mode
      Accidental PIUIO coin counter activation
+     Linux: couldn't open GTK loading window
 -Profile changes:
      Added custom courses ( /ProfileFolder/Courses/ ) - experimental
 

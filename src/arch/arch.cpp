@@ -136,9 +136,9 @@ LoadingWindow *MakeLoadingWindow()
 #ifdef USE_LOADING_WINDOW_COCOA
 		if(!DriversToTry[i].CompareNoCase("Cocoa") )	ret = new LoadingWindow_Cocoa;
 #endif
-//#ifdef USE_LOADING_WINDOW_GTK
-//		if(!DriversToTry[i].CompareNoCase("Gtk") )	ret = new LoadingWindow_Gtk;
-//#endif
+#ifdef USE_LOADING_WINDOW_GTK
+		if(!DriversToTry[i].CompareNoCase("Gtk") )	ret = new LoadingWindow_Gtk;
+#endif
 #ifdef USE_LOADING_WINDOW_NULL
 		if(!DriversToTry[i].CompareNoCase("Null") )	ret = new LoadingWindow_Null;
 #endif

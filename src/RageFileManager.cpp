@@ -286,7 +286,11 @@ void RageFileManager::MountInitialFilesystems()
 
 	// here goes nothing... --infamouspat
 	RageFileManager::Mount( "dir", "/itgdata/cache-sink", "/Cache" );
+
+	RageFileManager::Mount( "dir", "/itgdata/AdditionalSongs", "/Songs" );
 #else
+	RageFileManager::Mount( "dir", Root + "/AdditionalSongs", "/Songs" );
+
 	//RageFileManager::Mount( "kry", Root + "/CryptPackages", "/CryptPackages" );
 	/* This mounts everything else, including Data, etc. */
 	RageFileManager::Mount( "dir", Root, "/" );

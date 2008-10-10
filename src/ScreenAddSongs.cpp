@@ -13,6 +13,9 @@
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "ProfileManager.h"
+#include "RageUtil_FileDB.h" /* defines FileSet */
+#include "RageFileDriverDirect.h" /* defines DirectFilenameDB */
+
 
 static RageMutex MountMutex("ITGDataMount");
 
@@ -27,13 +30,15 @@ ScreenAddSongs::ScreenAddSongs( CString sName ) : ScreenWithMenuElements( sName 
 {
 	m_bRefreshSongMan = false;
 	m_bPrompt = false;
+	MEMCARDMAN->UnlockCards();
 }
 
 ScreenAddSongs::~ScreenAddSongs()
 {
 	LOG->Trace( "ScreenAddSongs::~ScreenAddSongs()" );
 	m_bStopThread = true;
-	m_PlayerSongLoadThread.Wait();
+	if (m_PlayerSongLoadThread.IsCreated())
+		m_PlayerSongLoadThread.Wait();
 
 	FOREACH_PlayerNumber( pn )
 		MEMCARDMAN->UnmountCard( pn );
@@ -102,7 +107,7 @@ void ScreenAddSongs::StartSongThread()
 			if (PCardState == MEMORY_CARD_STATE_READY && !m_bCardMounted[pn])
 			{
 				if( !PROFILEMAN->LoadProfileFromMemoryCard(pn) || !PROFILEMAN->IsPersistentProfile(pn) ) continue;
-				m_AddableGroupSelection.SetText( m_AddableGroupSelection.GetText() + "\n" + ssprintf("Loading Player %d songs...\n", pn+1) );
+				m_AddableGroupSelection.SetText( ssprintf("Loading Player %d songs...\n", pn+1) );
 				m_asAddableGroups[pn].clear();
 				MEMCARDMAN->LockCards();
 				MEMCARDMAN->MountCard(pn);
@@ -183,6 +188,16 @@ void ScreenAddSongs::Input( const DeviceInput& DeviceI, const InputEventType typ
 	Screen::Input( DeviceI, type, GameI, MenuI, StyleI );
 }
 
+CString g_CurXferFile;
+
+// shamelessly copied from vyhd's function in ScreenSelectMusic
+void UpdateXferProgress( float fPercent )
+{
+	LOG->Trace( "UpdateXferProgress( %f )", fPercent );
+	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n%s\n", (int)fPercent, g_CurXferFile.c_str() );
+	SCREENMAN->OverlayMessage( sMessage );
+	SCREENMAN->Draw();
+}
 
 void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 {
@@ -194,12 +209,67 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 	}
 	if ( SM == SM_AnswerConfirmAddGroups )
 	{
-		if (ScreenPrompt::s_LastAnswer == ANSWER_NO) return;
+		bool bSuccess = false, bBreakEarly = false;
+		CString sError;
+
 		m_bPrompt = false;
+		if (ScreenPrompt::s_LastAnswer == ANSWER_NO)
+		{
+			LOG->Debug("SM_AnswerConfirmAddGroups: returning...");
+			return;
+		}
+		m_bStopThread = true;
 		m_PlayerSongLoadThread.Wait();
 
 		// TODO: Song xferring code goes here
+		LOG->Debug( "SONG PACKS THAT WOULD HAVE BEEN ADDED: \n\t" + join( "\n\t", m_asAddableGroups[g_CurrentPlayer] ) ); // XXX
 
+		MEMCARDMAN->LockCards();
+		MEMCARDMAN->MountCard(g_CurrentPlayer, 99999);
+		for( unsigned i = 0; i < m_asAddableGroups[g_CurrentPlayer].size(); i++ )
+		{
+			bBreakEarly = false;
+			CString sAddGroup = m_asAddableGroups[g_CurrentPlayer][i];
+			CString sAddDb = PROFILEMAN->GetProfileDir(g_CurrentPlayer) + "/AdditionalSongs/" + sAddGroup + "/";
+			CStringArray sFiles;
+			GetDirListingRecursive( sAddDb, "/*", sFiles );
+			for( unsigned j = 0; j < sFiles.size(); j++)
+			{
+				CString sFile = sFiles[j];
+				CStringArray parts;
+				split( sFile, "/", parts );
+				CString sDestFile = "/" + join( "/", parts.begin()+2, parts.end() );
+
+				g_CurXferFile = sDestFile;
+				if (!CopyWithProgress(sFile, sDestFile, UpdateXferProgress, sError) )
+				{
+					SCREENMAN->SystemMessage( "Transfer error: " + sError );
+					bBreakEarly = true;
+					// TODO: delete remnant transfer contents
+					break;
+				}
+			}
+			if (bBreakEarly) break;
+		}
+		MEMCARDMAN->UnmountCard(g_CurrentPlayer);
+		MEMCARDMAN->UnlockCards();
+		if (!bBreakEarly) bSuccess = true;
+		SCREENMAN->HideOverlayMessage();
+		SCREENMAN->ZeroNextUpdate();
+		// hmm...
+		if (bSuccess)
+		{
+			m_AddableGroupSelection.SetText(
+				"The song folders have been successfully added to the machine\n"
+				"Press enter to continue and update song manager..." );
+			m_bRefreshSongMan = true;
+			return;
+		}
+
+		// recreate the song accept thread if xfer failed or user declined to add songs
+		m_bStopThread = false;
+		m_PlayerSongLoadThread.Create( InitSASSongThread, this );
+		
 	}
 	switch( SM )
 	{

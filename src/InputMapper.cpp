@@ -78,8 +78,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 		"ITG input device",
 		{
 			/* Player 1 */
-			{ 0, JOY_13,		DANCE_BUTTON_LEFT,		false },
-			{ 0, JOY_14,		DANCE_BUTTON_RIGHT,		false },
+			{ 0, JOY_14,		DANCE_BUTTON_LEFT,		false },
+			{ 0, JOY_13,		DANCE_BUTTON_RIGHT,		false },
 			{ 0, JOY_16,		DANCE_BUTTON_UP,		false },
 			{ 0, JOY_15,		DANCE_BUTTON_DOWN,		false },
 			{ 0, JOY_12,		DANCE_BUTTON_START,		false },

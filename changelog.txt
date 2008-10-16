@@ -9,6 +9,7 @@ OpenITG, beta 1 (in development)
      Failed 'pTrail' assertion in Marathon mode
      Accidental PIUIO coin counter activation
      Linux: couldn't open GTK loading window
+     ITGIO - P1 Left and Right reversed
 -Profile changes:
      Added custom courses ( /ProfileFolder/Courses/ ) - experimental
 

@@ -295,7 +295,9 @@ Actor *MakeMovie( const CString &sMoviePath )
 
 bool BackgroundImpl::Layer::CreateBackground( const Song *pSong, const BackgroundDef &bd )
 {
-	ASSERT( m_BGAnimations.find(bd) == m_BGAnimations.end() );
+	//This is well-meaning, but the start of many a stupid bug report.
+	//Be on the lookout for any grievous subtle bugs this might cause.
+	//ASSERT( m_BGAnimations.find(bd) == m_BGAnimations.end() );
 
 	// Resolve the background names
 	vector<CString> vsToResolve;

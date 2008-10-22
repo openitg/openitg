@@ -12,7 +12,11 @@ if test "$with_vorbis" = "yes" -a "$with_int_vorbis" = "no"; then
 	AC_CHECK_LIB(vorbisfile, ov_open, have_libvorbisfile=yes, have_libvorbisfile=no, [-lvorbis -logg])
 	if test "$have_libvorbis" = "yes" -a "$have_libogg" = "yes" -a "$have_libvorbisfile" = "yes"; then
 		have_vorbis=yes
-		AUDIO_LIBS="$AUDIO_LIBS -lvorbisfile -lvorbis -logg"
+		if test "$itg_arcade" = "yes"; then
+			AUDIO_LIBS="$AUDIO_LIBS -Wl,-Bstatic -lvorbisfile -lvorbis -logg"
+		else
+			AUDIO_LIBS="$AUDIO_LIBS -lvorbisfile -lvorbis -logg"
+		fi
 	else
 		echo Not all vorbis libraries found.
 	fi
@@ -63,6 +67,10 @@ pass the "--without-mp3" flag to configure.])
 	AC_DEFINE(NO_MP3_SUPPORT, 1, [MP3 support not available])
 else
 	AUDIO_LIBS="$AUDIO_LIBS -lmad"
+fi
+
+if test "$itg_arcade" = "yes"; then
+	AUDIO_LIBS="$AUDIO_LIBS -Wl,-Bdynamic"
 fi
 
 AC_SUBST(AUDIO_LIBS)

@@ -17,7 +17,7 @@ AM_CXXFLAGS += $(XCFLAGS)
 
 #LIBS += $(LUA_LIBS)
 #LIBS += -lpthread
-LIBS += -Wl,-Bstatic -lstdc++ -llua -llualib -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
+LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ -llua -llualib -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
 
 $(srcdir)/libresample/libresample.a:
 	cd $(srcdir)/libresample && autoconf && sh ./configure && make

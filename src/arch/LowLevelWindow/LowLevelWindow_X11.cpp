@@ -7,7 +7,6 @@
 
 #include <stack>
 #include <math.h>	// ceil()
-#define GLX_GLXEXT_PROTOTYPES
 #include <GL/glx.h>	// All sorts of stuff...
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>

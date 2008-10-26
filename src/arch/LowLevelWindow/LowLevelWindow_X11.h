@@ -5,6 +5,7 @@
 
 #include "LowLevelWindow.h"
 
+#define GLX_GLXEXT_PROTOTYPES
 #include <GL/glx.h>
 #include <GL/gl.h>
 #include <GL/glu.h>

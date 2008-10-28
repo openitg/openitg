@@ -1,60 +1,51 @@
-#ifndef RAGE_FILE_DRIVER_CRYPT_H
-#define RAGE_FILE_DRIVER_CRYPT_H
+#ifndef RAGE_CRYPT_INTERFACE_ITG2_H
+#define RAGE_CRYPT_INTERFACE_ITG2_H
 
-#include "RageFileDriver.h"
-#include "RageFileDriverDirect.h"
-#include "RageFileDriverDirectHelpers.h"
 #include "RageCryptInterface.h"
+#include "aes/aes.h"
+#include <map>
 
-// shamelessly ganked straight from RageFileDriverDirect
-
-class RageFileDriverCrypt: public RageFileDriver
+class crypt_file_ITG2: public crypt_file
 {
 public:
-	RageFileDriverCrypt( CString root, CString _secret );
-
-	RageFileBasic *Open( const CString &path, int mode, int &err );
-	//bool Remove( const CString &sPath );
-	//bool Remount(const CString &sPath);
-
-protected:
-	CString secret;
-	CString root;
+	aes_decrypt_ctx ctx[1];
 };
 
-class RageFileObjCrypt: public RageFileObj
+typedef std::map<const char *, unsigned char*> tKeyMap;
+
+// a new crypto driver must define the following functions
+// as needed. not all of them need to be filled in.
+namespace RageCryptInterface_ITG2
 {
-private:
-	crypt_file *cf;
-	CString secret;
+	static tKeyMap KnownKeys;
 
-public:
-	RageFileObjCrypt();
-	RageFileObjCrypt(crypt_file *cf_);
-	virtual ~RageFileObjCrypt();
-	virtual int ReadInternal(void *buffer, size_t bytes);
-	virtual int SeekInternal(int offset);
-	virtual int WriteInternal(const void *buffer, size_t bytes);
-        virtual RageFileBasic *Copy() const;
-        virtual int GetFileSize() const;
+	// return a special version of crypt_file used for this driver
+	crypt_file *crypt_create_internal() { return new crypt_file_ITG2; }
+	crypt_file *crypt_copy_internal( crypt_file *cf );
+
+	// true if file is readable, false if it isn't
+	bool crypt_open_internal( crypt_file *cf, CString secret );
+	int crypt_read_internal( crypt_file *cf, void *buf, int size );
+
+	// unused in this implementation
+	int crypt_seek_internal( crypt_file *cf, int where )	{ return cf->filepos; }
+	int crypt_tell_internal( crypt_file *cf )		{ return cf->filepos; }
+	bool crypt_close_internal( crypt_file *cf )		{ return true; }
 };
 
-#include "RageUtil_FileDB.h"
-class CryptFilenameDB: public FilenameDB
-{
-public:
-        CryptFilenameDB( CString root );
-	void SetRoot( CString root_ );
+// UGLY: refer to the ITG2 versions of the internal calls
+using namespace RageCryptInterface_ITG2;
 
-protected:
-	virtual void PopulateFileSet( FileSet &fs, const CString &sPath );
-	CString root;
-};
-
+#ifdef CRYPT_INTERFACE
+#error More than one crypt interface selected
 #endif
 
+#define CRYPT_INTERFACE ITG2
+
+#endif // CRYPT_INTERFACE_ITG2_H
+
 /*
- * Copyright (c) 2005 Glenn Maynard reimplemented by infamouspat
+ * Copyright (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -77,4 +68,3 @@ protected:
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
-

@@ -1,60 +1,58 @@
-#ifndef RAGE_FILE_DRIVER_CRYPT_H
-#define RAGE_FILE_DRIVER_CRYPT_H
+/* RageCryptInterface - a standard entry point for file-level
+ * cryptography using RageFileDriverCrypt. */
 
-#include "RageFileDriver.h"
-#include "RageFileDriverDirect.h"
-#include "RageFileDriverDirectHelpers.h"
-#include "RageCryptInterface.h"
+#ifndef RAGE_CRYPT_INTERFACE_H
+#define RAGE_CRYPT_INTERFACE_H
 
-// shamelessly ganked straight from RageFileDriverDirect
+#include "StdString.h"
 
-class RageFileDriverCrypt: public RageFileDriver
+// POSIX file functions and Win32 compatibility layer
+#include <fcntl.h>
+
+#ifdef WIN32
+#include <io.h>
+#define open(a,b)	_open(a,b)
+#define read(a,b,c)	_read(a,b,c)
+#define lseek(a,b,c)	_lseek(a,b,c)
+#endif
+
+class crypt_file
 {
 public:
-	RageFileDriverCrypt( CString root, CString _secret );
+	crypt_file() { }
+	crypt_file( crypt_file *cf )
+	{
+		path = cf->path;
+		file_size = cf->file_size;
+		header_size = cf->header_size;
+	}
 
-	RageFileBasic *Open( const CString &path, int mode, int &err );
-	//bool Remove( const CString &sPath );
-	//bool Remount(const CString &sPath);
+	CString path;
+	int fd;
+	unsigned int filepos;
 
-protected:
-	CString secret;
-	CString root;
+	size_t file_size;
+	size_t header_size;
 };
 
-class RageFileObjCrypt: public RageFileObj
+// shared calls for all crypto interfaces
+namespace RageCryptInterface
 {
-private:
-	crypt_file *cf;
-	CString secret;
+	// redirects to driver implementations
+	crypt_file *crypt_create();
+	crypt_file *crypt_copy( crypt_file *cf );
 
-public:
-	RageFileObjCrypt();
-	RageFileObjCrypt(crypt_file *cf_);
-	virtual ~RageFileObjCrypt();
-	virtual int ReadInternal(void *buffer, size_t bytes);
-	virtual int SeekInternal(int offset);
-	virtual int WriteInternal(const void *buffer, size_t bytes);
-        virtual RageFileBasic *Copy() const;
-        virtual int GetFileSize() const;
-};
-
-#include "RageUtil_FileDB.h"
-class CryptFilenameDB: public FilenameDB
-{
-public:
-        CryptFilenameDB( CString root );
-	void SetRoot( CString root_ );
-
-protected:
-	virtual void PopulateFileSet( FileSet &fs, const CString &sPath );
-	CString root;
+	crypt_file *crypt_open( CString name, CString secret );
+	int crypt_read( crypt_file *cf, void *buf, int size );
+	int crypt_seek( crypt_file *cf, int where );
+	int crypt_tell( crypt_file *cf );
+	int crypt_close( crypt_file *cf );
 };
 
 #endif
 
 /*
- * Copyright (c) 2005 Glenn Maynard reimplemented by infamouspat
+ * Copyright (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -77,4 +75,3 @@ protected:
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
-

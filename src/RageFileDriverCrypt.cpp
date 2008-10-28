@@ -24,16 +24,12 @@
 /* courtesy of random.org. This is for future testing. -- Vyhd */
 #define DEFAULT_AES_KEY "65487573252940086457044055343188392138734144585"
 
-//#define tell( handle ) lseek( handle, 0L, SEEK_CUR )
-//#define _tell tell
-
 static struct FileDriverEntry_KRY: public FileDriverEntry
 {
 	FileDriverEntry_KRY(): FileDriverEntry( "KRY" ) { }
 	RageFileDriver *Create( CString Root ) const
 	{
 #ifdef ITG_ARCADE
-		/* If no secret is given, CryptInterface will get it from the dongle. */
 		return new RageFileDriverCrypt( Root, "" );
 #else
 		return new RageFileDriverCrypt( Root, DEFAULT_AES_KEY );
@@ -57,7 +53,7 @@ RageFileBasic *RageFileDriverCrypt::Open( const CString &path, int mode, int &er
 	CHECKPOINT_M(sPath.c_str());
 	FDB->ResolvePath( sPath );
 
-	crypt_file *newFile = ITG2CryptInterface::crypt_open(sPath, secret);
+	crypt_file *newFile = RageCryptInterface::crypt_open(sPath, secret);
 
 	if (newFile == NULL)
 		return NULL;
@@ -67,15 +63,11 @@ RageFileBasic *RageFileDriverCrypt::Open( const CString &path, int mode, int &er
 
 RageFileBasic *RageFileObjCrypt::Copy() const
 {
-	crypt_file *cpCf = new crypt_file;
-	cpCf->path = cf->path;
-	memcpy(cpCf->ctx, cf->ctx, sizeof(cf->ctx));
-	//cpCf->ctx = cf->ctx;
-	cpCf->filesize = cf->filesize;
-	cpCf->headersize = cf->headersize;
+	// crypt_copy creates a new crypt_file
+	crypt_file *cpCf = RageCryptInterface::crypt_copy( cf );
 
-	cpCf->fd = open(cf->path.c_str(), O_RDONLY);
-	ITG2CryptInterface::crypt_seek(cpCf, ITG2CryptInterface::crypt_tell(cf));
+	cpCf->fd = open( cf->path.c_str(), O_RDONLY );
+	RageCryptInterface::crypt_seek(cpCf, RageCryptInterface::crypt_tell(cf));
 	
 	return new RageFileObjCrypt(cpCf);
 }
@@ -88,12 +80,12 @@ RageFileObjCrypt::RageFileObjCrypt( crypt_file *cf_ )
 
 int RageFileObjCrypt::SeekInternal( int iOffset )
 {
-        return ITG2CryptInterface::crypt_seek( cf, iOffset );
+        return RageCryptInterface::crypt_seek( cf, iOffset );
 }
 
 int RageFileObjCrypt::ReadInternal( void *pBuf, size_t iBytes )
 {
-        int iRet = ITG2CryptInterface::crypt_read( cf, pBuf, iBytes );
+        int iRet = RageCryptInterface::crypt_read( cf, pBuf, iBytes );
         if( iRet == -1 )
         {
                 SetError( strerror(errno) );
@@ -111,16 +103,15 @@ int RageFileObjCrypt::WriteInternal( const void *pBuf, size_t iBytes)
 
 int RageFileObjCrypt::GetFileSize() const
 {
-	return cf->filesize;
+	return cf->file_size;
 }
 
+// crypt_close will delete the object associated with this RageFileObj
 RageFileObjCrypt::~RageFileObjCrypt()
 {
-	if (cf->fd != -1) {
-		if (ITG2CryptInterface::crypt_close(cf) == -1) {
+	if (cf->fd != -1)
+		if (RageCryptInterface::crypt_close(cf) == -1)
 			LOG->Warn("~RageFileObjCrypt(): could not close file");
-		}
-	}
 }
 
 CryptFilenameDB::CryptFilenameDB( CString root_ )

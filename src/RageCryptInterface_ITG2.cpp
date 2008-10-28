@@ -1,44 +1,31 @@
 #include "global.h"
-#include "RageException.h"
 #include "RageLog.h"
+#include "RageCryptInterfaceITG2.h"
+
 #include "aes/aes.h"
 #include "crypto/CryptSH512.h"
-#include "ITG2CryptInterface.h"
 #include "ibutton/ibutton.h"
-#include <cstdio>
 
-/* courtesy of random.org. -- Vyhd */
-#define DEFAULT_AES_KEY "65487573252940086457044055343188392138734144585"
-
-/* Windows compatibility layer...really ugly. :( */
-#if defined(UNIX)
-#include <fcntl.h>
-#elif defined(WIN32)
-#include <fcntl.h>
-#include <io.h>
-#define open(a,b) _open(a,b)
-#define read(a,b,c) _read(a,b,c)
-#define lseek(a,b,c) _lseek(a,b,c)
-#endif
-
-crypt_file *ITG2CryptInterface::crypt_open(CString name, CString secret)
+// we can safely assume that all instances of crypt_file
+// will match ours, due to the crypt_create_internal call.
+crypt_file *RageCryptInterface_ITG2::crypt_copy_internal( crypt_file *cf )
 {
-	crypt_file *newfile = new crypt_file;
+	crypt_file *cf_new = new crypt_file_ITG2( cf );
+
+	// copy the ctx value
+	memcpy( cf_new->ctx, cf->ctx, sizeof(cf->ctx) );
+
+	return cf_new;
+}
+
+int RageCryptInterfaceITG2::crypt_open(crypt_file *newfile, CString secret)
+{
+	LOG->Debug( "RageCryptInterfaceITG2::crypt_open( %s )", newfile->path.c_str() );
+
 	char header[2];
 	unsigned char *subkey, verifyblock[16];
 	size_t got, subkeysize;
 	unsigned char *SHABuffer, *AESKey, plaintext[16], AESSHABuffer[64];
-#ifdef WIN32
-	newfile->fd = open(name.c_str(), O_RDONLY | O_BINARY);
-#else
-	newfile->fd = open(name.c_str(), O_RDONLY);
-#endif
-
-	if (newfile->fd == -1)
-	{
-		LOG->Warn("ITG2CryptInterface: Could not open %s: %s", name.c_str(), strerror(errno));
-		return NULL;
-	}
 
 	if (read(newfile->fd, header, 2) < 2)
 	{

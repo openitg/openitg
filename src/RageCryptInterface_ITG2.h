@@ -8,6 +8,8 @@
 class crypt_file_ITG2: public crypt_file
 {
 public:
+	crypt_file_ITG2(crypt_file *cf);
+	crypt_file_ITG2();
 	aes_decrypt_ctx ctx[1];
 };
 
@@ -20,7 +22,7 @@ namespace RageCryptInterface_ITG2
 	static tKeyMap KnownKeys;
 
 	// return a special version of crypt_file used for this driver
-	crypt_file *crypt_create_internal() { return new crypt_file_ITG2; }
+	crypt_file *crypt_create_internal();
 	crypt_file *crypt_copy_internal( crypt_file *cf );
 
 	// true if file is readable, false if it isn't
@@ -28,9 +30,11 @@ namespace RageCryptInterface_ITG2
 	int crypt_read_internal( crypt_file *cf, void *buf, int size );
 
 	// unused in this implementation
-	int crypt_seek_internal( crypt_file *cf, int where )	{ return cf->filepos; }
-	int crypt_tell_internal( crypt_file *cf )		{ return cf->filepos; }
-	bool crypt_close_internal( crypt_file *cf )		{ return true; }
+	int crypt_seek_internal( crypt_file *cf, int where );
+	int crypt_tell_internal( crypt_file *cf );
+	int crypt_close_internal( crypt_file *cf );
+
+	static int GetKeyFromDongle(const unsigned char *subkey, unsigned char *aeskey);
 };
 
 // UGLY: refer to the ITG2 versions of the internal calls

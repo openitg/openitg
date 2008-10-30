@@ -1,26 +1,35 @@
 #include "global.h"
 #include "RageLog.h"
-#include "RageCryptInterfaceITG2.h"
+#include "RageCryptInterface_ITG2.h"
 
 #include "aes/aes.h"
 #include "crypto/CryptSH512.h"
 #include "ibutton/ibutton.h"
 
+crypt_file_ITG2::crypt_file_ITG2():crypt_file() {}
+
+crypt_file_ITG2::crypt_file_ITG2(crypt_file *cf):crypt_file(cf) {}
+
+crypt_file *RageCryptInterface_ITG2::crypt_create_internal() { return new crypt_file_ITG2; }
+
+int RageCryptInterface_ITG2::crypt_tell_internal( crypt_file *cf ) { return cf->filepos; }
+int RageCryptInterface_ITG2::crypt_close_internal( crypt_file *cf ) { return close(cf->fd); }
+
 // we can safely assume that all instances of crypt_file
 // will match ours, due to the crypt_create_internal call.
 crypt_file *RageCryptInterface_ITG2::crypt_copy_internal( crypt_file *cf )
 {
-	crypt_file *cf_new = new crypt_file_ITG2( cf );
+	crypt_file_ITG2 *cf_new = new crypt_file_ITG2( cf );
 
 	// copy the ctx value
-	memcpy( cf_new->ctx, cf->ctx, sizeof(cf->ctx) );
+	memcpy( cf_new->ctx, ((crypt_file_ITG2*)cf)->ctx, sizeof(((crypt_file_ITG2*)cf)->ctx) );
 
-	return cf_new;
+	return (crypt_file*)cf_new;
 }
 
-int RageCryptInterfaceITG2::crypt_open(crypt_file *newfile, CString secret)
+bool RageCryptInterface_ITG2::crypt_open_internal(crypt_file *newfile, CString secret)
 {
-	LOG->Debug( "RageCryptInterfaceITG2::crypt_open( %s )", newfile->path.c_str() );
+	LOG->Debug( "RageCryptInterface_ITG2::crypt_open( %s )", newfile->path.c_str() );
 
 	char header[2];
 	unsigned char *subkey, verifyblock[16];
@@ -29,54 +38,56 @@ int RageCryptInterfaceITG2::crypt_open(crypt_file *newfile, CString secret)
 
 	if (read(newfile->fd, header, 2) < 2)
 	{
-		LOG->Warn("ITG2CryptInterface: Could not open %s: unexpected header size", name.c_str());
+		LOG->Warn("RageCryptInterface_ITG2: Could not open %s: unexpected header size", newfile->path.c_str());
+		return false;
 	}
+	newfile->header_size = 2;
 
 	if (secret.length() == 0)
 	{
 		if (header[0] != ':' || header[1] != '|')
 		{
-			LOG->Warn("ITG2CryptInterface: no secret given and %s is not an ITG2 arcade encrypted file", name.c_str());
-			return NULL;
+			LOG->Warn("RageCryptInterface_ITG2: no secret given and %s is not an ITG2 arcade encrypted file", newfile->path.c_str());
+			return false;
 		}
 	}
 	else
 	{
 		if (header[0] != '8' || header[1] != 'O')
 		{
-			LOG->Warn("ITG2CryptInterface: secret given, but %s is not an ITG2 patch file", name.c_str());
-			return NULL;
+			LOG->Warn("RageCryptInterface_ITG2: secret given, but %s is not an ITG2 patch file", newfile->path.c_str());
+			return false;
 		}
 	}
 
-	if (read(newfile->fd, &(newfile->filesize), 4) < 4)
+	if (read(newfile->fd, &(newfile->file_size), 4) < 4)
 	{
-		LOG->Warn("ITG2CryptInterface: Could not open %s: unexpected file size", name.c_str());
-		return NULL;
+		LOG->Warn("RageCryptInterface_ITG2: Could not open %s: unexpected file size", newfile->path.c_str());
+		return false;
 	}
 	
 	if (read(newfile->fd, &subkeysize, 4) < 4)
 	{
-		LOG->Warn("ITG2CryptInterface: Could not open %s: unexpected subkey size", name.c_str());
-		return NULL;
+		LOG->Warn("RageCryptInterface_ITG2: Could not open %s: unexpected subkey size", newfile->path.c_str());
+		return false;
 	}
 	
 	subkey = new unsigned char[subkeysize];
 
 	if ((got = read(newfile->fd, subkey, subkeysize)) < subkeysize)
 	{
-		LOG->Warn("ITG2CryptInterface: %s: subkey: expected %i, got %i", name.c_str(), subkeysize, got);
-		return NULL;
+		LOG->Warn("RageCryptInterface_ITG2: %s: subkey: expected %i, got %i", newfile->path.c_str(), subkeysize, got);
+		return false;
 	}
 
 	if ((got = read(newfile->fd, verifyblock, 16)) < 16)
 	{
-		LOG->Warn("ITG2CryptInterface: %s: verifyblock: expected 16, got %i", name.c_str(), got);
-		return NULL;
+		LOG->Warn("RageCryptInterface_ITG2: %s: verifyblock: expected 16, got %i", newfile->path.c_str(), got);
+		return false;
 	}
 	
-	tKeyMap::iterator iter = ITG2CryptInterface::KnownKeys.find(name.c_str());
-	if (iter != ITG2CryptInterface::KnownKeys.end())
+	tKeyMap::iterator iter = RageCryptInterface_ITG2::KnownKeys.find(newfile->path.c_str());
+	if (iter != RageCryptInterface_ITG2::KnownKeys.end())
 	{
 		CHECKPOINT_M("cache");
 		AESKey = iter->second;
@@ -102,31 +113,30 @@ int RageCryptInterfaceITG2::crypt_open(crypt_file *newfile, CString secret)
 
 		unsigned char *cAESKey = new unsigned char[24];
 		memcpy(cAESKey, AESKey, 24);
-		ITG2CryptInterface::KnownKeys[name.c_str()] = cAESKey;
+		RageCryptInterface_ITG2::KnownKeys[newfile->path.c_str()] = cAESKey;
 	}
 	delete subkey;
 
-	aes_decrypt_key(AESKey, 24, newfile->ctx);
-	aes_decrypt(verifyblock, plaintext, newfile->ctx);
+	aes_decrypt_key(AESKey, 24, ((crypt_file_ITG2*)newfile)->ctx);
+	aes_decrypt(verifyblock, plaintext, ((crypt_file_ITG2*)newfile)->ctx);
 	if (plaintext[0] != ':' || plaintext[1] != 'D')
 	{
-		LOG->Warn("ITG2CryptInterface: %s: decrypt failed, unexpected decryption magic", name.c_str());
-		return NULL;
+		LOG->Warn("RageCryptInterface_ITG2: %s: decrypt failed, unexpected decryption magic", newfile->path.c_str());
+		return false;
 	}
 
 	newfile->filepos = 0;
-	newfile->headersize = lseek(newfile->fd, 0, SEEK_CUR);
-	newfile->path = name;
+	newfile->header_size = lseek(newfile->fd, 0, SEEK_CUR);
 
-	return newfile;
+	return true;
 }
 
-int ITG2CryptInterface::GetKeyFromDongle(const unsigned char *subkey, unsigned char *aeskey)
+static int RageCryptInterface_ITG2::GetKeyFromDongle(const unsigned char *subkey, unsigned char *aeskey)
 {
 	return iButton::GetAESKey(subkey, aeskey);
 }
 
-int ITG2CryptInterface::crypt_read(crypt_file *cf, void *buf, int size)
+int RageCryptInterface_ITG2::crypt_read_internal(crypt_file *cf, void *buf, int size)
 {
 	unsigned char backbuffer[16], decbuf[16], *crbuf, *dcbuf;
 
@@ -143,7 +153,7 @@ int ITG2CryptInterface::crypt_read(crypt_file *cf, void *buf, int size)
 	unsigned int cryptpos = (cf->filepos/16)*16; // position in file to make decryption ready
 	unsigned int difference = cf->filepos - cryptpos;
 
-	lseek( cf->fd, cf->headersize + cryptpos, SEEK_SET );
+	lseek( cf->fd, cf->header_size + cryptpos, SEEK_SET );
 	read( cf->fd, crbuf, bufsize);
 
 	if (cryptpos % 4080 == 0)
@@ -152,13 +162,13 @@ int ITG2CryptInterface::crypt_read(crypt_file *cf, void *buf, int size)
 	}
 	else
 	{
-		lseek( cf->fd, cf->headersize + (cryptpos-16), SEEK_SET );
+		lseek( cf->fd, cf->header_size + (cryptpos-16), SEEK_SET );
 		read(cf->fd, backbuffer, 16);
 	}
 
 	for (unsigned i = 0; i < bufsize / 16; i++)
 	{
-		aes_decrypt(crbuf+(i*16), decbuf, cf->ctx);
+		aes_decrypt(crbuf+(i*16), decbuf, ((crypt_file_ITG2*)cf)->ctx);
 
 		for (unsigned char j = 0; j < 16; j++)
 			dcbuf[(i*16)+j] = decbuf[j] ^ (backbuffer[j] - j);
@@ -180,23 +190,11 @@ int ITG2CryptInterface::crypt_read(crypt_file *cf, void *buf, int size)
 	return size;
 }
 
-int ITG2CryptInterface::crypt_seek(crypt_file *cf, int where)
+int RageCryptInterface_ITG2::crypt_seek_internal(crypt_file *cf, int where)
 {
 	cf->filepos = where;
 	return cf->filepos;
 }
-
-int ITG2CryptInterface::crypt_tell(crypt_file *cf)
-{
-	return cf->filepos;
-}
-
-
-int ITG2CryptInterface::crypt_close(crypt_file *cf)
-{
-	return close(cf->fd);
-}
-
 /*
  * Copyright (c) 2008 BoXoRRoXoRs
  * All rights reserved.

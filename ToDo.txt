@@ -7,7 +7,8 @@
 /* Minor bug fixing */
 -"Random" selections for non-existant BGVids always return the same video
 -Recalculate precentages correctly with removal mods and negative BPMs
-- [Linux] Full Screen -> Full Screen switch does not actually reset resolution, rather just the window size
+-[Linux] Full Screen -> Full Screen switch does not actually reset resolution, rather just the window size
+-"Perspective" modifiers aren't saved on cards between sessions
 
 /* Minor feature additions */
 -Include ThemeInfo.ini support (is this still needed?)

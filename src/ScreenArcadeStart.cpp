@@ -75,7 +75,6 @@ void ScreenArcadeStart::Update( float fDeltaTime )
 		// problem was fixed, or we timed out
 		if( m_bUSBError == false || m_Timer.Ago() > TIMEOUT )
 		{
-			DiagnosticsUtil::SetInputType( "Home" );
 			this->PlayCommand( "Off" );
 			StartTransitioning( SM_GoToNextScreen );
 		}
@@ -107,9 +106,11 @@ void ScreenArcadeStart::MenuStart( PlayerNumber pn )
 {
 	if( !IsTransitioning() )
 	{
+#ifdef ITG_ARCADE
 		// nothing set by SAStart, so set it now
 		if( DiagnosticsUtil::GetInputType() == "" )
 			DiagnosticsUtil::SetInputType( "Home" );
+#endif
 
 		this->PlayCommand( "Off" );
 		StartTransitioning( SM_GoToNextScreen );		

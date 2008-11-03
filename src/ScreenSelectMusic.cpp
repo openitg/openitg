@@ -1316,6 +1316,7 @@ void UpdateLoadProgress( float fPercent )
 
 	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n\n", (int)fPercent );
 
+	LOG->Debug( "GetInputType: %s", DiagnosticsUtil::GetInputType().c_str() );
 	// this will be themeable soon, ideally. for now, assume Select is available unless ITGIO is loaded
 	static CString sCancelText = ssprintf( "Pressing %s will cancel this selection.\n\n",
 		DiagnosticsUtil::GetInputType() == "ITGIO" ? "&MENULEFT; + &MENURIGHT;" : "&SELECT;" );

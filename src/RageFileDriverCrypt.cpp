@@ -112,6 +112,7 @@ RageFileObjCrypt::~RageFileObjCrypt()
 	if (cf->fd != -1)
 		if (RageCryptInterface::crypt_close(cf) == -1)
 			LOG->Warn("~RageFileObjCrypt(): could not close file");
+	SAFE_DELETE(cf);
 }
 
 CryptFilenameDB::CryptFilenameDB( CString root_ )

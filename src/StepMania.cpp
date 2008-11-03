@@ -82,6 +82,18 @@
 #include <cerrno>
 #endif
 
+// XXX: we should put these in a separate file, probably
+#define PATCH_PC_DIR	"Data/patch"
+#define PATCH_PC_FILE	"Data/patch/patch.zip"
+
+#ifdef WIN32
+#define PATCH_AC_DIR	PATCH_PC_DIR
+#define PATCH_AC_FILE	PATCH_AC_FILE
+#else
+#define PATCH_AC_DIR	"/stats/patch"
+#define PATCH_AC_FILE	"/rootfs/stats/patch/patch.zip"
+#endif
+
 #define ZIPS_DIR "Packages/"
 
 int g_argc = 0;
@@ -1033,6 +1045,7 @@ int main(int argc, char* argv[])
 		for( unsigned i=0; i < dirs.size(); i++)
 			FILEMAN->Mount( "dir", dirs[i], "/Songs" );
 	}
+
 	MountTreeOfZips( ZIPS_DIR );
 
 	// TODO: soft-code this!
@@ -1055,50 +1068,33 @@ int main(int argc, char* argv[])
 	 * efficient, but it is much more readable. -- Vyhd */
 
 #ifdef ITG_ARCADE
-
-
-
-#ifdef WIN32
-	if ( IsAFile("Data/patch/patch.zip") )
-#else
-	if ( IsAFile("/rootfs/stats/patch/patch.zip") )
-#endif
+	if ( IsAFile( PATCH_AC_FILE ) )
 	{
 		LOG->Info("VFS: mounting patch.zip");
-#ifdef WIN32
-		
-		FILEMAN->Mount( "patch", "Data/patch", "/Patch" );
-		FILEMAN->Mount( "zip", "Patch/patch.zip", "/", false );
-#else
-		FILEMAN->Mount( "patch", "/stats/patch", "/Patch" );
-		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
-#endif
+		FILEMAN->Mount( "patch", PATCH_AC_DIR, "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
-
-
-
 #else
-	if ( IsAFile("Data/patch/patch.zip") )
+	if ( IsAFile( PATCH_PC_FILE ) )
 	{
 		LOG->Info("VFS: mounting patch.zip");
-		FILEMAN->Mount( "patch", "Data/patch", "/Patch" );
+		FILEMAN->Mount( "patch", PATCH_PC_DIR, "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
+#endif
 	else
 	{
 		LOG->Trace("VFS: No patch file found");
 	}
-#endif
 
-#if 0
+//#if 0
 	LOG->Info("======= MOUNTPOINTS =========");
 	vector<RageFileManager::DriverLocation> mymounts;
 	FILEMAN->GetLoadedDrivers(mymounts);
-	for (int i = 0; i < mymounts.size(); i++)
+	for (unsigned i = 0; i < mymounts.size(); i++)
 		LOG->Info("%s ..... %s ..... %s", mymounts[i].Type.c_str(), mymounts[i].Root.c_str(), mymounts[i].MountPoint.c_str() );
 	LOG->Info("=============================");
-#endif
+//#endif
 
 	/* One of the above filesystems might contain files that affect preferences, eg Data/Static.ini.
 	 * Re-read preferences. */

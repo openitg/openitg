@@ -6,10 +6,12 @@ OpenITG, beta 1 (in development)
      Tentative fix for sensor-read problems
      Added coin counter functionality
 -Fixed bugs:
+     Fixed overwrite of InputType with "Home"
      Failed 'pTrail' assertion in Marathon mode
      Accidental PIUIO coin counter activation
      Linux: couldn't open GTK loading window
      ITGIO - P1 Left and Right reversed
+     patch.zip loaded multiple times
 -Profile changes:
      Added custom courses ( /ProfileFolder/Courses/ ) - experimental
 

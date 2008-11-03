@@ -33,8 +33,6 @@ namespace RageCryptInterface_ITG2
 	int crypt_seek_internal( crypt_file *cf, int where );
 	int crypt_tell_internal( crypt_file *cf );
 	int crypt_close_internal( crypt_file *cf );
-
-	static int GetKeyFromDongle(const unsigned char *subkey, unsigned char *aeskey);
 };
 
 // UGLY: refer to the ITG2 versions of the internal calls

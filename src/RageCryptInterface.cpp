@@ -68,10 +68,7 @@ int RageCryptInterface::crypt_tell( crypt_file *cf )
 
 int RageCryptInterface::crypt_close( crypt_file *cf )
 {
-	LOG->Debug( "RageCryptInterface::crypt_close( %s )", cf->path.c_str() );
-
 	return close(cf->fd);
-	delete cf;
 }
 
 /*

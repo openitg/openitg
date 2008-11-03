@@ -1,7 +1,7 @@
 /* More-or-less in order of priority. */
 
 /* Major bug fixing */
--Switching modes on the main menu causes OpenITG to hang
+-Switching modes on the main menu causes OpenITG to hang (out-of-memory error)
 -Figure out what the hell's up with saving USB stats
 
 /* Minor bug fixing */

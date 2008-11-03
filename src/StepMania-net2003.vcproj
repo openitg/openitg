@@ -2326,6 +2326,18 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath=".\RageBitmapTexture.h">
 			</File>
 			<File
+				RelativePath="RageCryptInterface.cpp">
+			</File>
+			<File
+				RelativePath="RageCryptInterface.h">
+			</File>
+			<File
+				RelativePath="RageCryptInterface_ITG2.cpp">
+			</File>
+			<File
+				RelativePath="RageCryptInterface_ITG2.h">
+			</File>
+			<File
 				RelativePath="RageDisplay.cpp">
 			</File>
 			<File
@@ -3109,12 +3121,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				</File>
 				<File
 					RelativePath="crypto51\iterhash.h">
-				</File>
-				<File
-					RelativePath="ITG2CryptInterface.cpp">
-				</File>
-				<File
-					RelativePath="ITG2CryptInterface.h">
 				</File>
 				<File
 					RelativePath="crypto51\misc.cpp">

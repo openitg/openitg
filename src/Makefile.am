@@ -299,7 +299,9 @@ RageFileDriverTimeout.cpp RageFileDriverTimeout.h \
 RageFileDriverCrypt.cpp RageFileDriverCrypt.h RageFileDriverPatch.cpp RageFileDriverPatch.h
 
 Rage = $(PCRE) $(RageFile) $(RageSoundFileReaders) \
-RageBitmapTexture.cpp RageBitmapTexture.h RageDisplay.cpp RageDisplay.h RageDisplay_OGL.cpp RageDisplay_OGL.h \
+RageBitmapTexture.cpp RageBitmapTexture.h RageCryptInterface.cpp RageCryptInterface.h \
+RageCryptInterface_ITG2.cpp RageCryptInterface_ITG2.h \
+RageDisplay.cpp RageDisplay.h RageDisplay_OGL.cpp RageDisplay_OGL.h \
 RageDisplay_OGL_Extensions.cpp RageDisplay_OGL_Extensions.h \
 RageDisplay_Null.cpp RageDisplay_Null.h RageException.cpp RageException.h RageInput.cpp RageInput.h \
 RageInputDevice.cpp RageInputDevice.h RageLog.cpp RageLog.h RageMath.cpp RageMath.h \
@@ -373,7 +375,6 @@ crypto/CryptRand.cpp crypto/CryptRand.h crypto/CryptSH512.cpp crypto/CryptSH512.
 crypto/CryptSHA.cpp crypto/CryptSHA.h
 
 cryptopp = \
-ITG2CryptInterface.cpp ITG2CryptInterface.h \
 crypto51/algebra.cpp crypto51/algebra.h crypto51/algparam.cpp crypto51/algparam.h crypto51/argnames.h \
 crypto51/asn.cpp crypto51/asn.h crypto51/config.h crypto51/cryptlib.cpp crypto51/cryptlib.h crypto51/files.cpp \
 crypto51/files.h crypto51/filters.cpp crypto51/filters.h crypto51/fltrimpl.h crypto51/integer.cpp crypto51/integer.h \

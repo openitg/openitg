@@ -19,6 +19,10 @@ public:
 
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
+	// in case several handlers exist for some reason, allow only one
+	// to claim the device and run I/O, so we waste memory and not cycles.
+	static bool bInitialized;
+
 	ITGIO Board;
 	RageThread InputThread;
 

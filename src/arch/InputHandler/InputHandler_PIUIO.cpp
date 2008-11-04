@@ -13,8 +13,16 @@
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_PIUIO.h"
 
+bool InputHandler_PIUIO::bInitialized = false;
+
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
+	if( InputHandler_PIUIO::bInitialized )
+	{
+		LOG->Warn( "Redundant PIUIO driver loaded. Disabling..." );
+		return;
+	}
+
 	m_bFoundDevice = false;
 	m_bShutdown = false;
 	DiagnosticsUtil::SetInputType( "PIUIO" );
@@ -25,6 +33,7 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 		LOG->Warn( "OpenITG could not establish a connection with PIUIO." );
 		return;
 	}
+	InputHandler_PIUIO::bInitialized = true;
 
 	LOG->Trace( "Opened PIUIO board." );
 	m_bFoundDevice = true;
@@ -66,6 +75,7 @@ InputHandler_PIUIO::~InputHandler_PIUIO()
 	{
 		Board.Write( 0 );
 		Board.Close();
+		InputHandler_PIUIO::bInitialized = false;
 	}
 }
 

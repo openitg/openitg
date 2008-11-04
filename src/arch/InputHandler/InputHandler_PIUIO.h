@@ -20,6 +20,10 @@ public:
 
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
+	// allow only one handler to control the board at a time, in case
+	// several are loaded. this should prevent bizarre collision-related
+	// errors.
+	static bool bInitialized;
 
 	PIUIO Board;
 	RageThread InputThread;

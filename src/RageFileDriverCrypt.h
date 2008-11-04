@@ -7,7 +7,6 @@
 #include "RageCryptInterface.h"
 
 // shamelessly ganked straight from RageFileDriverDirect
-
 class RageFileDriverCrypt: public RageFileDriver
 {
 public:
@@ -37,18 +36,6 @@ public:
 	virtual int WriteInternal(const void *buffer, size_t bytes);
         virtual RageFileBasic *Copy() const;
         virtual int GetFileSize() const;
-};
-
-#include "RageUtil_FileDB.h"
-class CryptFilenameDB: public FilenameDB
-{
-public:
-        CryptFilenameDB( CString root );
-	void SetRoot( CString root_ );
-
-protected:
-	virtual void PopulateFileSet( FileSet &fs, const CString &sPath );
-	CString root;
 };
 
 #endif

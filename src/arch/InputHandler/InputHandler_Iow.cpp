@@ -11,13 +11,16 @@
 
 const int NUM_PAD_LIGHTS = 4;
 
-/* TODO:
- * -Clean up debugging code
- * -Shift input data >> 16
- */
+bool InputHandler_Iow::bInitialized = false;
 
 InputHandler_Iow::InputHandler_Iow()
 {
+	if( InputHandler_Iow::bInitialized )
+	{
+		LOG->Warn( "Redundant Iow driver loaded. Disabling..." );
+		return;
+	}
+
 	m_bShutdown = false;
 	DiagnosticsUtil::SetInputType("ITGIO");
 
@@ -26,6 +29,8 @@ InputHandler_Iow::InputHandler_Iow()
 		LOG->Warn( "OpenITG could not establish a connection with ITGIO." );
 		return;
 	}
+	// set our board lock
+	InputHandler_Iow::bInitialized = true;
 
 	LOG->Trace( "Opened ITGIO board." );
 	m_bFoundDevice = true;
@@ -54,6 +59,8 @@ InputHandler_Iow::~InputHandler_Iow()
 	{
 		Board.Write( 0 );
 		Board.Close();
+
+		InputHandler_Iow::bInitialized = false;
 	}
 }
 
@@ -93,27 +100,6 @@ void InputHandler_Iow::HandleInput()
 {
 	uint32_t i = 1; // convenience hack
 
-	// filter out the data we've written
-	if( PREFSMAN->m_bDebugUSBInput && (m_iReadData != 0) )
-	{
-		CString sInputs;
-
-		for( unsigned x = 0; x < 16; x++ )
-		{
-			/* the bit we expect isn't in the data */
-			if( !(m_iReadData & (i << (31-x))) )
-				continue;
-
-			if( sInputs == "" )
-				sInputs = ssprintf( "Inputs: %i", x );
-			else
-				sInputs += ssprintf( ", %i", x );
-		}
-
-		if( LOG )
-			LOG->Info( sInputs );
-	}
-
 	DeviceInput di = DeviceInput( DEVICE_JOY1, JOY_1 );
 
 	// ITGIO only reads the first 16 bits
@@ -134,7 +120,7 @@ void InputHandler_Iow::UpdateLights()
 	// set a pointer to the "ext" LightsState for use
 	static const LightsState *m_LightsState = LightsDriver_External::Get();
 
-	static const uint32_t iCabinetBits[NUM_CABINET_LIGHTS] =
+	static const uint16_t iCabinetBits[NUM_CABINET_LIGHTS] =
 	{
 		/* Upper-left, upper-right, lower-left, lower-right marquee */
 		(1 << 8), (1 << 10), (1 << 9), (1 << 11),
@@ -143,7 +129,7 @@ void InputHandler_Iow::UpdateLights()
 		(1 << 13), (1 << 12), (1 << 15), (1 << 15)
 	};
 
-	static const uint32_t iPadBits[MAX_GAME_CONTROLLERS][NUM_PAD_LIGHTS] =
+	static const uint16_t iPadBits[MAX_GAME_CONTROLLERS][NUM_PAD_LIGHTS] =
 	{
 		/* Left, right, up, down */
 		{ (1 << 1), (1 << 0), (1 << 3), (1 << 2) }, /* Player 1 */
@@ -163,3 +149,28 @@ void InputHandler_Iow::UpdateLights()
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
 				m_iWriteData |= iPadBits[gc][gb];
 }
+
+/*
+ * Copyright (c) 2008 BoXoRRoXoRs
+ * All rights reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, and/or sell copies of the Software, and to permit persons to
+ * whom the Software is furnished to do so, provided that the above
+ * copyright notice(s) and this permission notice appear in all copies of
+ * the Software and that both the above copyright notice(s) and this
+ * permission notice appear in supporting documentation.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF
+ * THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS
+ * INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT
+ * OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+ * OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+ * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ * PERFORMANCE OF THIS SOFTWARE.
+ */

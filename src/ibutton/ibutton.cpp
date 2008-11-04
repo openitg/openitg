@@ -19,86 +19,38 @@ int iButton::GetAESKey(const uchar *subkey, uchar *output)
 	SHACopr copr;
 	int i;
 
-	LOG->Info( "************************GetKey routine start" );
-	LOG->Info( "subkey: %s", (char *)subkey );
 	memcpy(firstDataPage, subkey, 32);
-	LOG->Info( "firstDataPage: %s", (char *)firstDataPage );
 
 	if ((copr.portnum = owAcquireEx(SERIAL_PORT)) == -1)
 	{
-		LOG->Warn("getKey(): failed to acquire port.\n");
+		LOG->Warn( "GetAESKey(): failed to acquire port." );
 		return -1;
 	}
+
 	FindNewSHA(copr.portnum, copr.devAN, TRUE);
 	owSerialNum(copr.portnum, copr.devAN, FALSE);
 
 	WriteDataPageSHA18(copr.portnum, 0, firstDataPage, 0);
 	memset(firstScratchPad, '\0', 32);
 	memcpy(firstScratchPad+8, subkey+32, 15);
-	LOG->Info( "firstScratchPad pre-SHA: %s", (char *)firstScratchPad );
 
 	WriteScratchpadSHA18(copr.portnum, 0, firstScratchPad, 32, 1);
-	LOG->Info( "firstScratchPad post-SHA: %s", (char *)firstScratchPad );
 	SHAFunction18(copr.portnum, 0xC3, 0, 1);
 	ReadScratchpadSHA18(copr.portnum, 0, 0, firstScratchPad, 1);
 
 	memset(firstDataPage, '\0', 32);
 	WriteDataPageSHA18(copr.portnum, 0, firstDataPage, 0);
-	LOG->Info( "firstDataPage post-SHA: %s", (char *)firstDataPage );
 	memcpy(output, firstScratchPad+8, 24);
-	LOG->Info( "output: %s", (char *)output );
-	LOG->Info( "************************GetKey routine end" );
 	owRelease(copr.portnum);	
+
 	return 0;
 }
-
-/*
-int iButton::GetAESKey(const uchar *subkey, uchar *output)
-{
-	uchar firstDataPage[32], firstScratchPad[32];
-	SHACopr copr;
-
-	LOG->Info( "************************GetKey routine start" );
-	LOG->Info( "subkey: %s", (char *)subkey );
-	memcpy(firstDataPage, subkey, 32);
-	LOG->Info( "firstDataPage: %s", (char *)firstDataPage );
-	
-	if ((copr.portnum = owAcquireEx(SERIAL_PORT)) == -1 )
-	{
-		LOG->Warn("GetAESKey(): failed to acquire port.");
-		return -1;
-	}
-
-	FindNewSHA(copr.portnum, copr.devAN, TRUE);
-	owSerialNum(copr.portnum, copr.devAN, FALSE);
-
-
-
-	WriteDataPageSHA18(copr.portnum, 0, firstDataPage, 0);
-	memset(firstScratchPad, '\0', 32);
-	memcpy(firstScratchPad+8, subkey+32, 15);
-	LOG->Info( "firstScratchPad pre-SHA: %s", (char *)firstScratchPad );
-
-	WriteScratchpadSHA18(copr.portnum, 0, firstScratchPad, 32, 1);
-	LOG->Info( "firstScratchPad post-SHA: %s", (char *)firstScratchPad );
-	SHAFunction18(copr.portnum, 0xC3, 0, 1);
-	ReadScratchpadSHA18(copr.portnum, 0, 0, firstScratchPad, 1);
-
-	memset(firstDataPage, '\0', 32);
-	WriteDataPageSHA18(copr.portnum, 0, firstDataPage, 0);
-	LOG->Info( "firstDataPage post-SHA: %s", (char *)firstDataPage );
-	memcpy(output, firstScratchPad+8, 24);
-	LOG->Info( "output: %s", (char *)output );
-	LOG->Info( "************************GetKey routine end" );
-	owRelease(copr.portnum);	
-	return 0;
-}*/
 
 int iButton::GetSerialNumber( uchar *serial )
 {
 	SHACopr copr;
 
-	if ( (copr.portnum = owAcquireEx(SERIAL_PORT)) == -1 )
+	if( (copr.portnum = owAcquireEx(SERIAL_PORT)) == -1 )
 	{
 		LOG->Warn("GetSerialNumber(): failed to acquire port.");
 		return -1;

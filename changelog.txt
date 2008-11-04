@@ -2,6 +2,8 @@ OpenITG, beta 1 (in development)
 --------------------------------
 -Misc. changes:
      Added coin counter functionality to LIGHTSMAN
+     Added RageCryptInterface for easier crypto implementations
+     Added code to enforce only one Iow or PIUIO handler
 -PIUIO changes:
      Tentative fix for sensor-read problems
      Added coin counter functionality
@@ -11,7 +13,7 @@ OpenITG, beta 1 (in development)
      Accidental PIUIO coin counter activation
      Linux: couldn't open GTK loading window
      ITGIO - P1 Left and Right reversed
-     patch.zip loaded multiple times
+     patch.zip mounted multiple times on start
 -Profile changes:
      Added custom courses ( /ProfileFolder/Courses/ ) - experimental
 

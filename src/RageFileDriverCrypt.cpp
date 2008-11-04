@@ -37,7 +37,7 @@ static struct FileDriverEntry_KRY: public FileDriverEntry
 	}
 } const g_RegisterDriver;
 
-RageFileDriverCrypt::RageFileDriverCrypt( CString root_, CString secret_):RageFileDriver( new CryptFilenameDB(root_) )
+RageFileDriverCrypt::RageFileDriverCrypt( CString root_, CString secret_):RageFileDriver( new DirectFilenameDB(root_) )
 {
 	secret = secret_;
 	root = root_;
@@ -63,7 +63,6 @@ RageFileBasic *RageFileDriverCrypt::Open( const CString &path, int mode, int &er
 
 RageFileBasic *RageFileObjCrypt::Copy() const
 {
-	// crypt_copy creates a new crypt_file
 	crypt_file *cpCf = RageCryptInterface::crypt_copy( cf );
 
 	cpCf->fd = open( cf->path.c_str(), O_RDONLY );
@@ -106,124 +105,12 @@ int RageFileObjCrypt::GetFileSize() const
 	return cf->file_size;
 }
 
-// crypt_close will delete the object associated with this RageFileObj
 RageFileObjCrypt::~RageFileObjCrypt()
 {
-	if (cf->fd != -1)
-		if (RageCryptInterface::crypt_close(cf) == -1)
-			LOG->Warn("~RageFileObjCrypt(): could not close file");
+	if (cf->fd != -1 && RageCryptInterface::crypt_close(cf) == -1)
+		LOG->Warn("~RageFileObjCrypt(): could not close file.");
+
 	SAFE_DELETE(cf);
-}
-
-CryptFilenameDB::CryptFilenameDB( CString root_ )
-{
-        ExpireSeconds = 30;
-        SetRoot( root_ );
-}
-
-void CryptFilenameDB::SetRoot( CString root_ )
-{
-	root = root_;
-
-	/* "\abcd\" -> "/abcd/": */
-	root.Replace( "\\", "/" );
-
-	/* "/abcd/" -> "/abcd": */
-	if( root.Right(1) == "/" )
-		root.erase( root.size()-1, 1 );
-}
-
-void CryptFilenameDB::PopulateFileSet( FileSet &fs, const CString &path )
-{
-	CString sPath = path;
-
-#if defined(XBOX)
-	/* Xbox doesn't handle path names which end with ".", which are used when using an
-	 * alternative song directory */
-	if( sPath.size() > 0 && sPath.Right(1) == "." )
-		sPath.erase( sPath.size() - 1 );
-#endif
-
-	/* Resolve path cases (path/Path -> PATH/path). */
-	ResolvePath( sPath );
-
-	fs.age.GetDeltaTime(); /* reset */
-	fs.files.clear();
-
-#if defined(WIN32)
-	WIN32_FIND_DATA fd;
-
-	if ( sPath.size() > 0  && sPath.Right(1) == "/" )
-		sPath.erase( sPath.size() - 1 );
-
-	HANDLE hFind = DoFindFirstFile( root+sPath+"/*", &fd );
-
-	if( hFind == INVALID_HANDLE_VALUE )
-		return;
-
-	do {
-		if( !strcmp(fd.cFileName, ".") || !strcmp(fd.cFileName, "..") )
-			continue;
-
-		File f;
-		f.SetName( fd.cFileName );
-		f.dir = !!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY);
-		f.size = fd.nFileSizeLow;
-		f.hash = fd.ftLastWriteTime.dwLowDateTime;
-
-		fs.files.insert( f );
-	} while( FindNextFile( hFind, &fd ) );
-	FindClose( hFind );
-#else
-	/* Ugly: POSIX threads are not guaranteed to have per-thread cwds, and only
-	 * a few systems have openat() or equivalent; one or the other is needed
-	 * to do efficient, thread-safe directory traversal.  Instead, we have to
-	 * use absolute paths, which forces the system to re-parse the directory
-	 * for each file.  This isn't a major issue, since most large directory
-	 * scans are I/O-bound. */
-	 
-	DIR *pDir = opendir(root+sPath);
-	if( pDir == NULL )
-	{
-		if( errno != 2 ) // "no such file or directory" - ignore, they're spammy.
-			LOG->MapLog("opendir " + root+sPath, "Couldn't opendir(%s%s): %s", root.c_str(), sPath.c_str(), strerror(errno) );
-
-		return;
-	}
-
-	while( struct dirent *pEnt = readdir(pDir) )
-	{
-		if( !strcmp(pEnt->d_name, ".") )
-			continue;
-		if( !strcmp(pEnt->d_name, "..") )
-			continue;
-		
-		File f;
-		f.SetName( pEnt->d_name );
-		
-		struct stat st;
-		if( DoStat(root+sPath + "/" + pEnt->d_name, &st) == -1 )
-		{
-			/* If it's a broken symlink, ignore it.  Otherwise, warn. */
-			if( lstat(pEnt->d_name, &st) == 0 )
-				continue;
-			
-			/* Huh? */
-			if( LOG )
-				LOG->Warn( "Got file '%s' in '%s' from list, but can't stat? (%s)",
-					pEnt->d_name, sPath.c_str(), strerror(errno) );
-			continue;
-		} else {
-			f.dir = (st.st_mode & S_IFDIR);
-			f.size = st.st_size;
-			f.hash = st.st_mtime;
-		}
-
-		fs.files.insert(f);
-	}
-	       
-	closedir( pDir );
-#endif
 }
 
 /*

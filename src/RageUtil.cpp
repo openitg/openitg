@@ -1587,12 +1587,8 @@ bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float
 
 	if( g_bInterruptCopy )
 	{
-		LOG->Debug( "CopyWithProgress was interrupted." );
 		g_bInterruptCopy = false;
-
-		// make sure this is empty, so SSM properly interprets it
 		sError = "";
-
 		return false;
 	}
 

@@ -4,7 +4,6 @@
 #define GAMESTATE_H
 
 #include "GameConstantsAndTypes.h"
-#include "SongOptions.h"
 #include "Grade.h"
 #include "Attack.h"
 #include "RageTimer.h"

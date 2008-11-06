@@ -17,7 +17,7 @@
 
 void PlayerOptions::Init()
 {
-	m_bSetScrollSpeed = false;
+	m_fMaxScrollSpeed = 0;
 	m_fTimeSpacing = 0;			m_SpeedfTimeSpacing = 1.0f;
 	m_fScrollSpeed = 1.0f;		m_SpeedfScrollSpeed = 1.0f;
 	m_fScrollBPM = 200;			m_SpeedfScrollBPM = 1.0f;
@@ -87,7 +87,7 @@ void PlayerOptions::GetMods( vector<CString> &AddTo ) const
 
 	if( !m_fTimeSpacing )
 	{
-		if( m_bSetScrollSpeed || m_fScrollSpeed != 1 )
+		if( m_fScrollSpeed != 1 )
 		{
 			/* -> 1.00 */
 			CString s = ssprintf( "%2.2f", m_fScrollSpeed );
@@ -255,7 +255,7 @@ void PlayerOptions::FromString( CString sOptions, bool bWarnOnInvalid )
 		Regex mult("^([0-9]+(\\.[0-9]+)?)x$");
 		vector<CString> matches;
 		if( mult.Compare(sBit, matches) )
-		{
+	{
 			char *p = NULL;
 			level = strtof( matches[0], &p );
 			ASSERT( p != matches[0] );
@@ -269,9 +269,12 @@ void PlayerOptions::FromString( CString sOptions, bool bWarnOnInvalid )
 			SET_FLOAT( fTimeSpacing )
 			m_fTimeSpacing = 1;
 		}
+		// XXX: will not properly tween, I don't think.
 		else if( sscanf( sBit, "m%f", &level ) == 1 )
 		{
-			LOG->Debug( "m%f set.", level );
+			LOG->Debug( "Speed mod m%f set.", level );
+			m_fMaxScrollSpeed = level;
+			m_fTimeSpacing = 0;
 		}
 
 		else if( sBit == "clearall" )	Init();

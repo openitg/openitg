@@ -109,7 +109,7 @@ struct PlayerOptions
 
 	/* All floats have a corresponding speed setting, which determines how fast
 	 * PlayerOptions::Approach approaches. */
-	bool	m_bSetScrollSpeed;				// true if the scroll speed was set by FromString
+	float	m_fMaxScrollSpeed;
 	float	m_fTimeSpacing,			m_SpeedfTimeSpacing;	// instead of Beat spacing
 	float	m_fScrollSpeed,			m_SpeedfScrollSpeed;	// used if !m_bTimeSpacing
 	float	m_fScrollBPM,			m_SpeedfScrollBPM;		// used if m_bTimeSpacing

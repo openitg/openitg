@@ -118,11 +118,6 @@ void ScreenGameplay::Init()
 	if( !GAMESTATE->m_bDemonstrationOrJukebox )
 		MEMCARDMAN->PauseMountingThread();
 
-	if( GAMESTATE->m_bDemonstrationOrJukebox )
-		LIGHTSMAN->SetLightsMode( LIGHTSMODE_DEMONSTRATION );
-	else
-		LIGHTSMAN->SetLightsMode( LIGHTSMODE_GAMEPLAY );
-
 	m_pSoundMusic = NULL;
 	m_bPaused = false;
 
@@ -1067,10 +1062,15 @@ void ScreenGameplay::LoadNextSong()
 	m_bZeroDeltaOnNextUpdate = true;
 	SCREENMAN->ZeroNextUpdate();
 
-	//
-	// Load cabinet lights data
-	//
+	// load the lights and manually update once, THEN set the state,
+	// so we avoid skipping between the state and transition here.
 	LoadLights();
+	UpdateLights();
+
+	if( GAMESTATE->m_bDemonstrationOrJukebox )
+		LIGHTSMAN->SetLightsMode( LIGHTSMODE_DEMONSTRATION );
+	else
+		LIGHTSMAN->SetLightsMode( LIGHTSMODE_GAMEPLAY );
 
 	/* Load the music last, since it may start streaming and we don't want the music
 	 * to compete with other loading. */

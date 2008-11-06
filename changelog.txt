@@ -1,9 +1,12 @@
 OpenITG, beta 1 (in development)
 --------------------------------
+-New features:
+     Preliminary "M-mod" support (same format as C-mods)
 -Misc. changes:
      Added coin counter functionality to LIGHTSMAN
      Added RageCryptInterface for easier crypto implementations
      Added code to enforce only one Iow or PIUIO handler
+     Fixed 'lights briefly flicker off on song start' annoyance
 -PIUIO changes:
      Tentative fix for sensor-read problems
      Added coin counter functionality

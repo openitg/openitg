@@ -17,6 +17,7 @@ Testers:
  - mDaWg
  - Darklink
  - Wanny
+ - Kung
  - JJSz / Beaver Valley Mall
  - Rhythmatic.net/ITGFreak.com
  - Boxorroxors.net

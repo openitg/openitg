@@ -6,6 +6,7 @@
 #include "song.h"
 #include "Command.h"
 #include "PlayerState.h"
+#include "RageLog.h"
 
 Combo::Combo()
 {
@@ -128,21 +129,41 @@ void Combo::SetCombo( int iCombo, int iMisses )
 	{
 		if( m_pPlayerStageStats->FullComboOfScore(TNS_MARVELOUS) )
 		{
+			if ( !m_pPlayerStageStats->bFlag_FFC )
+			{
+				m_pPlayerStageStats->fFullFantasticComboBegin = GAMESTATE->m_fMusicSeconds;
+				m_pPlayerStageStats->bFlag_FFC = true;
+			}
 			sprLabel->RunCommands( FULL_COMBO_MARVELOUSES_COMMAND );
 			m_textNumber.RunCommands( FULL_COMBO_MARVELOUSES_COMMAND );
 		}
 		else if( bPastMidpoint && m_pPlayerStageStats->FullComboOfScore(TNS_PERFECT) )
 		{
+			if ( !m_pPlayerStageStats->bFlag_FEC )
+			{
+				m_pPlayerStageStats->fFullExcellentComboBegin = GAMESTATE->m_fMusicSeconds;
+				m_pPlayerStageStats->bFlag_FEC = true;
+			}
 			sprLabel->RunCommands( FULL_COMBO_PERFECTS_COMMAND );
 			m_textNumber.RunCommands( FULL_COMBO_PERFECTS_COMMAND );
 		}
 		else if( bPastMidpoint && m_pPlayerStageStats->FullComboOfScore(TNS_GREAT) )
 		{
+			if ( !m_pPlayerStageStats->bFlag_FGC )
+			{
+				m_pPlayerStageStats->fFullGreatComboBegin = GAMESTATE->m_fMusicSeconds;
+				m_pPlayerStageStats->bFlag_FGC = true;
+			}
 			sprLabel->RunCommands( FULL_COMBO_GREATS_COMMAND );
 			m_textNumber.RunCommands( FULL_COMBO_GREATS_COMMAND );
 		}
 		else
 		{
+			if ( !m_pPlayerStageStats->bFlag_PulsateEnd )
+			{
+				m_pPlayerStageStats->fPulsatingComboEnd = GAMESTATE->m_fMusicSeconds;
+				m_pPlayerStageStats->bFlag_PulsateEnd = true;
+			}
 			sprLabel->RunCommands( FULL_COMBO_BROKEN_COMMAND );
 			m_textNumber.RunCommands( FULL_COMBO_BROKEN_COMMAND );
 		}

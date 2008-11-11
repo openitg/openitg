@@ -440,6 +440,11 @@ void ScreenEvaluation::Init()
 	{
 		FOREACH_EnabledPlayer( p )
 		{
+			LOG->Debug("P%d: fFullFantasticComboBegin: %f", (int)(p+1), stageStats.m_player[p].fFullFantasticComboBegin);
+			LOG->Debug("P%d: fFullExcellentComboBegin: %f", (int)(p+1), stageStats.m_player[p].fFullExcellentComboBegin);
+			LOG->Debug("P%d: fFullGreatComboBegin: %f", (int)(p+1), stageStats.m_player[p].fFullGreatComboBegin);
+			LOG->Debug("P%d: fPulsatingComboEnd: %f", (int)(p+1), stageStats.m_player[p].fPulsatingComboEnd);
+
 			m_sprGraphFrame[p].Load( THEME->GetPathG(m_sName,ssprintf("graph frame p%d",p+1)) );
 			m_sprGraphFrame[p]->SetName( ssprintf("GraphFrameP%d",p+1) );
 			SET_XY_AND_ON_COMMAND( m_sprGraphFrame[p] );

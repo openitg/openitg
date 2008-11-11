@@ -56,6 +56,13 @@ struct PlayerStageStats
 	int		iTotalError;
 	float	fLifeRemainingSeconds;	// used in survival
 
+	bool	bFlag_FFC, bFlag_FEC, bFlag_FGC, bFlag_PulsateEnd;
+
+	float	fFullFantasticComboBegin;
+	float	fFullExcellentComboBegin;
+	float	fFullGreatComboBegin;
+	float	fPulsatingComboEnd;
+
 	// workout
 	float	fCaloriesBurned;
 

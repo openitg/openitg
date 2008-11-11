@@ -7,12 +7,17 @@
 #include "StageStats.h"
 #include "Foreach.h"
 #include "song.h"
+#include "RageLog.h"
 
 //#define DIVIDE_LINE_WIDTH			THEME->GetMetricI(m_sName,"TexturedBottomHalf")
 
 GraphDisplay::GraphDisplay()
 {
 	m_pTexture = NULL;
+
+	m_iFFCPoint = -1;
+	m_iFECPoint = -1;
+	m_iFGCPoint = -1;
 }
 
 
@@ -62,6 +67,26 @@ void GraphDisplay::LoadFromStageStats( const StageStats &ss, const PlayerStageSt
 		CLAMP( m_DestValues[i], 0.f, 1.f );
 	UpdateVerts();
 
+	LOG->Debug( "pss.bFlag_FFC (%s): %f", pss.bFlag_FFC ? "true":"false", pss.fFullFantasticComboBegin );
+	LOG->Debug( "pss.bFlag_FEC (%s): %f", pss.bFlag_FEC ? "true":"false", pss.fFullExcellentComboBegin );
+	LOG->Debug( "pss.bFlag_FGC (%s): %f", pss.bFlag_FGC ? "true":"false", pss.fFullGreatComboBegin );
+	LOG->Debug( "pss.bFlag_PulsateEnd (%s): %f", pss.bFlag_PulsateEnd ? "true":"false", pss.fPulsatingComboEnd );
+
+	if ( pss.bFlag_FFC && pss.fFullFantasticComboBegin > -1.0f )
+		m_iFFCPoint = ( pss.fFullFantasticComboBegin * VALUE_RESOLUTION ) / fTotalStepSeconds;
+	if ( pss.bFlag_FEC && pss.fFullExcellentComboBegin > -1.0f )
+		m_iFECPoint = ( pss.fFullExcellentComboBegin * VALUE_RESOLUTION ) / fTotalStepSeconds;
+	if ( pss.bFlag_FGC && pss.fFullGreatComboBegin > -1.0f )
+		m_iFGCPoint = ( pss.fFullGreatComboBegin * VALUE_RESOLUTION ) / fTotalStepSeconds;
+	if ( pss.bFlag_PulsateEnd )
+		m_iPulseStopPoint = ( pss.fPulsatingComboEnd * VALUE_RESOLUTION ) / fTotalStepSeconds;
+	else
+		m_iPulseStopPoint = VALUE_RESOLUTION - 1;
+
+	LOG->Debug( "m_iFFCPoint: %d", m_iFFCPoint );
+	LOG->Debug( "m_iFECPoint: %d", m_iFECPoint );
+	LOG->Debug( "m_iFGCPoint: %d", m_iFGCPoint );
+	LOG->Debug( "m_iPulseStopPoint: %d", m_iPulseStopPoint );
 
 	//
 	// Show song boundaries
@@ -135,6 +160,24 @@ void GraphDisplay::UpdateVerts()
 
 	for( int i = 0; i < 4*NumSlices; ++i )
 		m_Slices[i].c = RageColor(1,1,1,1);
+
+	// TODO: Theme   --infamouspat
+	// these values were taken from the official ITG2 theme
+	if ( m_iFFCPoint > -1 )
+	{
+		for( int i = m_iFFCPoint; i < 4*m_iPulseStopPoint; ++i )
+			m_Slices[i].c = RageColor(.580f,.922f,.996f,1);
+	}
+	if ( m_iFECPoint > -1 )
+	{
+		for( int i = m_iFECPoint; i < 4*m_iPulseStopPoint; ++i )
+			m_Slices[i].c = RageColor(.992f,.835f,.6f,1);
+	}
+	if ( m_iFGCPoint > -1 )
+	{
+		for( int i = m_iFGCPoint; i < 4*m_iPulseStopPoint; ++i )
+			m_Slices[i].c = RageColor(.04f,1.0f,.06f,1);
+	}
 
 	for( int i = 0; i < NumSlices; ++i )
 	{

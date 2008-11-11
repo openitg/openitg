@@ -23,6 +23,17 @@ void PlayerStageStats::Init()
 	bFailed = false;
 	bFailedEarlier = false;
 	bGaveUp = false;
+
+	bFlag_FFC = false;
+	bFlag_FEC = false;
+	bFlag_FGC = false;
+	bFlag_PulsateEnd = false;
+
+	fFullFantasticComboBegin = -1.0f;
+	fFullExcellentComboBegin = -1.0f;
+	fFullGreatComboBegin = -1.0f;
+	fPulsatingComboEnd = -1.0f;
+
 	iPossibleDancePoints = iCurPossibleDancePoints = iActualDancePoints = 0;
 	iPossibleGradePoints = 0;
 	iCurCombo = iMaxCombo = iCurMissCombo = iScore = iBonus = iMaxScore = iCurMaxScore = 0;
@@ -56,6 +67,18 @@ void PlayerStageStats::AddStats( const PlayerStageStats& other )
 	iCurPossibleDancePoints += other.iCurPossibleDancePoints;
 	iPossibleGradePoints += other.iPossibleGradePoints;
 	
+/*
+	bFlag_FFC |= other.bFlag_FFC;
+	bFlag_FEC |= other.bFlag_FEC;
+	bFlag_FGC |= other.bFlag_FGC;
+	bFlag_PulsateEnd |= other.bFlag_PulsateEnd;
+
+	fFullFantasticComboBegin = other.fFullFantasticComboBegin;
+	fFullExcellentComboBegin = other.fFullExcellentComboBegin;
+	fFullGreatComboBegin = other.fFullGreatComboBegin;
+	fPulsatingComboEnd = other.fPulsatingComboEnd;
+*/
+
 	for( int t=0; t<NUM_TAP_NOTE_SCORES; t++ )
 		iTapNoteScores[t] += other.iTapNoteScores[t];
 	for( int h=0; h<NUM_HOLD_NOTE_SCORES; h++ )

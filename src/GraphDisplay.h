@@ -36,6 +36,12 @@ private:
 
 	vector<AutoActor*> m_vpSongBoundaries;
 	AutoActor m_sprJustBarely;
+
+	// OpenITG: resolution points for colorized FFC/FEC graph
+	int m_iFFCPoint;
+	int m_iFECPoint;
+	int m_iFGCPoint;
+	int m_iPulseStopPoint;
 };
 
 #endif

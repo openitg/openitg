@@ -2,6 +2,7 @@
 #include "Combo.h"
 #include "ThemeManager.h"
 #include "StatsManager.h"
+#include "ScreenManager.h"
 #include "GameState.h"
 #include "song.h"
 #include "Command.h"
@@ -68,8 +69,9 @@ void Combo::Load( PlayerState *pPlayerState, PlayerStageStats *pPlayerStageStats
 	this->AddChild( &m_textNumber );
 }
 
-void Combo::SetCombo( int iCombo, int iMisses )
+void Combo::SetCombo( int iCombo, int iMisses, float fLastStepsSeconds )
 {
+
 	bool bMisses = iMisses > 0;
 	int iNum = bMisses ? iMisses : iCombo;
 
@@ -121,6 +123,60 @@ void Combo::SetCombo( int iCombo, int iMisses )
 	if( b1000Milestone )
 		m_spr1000Milestone->PlayCommand( "Milestone" );
 
+	SCREENMAN->SystemMessageNoAnimate( ssprintf("m_ComboStatus: %d", m_pPlayerStageStats->m_ComboStatus) );
+
+	if ( fLastStepsSeconds != -1.0f )
+	{
+		if( m_pPlayerStageStats->m_ComboStatus == COMBSTAT_FFC && !m_pPlayerStageStats->FullComboOfScore(TNS_MARVELOUS) )
+		{
+			if( m_pPlayerStageStats->FullComboOfScore(TNS_PERFECT) )
+			{
+				m_pPlayerStageStats->fFullExcellentComboBegin = fLastStepsSeconds;
+				m_pPlayerStageStats->bFlag_FEC = true;
+				m_pPlayerStageStats->m_ComboStatus = COMBSTAT_FEC;
+			}
+			else if( m_pPlayerStageStats->FullComboOfScore(TNS_GREAT) )
+			{
+				m_pPlayerStageStats->fFullGreatComboBegin = fLastStepsSeconds;
+				m_pPlayerStageStats->bFlag_FGC = true;
+				m_pPlayerStageStats->m_ComboStatus = COMBSTAT_FGC;
+			}
+			else
+			{
+				m_pPlayerStageStats->fPulsatingComboEnd = fLastStepsSeconds;
+				m_pPlayerStageStats->bFlag_PulsateEnd = true;
+				m_pPlayerStageStats->m_ComboStatus = COMBSTAT_NONE;
+			}
+			
+		}
+		else if( m_pPlayerStageStats->m_ComboStatus == COMBSTAT_FEC && !m_pPlayerStageStats->FullComboOfScore(TNS_PERFECT) )
+		{
+			ASSERT( !m_pPlayerStageStats->FullComboOfScore(TNS_MARVELOUS) ); // it's not gonna break anything, but it shouldn't happen
+	
+			if ( m_pPlayerStageStats->FullComboOfScore(TNS_GREAT) )
+			{
+				m_pPlayerStageStats->fFullGreatComboBegin = fLastStepsSeconds;
+				m_pPlayerStageStats->bFlag_FGC = true;
+				m_pPlayerStageStats->m_ComboStatus = COMBSTAT_FGC;
+			}
+			else
+			{
+				m_pPlayerStageStats->fPulsatingComboEnd = fLastStepsSeconds;
+				m_pPlayerStageStats->bFlag_PulsateEnd = true;
+				m_pPlayerStageStats->m_ComboStatus = COMBSTAT_NONE;
+			}
+		}
+		else if( m_pPlayerStageStats->m_ComboStatus == COMBSTAT_FGC && !m_pPlayerStageStats->FullComboOfScore(TNS_GREAT) )
+		{
+			ASSERT( !m_pPlayerStageStats->FullComboOfScore(TNS_MARVELOUS) );
+			ASSERT( !m_pPlayerStageStats->FullComboOfScore(TNS_PERFECT) );
+	
+			m_pPlayerStageStats->fPulsatingComboEnd = fLastStepsSeconds;
+			m_pPlayerStageStats->bFlag_PulsateEnd = true;
+			m_pPlayerStageStats->m_ComboStatus = COMBSTAT_NONE;
+		}
+	}
+
 	// don't show a colored combo until 1/4 of the way through the song
 	bool bPastMidpoint = GAMESTATE->GetCourseSongIndex()>0 ||
 		GAMESTATE->m_fMusicSeconds > GAMESTATE->m_pCurSong->m_fMusicLengthSeconds/4;
@@ -129,41 +185,21 @@ void Combo::SetCombo( int iCombo, int iMisses )
 	{
 		if( m_pPlayerStageStats->FullComboOfScore(TNS_MARVELOUS) )
 		{
-			if ( !m_pPlayerStageStats->bFlag_FFC )
-			{
-				m_pPlayerStageStats->fFullFantasticComboBegin = GAMESTATE->m_fMusicSeconds;
-				m_pPlayerStageStats->bFlag_FFC = true;
-			}
 			sprLabel->RunCommands( FULL_COMBO_MARVELOUSES_COMMAND );
 			m_textNumber.RunCommands( FULL_COMBO_MARVELOUSES_COMMAND );
 		}
 		else if( bPastMidpoint && m_pPlayerStageStats->FullComboOfScore(TNS_PERFECT) )
 		{
-			if ( !m_pPlayerStageStats->bFlag_FEC )
-			{
-				m_pPlayerStageStats->fFullExcellentComboBegin = GAMESTATE->m_fMusicSeconds;
-				m_pPlayerStageStats->bFlag_FEC = true;
-			}
 			sprLabel->RunCommands( FULL_COMBO_PERFECTS_COMMAND );
 			m_textNumber.RunCommands( FULL_COMBO_PERFECTS_COMMAND );
 		}
 		else if( bPastMidpoint && m_pPlayerStageStats->FullComboOfScore(TNS_GREAT) )
 		{
-			if ( !m_pPlayerStageStats->bFlag_FGC )
-			{
-				m_pPlayerStageStats->fFullGreatComboBegin = GAMESTATE->m_fMusicSeconds;
-				m_pPlayerStageStats->bFlag_FGC = true;
-			}
 			sprLabel->RunCommands( FULL_COMBO_GREATS_COMMAND );
 			m_textNumber.RunCommands( FULL_COMBO_GREATS_COMMAND );
 		}
 		else
 		{
-			if ( !m_pPlayerStageStats->bFlag_PulsateEnd )
-			{
-				m_pPlayerStageStats->fPulsatingComboEnd = GAMESTATE->m_fMusicSeconds;
-				m_pPlayerStageStats->bFlag_PulsateEnd = true;
-			}
 			sprLabel->RunCommands( FULL_COMBO_BROKEN_COMMAND );
 			m_textNumber.RunCommands( FULL_COMBO_BROKEN_COMMAND );
 		}

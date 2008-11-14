@@ -1101,7 +1101,7 @@ void Player::HandleStep( int col, const RageTimer &tm, bool bHeld )
 			case TapNote::hold_head:
 				// don't judge the row if this note is a mine or tap attack
 				if( NoteDataWithScoring::IsRowCompletelyJudged( m_NoteData, iIndexOverlappingNote ) )
-					OnRowCompletelyJudged( iIndexOverlappingNote );
+					OnRowCompletelyJudged( iIndexOverlappingNote, STATSMAN->m_CurStageStats.fStepsSeconds );
 			}
 
 			m_LastTapNoteScore = score;
@@ -1270,7 +1270,9 @@ void Player::DisplayJudgedRow( int iIndexThatWasSteppedOn, TapNoteScore score, i
 	}
 }
 
-void Player::OnRowCompletelyJudged( int iIndexThatWasSteppedOn )
+// HACK: fStepsSeconds is a timestamp that is passed to SetCombo to accurately
+//          tell when the judgement was made for colored life graph rendering
+void Player::OnRowCompletelyJudged( int iIndexThatWasSteppedOn, float fStepsSeconds )
 {
 //	LOG->Trace( "Player::OnRowCompletelyJudged" );
 	
@@ -1329,7 +1331,7 @@ void Player::OnRowCompletelyJudged( int iIndexThatWasSteppedOn )
 		}
 	}
 
-	HandleTapRowScore( iIndexThatWasSteppedOn );	// update score
+	HandleTapRowScore( iIndexThatWasSteppedOn, fStepsSeconds );	// update score
 }
 
 
@@ -1398,7 +1400,7 @@ void Player::UpdateTapNotesMissedOlderThan( float fMissIfOlderThanSeconds )
 		if( MissedNoteOnThisRow )
 		{
 			iNumMissesFound++;
-			HandleTapRowScore( r );
+			HandleTapRowScore( r, -1.0f );
 		}
 	}
 
@@ -1486,7 +1488,7 @@ void Player::RandomizeNotes( int iNoteRow )
 	}
 }
 
-void Player::HandleTapRowScore( unsigned row )
+void Player::HandleTapRowScore( unsigned row, float fStepsSeconds )
 {
 	TapNoteScore scoreOfLastTap = NoteDataWithScoring::LastTapNoteResult( m_NoteData, row ).tns;
 	int iNumTapsInRow = m_NoteData.GetNumTracksWithTapOrHoldHead(row);
@@ -1543,7 +1545,7 @@ void Player::HandleTapRowScore( unsigned row )
 		m_pSecondaryScoreKeeper->HandleTapRowScore( scoreOfLastTap, iNumTapsInRow );
 
 	if( m_pPlayerStageStats )
-		m_Combo.SetCombo( m_pPlayerStageStats->iCurCombo, m_pPlayerStageStats->iCurMissCombo );
+		m_Combo.SetCombo( m_pPlayerStageStats->iCurCombo, m_pPlayerStageStats->iCurMissCombo, fStepsSeconds );
 
 #define CROSSED( x ) (iOldCombo<x && iCurCombo>=x)
 	if ( CROSSED(100) )	

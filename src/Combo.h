@@ -18,7 +18,7 @@ public:
 
 	void Load( PlayerState *pPlayerState, PlayerStageStats *pPlayerStageStats );
 
-	void SetCombo( int iCombo, int iMisses );
+	void SetCombo( int iCombo, int iMisses, float fStepsSeconds = -1.0f);
 
 protected:
 	ThemeMetric<int>				SHOW_COMBO_AT;

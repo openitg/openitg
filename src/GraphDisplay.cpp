@@ -165,17 +165,17 @@ void GraphDisplay::UpdateVerts()
 	// these values were taken from the official ITG2 theme
 	if ( m_iFFCPoint > -1 )
 	{
-		for( int i = m_iFFCPoint; i < 4*m_iPulseStopPoint; ++i )
+		for( int i = m_iFFCPoint*4; i < 4*m_iPulseStopPoint; ++i )
 			m_Slices[i].c = RageColor(.580f,.922f,.996f,1);
 	}
 	if ( m_iFECPoint > -1 )
 	{
-		for( int i = m_iFECPoint; i < 4*m_iPulseStopPoint; ++i )
+		for( int i = m_iFECPoint*4; i < 4*m_iPulseStopPoint; ++i )
 			m_Slices[i].c = RageColor(.992f,.835f,.6f,1);
 	}
 	if ( m_iFGCPoint > -1 )
 	{
-		for( int i = m_iFGCPoint; i < 4*m_iPulseStopPoint; ++i )
+		for( int i = m_iFGCPoint*4; i < 4*m_iPulseStopPoint; ++i )
 			m_Slices[i].c = RageColor(.04f,1.0f,.06f,1);
 	}
 

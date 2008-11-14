@@ -9,6 +9,15 @@
 class Steps;
 struct lua_State;
 
+// OpenITG: added 11/13/08
+enum ComboStatus {
+        COMBSTAT_FFC = 0, // Full Fantastic Combo
+        COMBSTAT_FEC, // Full Excellent Combo
+        COMBSTAT_FGC, // Full Great Combo (if implemented in theme)
+	COMBSTAT_NONE,
+        NUM_COMBSTAT,
+        COMBSTAT_INVALID
+};
 
 struct PlayerStageStats
 {
@@ -62,6 +71,8 @@ struct PlayerStageStats
 	float	fFullExcellentComboBegin;
 	float	fFullGreatComboBegin;
 	float	fPulsatingComboEnd;
+
+	ComboStatus m_ComboStatus;
 
 	// workout
 	float	fCaloriesBurned;

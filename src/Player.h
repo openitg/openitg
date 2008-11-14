@@ -62,8 +62,8 @@ protected:
 	void HandleStep( int col, const RageTimer &tm, bool bHeld );
 	void UpdateTapNotesMissedOlderThan( float fMissIfOlderThanThisBeat );
 	void DisplayJudgedRow( int iIndexThatWasSteppedOn, TapNoteScore score, int iTrack );
-	void OnRowCompletelyJudged( int iStepIndex );
-	void HandleTapRowScore( unsigned row );
+	void OnRowCompletelyJudged( int iStepIndex, float fStepsSeconds = -1.0f );
+	void HandleTapRowScore( unsigned row, float fStepsSeconds );
 	void HandleHoldScore( HoldNoteScore holdScore, TapNoteScore tapScore );
 	void HandleAutosync(float fNoteOffset);
 	void DrawTapJudgments();

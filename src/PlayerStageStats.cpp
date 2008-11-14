@@ -24,15 +24,17 @@ void PlayerStageStats::Init()
 	bFailedEarlier = false;
 	bGaveUp = false;
 
-	bFlag_FFC = false;
+	bFlag_FFC = true; // you start off every song with an FFC
 	bFlag_FEC = false;
 	bFlag_FGC = false;
 	bFlag_PulsateEnd = false;
 
-	fFullFantasticComboBegin = -1.0f;
+	fFullFantasticComboBegin = 0.0f;
 	fFullExcellentComboBegin = -1.0f;
 	fFullGreatComboBegin = -1.0f;
 	fPulsatingComboEnd = -1.0f;
+
+	m_ComboStatus = COMBSTAT_FFC;
 
 	iPossibleDancePoints = iCurPossibleDancePoints = iActualDancePoints = 0;
 	iPossibleGradePoints = 0;
@@ -78,6 +80,8 @@ void PlayerStageStats::AddStats( const PlayerStageStats& other )
 	fFullGreatComboBegin = other.fFullGreatComboBegin;
 	fPulsatingComboEnd = other.fPulsatingComboEnd;
 */
+
+	if (GAMESTATE->IsCourseMode()) m_ComboStatus = other.m_ComboStatus;
 
 	for( int t=0; t<NUM_TAP_NOTE_SCORES; t++ )
 		iTapNoteScores[t] += other.iTapNoteScores[t];

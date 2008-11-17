@@ -376,7 +376,6 @@ crypto/CryptRand.cpp crypto/CryptRand.h crypto/CryptSH512.cpp crypto/CryptSH512.
 crypto/CryptSHA.cpp crypto/CryptSHA.h
 
 cryptopp = \
-ITG2CryptInterface.cpp ITG2CryptInterface.h \
 crypto51/algebra.cpp crypto51/algebra.h crypto51/algparam.cpp crypto51/algparam.h crypto51/argnames.h \
 crypto51/asn.cpp crypto51/asn.h crypto51/config.h crypto51/cryptlib.cpp crypto51/cryptlib.h crypto51/files.cpp \
 crypto51/files.h crypto51/filters.cpp crypto51/filters.h crypto51/fltrimpl.h crypto51/integer.cpp crypto51/integer.h \

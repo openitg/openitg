@@ -106,11 +106,9 @@ void ScreenArcadeStart::MenuStart( PlayerNumber pn )
 {
 	if( !IsTransitioning() )
 	{
-#ifdef ITG_ARCADE
 		// nothing set by SAStart, so set it now
 		if( DiagnosticsUtil::GetInputType() == "" )
 			DiagnosticsUtil::SetInputType( "Home" );
-#endif
 
 		this->PlayCommand( "Off" );
 		StartTransitioning( SM_GoToNextScreen );		
@@ -186,6 +184,7 @@ bool ScreenArcadeStart::LoadHandler()
 	{
 		/* Return true if PC, even though it doesn't load. */
 		LOG->Warn( "ScreenArcadeStart: I/O board not found. Continuing anyway..." );
+		DiagnosticsUtil::SetInputType( "Home" );
 		return true;
 	}
 #endif

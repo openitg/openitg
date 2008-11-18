@@ -65,8 +65,8 @@ struct PlayerStageStats
 	int		iTotalError;
 	float	fLifeRemainingSeconds;	// used in survival
 
+	// OpenITG: used for colorized life graphs
 	bool	bFlag_FFC, bFlag_FEC, bFlag_FGC, bFlag_PulsateEnd;
-
 	float	fFullFantasticComboBegin;
 	float	fFullExcellentComboBegin;
 	float	fFullGreatComboBegin;

@@ -64,7 +64,7 @@ const char* STATS_STRING[NUM_STATS_LINES] =
 #define SHOW_SURVIVED_AREA					THEME->GetMetricB(m_sName,"ShowSurvivedArea")
 #define SHOW_WIN_AREA						THEME->GetMetricB(m_sName,"ShowWinArea")
 #define SHOW_JUDGMENT( l )					THEME->GetMetricB(m_sName,ssprintf("Show%s",JUDGE_STRING[l]))
-#define SHOW_STAT( s )						THEME->GetMetricB(m_sName,ssprintf("Show%s",STATS_STRING[l]))
+#define SHOW_STAT( s )						THEME->GetMetricB(m_sName,ssprintf("Show%s",STATS_STRING[s]))
 #define SHOW_SCORE_AREA						THEME->GetMetricB(m_sName,"ShowScoreArea")
 #define SHOW_TOTAL_SCORE_AREA				THEME->GetMetricB(m_sName,"ShowTotalScoreArea")
 #define SHOW_TIME_AREA						THEME->GetMetricB(m_sName,"ShowTimeArea")
@@ -81,6 +81,7 @@ const char* STATS_STRING[NUM_STATS_LINES] =
 #define SOUNDSEQ_NAME( i )					THEME->GetMetric (m_sName,ssprintf("SoundSeqName%d", i+1))
 #define MAX_COMBO_NUM_DIGITS				THEME->GetMetricI(m_sName,"MaxComboNumDigits")
 #define PLAYER_OPTIONS_SEPARATOR			THEME->GetMetric (m_sName,"PlayerOptionsSeparator")
+#define COLORIZE_GRAPH					THEME->GetMetricB(m_sName,"ColorizeLifeGraph")
 
 
 static const int NUM_SHOWN_RADAR_CATEGORIES = 5;
@@ -451,7 +452,7 @@ void ScreenEvaluation::Init()
 			this->AddChild( m_sprGraphFrame[p] );
 
 			m_LifeGraph[p].SetName( ssprintf("LifeGraphP%i",p+1) );
-			m_LifeGraph[p].Load( THEME->GetPathG(m_sName,ssprintf("LifeGraph p%i", p+1)), LIFE_GRAPH_START_HEIGHT, THEME->GetPathG(m_sName,"JustBarely") );
+			m_LifeGraph[p].Load( THEME->GetPathG(m_sName,ssprintf("LifeGraph p%i", p+1)), LIFE_GRAPH_START_HEIGHT, THEME->GetPathG(m_sName,"JustBarely"), COLORIZE_GRAPH );
 			m_LifeGraph[p].LoadFromStageStats( stageStats, stageStats.m_player[p], THEME->GetPathG(m_sName,"SongBoundary") );
 			SET_XY_AND_ON_COMMAND( m_LifeGraph[p] );
 			this->AddChild( &m_LifeGraph[p] );

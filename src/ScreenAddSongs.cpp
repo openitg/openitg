@@ -15,7 +15,7 @@
 #include "ProfileManager.h"
 #include "RageUtil_FileDB.h" /* defines FileSet */
 #include "RageFileDriverDirect.h" /* defines DirectFilenameDB */
-
+#include "arch/ArchHooks/ArchHooks.h"
 
 static RageMutex MountMutex("ITGDataMount");
 
@@ -28,7 +28,7 @@ PlayerNumber g_CurrentPlayer;
 
 ScreenAddSongs::ScreenAddSongs( CString sName ) : ScreenWithMenuElements( sName )
 {
-	m_bRefreshSongMan = false;
+	m_bRestart = false;
 	m_bPrompt = false;
 	MEMCARDMAN->UnlockCards();
 }
@@ -43,8 +43,8 @@ ScreenAddSongs::~ScreenAddSongs()
 	FOREACH_PlayerNumber( pn )
 		MEMCARDMAN->UnmountCard( pn );
 
-	if ( m_bRefreshSongMan )
-		SONGMAN->Reload();
+	if ( m_bRestart )
+		HOOKS->SystemReboot();
 }
 
 /**
@@ -221,9 +221,10 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		m_bStopThread = true;
 		m_PlayerSongLoadThread.Wait();
 
-		// TODO: Song xferring code goes here
-		LOG->Debug( "SONG PACKS THAT WOULD HAVE BEEN ADDED: \n\t" + join( "\n\t", m_asAddableGroups[g_CurrentPlayer] ) ); // XXX
-
+		MountMutex.Lock();
+#if defined(LINUX) && defined(ITG_ARCADE)
+		system( "mount -o remount,rw /itgdata" );
+#endif
 		MEMCARDMAN->LockCards();
 		MEMCARDMAN->MountCard(g_CurrentPlayer, 99999);
 		for( unsigned i = 0; i < m_asAddableGroups[g_CurrentPlayer].size(); i++ )
@@ -253,6 +254,11 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		}
 		MEMCARDMAN->UnmountCard(g_CurrentPlayer);
 		MEMCARDMAN->UnlockCards();
+#if defined(LINUX) && defined(ITG_ARCADE)
+		system( "mount -o remount,ro /itgdata" );
+#endif
+		MountMutex.Unlock();
+
 		if (!bBreakEarly) bSuccess = true;
 		SCREENMAN->HideOverlayMessage();
 		SCREENMAN->ZeroNextUpdate();
@@ -261,8 +267,8 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		{
 			m_AddableGroupSelection.SetText(
 				"The song folders have been successfully added to the machine\n"
-				"Press enter to continue and update song manager..." );
-			m_bRefreshSongMan = true;
+				"Press enter to restart..." );
+			m_bRestart = true;
 			return;
 		}
 

@@ -13,7 +13,7 @@ class GraphDisplay: public ActorFrame
 public:
 	GraphDisplay();
 	~GraphDisplay() { Unload(); }
-	void Load( const CString &sTexturePath, float fInitialHeight, const CString &sJustBarelyPath );
+	void Load( const CString &sTexturePath, float fInitialHeight, const CString &sJustBarelyPath, const bool bColorize = false );
 	void Unload();
 
 	void LoadFromStageStats( const StageStats &ss, const PlayerStageStats &s, const CString &sSongBoundaryPath );
@@ -38,6 +38,7 @@ private:
 	AutoActor m_sprJustBarely;
 
 	// OpenITG: resolution points for colorized FFC/FEC graph
+	bool m_bColorize;
 	int m_iFFCPoint;
 	int m_iFECPoint;
 	int m_iFGCPoint;

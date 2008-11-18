@@ -36,7 +36,7 @@ private:
 	CStringArray m_asAddableGroups[NUM_PLAYERS];
 	BitmapText m_AddableGroupSelection;
 
-	bool m_bRefreshSongMan;
+	bool m_bRestart;
 
 	bool m_bCardMounted[NUM_PLAYERS];
 	RageThread m_PlayerSongLoadThread;

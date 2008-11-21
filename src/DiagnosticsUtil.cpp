@@ -230,7 +230,7 @@ CString DiagnosticsUtil::GenerateDebugSerial()
 	sSystem = "U"; /* unknown */
 #endif
 	// "U-04292008-"
-	sSerial += sSystem + "-" + CString(PRODUCT_BUILD_DATE) + "-";
+	sSerial += sSystem + "-" + CString(SVN_VERSION) + "-";
 
 #ifdef ITG_ARCADE
 	sBuildType = "A";

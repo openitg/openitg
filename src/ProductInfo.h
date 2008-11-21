@@ -5,15 +5,13 @@
 
 #ifdef LINUX
 #include "config.h" // for ITG_ARCADE
+#include "svnver.h" // for revision number
 #endif
 
 /* The name of the build and its current version */
 #define PRODUCT_NAME "OpenITG"
-#define PRODUCT_VER "beta 1 DEV"
-
-/* Build date, in MMDDYYYY - used for serials. We/I need to remember
- * to update this every time a new revision is added ... */
-#define PRODUCT_BUILD_DATE "09202008"
+#define PRODUCT_VER "beta 1"
+#define PRODUCT_SVN "r" SVN_VERSION
 
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"
@@ -24,7 +22,7 @@
 #endif
 
 // Don't forget to also change ProductInfo.inc!
-#define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER
+#define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER " " PRODUCT_SVN
 
 /* A central location from which we can update crash handler data... */
 #define CRASH_REPORT_URL "http://boxorroxors.net/forum/viewtopic.php?t=971"

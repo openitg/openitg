@@ -18,6 +18,16 @@ AM_CXXFLAGS += $(XCFLAGS)
 LIBS += $(LUA_LIBS)
 LIBS += -lpthread
 
+.PHONY: svnversion
+
+all: svnversion
+
+svnversion:
+	echo "#define SVN_VERSION \"`svnversion -n`\"" > svnver.h;
+
+svnver.h:
+	$(MAKE) svnversion
+
 $(srcdir)/libresample/libresample.a:
 	cd $(srcdir)/libresample && autoconf && sh ./configure && make
 
@@ -408,6 +418,7 @@ main_LDADD = \
 		  $(XLIBS) \
 		  $(srcdir)/libresample/libresample.a
 
+nodist_openitg_SOURCES = svnver.h
 openitg_SOURCES = $(main_SOURCES)
 openitg_LDADD = $(main_LDADD) \
 	$(srcdir)/ffmpeg/lib/libavformat.a $(srcdir)/ffmpeg/lib/libavcodec.a

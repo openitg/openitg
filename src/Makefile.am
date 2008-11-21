@@ -15,8 +15,12 @@ AM_CXXFLAGS += -finline-limit=300
 
 AM_CXXFLAGS += $(XCFLAGS)
 
+if !ITG_ARCADE
 LIBS += $(LUA_LIBS)
 LIBS += -lpthread
+else
+LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ -llua -llualib -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
+endif
 
 .PHONY: svnversion
 
@@ -306,12 +310,11 @@ RageFileDriverMemory.cpp RageFileDriverMemory.h RageFileDriverZip.cpp RageFileDr
 RageFileDriverDeflate.cpp RageFileDriverDeflate.h \
 RageFileDriverSlice.cpp RageFileDriverSlice.h \
 RageFileDriverTimeout.cpp RageFileDriverTimeout.h \
-RageFileDriverCrypt.cpp RageFileDriverCrypt.h RageFileDriverPatch.cpp RageFileDriverPatch.h
+RageFileDriverCrypt.cpp RageFileDriverCrypt.h RageFileDriverPatch.cpp RageFileDriverPatch.h \
+RageCryptInterface.cpp RageCryptInterface.h RageCryptInterface_ITG2.cpp RageCryptInterface_ITG2.h
 
 Rage = $(PCRE) $(RageFile) $(RageSoundFileReaders) \
-RageBitmapTexture.cpp RageBitmapTexture.h RageCryptInterface.cpp RageCryptInterface.h \
-RageCryptInterface_ITG2.cpp RageCryptInterface_ITG2.h \
-RageDisplay.cpp RageDisplay.h RageDisplay_OGL.cpp RageDisplay_OGL.h \
+RageBitmapTexture.cpp RageBitmapTexture.h RageDisplay.cpp RageDisplay.h RageDisplay_OGL.cpp RageDisplay_OGL.h \
 RageDisplay_OGL_Extensions.cpp RageDisplay_OGL_Extensions.h \
 RageDisplay_Null.cpp RageDisplay_Null.h RageException.cpp RageException.h RageInput.cpp RageInput.h \
 RageInputDevice.cpp RageInputDevice.h RageLog.cpp RageLog.h RageMath.cpp RageMath.h \

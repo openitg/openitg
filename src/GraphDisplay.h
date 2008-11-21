@@ -13,7 +13,10 @@ class GraphDisplay: public ActorFrame
 public:
 	GraphDisplay();
 	~GraphDisplay() { Unload(); }
-	void Load( const CString &sTexturePath, float fInitialHeight, const CString &sJustBarelyPath, const bool bColorize = false );
+	void Load( const CString &sTexturePath, float fInitialHeight, const CString &sJustBarelyPath, const bool bColorize = false, 
+			const RageColor pColorFantastic = RageColor(1,1,1,1), 
+			const RageColor pColorExcellent = RageColor(1,1,1,1), 
+			const RageColor pColorGreat = RageColor(1,1,1,1) );
 	void Unload();
 
 	void LoadFromStageStats( const StageStats &ss, const PlayerStageStats &s, const CString &sSongBoundaryPath );
@@ -43,6 +46,8 @@ private:
 	int m_iFECPoint;
 	int m_iFGCPoint;
 	int m_iPulseStopPoint;
+
+	RageColor m_ColorFantastic, m_ColorExcellent, m_ColorGreat;
 };
 
 #endif

@@ -3,6 +3,8 @@
 #ifndef RAGETYPES_H
 #define RAGETYPES_H
 
+#include "RageUtil.h"
+
 enum BlendMode { BLEND_NORMAL, BLEND_ADD, BLEND_NO_EFFECT, BLEND_INVALID };
 enum CullMode { CULL_BACK, CULL_FRONT, CULL_NONE };
 enum ZTestMode { ZTEST_OFF, ZTEST_WRITE_ON_PASS, ZTEST_WRITE_ON_FAIL };
@@ -154,6 +156,8 @@ public:
 		r=1; b=1; g=1; a=1;
 		return false;
 	}
+
+	CString ToString() { return ssprintf( "%f,%f,%f,%f", r, g, b, a ); }
 	float r, g, b, a;
 } ALIGN(16);
 

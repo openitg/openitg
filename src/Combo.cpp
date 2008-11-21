@@ -123,7 +123,7 @@ void Combo::SetCombo( int iCombo, int iMisses, float fLastStepsSeconds )
 	if( b1000Milestone )
 		m_spr1000Milestone->PlayCommand( "Milestone" );
 
-	SCREENMAN->SystemMessageNoAnimate( ssprintf("m_ComboStatus: %d", m_pPlayerStageStats->m_ComboStatus) );
+	//SCREENMAN->SystemMessageNoAnimate( ssprintf("m_ComboStatus: %d", m_pPlayerStageStats->m_ComboStatus) );
 
 	if ( fLastStepsSeconds != -1.0f )
 	{

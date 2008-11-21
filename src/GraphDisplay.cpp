@@ -22,7 +22,8 @@ GraphDisplay::GraphDisplay()
 }
 
 
-void GraphDisplay::Load( const CString &TexturePath, float fInitialHeight, const CString &sJustBarelyPath, const bool bColorize )
+void GraphDisplay::Load( const CString &TexturePath, float fInitialHeight, const CString &sJustBarelyPath, const bool bColorize, const RageColor pColorFantastic,
+				const RageColor pColorExcellent, const RageColor pColorGreat )
 {
 	m_Position = 1;
 	memset( m_CurValues, 0, sizeof(m_CurValues) );
@@ -34,6 +35,15 @@ void GraphDisplay::Load( const CString &TexturePath, float fInitialHeight, const
 	m_size.x = (float) m_pTexture->GetSourceWidth();
 	m_size.y = (float) m_pTexture->GetSourceHeight();
 	m_bColorize = bColorize;
+
+	m_ColorFantastic = pColorFantastic;
+	m_ColorExcellent = pColorExcellent;
+	m_ColorGreat = pColorGreat;
+
+	LOG->Debug("GraphDisplay: bColorize: %s", bColorize ? "true":"false");
+	LOG->Debug("GraphDisplay: pColorFantastic: %s", m_ColorFantastic.ToString().c_str() );
+	LOG->Debug("GraphDisplay: pColorExcellent: %s", m_ColorExcellent.ToString().c_str() );
+	LOG->Debug("GraphDisplay: pColorGreat: %s", m_ColorGreat.ToString().c_str() );
 
 	for( int i = 0; i < VALUE_RESOLUTION; ++i )
 		m_CurValues[i] = fInitialHeight;
@@ -164,17 +174,17 @@ void GraphDisplay::UpdateVerts()
 		if ( m_iFFCPoint > -1 )
 		{
 			for( int i = m_iFFCPoint*4; i < 4*m_iPulseStopPoint; ++i )
-				m_Slices[i].c = RageColor(.580f,.922f,.996f,1);
+				m_Slices[i].c = m_ColorFantastic;
 		}
 		if ( m_iFECPoint > -1 )
 		{
 			for( int i = m_iFECPoint*4; i < 4*m_iPulseStopPoint; ++i )
-				m_Slices[i].c = RageColor(.992f,.835f,.6f,1);
+				m_Slices[i].c = m_ColorExcellent;
 		}
 		if ( m_iFGCPoint > -1 )
 		{
 			for( int i = m_iFGCPoint*4; i < 4*m_iPulseStopPoint; ++i )
-				m_Slices[i].c = RageColor(.04f,1.0f,.06f,1);
+				m_Slices[i].c = m_ColorGreat;
 		}
 	}
 

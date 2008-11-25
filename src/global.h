@@ -49,6 +49,12 @@
 /* And vector: */
 #include <vector>
 
+/* And, as of GCC 4.3, climits and cstring: */
+#if defined(__GNUC__) && (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 3)
+#include <climits>
+#include <cstring>
+#endif
+
 #ifdef WIN32
 #define MISSING_STDINT_H
 #endif

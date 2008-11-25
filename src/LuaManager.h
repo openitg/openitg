@@ -6,12 +6,16 @@ typedef lua_State Lua;
 typedef void (*RegisterWithLuaFn)(lua_State*);
 class RageMutex;
 
+#ifdef HAVE_LUA51
+#include <lua.hpp>
+#else
 extern "C"
 {
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
 }
+#endif
 
 // Machine Update -- Matt1360
 #include "ezsockets.h"

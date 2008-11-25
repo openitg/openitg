@@ -17,7 +17,7 @@
 
 void PlayerOptions::Init()
 {
-	m_fMaxScrollSpeed = 0;
+	m_fMaxScrollBPM = 0;
 	m_fTimeSpacing = 0;			m_SpeedfTimeSpacing = 1.0f;
 	m_fScrollSpeed = 1.0f;		m_SpeedfScrollSpeed = 1.0f;
 	m_fScrollBPM = 200;			m_SpeedfScrollBPM = 1.0f;
@@ -46,6 +46,7 @@ void PlayerOptions::Approach( const PlayerOptions& other, float fDeltaSeconds )
 
 	APP( fTimeSpacing );
 	APP( fScrollSpeed );
+	APP( fMaxScrollBPM );
 	fapproach( m_fScrollBPM, other.m_fScrollBPM, fDeltaSeconds * other.m_SpeedfScrollBPM*150 );
 	for( int i=0; i<NUM_ACCELS; i++ )
 		APP( fAccels[i] );
@@ -87,6 +88,14 @@ void PlayerOptions::GetMods( vector<CString> &AddTo ) const
 
 	if( !m_fTimeSpacing )
 	{
+/*
+		if( m_fMaxScrollBPM )
+		{
+			CString s = ssprintf( "m%.0f", m_fMaxScrollBPM );
+			AddTo.push_back( s );
+		}
+		else
+*/
 		if( m_fScrollSpeed != 1 )
 		{
 			/* -> 1.00 */
@@ -246,7 +255,6 @@ void PlayerOptions::FromString( CString sOptions, bool bWarnOnInvalid )
 			}
 		}
 
-		
 		sBit = asParts.back();
 
 #define SET_FLOAT( opt ) { m_ ## opt = level; m_Speed ## opt = speed; }
@@ -255,25 +263,27 @@ void PlayerOptions::FromString( CString sOptions, bool bWarnOnInvalid )
 		Regex mult("^([0-9]+(\\.[0-9]+)?)x$");
 		vector<CString> matches;
 		if( mult.Compare(sBit, matches) )
-	{
+		{
 			char *p = NULL;
 			level = strtof( matches[0], &p );
 			ASSERT( p != matches[0] );
 			SET_FLOAT( fScrollSpeed )
 			SET_FLOAT( fTimeSpacing )
 			m_fTimeSpacing = 0;
+			m_fMaxScrollBPM = 0;
 		}
 		else if( sscanf( sBit, "c%f", &level ) == 1 )
 		{
 			SET_FLOAT( fScrollBPM )
 			SET_FLOAT( fTimeSpacing )
 			m_fTimeSpacing = 1;
+			m_fMaxScrollBPM = 0;
 		}
 		// XXX: will not properly tween, I don't think.
 		else if( sscanf( sBit, "m%f", &level ) == 1 )
 		{
 			LOG->Debug( "Speed mod m%f set.", level );
-			m_fMaxScrollSpeed = level;
+			SET_FLOAT( fMaxScrollBPM )
 			m_fTimeSpacing = 0;
 		}
 

@@ -44,12 +44,20 @@ else
 	LUA_LIBS="$LIB_LUA $LIB_LUA_LIB"
 fi
 if test "$LUA_MISSING" = "yes"; then
-	echo
-	echo "*** liblua is required to build StepMania; please make sure that"
-	echo "*** it is installed to continue the installation process."
-	exit 1;
-fi
-if test "$LUA_LIB_MISSING" = "yes"; then
+	LUA_CFLAGS=
+	LUA_LIBS=
+	PKG_PROG_PKG_CONFIG
+	PKG_CHECK_MODULES(LUA, lua >= 5.1, [LUA_MISSING=no])
+
+	if test "$LUA_MISSING" = "yes"; then
+		echo
+		echo "*** liblua is required to build StepMania; please make sure that"
+		echo "*** it is installed to continue the installation process."
+		exit 1
+	else
+		AC_DEFINE([HAVE_LUA51], [1], [The system has Lua 5.1 instead of Lua 5.0])
+	fi
+elif test "$LUA_LIB_MISSING" = "yes"; then
 	echo
 	echo "*** liblualib is required to build StepMania; please make sure that"
 	echo "*** it is installed to continue the installation process."

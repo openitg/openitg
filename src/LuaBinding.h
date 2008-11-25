@@ -5,11 +5,15 @@
 #ifndef LuaBinding_H
 #define LuaBinding_H
 
+#ifdef HAVE_LUA51
+#include <lua.hpp>
+#else
 extern "C"
 {
 #include <lua.h>
 #include <lauxlib.h>
 }
+#endif
 
 #include "LuaManager.h"
 #include <vector>

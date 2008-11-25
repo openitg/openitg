@@ -6,12 +6,18 @@
 #ifdef LINUX
 #include "config.h" // for ITG_ARCADE
 #include "svnver.h" // for revision number
+#define PRODUCT_SVN "r" SVN_VERSION
+#endif
+
+/* We need to make this more intelligent. */
+#ifdef WIN32
+#define SVN_VERSION "SVN"
+#define PRODUCT_SVN SVN_VERSION
 #endif
 
 /* The name of the build and its current version */
 #define PRODUCT_NAME "OpenITG"
 #define PRODUCT_VER "beta 1"
-#define PRODUCT_SVN "r" SVN_VERSION
 
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"

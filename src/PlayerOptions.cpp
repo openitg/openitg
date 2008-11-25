@@ -17,7 +17,7 @@
 
 void PlayerOptions::Init()
 {
-	m_fMaxScrollBPM = 0;
+	m_fMaxScrollBPM = 0;		m_SpeedfMaxScrollBPM = 1.0f;
 	m_fTimeSpacing = 0;			m_SpeedfTimeSpacing = 1.0f;
 	m_fScrollSpeed = 1.0f;		m_SpeedfScrollSpeed = 1.0f;
 	m_fScrollBPM = 200;			m_SpeedfScrollBPM = 1.0f;
@@ -88,15 +88,12 @@ void PlayerOptions::GetMods( vector<CString> &AddTo ) const
 
 	if( !m_fTimeSpacing )
 	{
-/*
 		if( m_fMaxScrollBPM )
 		{
 			CString s = ssprintf( "m%.0f", m_fMaxScrollBPM );
 			AddTo.push_back( s );
 		}
-		else
-*/
-		if( m_fScrollSpeed != 1 )
+		else if( m_fScrollSpeed != 1 )
 		{
 			/* -> 1.00 */
 			CString s = ssprintf( "%2.2f", m_fScrollSpeed );
@@ -565,6 +562,7 @@ bool PlayerOptions::operator==( const PlayerOptions &other ) const
 	COMPARE(m_fTimeSpacing);
 	COMPARE(m_fScrollSpeed);
 	COMPARE(m_fScrollBPM);
+	COMPARE(m_fMaxScrollBPM);
 	COMPARE(m_fRandomSpeed);
 	COMPARE(m_ScoreDisplay);
 	COMPARE(m_fDark);
@@ -689,6 +687,7 @@ CString PlayerOptions::GetSavedPrefsString() const
 	SAVE( m_fTimeSpacing );
 	SAVE( m_fScrollSpeed );
 	SAVE( m_fScrollBPM );
+	SAVE( m_fMaxScrollBPM );
 	SAVE( m_fScrolls[SCROLL_REVERSE] );
 	SAVE( m_fPerspectiveTilt );
 	SAVE( m_bTransforms[TRANSFORM_NOHOLDS] );
@@ -712,6 +711,7 @@ void PlayerOptions::ResetSavedPrefs()
 	CPY( m_fTimeSpacing );
 	CPY( m_fScrollSpeed );
 	CPY( m_fScrollBPM );
+	CPY( m_fMaxScrollBPM );
 	CPY( m_fScrolls[SCROLL_REVERSE] );
 	CPY( m_fPerspectiveTilt );
 	CPY( m_bTransforms[TRANSFORM_NOHOLDS] );

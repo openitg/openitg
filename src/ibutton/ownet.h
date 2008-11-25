@@ -44,6 +44,10 @@
 //--------------------------------------------------------------//
 #include <stdlib.h>
 
+// Workaround for Windows compilation.
+// The below doesn't actually work. :/
+typedef unsigned short ushort;
+typedef unsigned long ulong;
 
 //--------------------------------------------------------------//
 // Target Specific Information

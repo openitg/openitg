@@ -2,7 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="StepMania"
+	Name="OpenITG"
+	ProjectGUID="{922728D0-EA2B-4CE3-95A5-C3A578327C85}"
 	SccProjectName=""
 	SccLocalPath=""
 	Keyword="MFCProj">
@@ -494,7 +495,8 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\OpenITG-PC-SSE2.vdi&quot;
 copy /Y &quot;$(TargetDir)\OpenITG-PC-SSE2.vdi&quot; &quot;C:\OpenITG-alpha6-dev\Program\&quot;
 copy /Y &quot;$(TargetDir)\OpenITG-PC-SSE2.exe&quot; &quot;C:\OpenITG-alpha6-dev\Program\&quot;
-"/>
+"
+				ExcludedFromBuild="TRUE"/>
 			<Tool
 				Name="VCPreBuildEventTool"
 				CommandLine="archutils\Win32\verinc

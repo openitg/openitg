@@ -62,7 +62,7 @@
 #define SONG_POSITION_METER_WIDTH				THEME->GetMetricF(m_sName,"SongPositionMeterWidth")
 #define PLAYER_X( p, styleType )				THEME->GetMetricF(m_sName,ssprintf("PlayerP%d%sX",p+1,StyleTypeToString(styleType).c_str()))
 #define STOP_COURSE_EARLY						THEME->GetMetricB(m_sName,"StopCourseEarly")	// evaluate this every time it's used
-#define COMPARE_SCORES						THEME->GetMetricB(m_sName, "CompareScores" )
+#define COMPARE_SCORES							THEME->GetMetricB(m_sName, "CompareScores" )
 
 // set an adjusted limit based off the song allowance
 #define MAX_CUSTOM_LENGTH ((float)(PREFSMAN->m_iCustomMaxSeconds + 10))
@@ -1113,7 +1113,6 @@ void ScreenGameplay::LoadLights()
 	// One last try...
 	if( pSteps == NULL )
 		pSteps = GAMESTATE->m_pCurSong->GetClosestNotes( GAMESTATE->GetCurrentStyle()->m_StepsType, d1 );
-
 
 	// If we can't find anything at all, stop.
 	if( pSteps == NULL )

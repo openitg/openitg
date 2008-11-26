@@ -1,7 +1,13 @@
-OpenITG, beta 1 (in development)
---------------------------------
+OpenITG, prebeta (November 25th, 2008)
+--------------------------------------
+-Lots more code cleanup
+-Compilation updates:
+     Added SVN revision script for Linux make (thanks, SM devs)
+     Added patch to compile on GCC 4.3 (thanks dawnwolf)
+     Added patch to compile against LUA 5.1 (thanks to cyt0plas, Spectere)
 -New features:
-     Preliminary "M-mod" support (same format as C-mods)
+     Preliminary "M-mod" support (same format as C-mods, e.g. "M600")
+     Added custom courses ( /ProfileFolder/Courses/ )
 -Misc. changes:
      Added coin counter functionality to LIGHTSMAN
      Added RageCryptInterface for easier crypto implementations
@@ -17,8 +23,7 @@ OpenITG, beta 1 (in development)
      Linux: couldn't open GTK loading window
      ITGIO - P1 Left and Right reversed
      patch.zip mounted multiple times on start
--Profile changes:
-     Added custom courses ( /ProfileFolder/Courses/ ) - experimental
+     Possible to load redundant arcade I/O drivers and cause problems
 
 OpenITG, alpha 8 (August 29th, 2008)
 ------------------------------------

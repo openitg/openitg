@@ -4,6 +4,7 @@
 	Version="7.10"
 	Name="OpenITG"
 	ProjectGUID="{922728D0-EA2B-4CE3-95A5-C3A578327C85}"
+	RootNamespace="OpenITG"
 	SccProjectName=""
 	SccLocalPath=""
 	Keyword="MFCProj">
@@ -300,7 +301,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
 				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile="../Program/OpenITG-AC.pdb"
 				GenerateMapFile="TRUE"
 				MapFileName="$(IntDir)\$(TargetName).map"
@@ -386,7 +387,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
 				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="FALSE"
 				ProgramDatabaseFile="../Program/OpenITG-PC.pdb"
 				GenerateMapFile="TRUE"
 				MapFileName="$(IntDir)\$(TargetName).map"
@@ -401,10 +402,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				TypeLibraryName=".\../StepMania.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\OpenITG-PC.vdi&quot;
-copy /Y &quot;$(TargetDir)\OpenITG-PC.vdi&quot; &quot;C:\OpenITG-alpha6-dev\Program\&quot;
-copy /Y &quot;$(TargetDir)\OpenITG-PC.exe&quot; &quot;C:\OpenITG-alpha6-dev\Program\&quot;
-"/>
+				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\OpenITG-PC.vdi&quot;"/>
 			<Tool
 				Name="VCPreBuildEventTool"
 				CommandLine="archutils\Win32\verinc
@@ -493,10 +491,8 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine="archutils\Win32\mapconv &quot;$(IntDir)\$(TargetName).map&quot; &quot;$(TargetDir)\OpenITG-PC-SSE2.vdi&quot;
-copy /Y &quot;$(TargetDir)\OpenITG-PC-SSE2.vdi&quot; &quot;C:\OpenITG-alpha6-dev\Program\&quot;
-copy /Y &quot;$(TargetDir)\OpenITG-PC-SSE2.exe&quot; &quot;C:\OpenITG-alpha6-dev\Program\&quot;
 "
-				ExcludedFromBuild="TRUE"/>
+				ExcludedFromBuild="FALSE"/>
 			<Tool
 				Name="VCPreBuildEventTool"
 				CommandLine="archutils\Win32\verinc
@@ -531,6 +527,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="Screen.h">
+			</File>
+			<File
+				RelativePath=".\ScreenAddSongs.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenAddSongs.h">
 			</File>
 			<File
 				RelativePath="ScreenArcadeDiagnostics.cpp">

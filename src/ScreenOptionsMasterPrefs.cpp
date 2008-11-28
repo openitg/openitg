@@ -312,6 +312,7 @@ MOVE( UnlockSystem,			PREFSMAN->m_bUseUnlockSystem );
 
 MOVE( SongEdits,		PREFSMAN->m_bCustomSongs );
 MOVE( CustomSongPreviews,	PREFSMAN->m_bCustomSongPreviews );
+MOVE( CourseEdits,		PREFSMAN->m_bCustomCourses );
 
 static void CustomMaxSeconds( int &sel, bool ToSel, const ConfOption *pConfOption )
 {
@@ -602,6 +603,7 @@ static void InitializeConfOptions()
 //	ADD( ConfOption( "PickExtraStage",				PickExtraStage,		"OFF","ON" ) );
 	ADD( ConfOption( "UnlockSystem",				UnlockSystem,		"OFF","ON" ) );
 	ADD( ConfOption( "SongEdits",					SongEdits,		"OFF", "ON" ) );
+	ADD( ConfOption( "CourseEdits",					CourseEdits,	"OFF", "ON" ) );
 	ADD( ConfOption( "AllowExtraPlayerOptions",			AllowExtraPlayerOptions,	"OFF", "ON" ) );
 	ADD( ConfOption( "CustomMaxSeconds",				CustomMaxSeconds,	"1:30", "1:45", "2:00", "2:15", "2:30", "2:45", "3:00",
 													"3:30", "4:00", "4:30", "5:00", "5:30",

@@ -1108,7 +1108,8 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 			TrimRight(candidate);
 			Regex mult("^([0-9]+(\\.[0-9]+)?)x$");
 			Regex constmod("^C[0-9]{1,4}$");
-			if (mult.Compare(candidate) || constmod.Compare(candidate))
+			Regex mmod("^M[0-9]{1,4}$");
+			if (mult.Compare(candidate) || constmod.Compare(candidate) || mmod.Compare(candidate))
 			{
 				m_sPlayerAdditionalModifiers.push_back(candidate);
 			}

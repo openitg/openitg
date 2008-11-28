@@ -179,8 +179,32 @@ public:
 			}
 			FOREACHS_CONST( CString, additionalSet, addit_mod )
 			{
+				Regex mult("^([0-9]+(\\.[0-9]+)?)x$");
+				Regex constmod("^C[0-9]{1,4}$");
+				Regex mmod("^M[0-9]{1,4}$");
+				CString sAdditModName;
+				if (mult.Compare(*addit_mod))
+				{
+					float factor = 1.0f;
+					if (sscanf(*addit_mod, "%fx", &factor) == 1)
+						sAdditModName = ssprintf("x%f", factor);
+				}
+				else if (constmod.Compare(*addit_mod))
+				{
+					unsigned bpm = 300;
+					if (sscanf(*addit_mod, "C%u", &bpm) == 1)
+						sAdditModName = ssprintf("c%u", bpm);
+				}
+				else if (mmod.Compare(*addit_mod))
+				{
+					unsigned bpm = 600;
+					if (sscanf(*addit_mod, "M%u", &bpm) == 1)
+						sAdditModName = ssprintf("m%u", bpm);
+				}
+				else ASSERT(0); // how'd it get in here in the first place...
+
 				GameCommand mc;
-				mc.Load( 0, ParseCommands(CString("mod,")+*addit_mod+";name,"+*addit_mod) );
+				mc.Load( 0, ParseCommands(CString("mod,")+*addit_mod+";name,"+sAdditModName) );
 				if ( !mc.IsPlayable() )
 				{
 					LOG->Trace( "Additional mod \"%s\" is not playable.", addit_mod->c_str() );

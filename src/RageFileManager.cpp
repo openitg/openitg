@@ -317,6 +317,7 @@ void RageFileManager::MountInitialFilesystems()
 		Dir = join( "/", parts.begin(), parts.end()-2 );
 	}
 	RageFileManager::Mount( "kry", Dir + "/CryptPackages", "/CryptPackages" );
+	RageFileManager::Mount( "dir", Dir + "/AdditionalSongs", "/Songs" );
 	RageFileManager::Mount( "dir", Dir, "/" );
 
 #elif defined(DARWIN)

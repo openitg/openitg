@@ -9,6 +9,12 @@
 #include "RageUtil_AutoPtr.h"
 #include "PlayerNumber.h" // needed for m_SongOwner
 
+#if defined(ITG_ARCADE) && !defined(WIN32)
+#define CUSTOM_SONG_PATH CString("/rootfs/tmp/")
+#else
+#define CUSTOM_SONG_PATH CString("Data/temp/")
+#endif
+
 class Steps;
 class Style;
 class NotesLoader;
@@ -22,6 +28,8 @@ const int MAX_EDITS_PER_SONG_PER_PROFILE	= 5;
 const int MAX_EDITS_PER_SONG				= 5*NUM_PROFILE_SLOTS;
 
 extern const int FILE_CACHE_VERSION;
+
+extern const 
 
 enum BackgroundLayer
 {

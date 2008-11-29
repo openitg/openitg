@@ -1509,11 +1509,7 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 					Song *pSong = pCourse->m_entries[i].pSong;
 					if (pSong->IsCustomSong())
 					{
-						LOG->Debug("Course entry: %s, custom: %d, owner: P%d", pSong->GetDisplayFullTitle().c_str(), pSong->IsCustomSong() ? 1:0, (PlayerNumber)(pSong->m_SongOwner+1));
-						// TODO: not hardcode storage dir
-						CString sNewPath = ssprintf("/rootfs/tmp/crsmusic%d%s",i+1,pSong->m_sExtension.c_str());
-						LOG->Debug("Changing song path \"%s\" to \"%s\"", pSong->GetMusicPath().c_str(), sNewPath.c_str());
-
+						CString sNewPath = ssprintf(CUSTOM_SONG_PATH+"crsmusic%d%s",i+1,pSong->m_sExtension.c_str());
 #ifndef WIN32
 						MEMCARDMAN->MountCard( pSong->m_SongOwner, 20 );
 #endif

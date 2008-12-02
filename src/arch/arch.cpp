@@ -57,6 +57,9 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
 #ifdef USE_INPUT_HANDLER_IOW
 		if(!s->CompareNoCase("IOW") )		ret = new InputHandler_Iow;
 #endif
+#ifdef USE_INPUT_HANDLER_MK3
+		if(!s->CompareNoCase("MK3") )		ret = new InputHandler_MK3;
+#endif
 
 		if( ret == NULL )
 			LOG->Warn( "Unknown input handler name: %s", s->c_str() );

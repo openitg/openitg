@@ -22,15 +22,15 @@ else
 LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ -llua -llualib -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
 endif
 
-.PHONY: svnversion
+.PHONY: build_version
 
-all: svnversion
+all: build_version
 
-svnversion:
-	echo "#define SVN_VERSION \"`svnversion -n`\"" > svnver.h;
-
-svnver.h:
-	$(MAKE) svnversion
+build_version:
+	echo "#define BUILD_VERSION \"`svnversion -n`\"" > verinfo.h;
+	echo "#define BUILD_DATE \"`date +"%Y%m%d"`\"" >> verinfo.h;
+verinfo.h:
+	$(MAKE) build_version
 
 $(srcdir)/libresample/libresample.a:
 	cd $(srcdir)/libresample && autoconf && sh ./configure && make
@@ -176,7 +176,9 @@ InputHandler = arch/InputHandler/InputHandler.cpp arch/InputHandler/InputHandler
 InputHandler += arch/InputHandler/InputHandler_PIUIO.h \
 		arch/InputHandler/InputHandler_PIUIO.cpp \
 		arch/InputHandler/InputHandler_Iow.h \
-		arch/InputHandler/InputHandler_Iow.cpp
+		arch/InputHandler/InputHandler_Iow.cpp \
+		arch/InputHandler/InputHandler_MK3.h \
+		arch/InputHandler/InputHandler_MK3.cpp
 
 MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture.h \
 		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h \
@@ -421,7 +423,7 @@ main_LDADD = \
 		  $(XLIBS) \
 		  $(srcdir)/libresample/libresample.a
 
-nodist_openitg_SOURCES = svnver.h
+nodist_openitg_SOURCES = verinfo.h
 openitg_SOURCES = $(main_SOURCES)
 openitg_LDADD = $(main_LDADD) \
 	$(srcdir)/ffmpeg/lib/libavformat.a $(srcdir)/ffmpeg/lib/libavcodec.a

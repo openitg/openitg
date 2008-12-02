@@ -13,6 +13,7 @@
 #include "InputHandler_PIUIO.h"
 
 #ifdef HAVE_LINUXKERNEL
+#include "InputHandler_MK3.h" // until this is cross-platform...
 #include "InputHandler_Linux_Joystick.h"
 // XXX: Useless! Depends on SDL, which we'd use for input if it was available!
 // #include "InputHandler_Linux_tty.h"

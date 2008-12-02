@@ -1391,6 +1391,7 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 	// this code block, so it's wrapped in this conditional.
 	if( bVerified )
 	{
+		LOG->Debug( "Copying to: %s", GAMESTATE->m_pCurSong->m_sGameplayMusic.c_str() );
 		// we can copy the music. destination is determined with
 		// "m_sGameplayMusic" so we can change that from one place
 		bCopied = CopyWithProgress( GAMESTATE->m_pCurSong->GetMusicPath(), 

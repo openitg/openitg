@@ -5,45 +5,35 @@
 //
 // --Avery
 
+// Rewritten for OpenITG pre-build event... -- Vyhd
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <time.h>
 
-typedef unsigned long ulong;
+// strftime() formatted string
+#define DATE_FORMAT "%Y%m%d"
 
-int main(void) {
-	FILE *f;
-	ulong build=0,build_t;
-	char s[25];
-	time_t tm;
+int main()
+{
+	FILE *verinfo;
+	char datebuf[256];
 
-	//////////////
+	// get the current time and create a string
+	time_t curtime = time(NULL);
+	strftime( datebuf, 255, DATE_FORMAT, localtime(&curtime) );
 
-	if (f=fopen("version.bin","rb")) {
-		if (1==fread(&build_t,sizeof build_t,1,f))
-			build=build_t;
-	}
+	/* TODO: more intelligent BUILD_VERSION thing */
+	if( verinfo = fopen("verinfo.h", "w") )
+	{
+		fprintf( verinfo,
+			"#define BUILD_VERSION \"SVN\"\n"
+			"#define BUILD_DATE \"%s\"",
+			datebuf
+			);
 
-	++build;
-//	printf("Incrementing to build %d\n",build);
-
-	time(&tm);
-	memcpy(s ,asctime(localtime(&tm)), 24);
-	s[24]=0;
-
-	if (f=fopen("verstub.cpp","w")) {
-		fprintf(f,
-			"unsigned long version_num = %ld;\n"
-			"const char *version_time = \"%s\";\n"
-			,build
-			,s);
-		fclose(f);
-	}
-
-	if (f=fopen("version.bin","wb")) {
-		fwrite(&build,sizeof build,1,f);
-		fclose(f);
+		fclose(verinfo);
 	}
 
 	return 0;

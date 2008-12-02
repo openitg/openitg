@@ -7,7 +7,8 @@
 #include "EnumHelper.h"
 
 
-static const char *PlayerNumberNames[] = {
+static const CString PlayerNumberNames[] =
+{
         "P1",
         "P2",
 };

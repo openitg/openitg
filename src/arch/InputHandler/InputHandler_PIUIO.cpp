@@ -232,7 +232,7 @@ void InputHandler_PIUIO::HandleInput()
 		INPUTFILTER->SetButtonComment( di, GetSensorDescription(m_bSensors[iButton]) );
 
 		/* Is the button we're looking for flagged in the input data? */
-		ButtonPressed( di, (m_iInputField & (1 << (31-iButton))) );
+		ButtonPressed( di, m_iInputField & (1 << (31-iButton)) );
 	}
 
 	RunTimingCode();

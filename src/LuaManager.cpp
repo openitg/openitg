@@ -426,23 +426,6 @@ static bool Debug( const CString &sString )
 	return true;
 }
 
-// Holy fuck this is useful. Found in ScreenPackages, Props to Mr. X?
-// -- Matt1360
-static size_t FindEndOfHeaders( const CString &buf )
-{
-	size_t iPos1 = buf.find( "\n\n" );
-	size_t iPos2 = buf.find( "\r\n\r\n" );
-	LOG->Trace("end: %u, %u", unsigned(iPos1), unsigned(iPos2));
-	if( iPos1 != string::npos && (iPos2 == string::npos || iPos2 > iPos1) )
-		return iPos1 + 2;
-	else if( iPos2 != string::npos && (iPos1 == string::npos || iPos1 > iPos2) )
-		return iPos2 + 4;
-	else
-		return string::npos;
-}
-
-
-
 LuaFunction( Trace, Trace(SArg(1)) ); // Log Traces
 LuaFunction( Debug, Debug(SArg(1)) ); // debug lines
 

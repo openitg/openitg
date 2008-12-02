@@ -98,8 +98,6 @@ void InputHandler_Iow::InputThreadMain()
 
 void InputHandler_Iow::HandleInput()
 {
-	uint32_t i = 1; // convenience hack
-
 	DeviceInput di = DeviceInput( DEVICE_JOY1, JOY_1 );
 
 	// ITGIO only reads the first 16 bits

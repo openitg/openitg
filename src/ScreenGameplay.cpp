@@ -52,7 +52,7 @@
 #include "CommonMetrics.h"
 #include "InputMapper.h"
 #include "Game.h"
-
+#include "RageFileManager.h" // XXX!!! needed for custom song cleanup, remove as soon as we can
 //
 // Defines
 //
@@ -775,6 +775,11 @@ ScreenGameplay::~ScreenGameplay()
 	m_soundAssistTick.StopPlaying(); /* Stop any queued assist ticks. */
 
 	NSMAN->ReportSongOver();
+
+	// erase the last custom song data from memory.
+	// XXX: this pulls in FILEMAN, which we really need to get out of here
+	if( GAMESTATE->m_pCurSong && GAMESTATE->m_pCurSong->IsCustomSong() && FILEMAN->IsAFile(GAMESTATE->m_pCurSong->m_sGameplayMusic) )
+		FILEMAN->Remove( GAMESTATE->m_pCurSong->m_sGameplayMusic );
 }
 
 bool ScreenGameplay::IsLastSong()

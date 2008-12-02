@@ -1,3 +1,5 @@
+/* XXX: leaks like an imaginary sieve in places */
+
 #include "global.h"
 #include "RageLog.h"
 #include "RageCryptInterface_ITG2.h"
@@ -6,14 +8,28 @@
 #include "crypto/CryptSH512.h"
 #include "ibutton/ibutton.h"
 
-crypt_file_ITG2::crypt_file_ITG2():crypt_file() {}
+crypt_file_ITG2::crypt_file_ITG2(): crypt_file()
+{
+}
 
-crypt_file_ITG2::crypt_file_ITG2(crypt_file *cf):crypt_file(cf) {}
+crypt_file_ITG2::crypt_file_ITG2(crypt_file *cf): crypt_file(cf)
+{
+}
 
-crypt_file *RageCryptInterface_ITG2::crypt_create_internal() { return new crypt_file_ITG2; }
+crypt_file *RageCryptInterface_ITG2::crypt_create_internal()
+{
+	return new crypt_file_ITG2;
+}
 
-int RageCryptInterface_ITG2::crypt_tell_internal( crypt_file *cf ) { return cf->filepos; }
-int RageCryptInterface_ITG2::crypt_close_internal( crypt_file *cf ) { return close(cf->fd); }
+int RageCryptInterface_ITG2::crypt_tell_internal( crypt_file *cf )
+{
+	return cf->filepos;
+}
+
+int RageCryptInterface_ITG2::crypt_close_internal( crypt_file *cf )
+{
+	return close(cf->fd);
+}
 
 // we can safely assume that all instances of crypt_file
 // will match ours, due to the crypt_create_internal call.
@@ -34,7 +50,7 @@ bool RageCryptInterface_ITG2::crypt_open_internal(crypt_file *newfile, CString s
 
 	char header[2];
 	unsigned char *subkey, verifyblock[16];
-	size_t got, subkeysize;
+	uint32_t got, subkeysize;
 	unsigned char *SHABuffer, *AESKey, plaintext[16], AESSHABuffer[64];
 
 	if (read(newfile->fd, header, 2) < 2)

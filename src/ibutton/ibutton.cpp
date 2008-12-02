@@ -1,5 +1,6 @@
 #include "global.h"
 #include "RageLog.h"
+#include "RageUtil.h"
 #include "ibutton.h"
 
 extern "C" {
@@ -17,7 +18,6 @@ int iButton::GetAESKey(const uchar *subkey, uchar *output)
 {
 	uchar firstDataPage[32], firstScratchPad[32];
 	SHACopr copr;
-	int i;
 
 	memcpy(firstDataPage, subkey, 32);
 
@@ -46,21 +46,26 @@ int iButton::GetAESKey(const uchar *subkey, uchar *output)
 	return 0;
 }
 
-int iButton::GetSerialNumber( uchar *serial )
+CString iButton::GetSerialNumber()
 {
 	SHACopr copr;
+	uchar spBuf[32];
 
 	if( (copr.portnum = owAcquireEx(SERIAL_PORT)) == -1 )
 	{
 		LOG->Warn("GetSerialNumber(): failed to acquire port.");
-		return -1;
+		return "????????";
 	}
 
 	FindNewSHA(copr.portnum, copr.devAN, true);
-	ReadAuthPageSHA18(copr.portnum, 9, serial, NULL, false);
+	ReadAuthPageSHA18(copr.portnum, 9, spBuf, NULL, false);
 	owRelease(copr.portnum);
 
-	return 0;
+	CString sNewSerial = (char*)spBuf;
+	TrimLeft(sNewSerial);
+	TrimRight(sNewSerial);
+	
+	return sNewSerial;
 }
 
 /*

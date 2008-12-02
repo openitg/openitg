@@ -488,7 +488,9 @@ bool ScreenArcadePatch::FinalizePatch()
 				return false;
 			}
 
+#ifdef LINUX
 			const RageFileDriverZip::FileInfo *fi = rfdZip->GetFileInfo( sPath );
+#endif
 			fCopyDest.Close();
 
 			sPath = PATCH_DIR + "new-patch-unchecked/" + sPath;

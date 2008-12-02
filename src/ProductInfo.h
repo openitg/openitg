@@ -3,21 +3,21 @@
 #ifndef PRODUCT_INFO_H
 #define PRODUCT_INFO_H
 
+// Pre-build event for all OSes
+#include "verinfo.h"
+
 // I'll make this more elegant later...if set 1,
 // the SVN revision is ignored. we can drop "DEV"
 // labels from releases and use this now. - Vyhd
-#define OFFICIAL_RELEASE 1
+#define OFFICIAL_RELEASE 0
 
+// We know that, on Linux, we should be able to determine a SVN revision.
+// This isn't guaranteed for any other build versions.
 #ifdef LINUX
 #include "config.h" // for ITG_ARCADE
-#include "svnver.h" // for revision number
-#define PRODUCT_SVN "r" SVN_VERSION
-#endif
-
-/* We need to make this more intelligent. */
-#ifdef WIN32
-#define SVN_VERSION "SVN"
-#define PRODUCT_SVN SVN_VERSION
+#define PRODUCT_SVN "r" BUILD_VERSION
+#else
+#define PRODUCT_SVN BUILD_VERSION
 #endif
 
 /* The name of the build and its current version */
@@ -33,7 +33,7 @@
 #endif
 
 // Don't forget to also change ProductInfo.inc!
-#ifdef OFFICIAL_RELEASE
+#if OFFICIAL_RELEASE
 #define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER
 #else
 #define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER " " PRODUCT_SVN

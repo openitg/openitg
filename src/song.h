@@ -9,11 +9,8 @@
 #include "RageUtil_AutoPtr.h"
 #include "PlayerNumber.h" // needed for m_SongOwner
 
-#if defined(ITG_ARCADE) && !defined(WIN32)
-#define CUSTOM_SONG_PATH CString("/rootfs/tmp/")
-#else
-#define CUSTOM_SONG_PATH CString("Data/temp/")
-#endif
+// copy custom songs into memory, so we don't need to worry about disk space
+#define CUSTOM_SONG_PATH CString("/@mem/")
 
 class Steps;
 class Style;
@@ -28,8 +25,6 @@ const int MAX_EDITS_PER_SONG_PER_PROFILE	= 5;
 const int MAX_EDITS_PER_SONG				= 5*NUM_PROFILE_SLOTS;
 
 extern const int FILE_CACHE_VERSION;
-
-extern const 
 
 enum BackgroundLayer
 {
@@ -206,8 +201,14 @@ public:
 
 	// XXX: can we make this cleaner?
 	bool HasStepsWithinMeterAndDifficultyRange( int iLow, int iHigh, Difficulty dLow, Difficulty dHigh, StepsType st = STEPS_TYPE_INVALID ) const;
-	bool HasStepsWithinMeterRange( int iLow, int iHigh, StepsType st = STEPS_TYPE_INVALID ) const { return HasStepsWithinMeterAndDifficultyRange(iLow, iHigh, DIFFICULTY_BEGINNER, DIFFICULTY_EDIT, st); }
-	bool HasStepsWithinDifficultyRange( Difficulty dLow, Difficulty dHigh, StepsType st = STEPS_TYPE_INVALID ) const { return HasStepsWithinMeterAndDifficultyRange(0, INT_MAX, dLow, dHigh, st ); }
+	bool HasStepsWithinMeterRange( int iLow, int iHigh, StepsType st = STEPS_TYPE_INVALID ) const
+	{
+		return HasStepsWithinMeterAndDifficultyRange(iLow, iHigh, DIFFICULTY_BEGINNER, DIFFICULTY_EDIT, st);
+	}
+	bool HasStepsWithinDifficultyRange( Difficulty dLow, Difficulty dHigh, StepsType st = STEPS_TYPE_INVALID ) const
+	{
+		return HasStepsWithinMeterAndDifficultyRange(0, INT_MAX, dLow, dHigh, st );
+	}
 
 	const vector<Steps*>& GetAllSteps() const { return m_vpSteps; }
 	const vector<Steps*>& GetStepsByStepsType( StepsType st ) const { return m_vpStepsByType[st]; }

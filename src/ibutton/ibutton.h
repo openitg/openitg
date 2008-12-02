@@ -1,6 +1,8 @@
 #ifndef IBUTTON_H
 #define IBUTTON_H
 
+#include "StdString.h"
+
 #ifndef OW_UCHAR
 #define OW_UCHAR
 typedef unsigned char uchar;
@@ -9,7 +11,7 @@ typedef unsigned char uchar;
 namespace iButton
 {
 	int GetAESKey( const uchar *subkey, uchar *output );
-	int GetSerialNumber( uchar *serial );
+	CString GetSerialNumber();
 };
 
 #endif // IBUTTON_H

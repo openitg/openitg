@@ -12,14 +12,7 @@
 #include "io/ITGIO.h"
 #include "io/USBDevice.h"
 
-/* Include dongle support if we're going to use it...
- * Maybe we should set a HAVE_DONGLE directive? */
-#ifdef ITG_ARCADE
-extern "C" {
-#include "ibutton/ownet.h"
-#include "ibutton/shaib.h" 
-}
-#endif
+#include "ibutton/ibutton.h"
 
 // include Linux networking functions/types
 #ifndef WIN32
@@ -181,29 +174,7 @@ CString DiagnosticsUtil::GetSerialNumber()
 		return g_SerialNum;
 
 #ifdef ITG_ARCADE
-	SHACopr copr;
-	CString sNewSerial;
-	uchar spBuf[32];
-
-#ifdef WIN32
-	if ( (copr.portnum = owAcquireEx("COM1")) == -1 )
-#else
-	if ( (copr.portnum = owAcquireEx("/dev/ttyS0")) == -1 )
-#endif
-	{
-		LOG->Warn("Failed to get machine serial, unable to acquire port");
-		return "????????";
-	}
-	FindNewSHA(copr.portnum, copr.devAN, true);
-	ReadAuthPageSHA18(copr.portnum, 9, spBuf, NULL, false);
-	owRelease(copr.portnum);
-
-	sNewSerial = (char*)spBuf;
-	TrimLeft(sNewSerial);
-	TrimRight(sNewSerial);
-	g_SerialNum = sNewSerial;
-
-	return sNewSerial;
+	g_SerialNum = iButton::GetSerialNumber();
 #endif
 
 	g_SerialNum = GenerateDebugSerial();
@@ -230,7 +201,7 @@ CString DiagnosticsUtil::GenerateDebugSerial()
 	sSystem = "U"; /* unknown */
 #endif
 	// "U-04292008-"
-	sSerial += sSystem + "-" + CString(SVN_VERSION) + "-";
+	sSerial += sSystem + "-" + CString(BUILD_DATE) + "-";
 
 #ifdef ITG_ARCADE
 	sBuildType = "A";
@@ -239,7 +210,7 @@ CString DiagnosticsUtil::GenerateDebugSerial()
 #endif
 
 	// "573-A"
-	sSerial += "573-" + sBuildType;
+	sSerial += CString(BUILD_VERSION) + "-" + sBuildType;
 
 	return sSerial;
 }

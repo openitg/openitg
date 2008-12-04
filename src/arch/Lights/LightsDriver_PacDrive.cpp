@@ -3,6 +3,7 @@
 
 #include "global.h"
 #include "RageLog.h"
+#include "LightsMapper.h"
 #include "io/PacDrive.h"
 #include "LightsDriver_PacDrive.h"
 
@@ -16,8 +17,36 @@ LightsDriver_PacDrive::LightsDriver_PacDrive()
 		return;
 	}
 
+	// load any alternate lights mappings
+	SetLightsMappings();
+
 	// clear all lights
 	Board.Write( 0 );
+}
+
+void LightsDriver_PacDrive::SetLightsMappings()
+{
+	uint32_t iCabinetLights[NUM_CABINET_LIGHTS] =
+	{
+		// up-left, up-right, down-left, down-right marquees
+		(1 << 0), (1 << 1), (1 << 2), (1 << 3),
+
+		// left buttons, right buttons, left bass, right bass
+		(1 << 4), (1 << 5), (1 << 6), (1 << 7)
+	};
+
+	uint32_t iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] =
+	{
+		// left, right, up, down
+		{ ( 1 << 8), (1 << 9), (1 << 10), (1 << 11) },		// player 1
+		{ ( 1 << 12), (1 << 13), (1 << 14), (1 << 15) },	// player 2
+	};
+
+	m_LightsMappings.SetCabinetLights( iCabinetLights );
+	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
+		iGameLights[GAME_CONTROLLER_2] );
+
+	LightsMapper::LoadMappings( "PacDrive", m_LightsMappings );
 }
 
 LightsDriver_PacDrive::~LightsDriver_PacDrive()
@@ -35,26 +64,23 @@ void LightsDriver_PacDrive::Set( const LightsState *ls )
 	if( !m_bHasDevice )
 		return;
 
-	uint8_t iCabinetData = 0;
-	uint8_t iPadData = 0;
+	uint16_t iWriteData = 0;
 
 	// Lights 1 - 8 are used for the cabinet lights
 	FOREACH_CabinetLight( cl )
 		if( ls->m_bCabinetLights[cl] )
-			iCabinetData |= (1 << cl);
+			iWriteData |= m_LightsMappings.m_iCabinetLights[cl];
 
 	// Lights 9-12 for P1 pad, 13-16 for P2 pad
 	// FIXME: make this work for all game-types?
 	FOREACH_GameController( gc )
-		FOREACH_ENUM( GameButton, 4, gb )
+		FOREACH_GameButton( gb )
 			if( ls->m_bGameButtonLights[gc][gb] )
-				iPadData |= (1 << (gb + gc*4));
+				iWriteData |= m_LightsMappings.m_iGameLights[gc][gb];
 
-	// combine the data set above
-	uint16_t iData = (uint16_t)(iCabinetData << 8) | iPadData;
 
 	// write the data - if it fails, stop updating
-	if( !Board.Write(iData) )
+	if( !Board.Write(iWriteData) )
 	{
 		LOG->Warn( "Lost connection with PacDrive." );
 		m_bHasDevice = false;

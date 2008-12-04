@@ -2,6 +2,7 @@
 #define LIGHTSDRIVER_PACDRIVE_H
 
 #include "LightsDriver.h"
+#include "LightsMapper.h"
 #include "io/PacDrive.h"
 
 class LightsDriver_PacDrive: public LightsDriver
@@ -12,6 +13,9 @@ public:
 
 	void Set( const LightsState *ls );
 private:
+	LightsMapping m_LightsMappings;
+	void SetLightsMappings();
+
 	PacDrive Board;
 	bool m_bHasDevice;
 };

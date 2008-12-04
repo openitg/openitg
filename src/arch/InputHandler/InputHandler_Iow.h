@@ -9,6 +9,7 @@
 
 #include "InputHandler.h"
 #include "RageThreads.h"
+#include "LightsMapper.h"
 #include "io/ITGIO.h"
 
 class InputHandler_Iow: public InputHandler
@@ -25,6 +26,9 @@ private:
 
 	ITGIO Board;
 	RageThread InputThread;
+
+	void SetLightsMappings();
+	LightsMapping m_LightsMappings;
 
 	bool m_bFoundDevice;
 	bool m_bShutdown;

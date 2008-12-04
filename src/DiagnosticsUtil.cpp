@@ -173,11 +173,13 @@ CString DiagnosticsUtil::GetSerialNumber()
 	if ( !g_SerialNum.empty() )
 		return g_SerialNum;
 
+/* Grab the serial number from the dongle if we're
+ * an arcade build, otherwise generate a fake one. */
 #ifdef ITG_ARCADE
 	g_SerialNum = iButton::GetSerialNumber();
-#endif
-
+#else
 	g_SerialNum = GenerateDebugSerial();
+#endif
 
 	return g_SerialNum;
 }

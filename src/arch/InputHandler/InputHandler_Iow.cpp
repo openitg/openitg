@@ -9,8 +9,6 @@
 
 #include "InputHandler_Iow.h"
 
-const int NUM_PAD_LIGHTS = 4;
-
 bool InputHandler_Iow::bInitialized = false;
 
 InputHandler_Iow::InputHandler_Iow()
@@ -38,6 +36,9 @@ InputHandler_Iow::InputHandler_Iow()
 	/* warn if "ext" isn't enabled */
 	if( PREFSMAN->GetLightsDriver().Find("ext") == -1 )
 		LOG->Warn( "\"ext\" is not an enabled LightsDriver. The I/O board cannot run lights." );
+
+	// set any alternate lights mappings, if they exist
+	SetLightsMappings();
 
 	InputThread.SetName( "Iow thread" );
 	InputThread.Create( InputThread_Start, this );
@@ -71,6 +72,32 @@ void InputHandler_Iow::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesO
 		vDevicesOut.push_back( InputDevice(DEVICE_JOY1) );
 		vDescriptionsOut.push_back( "ITGIO" );
 	}
+}
+
+void InputHandler_Iow::SetLightsMappings()
+{
+	uint32_t iCabinetLights[NUM_CABINET_LIGHTS] = 
+	{
+		/* Upper-left, upper-right, lower-left, lower-right marquee */
+		(1 << 8), (1 << 10), (1 << 9), (1 << 11),
+
+		/* P1 select, P2 select, both bass */
+		(1 << 13), (1 << 12), (1 << 15), (1 << 15)
+	};
+
+	uint32_t iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] =
+	{
+		/* Left, right, up, down */
+		{ (1 << 1), (1 << 0), (1 << 3), (1 << 2) }, /* Player 1 */
+		{ (1 << 5), (1 << 4), (1 << 7), (1 << 6) }, /* Player 2 */
+	};
+
+	m_LightsMappings.SetCabinetLights( iCabinetLights );
+	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
+		iGameLights[GAME_CONTROLLER_2] );
+
+	// if there are any alternate mappings, set them here now
+	LightsMapper::LoadMappings( "ITGIO", m_LightsMappings );
 }
 
 int InputHandler_Iow::InputThread_Start( void *p )
@@ -118,34 +145,21 @@ void InputHandler_Iow::UpdateLights()
 	// set a pointer to the "ext" LightsState for use
 	static const LightsState *m_LightsState = LightsDriver_External::Get();
 
-	static const uint16_t iCabinetBits[NUM_CABINET_LIGHTS] =
-	{
-		/* Upper-left, upper-right, lower-left, lower-right marquee */
-		(1 << 8), (1 << 10), (1 << 9), (1 << 11),
-
-		/* P1 select, P2 select, both bass */
-		(1 << 13), (1 << 12), (1 << 15), (1 << 15)
-	};
-
-	static const uint16_t iPadBits[MAX_GAME_CONTROLLERS][NUM_PAD_LIGHTS] =
-	{
-		/* Left, right, up, down */
-		{ (1 << 1), (1 << 0), (1 << 3), (1 << 2) }, /* Player 1 */
-		{ (1 << 5), (1 << 4), (1 << 7), (1 << 6) }, /* Player 2 */
-	};
-
 	ZERO( m_iWriteData );
 
 	// update cabinet lighting
 	FOREACH_CabinetLight( cl )
 		if( m_LightsState->m_bCabinetLights[cl] )
-			m_iWriteData |= iCabinetBits[cl];
+			m_iWriteData |= m_LightsMappings.m_iCabinetLights[cl];
 
 	// update the four lights on each pad
 	FOREACH_GameController( gc )
-		FOREACH_ENUM( GameButton, NUM_PAD_LIGHTS, gb )
+		FOREACH_GameButton( gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iWriteData |= iPadBits[gc][gb];
+				m_iWriteData |= m_LightsMappings.m_iGameLights[gc][gb];
+
+	m_iWriteData |= m_LightsState->m_bCoinCounter ?
+		m_LightsMappings.m_iCoinCounterOn : m_LightsMappings.m_iCoinCounterOff;
 }
 
 /*

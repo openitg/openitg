@@ -10,6 +10,7 @@
 #include "InputHandler.h"
 #include "RageThreads.h"
 #include "RageTimer.h"
+#include "LightsMapper.h"
 #include "io/PIUIO.h"
 
 class InputHandler_PIUIO: public InputHandler
@@ -27,6 +28,9 @@ private:
 
 	PIUIO Board;
 	RageThread InputThread;
+
+	void SetLightsMappings();
+	LightsMapping m_LightsMappings;
 
 	void HandleInput();
 

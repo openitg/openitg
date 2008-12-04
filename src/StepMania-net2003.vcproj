@@ -1136,6 +1136,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="Inventory.h">
 			</File>
 			<File
+				RelativePath=".\LightsMapper.cpp">
+			</File>
+			<File
+				RelativePath=".\LightsMapper.h">
+			</File>
+			<File
 				RelativePath="LuaBinding.h">
 			</File>
 			<File

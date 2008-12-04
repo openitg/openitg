@@ -56,6 +56,9 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 		InternalInputHandler = &InputHandler_PIUIO::HandleInputNormal;
 	}
 
+	// set alternate mappings
+	SetLightsMappings();
+
 	InputThread.SetName( "PIUIO thread" );
 	InputThread.Create( InputThread_Start, this );
 }
@@ -86,6 +89,34 @@ void InputHandler_PIUIO::GetDevicesAndDescriptions( vector<InputDevice>& vDevice
 		vDevicesOut.push_back( InputDevice(DEVICE_JOY1) );
 		vDescriptionsOut.push_back( "PIUIO" );
 	}
+}
+
+void InputHandler_PIUIO::SetLightsMappings()
+{
+	uint32_t iCabinetLights[NUM_CABINET_LIGHTS] = 
+	{
+		/* UL, UR, LL, LR marquee lights */
+		(1 << 23), (1 << 26), (1 << 25), (1 << 24),
+
+		/* selection buttons (not used), bass lights */
+		0, 0, (1 << 10), (1 << 10)
+	};
+
+	uint32_t iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] = 
+	{
+		/* Left, Right, Up, Down */
+		{ (1 << 20), (1 << 21), (1 << 18), (1 << 19) },	/* Player 1 */
+		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
+	};
+
+	m_LightsMappings.SetCabinetLights( iCabinetLights );
+	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
+		iGameLights[GAME_CONTROLLER_2] );
+	
+	m_LightsMappings.m_iCoinCounterOn = (1 << 28);
+	m_LightsMappings.m_iCoinCounterOn = (1 << 27);
+
+	LightsMapper::LoadMappings( "PIUIO", m_LightsMappings );
 }
 
 int InputHandler_PIUIO::InputThread_Start( void *p )
@@ -244,45 +275,25 @@ void InputHandler_PIUIO::UpdateLights()
 	// set a const pointer to the "ext" LightsState to read from
 	static const LightsState *m_LightsState = LightsDriver_External::Get();
 
-	static const uint32_t iCabinetLights[NUM_CABINET_LIGHTS] = 
-	{
-		/* UL, UR, LL, LR marquee lights */
-		(1 << 23), (1 << 26), (1 << 25), (1 << 24),
-
-		/* selection buttons (not used), bass lights */
-		0, 0, (1 << 10), (1 << 10)
-	};
-
-	static const uint32_t iPadLights[2][4] = 
-	{
-		/* Left, Right, Up, Down */
-		{ (1 << 20), (1 << 21), (1 << 18), (1 << 19) },	/* Player 1 */
-		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
-	};
-
-	// iCoinPulseOn is sent whenever a coin is recorded.
-	// iCoinPulseOff is sent whenever a coin is not being recorded.
-	static const uint32_t iCoinPulseOn = (1 << 28);
-	static const uint32_t iCoinPulseOff = (1 << 27);
-
 	// reset
-	m_iLightData = 0;
+	ZERO( m_iLightData );
 
 	// update marquee lights
 	FOREACH_CabinetLight( cl )
 		if( m_LightsState->m_bCabinetLights[cl] )
-			m_iLightData |= iCabinetLights[cl];
+			m_iLightData |= m_LightsMappings.m_iCabinetLights[cl];
 
 	// update the four pad lights on both game controllers
 	FOREACH_GameController( gc )
 		FOREACH_ENUM( GameButton, 4, gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iLightData |= iPadLights[gc][gb];
+				m_iLightData |= m_LightsMappings.m_iGameLights[gc][gb];
 
 	/* The coin counter moves halfway if we send bit 4, then the
 	 * rest of the way (or not at all) if we send bit 5. Send bit
 	 * 5 unless we have a coin event being recorded. */
-	m_iLightData |= m_LightsState->m_bCoinCounter ? iCoinPulseOn : iCoinPulseOff;
+	m_iLightData |= m_LightsState->m_bCoinCounter ?
+		m_LightsMappings.m_iCoinCounterOn : m_LightsMappings.m_iCoinCounterOff;
 }
 
 // temporary debug function

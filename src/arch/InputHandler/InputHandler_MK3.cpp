@@ -1,11 +1,10 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-
-#include "LightsManager.h"
 #include "InputMapper.h"
 
-#include "arch/Lights/LightsDriver_External.h"
+/* TODO: add lights support */
+
 #include "InputHandler_MK3.h"
 
 /* All ports are 16 bits. */
@@ -21,7 +20,7 @@ const short OUTPUT_PORT_2 = 0x2A2;
 inline void Write( uint32_t iData )
 {
 	outw_p( (uint16_t)(iData>>16),	OUTPUT_PORT_1 );
-	outw_p( (uint16_t)(iData),	OUTPUT_PORT_2 );
+	outw_p( (uint16_t)(iData),		OUTPUT_PORT_2 );
 }
 
 inline void Read( uint32_t *pData )
@@ -36,7 +35,8 @@ InputHandler_MK3::InputHandler_MK3()
 {
 	m_bFoundDevice = false;
 	m_bShutdown = false;
-	
+
+	// XXX: non-portable command
 	if( iopl(3) == -1 )
 	{
 		LOG->Warn( "InputHandler_MK3 requires root privileges to run." );
@@ -84,9 +84,6 @@ void InputHandler_MK3::InputThreadMain()
 
 		/* Read input and sensors, write the above data */
 		HandleInput();
-
-		/* Give up processing time...this thing eats up memory. */
-		usleep( 10000 );
 	}
 }
 

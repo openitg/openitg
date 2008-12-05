@@ -1,6 +1,10 @@
 OpenITG, beta 1 (in development)
 --------------------------------
 -Obligatory code cleanup
+-New features:
+     Separate bookkeeper counter for service credits (from operator menu)
+     LightsMapper - set which bits are triggered on LIGHTSMAN events
+          (global settings for cabinet lights, per-game settings for input)
 -Compilation updates:
      Added date/version text to ProductInfo and DiagnosticsUtil
      Rewrote "archutils/Win32/verinc.c" to generate a new verinfo.h

@@ -16,12 +16,15 @@ public:
 	void ClearAll();
 
 	void CoinInserted();
+	void ServiceCoinInserted();
 
 	int GetCoinsTotal() const;
 	void GetCoinsLastDays( int coins[NUM_LAST_DAYS] ) const;
 	void GetCoinsLastWeeks( int coins[NUM_LAST_WEEKS] ) const;
 	void GetCoinsByDayOfWeek( int coins[DAYS_IN_WEEK] ) const;
 	void GetCoinsByHour( int coins[HOURS_IN_DAY] ) const;
+
+	void GetServiceCoinsTotal() const;
 
 	void LoadFromNode( const XNode *pNode );
 	XNode* CreateNode() const;
@@ -46,6 +49,7 @@ private:
 
 	int m_iLastSeenTime;
 	map<Date,int> m_mapCoinsForHour;
+	map<Date,int> m_mapServiceCoinsForHour;
 };
 
 

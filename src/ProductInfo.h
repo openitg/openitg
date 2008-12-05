@@ -40,7 +40,7 @@
 #endif
 
 /* A central location from which we can update crash handler data... */
-#define CRASH_REPORT_URL "http://boxorroxors.net/forum/viewtopic.php?t=1104"
+#define CRASH_REPORT_URL "https://sourceforge.net/tracker2/?atid=1110556&group_id=239714"
 
 #endif
 

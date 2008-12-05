@@ -3,6 +3,7 @@
 #ifndef LIGHTS_MAPPER_H
 #define LIGHTS_MAPPER_H
 
+#include "RageUtil.h"
 #include "LightsManager.h"
 
 // a list of mappings in (1 << x) format. it's up to the driver to define these.
@@ -11,8 +12,13 @@
 struct LightsMapping
 {
 	// set a default of eight outputs (one byte) unless otherwise noted
-	LightsMapping() : m_iNumOutputs(8) { }
-	LightsMapping( uint8_t outs ) : m_iNumOutputs(outs) { }
+	LightsMapping()
+	{
+		ZERO(m_iCabinetLights);
+		ZERO(m_iGameLights);
+		ZERO(m_iCoinCounterOn);
+		ZERO(m_iCoinCounterOff);
+	}
 
 	// XXX: coder is trusted to have the right amount of elements for these calls.
 	void SetCabinetLights( uint32_t array[] )
@@ -29,8 +35,6 @@ struct LightsMapping
 			m_iGameLights[GAME_CONTROLLER_2][i] = array2[i];
 		}
 	}
-
-	uint8_t		m_iNumOutputs;
 
 	uint32_t	m_iCabinetLights[NUM_CABINET_LIGHTS];
 	uint32_t	m_iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];

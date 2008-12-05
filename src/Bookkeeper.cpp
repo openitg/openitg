@@ -152,6 +152,13 @@ void Bookkeeper::CoinInserted()
 	++m_mapCoinsForHour[d];
 }
 
+void Bookkeeper::ServiceCoinInserted()
+{
+	Date d;
+	d.Set( time(NULL) );
+	++m_mapServiceCoinsForHour[d];
+}
+
 /* Return the number of coins between [beginning,ending). */
 int Bookkeeper::GetNumCoinsInRange( map<Date,int>::const_iterator begin, map<Date,int>::const_iterator end ) const
 {

@@ -152,7 +152,6 @@ void InputHandler_Iow::UpdateLights()
 		if( m_LightsState->m_bCabinetLights[cl] )
 			m_iWriteData |= m_LightsMappings.m_iCabinetLights[cl];
 
-	// update the four lights on each pad
 	FOREACH_GameController( gc )
 		FOREACH_GameButton( gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )

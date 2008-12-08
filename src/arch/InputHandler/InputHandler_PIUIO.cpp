@@ -114,7 +114,7 @@ void InputHandler_PIUIO::SetLightsMappings()
 		iGameLights[GAME_CONTROLLER_2] );
 	
 	m_LightsMappings.m_iCoinCounterOn = (1 << 28);
-	m_LightsMappings.m_iCoinCounterOn = (1 << 27);
+	m_LightsMappings.m_iCoinCounterOff = (1 << 27);
 
 	LightsMapper::LoadMappings( "PIUIO", m_LightsMappings );
 }
@@ -283,9 +283,8 @@ void InputHandler_PIUIO::UpdateLights()
 		if( m_LightsState->m_bCabinetLights[cl] )
 			m_iLightData |= m_LightsMappings.m_iCabinetLights[cl];
 
-	// update the four pad lights on both game controllers
 	FOREACH_GameController( gc )
-		FOREACH_ENUM( GameButton, 4, gb )
+		FOREACH_GameButton( gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
 				m_iLightData |= m_LightsMappings.m_iGameLights[gc][gb];
 

@@ -14,9 +14,7 @@ public:
 	GraphDisplay();
 	~GraphDisplay() { Unload(); }
 	void Load( const CString &sTexturePath, float fInitialHeight, const CString &sJustBarelyPath, const bool bColorize = false, 
-			const RageColor pColorFantastic = RageColor(1,1,1,1), 
-			const RageColor pColorExcellent = RageColor(1,1,1,1), 
-			const RageColor pColorGreat = RageColor(1,1,1,1) );
+			const CString sTextureFFC = "", const CString sTextureFEC = "", const CString sTextureFGC= "" );
 	void Unload();
 
 	void LoadFromStageStats( const StageStats &ss, const PlayerStageStats &s, const CString &sSongBoundaryPath );
@@ -33,9 +31,15 @@ private:
 	float m_Position;
 
 	RectF m_quadVertices;
+
 	RageSpriteVertex m_Slices[4*(VALUE_RESOLUTION-1)];
 
-	RageTexture	*m_pTexture;
+	// FFC, FEC, and FGC respectively
+	RageSpriteVertex m_SlicesFFC[4*(VALUE_RESOLUTION-1)];
+	RageSpriteVertex m_SlicesFEC[4*(VALUE_RESOLUTION-1)];
+	RageSpriteVertex m_SlicesFGC[4*(VALUE_RESOLUTION-1)];
+
+	RageTexture	*m_pTexture, *m_pTextureFFC, *m_pTextureFEC, *m_pTextureFGC;
 
 	vector<AutoActor*> m_vpSongBoundaries;
 	AutoActor m_sprJustBarely;
@@ -46,8 +50,6 @@ private:
 	int m_iFECPoint;
 	int m_iFGCPoint;
 	int m_iPulseStopPoint;
-
-	RageColor m_ColorFantastic, m_ColorExcellent, m_ColorGreat;
 };
 
 #endif

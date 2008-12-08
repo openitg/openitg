@@ -82,9 +82,9 @@ const char* STATS_STRING[NUM_STATS_LINES] =
 #define MAX_COMBO_NUM_DIGITS				THEME->GetMetricI(m_sName,"MaxComboNumDigits")
 #define PLAYER_OPTIONS_SEPARATOR			THEME->GetMetric (m_sName,"PlayerOptionsSeparator")
 #define COLORIZE_GRAPH					THEME->GetMetricB(m_sName,"ColorizeLifeGraph")
-#define COLORIZE_GRAPH_FANTASTIC			THEME->GetMetricC(m_sName,"ColorizeLifeGraphFantastic")
-#define COLORIZE_GRAPH_EXCELLENT			THEME->GetMetricC(m_sName,"ColorizeLifeGraphExcellent")
-#define COLORIZE_GRAPH_GREAT				THEME->GetMetricC(m_sName,"ColorizeLifeGraphGreat")
+#define COLORIZE_GRAPH_FANTASTIC( i )			THEME->GetMetricC(m_sName,ssprintf("ColorizeLifeGraphFantasticP%d",i+1))
+#define COLORIZE_GRAPH_EXCELLENT( i )			THEME->GetMetricC(m_sName,ssprintf("ColorizeLifeGraphExcellentP%d",i+1))
+#define COLORIZE_GRAPH_GREAT( i )			THEME->GetMetricC(m_sName,ssprintf("ColorizeLifeGraphGreatP%d",i+1))
 
 
 static const int NUM_SHOWN_RADAR_CATEGORIES = 5;
@@ -459,9 +459,10 @@ void ScreenEvaluation::Init()
 				LIFE_GRAPH_START_HEIGHT, 
 				THEME->GetPathG(m_sName,"JustBarely"), 
 				COLORIZE_GRAPH,
-				COLORIZE_GRAPH_FANTASTIC,
-				COLORIZE_GRAPH_EXCELLENT,
-				COLORIZE_GRAPH_GREAT );
+				COLORIZE_GRAPH ? THEME->GetPathG(m_sName,ssprintf("LifeGraph FFC p%i", p+1)) : "",
+				COLORIZE_GRAPH ? THEME->GetPathG(m_sName,ssprintf("LifeGraph FEC p%i", p+1)) : "",
+				COLORIZE_GRAPH ? THEME->GetPathG(m_sName,ssprintf("LifeGraph FGC p%i", p+1)) : ""
+			);
 			m_LifeGraph[p].LoadFromStageStats( stageStats, stageStats.m_player[p], THEME->GetPathG(m_sName,"SongBoundary") );
 			SET_XY_AND_ON_COMMAND( m_LifeGraph[p] );
 			this->AddChild( &m_LifeGraph[p] );

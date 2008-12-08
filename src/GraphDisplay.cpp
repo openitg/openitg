@@ -22,8 +22,8 @@ GraphDisplay::GraphDisplay()
 }
 
 
-void GraphDisplay::Load( const CString &TexturePath, float fInitialHeight, const CString &sJustBarelyPath, const bool bColorize, const RageColor pColorFantastic,
-				const RageColor pColorExcellent, const RageColor pColorGreat )
+void GraphDisplay::Load( const CString &TexturePath, float fInitialHeight, const CString &sJustBarelyPath, const bool bColorize, 
+	const CString sTextureFFC, const CString sTextureFEC, const CString sTextureFGC )
 {
 	m_Position = 1;
 	memset( m_CurValues, 0, sizeof(m_CurValues) );
@@ -36,14 +36,12 @@ void GraphDisplay::Load( const CString &TexturePath, float fInitialHeight, const
 	m_size.y = (float) m_pTexture->GetSourceHeight();
 	m_bColorize = bColorize;
 
-	m_ColorFantastic = pColorFantastic;
-	m_ColorExcellent = pColorExcellent;
-	m_ColorGreat = pColorGreat;
-
-	LOG->Debug("GraphDisplay: bColorize: %s", bColorize ? "true":"false");
-	LOG->Debug("GraphDisplay: pColorFantastic: %s", m_ColorFantastic.ToString().c_str() );
-	LOG->Debug("GraphDisplay: pColorExcellent: %s", m_ColorExcellent.ToString().c_str() );
-	LOG->Debug("GraphDisplay: pColorGreat: %s", m_ColorGreat.ToString().c_str() );
+	if (m_bColorize)
+	{
+		m_pTextureFFC = TEXTUREMAN->LoadTexture( sTextureFFC );
+		m_pTextureFEC = TEXTUREMAN->LoadTexture( sTextureFEC );
+		m_pTextureFGC = TEXTUREMAN->LoadTexture( sTextureFGC );
+	}
 
 	for( int i = 0; i < VALUE_RESOLUTION; ++i )
 		m_CurValues[i] = fInitialHeight;
@@ -56,6 +54,16 @@ void GraphDisplay::Unload()
 {
 	if( m_pTexture != NULL )
 		TEXTUREMAN->UnloadTexture( m_pTexture );
+
+	if (m_bColorize)
+	{
+		TEXTUREMAN->UnloadTexture( m_pTextureFFC );
+		TEXTUREMAN->UnloadTexture( m_pTextureFEC );
+		TEXTUREMAN->UnloadTexture( m_pTextureFGC );
+		m_pTextureFFC = NULL;
+		m_pTextureFEC = NULL;
+		m_pTextureFGC = NULL;
+	}
 
 	m_pTexture = NULL;
 
@@ -167,26 +175,31 @@ void GraphDisplay::UpdateVerts()
 	for( int i = 0; i < 4*NumSlices; ++i )
 		m_Slices[i].c = RageColor(1,1,1,1);
 
-	// TODO: Theme   --infamouspat
-	// these values were taken from the official ITG2 theme
-	if ( m_bColorize )
+	if (m_bColorize)
 	{
-		if ( m_iFFCPoint > -1 )
+		for( int i = 0; i < 4*NumSlices; ++i )
 		{
-			for( int i = m_iFFCPoint*4; i < 4*m_iPulseStopPoint; ++i )
-				m_Slices[i].c = m_ColorFantastic;
-		}
-		if ( m_iFECPoint > -1 )
-		{
-			for( int i = m_iFECPoint*4; i < 4*m_iPulseStopPoint; ++i )
-				m_Slices[i].c = m_ColorExcellent;
-		}
-		if ( m_iFGCPoint > -1 )
-		{
-			for( int i = m_iFGCPoint*4; i < 4*m_iPulseStopPoint; ++i )
-				m_Slices[i].c = m_ColorGreat;
+			m_SlicesFFC[i].c = RageColor(1,1,1,1);
+			m_SlicesFEC[i].c = RageColor(1,1,1,1);
+			m_SlicesFGC[i].c = RageColor(1,1,1,1);
 		}
 	}
+
+	// XXX: disgusting   p.s.: overlap  --infamouspat
+	int iRangeFFC[2], iRangeFEC[2], iRangeFGC[2];
+#define COMPARE_POINT(xx) (xx == -1 ? NumSlices : xx)
+	if (m_bColorize)
+	{
+		iRangeFFC[0] = 0;
+		iRangeFFC[1] = min( COMPARE_POINT(m_iFECPoint), min(COMPARE_POINT(m_iFGCPoint),COMPARE_POINT(m_iPulseStopPoint)) );
+
+		iRangeFEC[0] = iRangeFFC[1];
+		iRangeFEC[1] = min( COMPARE_POINT(m_iFGCPoint),COMPARE_POINT(m_iPulseStopPoint) );
+
+		iRangeFGC[0] = iRangeFEC[1];
+		iRangeFGC[1] = m_iPulseStopPoint;
+	}
+#undef COMPARE_POINT
 
 	for( int i = 0; i < NumSlices; ++i )
 	{
@@ -194,16 +207,103 @@ void GraphDisplay::UpdateVerts()
 		const float Right = SCALE( float(i+1), 0.0f, float(NumSlices), m_quadVertices.left, m_quadVertices.right );
 		const float LeftTop = SCALE( float(m_CurValues[i]), 0.0f, 1.0f, m_quadVertices.bottom, m_quadVertices.top );
 		const float RightTop = SCALE( float(m_CurValues[i+1]), 0.0f, 1.0f, m_quadVertices.bottom, m_quadVertices.top );
+		const float Zero = SCALE( 0.0f, 0.0f, 1.0f, m_quadVertices.bottom, m_quadVertices.top );
 
-		m_Slices[i*4+0].p = RageVector3( Left,		LeftTop,	0 );	// top left
-		m_Slices[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
-		m_Slices[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
-		m_Slices[i*4+3].p = RageVector3( Right,		RightTop,	0 );	// top right
+		// recall: m_iFFCPoint for the time being will always be 0
+		if ( i >= iRangeFFC[0] && i < iRangeFFC[1] && m_bColorize)
+		{
+			m_SlicesFFC[i*4+0].p = RageVector3( Left,		LeftTop,	0 );	// top left
+			m_SlicesFFC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_SlicesFFC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_SlicesFFC[i*4+3].p = RageVector3( Right,		RightTop,	0 );	// top right
+			
+			m_SlicesFEC[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+			m_SlicesFEC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_SlicesFEC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_SlicesFEC[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
 
-	//	m_Slices[i*4+0].c = RageColor(.2,.2,.2,1);
-	//	m_Slices[i*4+1].c = RageColor(1,1,1,1);
-	//	m_Slices[i*4+2].c = RageColor(1,1,1,1);
-	//	m_Slices[i*4+3].c = RageColor(.2,.2,.2,1);
+			m_SlicesFGC[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+			m_SlicesFGC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_SlicesFGC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_SlicesFGC[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+
+			m_Slices[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+			m_Slices[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_Slices[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_Slices[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+
+		}
+		else if (i >= iRangeFEC[0] && i < iRangeFEC[1] && m_bColorize)
+		{
+			m_SlicesFFC[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+			m_SlicesFFC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_SlicesFFC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_SlicesFFC[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+			
+			m_SlicesFEC[i*4+0].p = RageVector3( Left,		LeftTop,	0 );	// top left
+			m_SlicesFEC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_SlicesFEC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_SlicesFEC[i*4+3].p = RageVector3( Right,		RightTop,	0 );	// top right
+
+			m_SlicesFGC[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+			m_SlicesFGC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_SlicesFGC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_SlicesFGC[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+
+			m_Slices[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+			m_Slices[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_Slices[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_Slices[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+
+		}
+		else if (i >= iRangeFGC[0] && i < iRangeFGC[1] && m_bColorize)
+		{
+			m_SlicesFFC[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+			m_SlicesFFC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_SlicesFFC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_SlicesFFC[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+			
+			m_SlicesFEC[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+			m_SlicesFEC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_SlicesFEC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_SlicesFEC[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+
+			m_SlicesFGC[i*4+0].p = RageVector3( Left,		LeftTop,	0 );	// top left
+			m_SlicesFGC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_SlicesFGC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_SlicesFGC[i*4+3].p = RageVector3( Right,		RightTop,	0 );	// top right
+
+			m_Slices[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+			m_Slices[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_Slices[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_Slices[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+
+		}
+		else 
+		{
+			if (m_bColorize)
+			{
+				m_SlicesFFC[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+				m_SlicesFFC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+				m_SlicesFFC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+				m_SlicesFFC[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+			
+				m_SlicesFEC[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+				m_SlicesFEC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+				m_SlicesFEC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+				m_SlicesFEC[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+
+				m_SlicesFGC[i*4+0].p = RageVector3( Left,		Zero,	0 );	// top left
+				m_SlicesFGC[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+				m_SlicesFGC[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+				m_SlicesFGC[i*4+3].p = RageVector3( Right,		Zero,	0 );	// top right
+			}
+
+			m_Slices[i*4+0].p = RageVector3( Left,		LeftTop,	0 );	// top left
+			m_Slices[i*4+1].p = RageVector3( Left,		m_quadVertices.bottom,	0 );	// bottom left
+			m_Slices[i*4+2].p = RageVector3( Right,		m_quadVertices.bottom,	0 );	// bottom right
+			m_Slices[i*4+3].p = RageVector3( Right,		RightTop,	0 );	// top right
+		}
 	}
 
 	const RectF *tex = m_pTexture->GetTextureCoordRect( 0 );
@@ -213,6 +313,31 @@ void GraphDisplay::UpdateVerts()
 			SCALE( m_Slices[i].p.x, m_quadVertices.left, m_quadVertices.right, tex->left, tex->right ),
 			SCALE( m_Slices[i].p.y, m_quadVertices.top, m_quadVertices.bottom, tex->top, tex->bottom )
 			);
+	}
+
+	if (m_bColorize)
+	{
+		for( unsigned i = 0; i < ARRAYSIZE(m_Slices); ++i )
+		{
+			m_SlicesFFC[i].t = RageVector2( 
+				SCALE( m_SlicesFFC[i].p.x, m_quadVertices.left, m_quadVertices.right, tex->left, tex->right ),
+				SCALE( m_SlicesFFC[i].p.y, m_quadVertices.top, m_quadVertices.bottom, tex->top, tex->bottom )
+				);
+		}
+		for( unsigned i = 0; i < ARRAYSIZE(m_Slices); ++i )
+		{
+			m_SlicesFEC[i].t = RageVector2( 
+				SCALE( m_SlicesFEC[i].p.x, m_quadVertices.left, m_quadVertices.right, tex->left, tex->right ),
+				SCALE( m_SlicesFEC[i].p.y, m_quadVertices.top, m_quadVertices.bottom, tex->top, tex->bottom )
+				);
+		}
+		for( unsigned i = 0; i < ARRAYSIZE(m_Slices); ++i )
+		{
+			m_SlicesFGC[i].t = RageVector2( 
+				SCALE( m_SlicesFGC[i].p.x, m_quadVertices.left, m_quadVertices.right, tex->left, tex->right ),
+				SCALE( m_SlicesFGC[i].p.y, m_quadVertices.top, m_quadVertices.bottom, tex->top, tex->bottom )
+				);
+		}
 	}
 }
 
@@ -235,11 +360,22 @@ void GraphDisplay::DrawPrimitives()
 	Actor::SetGlobalRenderStates();	// set Actor-specified render states
 
 	DISPLAY->ClearAllTextures();
-	DISPLAY->SetTexture( 0, m_pTexture );
-	// don't bother setting texture render states for a null texture
-	//Actor::SetTextureRenderStates();
 
+	if (m_bColorize)
+	{
+		DISPLAY->SetTexture( 0, m_pTextureFFC );
+		DISPLAY->DrawQuads( m_SlicesFFC, ARRAYSIZE(m_SlicesFFC) );
+
+		DISPLAY->SetTexture( 0, m_pTextureFEC );
+		DISPLAY->DrawQuads( m_SlicesFEC, ARRAYSIZE(m_SlicesFEC) );
+
+		DISPLAY->SetTexture( 0, m_pTextureFGC );
+		DISPLAY->DrawQuads( m_SlicesFGC, ARRAYSIZE(m_SlicesFGC) );
+	}
+
+	DISPLAY->SetTexture( 0, m_pTexture );
 	DISPLAY->DrawQuads( m_Slices, ARRAYSIZE(m_Slices) );
+
 	DISPLAY->SetTexture( 0, NULL );
 
 	ActorFrame::DrawPrimitives();

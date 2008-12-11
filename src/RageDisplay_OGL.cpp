@@ -305,25 +305,6 @@ static void LogGLXDebugInformation()
 {
 #if defined(UNIX)
 	ASSERT( g_X11Display );
-
-#if 0
-	const int scr = DefaultScreen( g_X11Display );
-
-	// Much more appropriate in LowLevelWindow_X11
-	LOG->Info( "Display: %s (screen %i)", DisplayString(g_X11Display), scr );
-	LOG->Info( "Direct rendering: %s", glXIsDirect( g_X11Display, glXGetCurrentContext() )? "yes":"no" );
-
-	int XServerVersion = XVendorRelease( g_X11Display ); /* eg. 40201001 */
-	int major = XServerVersion / 10000000; XServerVersion %= 10000000;
-	int minor = XServerVersion / 100000;   XServerVersion %= 100000;
-	int revision = XServerVersion / 1000;  XServerVersion %= 1000;
-	int patch = XServerVersion;
-
-	LOG->Info( "X server vendor: %s [%i.%i.%i.%i]", XServerVendor( g_X11Display ), major, minor, revision, patch );
-	LOG->Info( "Server GLX vendor: %s [%s]", glXQueryServerString( g_X11Display, scr, GLX_VENDOR ), glXQueryServerString( g_X11Display, scr, GLX_VERSION ) );
-	LOG->Info( "Client GLX vendor: %s [%s]", glXGetClientString( g_X11Display, GLX_VENDOR ), glXGetClientString( g_X11Display, GLX_VERSION ) );
-#endif
-
 #endif
 }
 
@@ -504,47 +485,9 @@ CString RageDisplay_OGL::Init( VideoModeParams p, bool bAllowUnacceleratedRender
 	return "";
 }
 
-#if defined(UNIX) && defined(HAVE_LIBXTST)
-#include <X11/extensions/XTest.h>
-#endif
-
 void RageDisplay_OGL::Update(float fDeltaTime)
 {
 	wind->Update(fDeltaTime);
-
-	if( PREFSMAN->m_bDisableScreenSaver )
-	{
-		/* Disable the screensaver. */
-#if defined(UNIX) && defined(HAVE_LIBXTST)
-		ASSERT( g_X11Display );
-
-		/* This causes flicker. */
-		// XForceScreenSaver( g_X11Display, ScreenSaverReset );
-		
-		/*
-		 * Instead, send a null relative mouse motion, to trick X into thinking there has been
-		 * user activity. 
-		 *
-		 * This also handles XScreenSaver; XForceScreenSaver only handles the internal X11
-		 * screen blanker.
-		 *
-		 * This will delay the X blanker, DPMS and XScreenSaver from activating, and will
-		 * disable the blanker and XScreenSaver if they're already active (unless XSS is
-		 * locked).  For some reason, it doesn't un-blank DPMS if it's already active.
-		 */
-
-		XLockDisplay( g_X11Display );
-
-		int event_base, error_base, major, minor;
-		if( XTestQueryExtension( g_X11Display, &event_base, &error_base, &major, &minor ) )
-		{
-			XTestFakeRelativeMotionEvent( g_X11Display, 0, 0, 0 );
-			XSync( g_X11Display, False );
-		}
-
-		XUnlockDisplay( g_X11Display );
-#endif
-	}
 }
 
 bool RageDisplay_OGL::IsSoftwareRenderer()

@@ -1,13 +1,13 @@
 #include "global.h"
-#include "LowLevelWindow_X11.h"
 #include "RageLog.h"
 #include "RageException.h"
-#include "archutils/Unix/X11Helper.h"
 #include "RageUtil.h"
+#include "PrefsManager.h"	// xxx
+#include "LowLevelWindow_X11.h"
+#include "archutils/Unix/X11Helper.h"
 
 #include <stack>
 #include <math.h>	// ceil()
-#include <GL/glx.h>	// All sorts of stuff...
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
 
@@ -30,10 +30,28 @@ LowLevelWindow_X11::LowLevelWindow_X11()
 	g_X11Display = X11Helper::Dpy;
 	g_pScreenConfig = XRRGetScreenInfo( g_X11Display, RootWindow(g_X11Display, DefaultScreen(g_X11Display)) );
 	m_bWasWindowed = true;
+
+	if( PREFSMAN->m_bDisableScreenSaver )
+	{
+		// load current screensaver data and disable the screensaver
+		XGetScreenSaver( g_X11Display, &ScreenData.timeout, &ScreenData.interval,
+			&ScreenData.prefer_blanking, &ScreenData.allow_exposures );
+
+		XResetScreenSaver( g_X11Display );
+		XSetScreenSaver( g_X11Display, 0, 0, DontPreferBlanking, DontAllowExposures );
+	}
 }
 
 LowLevelWindow_X11::~LowLevelWindow_X11()
 {
+	// re-apply our previous screensaver options
+	if( PREFSMAN->m_bDisableScreenSaver )
+	{
+		XResetScreenSaver( g_X11Display );
+		XSetScreenSaver( g_X11Display, ScreenData.timeout, ScreenData.interval,
+			ScreenData.prefer_blanking, ScreenData.allow_exposures );
+	}
+
 	{
                 XRRSetScreenConfig( g_X11Display, g_pScreenConfig, RootWindow(g_X11Display, DefaultScreen(g_X11Display)), g_iOldSize, g_OldRotation, CurrentTime );
 

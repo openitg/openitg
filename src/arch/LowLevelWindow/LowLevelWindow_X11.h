@@ -10,6 +10,12 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+struct XScreenSaverData
+{
+	int timeout, interval;
+	int prefer_blanking, allow_exposures;
+};
+
 class LowLevelWindow_X11 : public LowLevelWindow
 {
 public:
@@ -25,6 +31,7 @@ public:
 private:
 	bool m_bWindowIsOpen;
 	bool m_bWasWindowed;
+	XScreenSaverData ScreenData;
 	RageDisplay::VideoModeParams CurrentParams;
 };
 

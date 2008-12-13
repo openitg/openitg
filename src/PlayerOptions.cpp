@@ -122,6 +122,8 @@ void PlayerOptions::GetMods( vector<CString> &AddTo ) const
 
 	AddPart( AddTo, m_fEffects[EFFECT_DRUNK],	"Drunk" );
 	AddPart( AddTo, m_fEffects[EFFECT_DIZZY],	"Dizzy" );
+	AddPart( AddTo, m_fEffects[EFFECT_TWIRL],	"Twirl" );
+	AddPart( AddTo, m_fEffects[EFFECT_ROLL],	"Roll" );
 	AddPart( AddTo, m_fEffects[EFFECT_MINI],	"Mini" );
 	AddPart( AddTo, m_fEffects[EFFECT_FLIP],	"Flip" );
 	AddPart( AddTo, m_fEffects[EFFECT_INVERT],	"Invert" );
@@ -292,6 +294,8 @@ void PlayerOptions::FromString( CString sOptions, bool bWarnOnInvalid )
 		else if( sBit == "boomerang" )	SET_FLOAT( fAccels[ACCEL_BOOMERANG] )
 		else if( sBit == "drunk" )		SET_FLOAT( fEffects[EFFECT_DRUNK] )
 		else if( sBit == "dizzy" )		SET_FLOAT( fEffects[EFFECT_DIZZY] )
+		else if( sBit == "twirl" )		SET_FLOAT( fEffects[EFFECT_TWIRL] )
+		else if( sBit == "roll" )		SET_FLOAT( fEffects[EFFECT_ROLL] )
 		else if( sBit == "mini" )		SET_FLOAT( fEffects[EFFECT_MINI] )
 		else if( sBit == "flip" )		SET_FLOAT( fEffects[EFFECT_FLIP] )
 		else if( sBit == "invert" )		SET_FLOAT( fEffects[EFFECT_INVERT] )

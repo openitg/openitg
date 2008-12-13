@@ -347,7 +347,37 @@ float ArrowEffects::GetXPos( const PlayerState* pPlayerState, int iColNum, float
 	return fPixelOffsetFromCenter;
 }
 
-float ArrowEffects::GetRotation( const PlayerState* pPlayerState, float fNoteBeat ) 
+float ArrowEffects::GetRotationX( const PlayerState *pPlayerState, float fNoteBeat )
+{
+	if( pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_ROLL] != 0 )
+	{
+		const float fSongBeat = GAMESTATE->m_fSongBeatVisible;
+		float fRollRotation = fNoteBeat - fSongBeat;
+		fRollRotation *= pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_ROLL];
+		fRollRotation = fmodf( fRollRotation, 2*PI );
+		fRollRotation *= 180/PI;
+		return fRollRotation;
+	}
+	else
+		return 0;
+}
+
+float ArrowEffects::GetRotationY( const PlayerState *pPlayerState, float fNoteBeat )
+{
+	if( pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_TWIRL] != 0 )
+	{
+		const float fSongBeat = GAMESTATE->m_fSongBeatVisible;
+		float fTwirlRotation = fNoteBeat - fSongBeat;
+		fTwirlRotation *= pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_TWIRL];
+		fTwirlRotation = fmodf( fTwirlRotation, 2*PI );
+		fTwirlRotation *= 180/PI;
+		return fTwirlRotation;
+	}
+	else
+		return 0;
+}
+
+float ArrowEffects::GetRotationZ( const PlayerState* pPlayerState, float fNoteBeat ) 
 {
 	if( pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_DIZZY] != 0 )
 	{

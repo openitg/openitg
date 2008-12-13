@@ -988,7 +988,9 @@ void NoteDisplay::DrawActor( Actor* pActor, int iCol, float fBeat, float fPercen
 {
 	const float fYOffset		= ArrowEffects::GetYOffset(	m_pPlayerState, iCol, fBeat );
 	const float fYPos			= ArrowEffects::GetYPos(	m_pPlayerState, iCol, fYOffset, fReverseOffsetPixels );
-	const float fRotation		= ArrowEffects::GetRotation(	m_pPlayerState, fBeat );
+	const float fRotationX		= ArrowEffects::GetRotationX(	m_pPlayerState, fBeat );
+	const float fRotationY		= ArrowEffects::GetRotationY(	m_pPlayerState, fBeat );
+	const float fRotationZ		= ArrowEffects::GetRotationZ(	m_pPlayerState, fBeat );
 	const float fXPos			= ArrowEffects::GetXPos(		m_pPlayerState, iCol, fYOffset );
 	const float fZPos			= ArrowEffects::GetZPos(	   m_pPlayerState, iCol, fYOffset );
 	const float fAlpha			= ArrowEffects::GetAlpha(	m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );
@@ -998,7 +1000,9 @@ void NoteDisplay::DrawActor( Actor* pActor, int iCol, float fBeat, float fPercen
 	RageColor diffuse = RageColor(fColorScale,fColorScale,fColorScale,fAlpha);
 	RageColor glow = RageColor(1,1,1,fGlow);
 
-	pActor->SetRotationZ( fRotation );
+	pActor->SetRotationX( fRotationX );
+	pActor->SetRotationY( fRotationY );
+	pActor->SetRotationZ( fRotationZ );
 	pActor->SetXY( fXPos, fYPos );
 	pActor->SetZ( fZPos );
 	pActor->SetDiffuse( diffuse );

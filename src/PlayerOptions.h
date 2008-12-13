@@ -39,6 +39,8 @@ struct PlayerOptions
 	enum Effect	{
 		EFFECT_DRUNK,
 		EFFECT_DIZZY,
+		EFFECT_TWIRL,
+		EFFECT_ROLL,
 		EFFECT_MINI,
 		EFFECT_FLIP,
 		EFFECT_INVERT,

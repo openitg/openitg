@@ -39,7 +39,7 @@ private:
 	bool AddPatches( CString sPattern );
 
 	/* load and verify the patch passed to LoadPatch */
-	bool LoadPatch( CString sPath );
+	bool LoadPatch( CString sPath, bool bOnCard );
 	bool FinalizePatch();
 
 	bool m_bReboot;

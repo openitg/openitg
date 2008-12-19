@@ -179,15 +179,15 @@ public:
 			}
 			FOREACHS_CONST( CString, additionalSet, addit_mod )
 			{
-				Regex mult("^([0-9]+(\\.[0-9]+)?)x$");
+				Regex mult("^([0-9]+(\\.[0-9]{1,2})?)x$");
 				Regex constmod("^C[0-9]{1,4}$");
 				Regex mmod("^M[0-9]{1,4}$");
 				CString sAdditModName;
 				if (mult.Compare(*addit_mod))
 				{
 					float factor = 1.0f;
-					if (sscanf(*addit_mod, "%fx", &factor) == 1)
-						sAdditModName = ssprintf("x%f", factor);
+					if (sscanf(*addit_mod, "%.2fx", &factor) == 1)
+						sAdditModName = ssprintf("x%.2f", factor);
 				}
 				else if (constmod.Compare(*addit_mod))
 				{

@@ -30,17 +30,23 @@ void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 		LOG->Debug( "%s %s - timestamp, %f", di.toString().c_str(), Down ? "pressed" : "released", di.ts.Ago() );
 	*/
 
+	// if it's a release, only allow it after the debounce time passes through
 	if( !Down )
 	{
-		INPUTFILTER->ButtonPressed( di, Down );
-	}
-	else
-	{
-		if( m_LastHit.find(di.button) == m_LastHit.end() || m_LastHit[di.button].PeekDeltaTime() > PREFSMAN->m_fInputDebounceTime )
+		//if ( m_LastHit.find(di.button) == m_LastHit.end() && m_LastHit[di.button].PeekDeltaTime() > PREFSMAN->m_fInputDebounceTime )
+		if ( m_LastHit[di.button].PeekDeltaTime() > PREFSMAN->m_fInputDebounceTime )
 		{
 			INPUTFILTER->ButtonPressed( di, Down );
 			m_LastHit[di.button].Touch();
 		}
+//		else
+//		{
+//			LOG->Debug("Debounce'd: PeekDeltaTime: %f, m_fInputDebounceTime: %f", m_LastHit[di.button].PeekDeltaTime(), PREFSMAN->m_fInputDebounceTime.Get());
+//		}
+	}
+	else
+	{
+		INPUTFILTER->ButtonPressed( di, Down );
 	}
 
 	if( m_iInputsSinceUpdate >= 50 )

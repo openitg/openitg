@@ -280,7 +280,12 @@ void Font::MergeFont(Font &f)
 
 const glyph &Font::GetGlyph( wchar_t c ) const
 {
-	ASSERT(c >= 0 && c <= 0xFFFFFF);
+	//ASSERT(c >= 0 && c <= 0xFFFFFF);
+	// shooting a blank really...DarkLink kept running into the stupid assert with non-roman song titles, 
+	// and looking at it, I'm gonna guess that this is how ITG2 prevented crashing with them
+	//  --infamouspat
+	if (c < 0 || c > 0xFFFFFF)
+		c = 1;
 
 	/* Fast path: */
 	if( c < (int) ARRAYSIZE(m_iCharToGlyphCache) && m_iCharToGlyphCache[c] )

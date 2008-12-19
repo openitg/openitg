@@ -148,33 +148,47 @@ void UpdatePatchCopyProgress( float fPercent )
  * if anything fails, end early by simply returning. */
 void ScreenArcadePatch::CheckForPatches()
 {
-	FindCard();
+	bool bOnCard = true;
 
-	/* false if cards cannot be loaded */
-	if( !LoadFromCard() )
+// hack to allow home users to install updates through a
+//    folder in the root of OpenITG rather than on a USB drive
+//  --infamouspat
+#if !defined(ITG_ARCADE)
+	GetDirListing("/Update/OpenITG *.bxr", m_vsPatches, false, true);
+	if ( m_vsPatches.size() == 0 )
 	{
-		m_bExit = true;
-		return;
-	}
+#endif
+		FindCard();
 
-	/* Call once for each directory path we want to find */
-	AddPatches( "ITG 2 *.itg" );
-	AddPatches( "OpenITG *.bxr" );
+		/* false if cards cannot be loaded */
+		if( !LoadFromCard() )
+		{
+			m_bExit = true;
+			return;
+		}
 
-	/* Nothing found in any of the above */
-	if( m_vsPatches.size() == 0 )
-	{
-		g_sStatus = ssprintf( "No patches found on Player %d's card." , m_Player+1 );
-		m_bExit = true;
-		return;
+		/* Call once for each directory path we want to find */
+		AddPatches( "ITG 2 *.itg" );
+		AddPatches( "OpenITG *.bxr" );
+
+		/* Nothing found in any of the above */
+		if( m_vsPatches.size() == 0 )
+		{
+			g_sStatus = ssprintf( "No patches found on Player %d's card." , m_Player+1 );
+			m_bExit = true;
+			return;
+		}
+#if !defined(ITG_ARCADE)
 	}
+	else bOnCard = false;
+#endif
 
 	/* sort - it's ascending order by default */
 	SortCStringArray( m_vsPatches );
 
 	/* If there are any OpenITG patches, that'll be the one installed.
 	 * Otherwise, it'll be the highest ITG2 revision. */
-	if( !LoadPatch(m_vsPatches[0]) )
+	if( !LoadPatch(m_vsPatches[0], bOnCard) )
 	{
 		m_bExit = true;
 		return;
@@ -188,6 +202,8 @@ void ScreenArcadePatch::CheckForPatches()
 		return;
 	}
 	CHECKPOINT;
+
+	if (!bOnCard) FILEMAN->Remove(m_vsPatches[0]);
 
 	/* Everything's good. Set our message and be ready to restart. */
 	g_sStatus = m_sSuccessMessage;
@@ -271,10 +287,10 @@ bool ScreenArcadePatch::AddPatches( CString sPattern )
 	return true;
 }
 
-bool ScreenArcadePatch::LoadPatch( CString sPath )
+bool ScreenArcadePatch::LoadPatch( CString sPath, bool bOnCard )
 {
 	CHECKPOINT;
-	CString sFile = ssprintf( "%s%s" , m_sCardDir.c_str() , sPath.c_str() );
+	CString sFile = ssprintf( "%s%s" , bOnCard ? m_sCardDir.c_str() : "", sPath.c_str() );
 	
 	g_sStatus = ssprintf( "Patch file found on Player %d's card!" , m_Player+1 );
 	m_textHelp->SetText( sPath.c_str() );

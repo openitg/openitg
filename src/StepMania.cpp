@@ -1341,20 +1341,20 @@ CString SaveScreenshot( CString sDir, bool bSaveCompressed, bool bMakeSignature,
 	return sFileName;
 }
 
-void InsertCoin( int iNum, bool bSoftwareInsert )
+void InsertCoin( int iNum, bool bRecord )
 {
 	GAMESTATE->m_iCoins += iNum;
 	LOG->Trace("%i coins inserted, %i needed to play", GAMESTATE->m_iCoins, PREFSMAN->m_iCoinsPerCredit.Get() );
 
 	// record software insertions separately
-	if( bSoftwareInsert )
-	{
-		BOOKKEEPER->ServiceCoinInserted();
-	}
-	else
+	if( bRecord )
 	{
 		BOOKKEEPER->CoinInserted();
 		LIGHTSMAN->PulseCoinCounter();
+	}
+	else
+	{
+		BOOKKEEPER->ServiceCoinInserted();
 	}
 
 	SCREENMAN->RefreshCreditsMessages();
@@ -1362,9 +1362,9 @@ void InsertCoin( int iNum, bool bSoftwareInsert )
 	MESSAGEMAN->Broadcast( MESSAGE_COIN_INSERTED );
 }
 
-void InsertCredit( bool bSoftwareInsert )
+void InsertCredit( bool bRecord )
 {
-	InsertCoin( PREFSMAN->m_iCoinsPerCredit, bSoftwareInsert );
+	InsertCoin( PREFSMAN->m_iCoinsPerCredit, bRecord );
 }
 
 // Clears all credits currently in the machine.

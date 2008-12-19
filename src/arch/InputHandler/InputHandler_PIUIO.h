@@ -46,16 +46,13 @@ private:
 	static int InputThread_Start( void *p );
 	void InputThreadMain();
 
-	// keeps track of which sensors are on for each input
-	bool m_bSensors[32][4];
-
 	/* the fully combined bit field that input is read from */
 	uint32_t m_iInputField;
 
 	/* used for normal reads - one uint32_t per sensor set */
 	uint32_t m_iInputData[4];
 
-	/* array used for bulk read/write sessions */
+	/* used for r16 kernel hack reads - translates to m_iInputData */
 	uint32_t m_iBulkReadData[8];
 
 	/* data that will be written to PIUIO */

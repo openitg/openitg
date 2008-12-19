@@ -193,15 +193,30 @@ void Player::Init(
 		break;
 	}
 
-	// XXX: calculate M-mod speed here, so we can adjust properly on a per-song basis.
+	// calculate M-mod speed here, so we can adjust properly on a per-song basis.
 	LOG->Debug( "Calculating M-mod speed..." );
 	if( GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fMaxScrollBPM != 0 )
 	{
 		ASSERT( GAMESTATE->m_pCurSong );
 		LOG->Debug( "M-mod speed: %f", GAMESTATE->m_pPlayerState[pn]->m_PlayerOptions.m_fMaxScrollBPM );
 
+		// tricky: clamp this to the maximum listed BPM. the song may give an inaccurate BPM range,
+		// but at least we won't surprise anyone. this also solves some gimmick-related problems.
+		float fMaxBPM = GAMESTATE->m_pCurSong->m_Timing.GetMaxBPM();
+
+		LOG->Debug( "fMaxBPM set to %f", fMaxBPM );
+
+		// XXX: why does this happen? the max BPM should be set to min BPM if nothing else is loaded.
+		if( GAMESTATE->m_pCurSong->m_fSpecifiedBPMMax != 0 )
+		{
+			bool bAdjusted = CLAMP( fMaxBPM, 1, GAMESTATE->m_pCurSong->m_fSpecifiedBPMMax );
+
+			if( bAdjusted )
+				LOG->Debug( "fMaxBPM clamped to %f", fMaxBPM );
+		}
+
 		GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fScrollSpeed =
-			( GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fMaxScrollBPM / GAMESTATE->m_pCurSong->m_Timing.GetMaxBPM() );
+			( GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fMaxScrollBPM / fMaxBPM );
 
 		LOG->Debug( "m_fScrollSpeed: %f", GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fScrollSpeed );
 	}

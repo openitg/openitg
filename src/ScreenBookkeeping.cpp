@@ -132,7 +132,10 @@ void ScreenBookkeeping::ChangeView( View newView )
 	{
 		CString s;
 		s += "All-time Total: ";
-		s += ssprintf( "%i\n", BOOKKEEPER->GetCoinsTotal() );
+		s += ssprintf( "%i (%i/%i)\n",
+			BOOKKEEPER->GetCoinsTotal(false) + BOOKKEEPER->GetCoinsTotal(true),
+			BOOKKEEPER->GetCoinsTotal(false), BOOKKEEPER->GetCoinsTotal(true) );
+
 		m_textAllTime.SetText( s );
 	}
 
@@ -142,20 +145,22 @@ void ScreenBookkeeping::ChangeView( View newView )
 		{
 			m_textTitle.SetText( ssprintf("Coin Data of Last %d Days", NUM_LAST_DAYS) );
 
-			int coins[NUM_LAST_DAYS];
+			int coins[NUM_LAST_DAYS], service[NUM_LAST_DAYS];
 			BOOKKEEPER->GetCoinsLastDays( coins );
-			int iTotalLast = 0;
+			BOOKKEEPER->GetCoinsLastDays( service, true );
+			int iTotalLast = 0, iTotalServiceLast = 0;
 			
 			CString sTitle, sData;
 			for( int i=0; i<NUM_LAST_DAYS; i++ )
 			{
 				sTitle += LastDayToDisplayString(i) + "\n";
-				sData += ssprintf("%d",coins[i]) + "\n";
+				sData += ssprintf("%-4d / %4d", coins[i], service[i]) + "\n";
 				iTotalLast += coins[i];
+				iTotalServiceLast += service[i];
 			}
 
 			sTitle += "Total\n";
-			sData += ssprintf("%i\n", iTotalLast);
+			sData += ssprintf("%-4i / %4i\n", iTotalLast, iTotalServiceLast );
 			
 			m_textData[0].SetText( "" );
 			m_textData[1].SetHorizAlign( Actor::align_left );
@@ -169,8 +174,9 @@ void ScreenBookkeeping::ChangeView( View newView )
 		{
 			m_textTitle.SetText( ssprintf("Coin Data of Last %d Weeks", NUM_LAST_WEEKS) );
 
-			int coins[NUM_LAST_WEEKS];
+			int coins[NUM_LAST_WEEKS], service[NUM_LAST_WEEKS];
 			BOOKKEEPER->GetCoinsLastWeeks( coins );
+			BOOKKEEPER->GetCoinsLastWeeks( service, true );
 
 			CString sTitle, sData;
 			for( int col=0; col<4; col++ )
@@ -179,7 +185,7 @@ void ScreenBookkeeping::ChangeView( View newView )
 				for( int row=0; row<52/4; row++ )
 				{
 					int week = row*4+col;
-					sTemp += LastWeekToDisplayString(week) + ssprintf(": %d",coins[week]) + "\n";
+					sTemp += LastWeekToDisplayString(week) + ssprintf(": %d/%d",coins[week],service[week]) + "\n";
 				}
 
 				m_textData[col].SetHorizAlign( Actor::align_left );
@@ -191,14 +197,15 @@ void ScreenBookkeeping::ChangeView( View newView )
 		{
 			m_textTitle.SetText( "Coin Data by Day of Week" );
 
-			int coins[DAYS_IN_WEEK];
+			int coins[DAYS_IN_WEEK], service[DAYS_IN_WEEK];
 			BOOKKEEPER->GetCoinsByDayOfWeek( coins );
+			BOOKKEEPER->GetCoinsByDayOfWeek( service, true );
 
 			CString sTitle, sData;
 			for( int i=0; i<DAYS_IN_WEEK; i++ )
 			{
 				sTitle += DayOfWeekToString(i) + "\n";
-				sData += ssprintf("%d",coins[i]) + "\n";
+				sData += ssprintf("%-4d / %4d",coins[i],service[i]) + "\n";
 			}
 			
 			m_textData[0].SetText( "" );
@@ -213,21 +220,22 @@ void ScreenBookkeeping::ChangeView( View newView )
 		{
 			m_textTitle.SetText( "Coin Data by Hour of Day" );
 
-			int coins[HOURS_IN_DAY];
+			int coins[HOURS_IN_DAY], service[HOURS_IN_DAY];
 			BOOKKEEPER->GetCoinsByHour( coins );
+			BOOKKEEPER->GetCoinsByHour( service, true );
 
 			CString sTitle1, sData1;
 			for( int i=0; i<HOURS_IN_DAY/2; i++ )
 			{
 				sTitle1 += HourInDayToDisplayString(i) + "\n";
-				sData1 += ssprintf("%d",coins[i]) + "\n";
+				sData1 += ssprintf("%-4d/%4d",coins[i],service[i]) + "\n";
 			}
 			
 			CString sTitle2, sData2;
 			for( int i=(HOURS_IN_DAY/2); i<HOURS_IN_DAY; i++ )
 			{
 				sTitle2 += HourInDayToDisplayString(i) + "\n";
-				sData2 += ssprintf("%d",coins[i]) + "\n";
+				sData2 += ssprintf("%-4d/%4d",coins[i],service[i]) + "\n";
 			}
 			
 			m_textData[0].SetHorizAlign( Actor::align_left );

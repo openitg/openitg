@@ -18,20 +18,14 @@ public:
 	void CoinInserted();
 	void ServiceCoinInserted();
 
-	int GetCoinsTotal() const;
-	void GetCoinsLastDays( int coins[NUM_LAST_DAYS] ) const;
-	void GetCoinsLastWeeks( int coins[NUM_LAST_WEEKS] ) const;
-	void GetCoinsByDayOfWeek( int coins[DAYS_IN_WEEK] ) const;
-	void GetCoinsByHour( int coins[HOURS_IN_DAY] ) const;
-
-	void GetServiceCoinsTotal() const;
-
-	void LoadFromNode( const XNode *pNode );
-	XNode* CreateNode() const;
+	int GetCoinsTotal( bool bService = false ) const;
+	void GetCoinsLastDays( int coins[NUM_LAST_DAYS], bool bService = false ) const;
+	void GetCoinsLastWeeks( int coins[NUM_LAST_WEEKS], bool bService = false ) const;
+	void GetCoinsByDayOfWeek( int coins[DAYS_IN_WEEK], bool bService = false ) const;
+	void GetCoinsByHour( int coins[HOURS_IN_DAY], bool bService = false ) const;
 
 	void ReadFromDisk();
 	void WriteToDisk();
-
 private:
 	struct Date
 	{
@@ -44,8 +38,16 @@ private:
 		void Set( tm pTime );
 		bool operator<( const Date &rhs ) const;
 	};
-	int GetNumCoins( Date beginning, Date ending ) const;
+
+	XNode *CreateXML() const;
+	XNode* CreateNode( const CString name, const map<Date,int> &mCoinMap ) const;
+	void LoadFromNode( const XNode *pNode, map<Date,int> &mCoinMap );
+
+	int GetNumCoins( Date beginning, Date ending, bool bService = false ) const;
 	int GetNumCoinsInRange( map<Date,int>::const_iterator begin, map<Date,int>::const_iterator end ) const;
+
+	const map<Date,int> *GetCoinMap( bool bService ) const
+		{ return bService ? &m_mapServiceCoinsForHour : &m_mapCoinsForHour; }
 
 	int m_iLastSeenTime;
 	map<Date,int> m_mapCoinsForHour;

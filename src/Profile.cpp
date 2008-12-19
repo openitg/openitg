@@ -854,8 +854,13 @@ XNode *Profile::SaveStatsXmlCreateNode() const
 	xml->AppendChild( SaveCalorieDataCreateNode() );
 	xml->AppendChild( SaveRecentSongScoresCreateNode() );
 	xml->AppendChild( SaveRecentCourseScoresCreateNode() );
+	
+	// append totals for regular and service credits
 	if( IsMachine() )
-		xml->AppendChild( SaveCoinDataCreateNode() );
+	{
+		xml->AppendChild( SaveCoinDataCreateNode( false ) );
+		xml->AppendChild( SaveCoinDataCreateNode( true ) );
+	}
 
 	return xml;
 }
@@ -1876,7 +1881,7 @@ bool Profile::IsMachine() const
 }
 
 
-XNode* Profile::SaveCoinDataCreateNode() const
+XNode* Profile::SaveCoinDataCreateNode( bool bService ) const
 {
 	CHECKPOINT;
 
@@ -1884,32 +1889,32 @@ XNode* Profile::SaveCoinDataCreateNode() const
 	ASSERT( pProfile );
 
 	XNode* pNode = new XNode;
-	pNode->m_sName = "CoinData";
+	pNode->m_sName = bService ? "CoinDataService" : "CoinData";
 
 	{
 		int coins[NUM_LAST_DAYS];
-		BOOKKEEPER->GetCoinsLastDays( coins );
+		BOOKKEEPER->GetCoinsLastDays( coins, bService );
 		XNode* p = pNode->AppendChild( "LastDays" );
 		for( int i=0; i<NUM_LAST_DAYS; i++ )
 			p->AppendChild( LastDayToString(i), coins[i] );
 	}
 	{
 		int coins[NUM_LAST_WEEKS];
-		BOOKKEEPER->GetCoinsLastWeeks( coins );
+		BOOKKEEPER->GetCoinsLastWeeks( coins, bService );
 		XNode* p = pNode->AppendChild( "LastWeeks" );
 		for( int i=0; i<NUM_LAST_WEEKS; i++ )
 			p->AppendChild( LastWeekToString(i), coins[i] );
 	}
 	{
 		int coins[DAYS_IN_WEEK];
-		BOOKKEEPER->GetCoinsByDayOfWeek( coins );
+		BOOKKEEPER->GetCoinsByDayOfWeek( coins, bService );
 		XNode* p = pNode->AppendChild( "DayOfWeek" );
 		for( int i=0; i<DAYS_IN_WEEK; i++ )
 			p->AppendChild( DayOfWeekToString(i), coins[i] );
 	}
 	{
 		int coins[HOURS_IN_DAY];
-		BOOKKEEPER->GetCoinsByHour( coins );
+		BOOKKEEPER->GetCoinsByHour( coins, bService );
 		XNode* p = pNode->AppendChild( "Hour" );
 		for( int i=0; i<HOURS_IN_DAY; i++ )
 			p->AppendChild( HourInDayToString(i), coins[i] );

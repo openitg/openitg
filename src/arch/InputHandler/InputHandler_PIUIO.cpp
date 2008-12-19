@@ -153,22 +153,28 @@ static CString InputToBinary( uint32_t array )
 
 static CString SensorNames[] = { "right", "left", "bottom", "top" };
 
-static CString GetSensorDescription( bool *bArray )
+static CString GetSensorDescription( uint32_t iArray[4], int iBit )
 {
 	CStringArray sensors;
 
 	for( int i = 0; i < 4; i++ )
-		if( bArray[i] ) sensors.push_back( SensorNames[i] );
+		if( iArray[i] & (1 << (31-iBit)) )
+			sensors.push_back( SensorNames[i] );
 
 	/* HACK: if all sensors are reporting, then don't return anything.
 	 * On PIUIO, all buttons always return all sensors except pads. */
-//	if( sensors.size() == 4 )
-//		return "";
+	if( sensors.size() == 4 )
+		return "";
 
 	return join(", ", sensors);
 }
 
-/* code to handle the r16 kernel hack */
+/* WARNING: SCIENCE CONTENT!
+ * We write each output set in members 0, 2, 4, and 6 of a uint32_t array.
+ * The BulkReadWrite sends four asynchronous write/read requests that end
+ * up overwriting the data we write with the data that's read.
+ *
+ * I'm not sure why we need an 8-member array. Oh well. */
 void InputHandler_PIUIO::HandleInputKernel()
 {
 	ZERO( m_iBulkReadData );
@@ -179,13 +185,6 @@ void InputHandler_PIUIO::HandleInputKernel()
 	for (uint32_t i = 0; i < 4; i++)
 		m_iBulkReadData[i*2] = m_iLightData | (i | (i << 16));
 
-	/* WARNING: SCIENCE CONTENT!
-	 * We write each output set in members 0, 2, 4, and 6 of a uint32_t array.
-	 * The BulkReadWrite sends four asynchronous write/read requests that end
-	 * up overwriting the data we write with the data that's read.
-	 *
-	 * I'm not sure why we need an 8-member array. Oh well. */
-
 	Board.BulkReadWrite( m_iBulkReadData );
 
 	// process the input we were given
@@ -194,21 +193,14 @@ void InputHandler_PIUIO::HandleInputKernel()
 		/* PIUIO opens high - for more logical processing, invert it */
 		m_iBulkReadData[i*2] = ~m_iBulkReadData[i*2];
 
-		// add this set into the input field
-		m_iInputField |= m_iBulkReadData[i*2];
-
-		// figure out which sensors were enabled
-		for( int j = 0; j < 32; j++ )
-			if( m_iBulkReadData[i*2] & (1 << (32-j)) )
-				m_bSensors[j][i] = true;
+		// translate the sensor data to m_iInputData
+		m_iInputData[i] = m_iBulkReadData[i*2];
 	}
 }
 
 /* this is the input-reading logic that we know works */
 void InputHandler_PIUIO::HandleInputNormal()
 {
-	ZERO( m_iInputData );
-
 	for (uint32_t i = 0; i < 4; i++)
 	{
 		// write which sensors to report from
@@ -221,16 +213,7 @@ void InputHandler_PIUIO::HandleInputNormal()
 
 		/* PIUIO opens high - for more logical processing, invert it */
 		m_iInputData[i] = ~m_iInputData[i];
-
-		// add this set into the input field
-		m_iInputField |= m_iInputData[i];
-
-		/* Toggle sensor bits - Left, Right, Up, Down */
-		for( int j = 0; j < 32; j++ )
-			if( m_iInputData[i] & (1 << (32-j)) )
-				m_bSensors[j][i] = true;
 	}
-
 }
 
 void InputHandler_PIUIO::HandleInput()
@@ -238,11 +221,15 @@ void InputHandler_PIUIO::HandleInput()
 	m_InputTimer.Touch();
 
 	// reset our reading data
-	ZERO( m_bSensors );
 	ZERO( m_iInputField );
+	ZERO( m_iInputData );
 
-	// sets up m_iInputField for usage
+	// sets up m_iInputData for usage
 	(this->*InternalInputHandler)();
+
+	// combine the read data into a single field
+	for( int i = 0; i < 4; i++ )
+		m_iInputField |= m_iInputData[i];
 
 	/* If they asked for it... */
 	if( PREFSMAN->m_bDebugUSBInput && SCREENMAN )
@@ -260,7 +247,7 @@ void InputHandler_PIUIO::HandleInput()
 			di.ts.Touch();
 
 		/* Set a description of detected sensors to the arrows */
-		INPUTFILTER->SetButtonComment( di, GetSensorDescription(m_bSensors[iButton]) );
+		INPUTFILTER->SetButtonComment( di, GetSensorDescription(m_iInputData, iButton) );
 
 		/* Is the button we're looking for flagged in the input data? */
 		ButtonPressed( di, m_iInputField & (1 << (31-iButton)) );

@@ -2037,14 +2037,6 @@ void ScreenSelectMusic::AfterMusicChange()
 		StepsType st = GAMESTATE->GetCurrentStyle()->m_StepsType;
 		Trail *pTrail = pCourse->GetTrail( st );
 		ASSERT( pTrail );
-
-		FOREACH_PlayerNumber( p )
-		{
-			Trail *mypTrail = pCourse->GetTrail( st, GAMESTATE->m_PreferredCourseDifficulty[p] );
-			ASSERT( mypTrail );
-			GAMESTATE->m_pCurTrail[p].Set( mypTrail );
-		}
-
 		pCourse->GetTrails( m_vpTrails, GAMESTATE->GetCurrentStyle()->m_StepsType );
 
 		m_sSampleMusicToPlay = m_sCourseMusicPath;

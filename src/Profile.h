@@ -316,7 +316,8 @@ public:
 	XNode* SaveRecentSongScoresCreateNode() const;
 	XNode* SaveRecentCourseScoresCreateNode() const;
 
-	XNode* SaveCoinDataCreateNode() const;
+	// if true, returns a node saving service credits
+	XNode* SaveCoinDataCreateNode( bool bService ) const;
 
 	void SaveStatsWebPageToDir( CString sDir ) const;
 	void SaveMachinePublicKeyToDir( CString sDir ) const;

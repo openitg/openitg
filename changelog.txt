@@ -2,18 +2,26 @@ OpenITG, beta 1 (in development)
 --------------------------------
 -Obligatory code cleanup
 -New features:
-     Separate bookkeeper counter for service credits (from operator menu)
+     Separate bookkeeper counter for service credits in Bookkeeping
+          (divided in the menu by Regular Credits / Service Credits)
      LightsMapper - set which bits are triggered on LIGHTSMAN events
           (global settings for cabinet lights, per-game settings for input)
      Added LightsMappings to ITGIO, PIUIO, and PacDrive
+-New modifiers:
+     "Twirl" - rotates arrows around the Y axis
+     "Roll" - rotates arrows around the X axis
 -Compilation updates:
      Added date/version text to ProductInfo and DiagnosticsUtil
      Rewrote "archutils/Win32/verinc.c" to generate a new verinfo.h
 -Fixed bugs:
      64-bit crash on RageCryptInterface_ITG2 (thanks, dawnwolf)
      Screensaver disable code doesn't work for X11
+     M-mod code choked on some BPM gimmicks
+     Crash when changing from Intense to Normal-only courses or vice versa
+     Sensor reading problems with PIUIO
 -Misc. changes:
-     Load custom songs into memory, instead of onto the disk
+     Record service credits separately in MachineProfile and Coins.xml
+     Load USB profile songs into memory, instead of onto the disk
 
 OpenITG, prebeta (November 25th, 2008)
 --------------------------------------

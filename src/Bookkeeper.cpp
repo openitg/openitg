@@ -32,6 +32,7 @@ Bookkeeper::~Bookkeeper()
 void Bookkeeper::ClearAll()
 {
 	m_mapCoinsForHour.clear();
+	m_mapServiceCoinsForHour.clear();
 }
 
 bool Bookkeeper::Date::operator<( const Date &rhs ) const
@@ -58,22 +59,9 @@ void Bookkeeper::Date::Set( tm pTime )
 	m_iYear = pTime.tm_year + 1900;
 }
 
-void Bookkeeper::LoadFromNode( const XNode *pNode )
+void Bookkeeper::LoadFromNode( const XNode *pNode, map<Date,int> &mCoinMap )
 {
-	if( pNode->m_sName != "Bookkeeping" )
-	{
-		LOG->Warn( "Error loading bookkeeping: unexpected \"%s\"", pNode->m_sName.c_str() );
-		return;
-	}
-
-	const XNode *pData = pNode->GetChild( "Data" );
-	if( pData == NULL )
-	{
-		LOG->Warn( "Error loading bookkeeping: Data node missing" );
-		return;
-	}
-
-	FOREACH_CONST_Child( pData, day )
+	FOREACH_CONST_Child( pNode, day )
 	{
 		Date d;
 		if( !day->GetAttrValue( "Hour", d.m_iHour ) ||
@@ -87,33 +75,40 @@ void Bookkeeper::LoadFromNode( const XNode *pNode )
 		int iCoins;
 		day->GetValue( iCoins );
 
-		m_mapCoinsForHour[d] = iCoins;
+		mCoinMap[d] = iCoins;
 	}
 }
 
-XNode* Bookkeeper::CreateNode() const
+XNode *Bookkeeper::CreateXML() const
 {
 	XNode *xml = new XNode;
 	xml->m_sName = "Bookkeeping";
 
-	{
-		XNode* pData = xml->AppendChild("Data");
-
-		for( map<Date,int>::const_iterator it = m_mapCoinsForHour.begin(); it != m_mapCoinsForHour.end(); ++it )
-		{
-			XNode *pDay = pData->AppendChild( "Coins" );
-
-			const Date &d = it->first;
-			pDay->AppendAttr( "Hour", d.m_iHour );
-			pDay->AppendAttr( "Day", d.m_iDayOfYear );
-			pDay->AppendAttr( "Year", d.m_iYear );
-			
-			int iCoins = it->second;
-			pDay->SetValue( iCoins );
-		}
-	}
+	xml->AppendChild( CreateNode("Data", m_mapCoinsForHour) );
+	xml->AppendChild( CreateNode("ServiceData", m_mapServiceCoinsForHour) );
 
 	return xml;
+}
+
+XNode* Bookkeeper::CreateNode( const CString name, const map<Date,int> &mCoinMap ) const
+{
+	XNode* pNode = new XNode;
+	pNode->m_sName = name;
+
+	for( map<Date,int>::const_iterator it = mCoinMap.begin(); it != mCoinMap.end(); ++it )
+	{
+		XNode *pDay = pNode->AppendChild( "Coins" );
+
+		const Date &d = it->first;
+		pDay->AppendAttr( "Hour", d.m_iHour );
+		pDay->AppendAttr( "Day", d.m_iDayOfYear );
+		pDay->AppendAttr( "Year", d.m_iYear );
+			
+		int iCoins = it->second;
+		pDay->SetValue( iCoins );
+	}
+
+	return pNode;
 }
 
 void Bookkeeper::ReadFromDisk()
@@ -125,7 +120,27 @@ void Bookkeeper::ReadFromDisk()
 	if( !xml.LoadFromFile(COINS_DAT) )
 		return;
 
-	LoadFromNode( &xml );
+	if( xml.m_sName != "Bookkeeping" )
+	{
+		LOG->Warn( "Error loading bookkeeping: unexpected \"%s\"", xml.m_sName.c_str() );
+		return;
+	}
+
+	const XNode *pData = xml.GetChild( "Data" );
+
+	if( pData == NULL )
+	{
+		LOG->Warn( "Error loading bookkeeping: Data node missing" );
+		return;
+	}
+
+	LoadFromNode( pData, m_mapCoinsForHour );
+
+	// it's okay if this fails
+	const XNode *pService = xml.GetChild( "ServiceData" );
+
+	if( pService != NULL )
+		LoadFromNode( xml.GetChild("ServiceData"), m_mapServiceCoinsForHour );
 }
 
 void Bookkeeper::WriteToDisk()
@@ -139,7 +154,7 @@ void Bookkeeper::WriteToDisk()
 	}
 
 	DISP_OPT opt;
-	XNode *xml = CreateNode();
+	XNode *xml = CreateXML();
 	xml->SaveToFile( f, &opt );
 	delete xml;
 }
@@ -173,19 +188,23 @@ int Bookkeeper::GetNumCoinsInRange( map<Date,int>::const_iterator begin, map<Dat
 	return iCoins;
 }
 
-int Bookkeeper::GetNumCoins( Date beginning, Date ending ) const
+int Bookkeeper::GetNumCoins( Date beginning, Date ending, bool bService ) const
 {
-	return GetNumCoinsInRange( m_mapCoinsForHour.lower_bound( beginning ),
-		m_mapCoinsForHour.lower_bound( ending ) );
+	const map<Date,int> *mCoinMap = GetCoinMap( bService );
+
+	return GetNumCoinsInRange( mCoinMap->lower_bound( beginning ),
+		mCoinMap->lower_bound( ending ) );
 }
 
-int Bookkeeper::GetCoinsTotal() const
+int Bookkeeper::GetCoinsTotal( bool bService ) const
 {
-	return GetNumCoinsInRange( m_mapCoinsForHour.begin(), m_mapCoinsForHour.end() );
+	const map<Date,int> *mCoinMap = GetCoinMap( bService );
+
+	return GetNumCoinsInRange( mCoinMap->begin(), mCoinMap->end() );
 }
 
 
-void Bookkeeper::GetCoinsLastDays( int coins[NUM_LAST_DAYS] ) const
+void Bookkeeper::GetCoinsLastDays( int coins[NUM_LAST_DAYS], bool bService ) const
 {
 	time_t lOldTime = time(NULL);
     tm time;
@@ -196,12 +215,12 @@ void Bookkeeper::GetCoinsLastDays( int coins[NUM_LAST_DAYS] ) const
 	for( int i=0; i<NUM_LAST_DAYS; i++ )
 	{
 		tm EndTime = AddDays( time, +1 );
-		coins[i] = GetNumCoins( time, EndTime );
+		coins[i] = GetNumCoins( time, EndTime, bService );
 		time = GetYesterday( time );
 	}
 }
 
-void Bookkeeper::GetCoinsLastWeeks( int coins[NUM_LAST_WEEKS] ) const
+void Bookkeeper::GetCoinsLastWeeks( int coins[NUM_LAST_WEEKS], bool bService ) const
 {
 	time_t lOldTime = time(NULL);
     tm time;
@@ -213,19 +232,21 @@ void Bookkeeper::GetCoinsLastWeeks( int coins[NUM_LAST_WEEKS] ) const
 	for( int w=0; w<NUM_LAST_WEEKS; w++ )
 	{
 		tm StartTime = AddDays( time, -DAYS_IN_WEEK );
-		coins[w] = GetNumCoins( StartTime, time );
+		coins[w] = GetNumCoins( StartTime, time, bService );
 		time = StartTime;
 	}
 }
 
 /* iDay is days since Jan 1.  iYear is eg. 2005.  Return the day of the week, where
  * 0 is Sunday. */
-void Bookkeeper::GetCoinsByDayOfWeek( int coins[DAYS_IN_WEEK] ) const
+void Bookkeeper::GetCoinsByDayOfWeek( int coins[DAYS_IN_WEEK], bool bService ) const
 {
+	const map<Date,int> *mCoinMap = GetCoinMap( bService );
+
 	for( int i=0; i<DAYS_IN_WEEK; i++ )
 		coins[i] = 0;
 
-	for( map<Date,int>::const_iterator it = m_mapCoinsForHour.begin(); it != m_mapCoinsForHour.end(); ++it )
+	for( map<Date,int>::const_iterator it = mCoinMap->begin(); it != mCoinMap->end(); ++it )
 	{
 		const Date &d = it->first;
 		int iDayOfWeek = GetDayInYearAndYear( d.m_iDayOfYear, d.m_iYear ).tm_wday;
@@ -233,10 +254,12 @@ void Bookkeeper::GetCoinsByDayOfWeek( int coins[DAYS_IN_WEEK] ) const
 	}
 }
 
-void Bookkeeper::GetCoinsByHour( int coins[HOURS_IN_DAY] ) const
+void Bookkeeper::GetCoinsByHour( int coins[HOURS_IN_DAY], bool bService ) const
 {
+	const map<Date,int> *mCoinMap = GetCoinMap( bService );
+
 	memset( coins, 0, sizeof(int) * HOURS_IN_DAY );
-	for( map<Date,int>::const_iterator it = m_mapCoinsForHour.begin(); it != m_mapCoinsForHour.end(); ++it )
+	for( map<Date,int>::const_iterator it = mCoinMap->begin(); it != mCoinMap->end(); ++it )
 	{
 		const Date &d = it->first;
 

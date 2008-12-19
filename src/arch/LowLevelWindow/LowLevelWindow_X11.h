@@ -31,8 +31,10 @@ public:
 private:
 	bool m_bWindowIsOpen;
 	bool m_bWasWindowed;
-	XScreenSaverData ScreenData;
 	RageDisplay::VideoModeParams CurrentParams;
+
+	bool m_bDisableScreenSaver;
+	XScreenSaverData ScreenData;
 };
 
 #ifdef ARCH_LOW_LEVEL_WINDOW

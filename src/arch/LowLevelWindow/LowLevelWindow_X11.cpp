@@ -31,47 +31,36 @@ LowLevelWindow_X11::LowLevelWindow_X11()
 	g_pScreenConfig = XRRGetScreenInfo( g_X11Display, RootWindow(g_X11Display, DefaultScreen(g_X11Display)) );
 	m_bWasWindowed = true;
 
-	if( PREFSMAN->m_bDisableScreenSaver )
+	// we need to cache this, because PREFSMAN dtors before LowLevelWindow_X11 does.
+	m_bDisableScreenSaver = PREFSMAN->m_bDisableScreenSaver;
+
+	if( m_bDisableScreenSaver )
 	{
-		CHECKPOINT;
 		// load current screensaver data and disable the screensaver
 		XGetScreenSaver( g_X11Display, &ScreenData.timeout, &ScreenData.interval,
 			&ScreenData.prefer_blanking, &ScreenData.allow_exposures );
-		CHECKPOINT;
 
 		XResetScreenSaver( g_X11Display );
-		CHECKPOINT;
 		XSetScreenSaver( g_X11Display, 0, 0, DontPreferBlanking, DontAllowExposures );
-		CHECKPOINT;
 	}
 }
 
 LowLevelWindow_X11::~LowLevelWindow_X11()
 {
-		CHECKPOINT;
 	// re-apply our previous screensaver options
-	if( PREFSMAN->m_bDisableScreenSaver )
+	if( m_bDisableScreenSaver )
 	{
-		CHECKPOINT;
 		XResetScreenSaver( g_X11Display );
-		CHECKPOINT;
 		XSetScreenSaver( g_X11Display, ScreenData.timeout, ScreenData.interval,
 			ScreenData.prefer_blanking, ScreenData.allow_exposures );
-		CHECKPOINT;
 	}
-		CHECKPOINT;
 
 	{
-		CHECKPOINT;
-                XRRSetScreenConfig( g_X11Display, g_pScreenConfig, RootWindow(g_X11Display, DefaultScreen(g_X11Display)), g_iOldSize, g_OldRotation, CurrentTime );
-		CHECKPOINT;
+		XRRSetScreenConfig( g_X11Display, g_pScreenConfig, RootWindow(g_X11Display, DefaultScreen(g_X11Display)), g_iOldSize, g_OldRotation, CurrentTime );
+		XUngrabKeyboard( g_X11Display, CurrentTime );
+	}
 
-                XUngrabKeyboard( g_X11Display, CurrentTime );
-		CHECKPOINT;
-        }
-		CHECKPOINT;
 	X11Helper::Stop();	// Xlib cleans up the window for us
-		CHECKPOINT;
 }
 
 void *LowLevelWindow_X11::GetProcAddress( CString s )

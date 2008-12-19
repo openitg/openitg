@@ -354,13 +354,8 @@ float TimingData::GetMaxBPM()
 	float fMaxBPM = 0;
 
 	for( unsigned ix = 0; ix < m_BPMSegments.size(); ix++ )
-	{
-		LOG->Debug( "BPMSegment %i, at %f BPM, %s than %f BPM.", ix+1, m_BPMSegments[ix].GetBPM(),
-			(m_BPMSegments[ix].GetBPM() > fMaxBPM) ? "larger" : "smaller", fMaxBPM );
-
 		if( m_BPMSegments[ix].GetBPM() > fMaxBPM )
 			fMaxBPM = m_BPMSegments[ix].GetBPM();
-	}
 
 	return fMaxBPM;
 }	

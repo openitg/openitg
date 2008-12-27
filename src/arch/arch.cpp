@@ -92,6 +92,10 @@ void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add)
 		if( !s->CompareNoCase("PacDrive") )
 			ret = new LightsDriver_PacDrive;
 #endif
+#ifdef USE_LIGHTS_DRIVER_G15
+		if (!s->CompareNoCase("G15") )
+			ret = new LightsDriver_G15;
+#endif
 #ifdef USE_LIGHTS_DRIVER_LINUX_PARALLEL
 		if( !s->CompareNoCase("LinuxParallel") )
 			ret = new LightsDriver_LinuxParallel;

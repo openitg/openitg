@@ -1,25 +1,25 @@
 #include "global.h"
-#include "NoteField.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
-#include "ArrowEffects.h"
-#include "GameManager.h"
-#include "GameState.h"
 #include "RageException.h"
-#include "RageTimer.h"
 #include "RageLog.h"
 #include "RageMath.h"
-#include "ThemeManager.h"
-#include "NoteFieldPositioning.h"
+#include "RageTimer.h"
+#include "RageUtil.h"
+#include "GameConstantsAndTypes.h"
+#include "GameState.h"
+#include "GameManager.h"
 #include "NoteSkinManager.h"
-#include "song.h"
-#include "ScreenDimensions.h"
-#include "PlayerState.h"
-#include "Style.h"
-#include "CommonMetrics.h"
-#include <float.h>
+#include "PrefsManager.h"
+#include "ThemeManager.h"
+#include "ArrowEffects.h"
 #include "BackgroundUtil.h"
+#include "CommonMetrics.h"
+#include "ScreenDimensions.h"
+#include "NoteFieldPositioning.h"
+#include "NoteField.h"
+#include "PlayerState.h"
+#include "song.h"
+#include "Style.h"
+#include <float.h>
 
 NoteField::NoteField()
 {	
@@ -699,7 +699,7 @@ void NoteField::DrawPrimitives()
 					bIsInSelectionRange = (m_iBeginMarker <= iStartRow && iEndRow < m_iEndMarker);
 
 				NoteDisplayCols *nd = CurDisplay->second;
-				nd->display[c].DrawHold( tn, c, NoteRowToBeat(iStartRow), iStartRow, bIsHoldingNote, bIsActive, Result, bIsInSelectionRange ? fSelectedRangeGlow : m_fPercentFadeToFail, false, m_fYReverseOffsetPixels, (float) iFirstPixelToDraw, (float) iLastPixelToDraw );
+				nd->display[c].DrawHold( tn, c, iStartRow, bIsHoldingNote, bIsActive, Result, bIsInSelectionRange ? fSelectedRangeGlow : m_fPercentFadeToFail, false, m_fYReverseOffsetPixels, (float) iFirstPixelToDraw, (float) iLastPixelToDraw );
 			}
 
 		}

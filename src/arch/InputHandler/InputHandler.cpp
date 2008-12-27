@@ -6,9 +6,6 @@
 #include "PrefsManager.h" // XXX
 #include <map>
 
-/* This code is taken from CNLohr's 3.9 AC build. */
-map<int, RageTimer> m_LastHit;
-
 void InputHandler::UpdateTimer()
 {
 	m_LastUpdate.Touch();
@@ -23,31 +20,7 @@ void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 		++m_iInputsSinceUpdate;
 	}
 
-	// uncomment if you need to check timestamps on input...
-	// threaded input should never pass 0.000010 or so.
-	/*
-	if( di.button != KEY_SPACE )
-		LOG->Debug( "%s %s - timestamp, %f", di.toString().c_str(), Down ? "pressed" : "released", di.ts.Ago() );
-	*/
-
-	// if it's a release, only allow it after the debounce time passes through
-	if( !Down )
-	{
-		//if ( m_LastHit.find(di.button) == m_LastHit.end() && m_LastHit[di.button].PeekDeltaTime() > PREFSMAN->m_fInputDebounceTime )
-		if ( m_LastHit[di.button].PeekDeltaTime() > PREFSMAN->m_fInputDebounceTime )
-		{
-			INPUTFILTER->ButtonPressed( di, Down );
-			m_LastHit[di.button].Touch();
-		}
-//		else
-//		{
-//			LOG->Debug("Debounce'd: PeekDeltaTime: %f, m_fInputDebounceTime: %f", m_LastHit[di.button].PeekDeltaTime(), PREFSMAN->m_fInputDebounceTime.Get());
-//		}
-	}
-	else
-	{
-		INPUTFILTER->ButtonPressed( di, Down );
-	}
+	INPUTFILTER->ButtonPressed( di, Down );
 
 	if( m_iInputsSinceUpdate >= 50 )
 	{

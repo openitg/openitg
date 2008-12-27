@@ -347,19 +347,6 @@ void TimingData::ShiftRows( int iStartRow, int iRowsToShift )
 	}
 }
 
-// hm. do we retain more precision using BPS or BPM here?
-// I think we have more precision with BPM, so I'm using that.
-float TimingData::GetMaxBPM()
-{
-	float fMaxBPM = 0;
-
-	for( unsigned ix = 0; ix < m_BPMSegments.size(); ix++ )
-		if( m_BPMSegments[ix].GetBPM() > fMaxBPM )
-			fMaxBPM = m_BPMSegments[ix].GetBPM();
-
-	return fMaxBPM;
-}	
-
 bool TimingData::HasBpmChanges() const
 {
 	return m_BPMSegments.size()>1;

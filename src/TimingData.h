@@ -69,8 +69,6 @@ public:
 	bool HasBpmChanges() const;
 	bool HasStops() const;
 
-	float GetMaxBPM();	// M-mod implementation
-
 	bool operator==( const TimingData &other )
 	{
 		COMPARE( m_BPMSegments.size() );

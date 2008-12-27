@@ -1,18 +1,17 @@
 #include "global.h"
-#include "NoteDisplay.h"
-#include "Steps.h"
-#include "PrefsManager.h"
-#include "GameState.h"
-#include "NoteSkinManager.h"
 #include "RageException.h"
-#include "RageMath.h"
-#include "ArrowEffects.h"
 #include "RageLog.h"
 #include "RageDisplay.h"
-#include "NoteTypes.h"
+#include "GameState.h"
+#include "PrefsManager.h"
+#include "NoteSkinManager.h"
+#include "NoteDisplay.h"
 #include "NoteFieldPositioning.h"
+#include "NoteTypes.h"
 #include "ActorUtil.h"
+#include "Steps.h"
 #include "Game.h"
+#include "ArrowEffects.h"
 #include "PlayerState.h"
 
 enum Part
@@ -65,14 +64,6 @@ struct NoteMetricCache_t
 
 	void Load( const CString &sButton );
 } *NoteMetricCache;
-
-// XXX: surely there's a way to do this that's already in the code somewhere?
-// I haven't bothered looking.
-inline void LineRotateY( RageSpriteVertex &vert, float fRotationY )
-{
-	vert.p.x = vert.p.z*RageFastSin(fRotationY) + vert.p.x*RageFastCos(fRotationY);
-	vert.p.z = vert.p.z*RageFastCos(fRotationY) - vert.p.x*RageFastSin(fRotationY);
-}
 
 void NoteMetricCache_t::Load( const CString &sButton )
 {
@@ -515,7 +506,6 @@ struct StripBuffer
 	enum { size = 512 };
 	RageSpriteVertex *buf;
 	RageSpriteVertex *v;
-	float fRotationY; // test
 	StripBuffer()
 	{
 		buf = (RageSpriteVertex *) malloc( size * sizeof(RageSpriteVertex) );
@@ -534,12 +524,11 @@ struct StripBuffer
 	{
 		DISPLAY->DrawQuadStrip( buf, v-buf );
 	}
-
 	int Used() const { return v - buf; }
 	int Free() const { return size - Used(); }
 };
 
-void NoteDisplay::DrawHoldTopCap( const TapNote& tn, int iCol, int iRow, bool bIsBeingHeld, float fYHead, float fYTail, int fYStep, float fPercentFadeToFail, float fColorScale, bool bGlow, float fYStartOffset, float fYEndOffset, float fRotationY )
+void NoteDisplay::DrawHoldTopCap( const TapNote& tn, int iCol, int iRow, bool bIsBeingHeld, float fYHead, float fYTail, int fYStep, float fPercentFadeToFail, float fColorScale, bool bGlow, float fYStartOffset, float fYEndOffset )
 {
 	//
 	// Draw the top cap (always wavy)
@@ -549,7 +538,6 @@ void NoteDisplay::DrawHoldTopCap( const TapNote& tn, int iCol, int iRow, bool bI
 	Sprite* pSprTopCap = GetHoldTopCapSprite( NoteRowToBeat(iRow), tn.subType == TapNote::hold_head_roll, bIsBeingHeld );
 
 	pSprTopCap->SetZoom( ArrowEffects::GetZoom( m_pPlayerState ) );
-	pSprTopCap->SetRotationY( fRotationY );
 
 	// draw manually in small segments
 	RageTexture* pTexture = pSprTopCap->GetTexture();
@@ -611,8 +599,6 @@ void NoteDisplay::DrawHoldTopCap( const TapNote& tn, int iCol, int iRow, bool bI
 
 		queue.v[0].p = RageVector3(fXLeft,  fY, fZ);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
 		queue.v[1].p = RageVector3(fXRight, fY, fZ);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
-		LineRotateY( queue.v[0], DegreeToRadian(fRotationY) );
-		LineRotateY( queue.v[1], DegreeToRadian(-fRotationY) );
 		queue.v+=2;
 		if( queue.Free() < 2 )
 		{
@@ -630,10 +616,9 @@ void NoteDisplay::DrawHoldTopCap( const TapNote& tn, int iCol, int iRow, bool bI
 }
 
 
-void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, float fBeat, int iRow, bool bIsBeingHeld, float fYHead, float fYTail, int fYStep, float fPercentFadeToFail, float fColorScale, bool bGlow,
+void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, int iRow, bool bIsBeingHeld, float fYHead, float fYTail, int fYStep, float fPercentFadeToFail, float fColorScale, bool bGlow,
 							   float fYStartOffset, float fYEndOffset )
 {
-	LOG->Debug( "fBeat: %f", fBeat );
 	//
 	// Draw the body (always wavy)
 	//
@@ -651,6 +636,7 @@ void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, float fBeat, int iR
 	DISPLAY->SetBlendMode( BLEND_NORMAL );
 	DISPLAY->SetCullMode( CULL_NONE );
 	DISPLAY->SetTextureWrapping( true );
+
 
 	const float fFrameWidth  = pSprBody->GetZoomedWidth();
 	const float fFrameHeight = pSprBody->GetZoomedHeight();
@@ -706,17 +692,13 @@ void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, float fBeat, int iR
 		const float fTexCoordRight		= pRect->right;
 		const float	fAlpha				= ArrowGetAlphaOrGlow( bGlow, m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );
 		const RageColor color			= RageColor(fColorScale,fColorScale,fColorScale,fAlpha);
-		const float fRotationY			= ArrowEffects::GetRotationY( m_pPlayerState, fBeat );
 
 		if( fAlpha > 0 )
 			bAllAreTransparent = false;
 
 		queue.v[0].p = RageVector3(fXLeft,  fY, fZ);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
 		queue.v[1].p = RageVector3(fXRight, fY, fZ);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
-		LineRotateY( queue.v[0], DegreeToRadian(fRotationY) );
-		LineRotateY( queue.v[1], DegreeToRadian(-fRotationY) );
 		queue.v+=2;
-
 		if( queue.Free() < 2 )
 		{
 			/* The queue is full.  Render it, clear the buffer, and move back a step to
@@ -733,7 +715,7 @@ void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, float fBeat, int iR
 		queue.Draw();
 }
 
-void NoteDisplay::DrawHoldBottomCap( const TapNote& tn, int iCol, int iRow, bool bIsBeingHeld, float fYHead, float fYTail, int	fYStep, float fPercentFadeToFail, float fColorScale, bool bGlow, float fYStartOffset, float fYEndOffset, float fRotationY )
+void NoteDisplay::DrawHoldBottomCap( const TapNote& tn, int iCol, int iRow, bool bIsBeingHeld, float fYHead, float fYTail, int	fYStep, float fPercentFadeToFail, float fColorScale, bool bGlow, float fYStartOffset, float fYEndOffset )
 {
 	//
 	// Draw the bottom cap (always wavy)
@@ -743,7 +725,6 @@ void NoteDisplay::DrawHoldBottomCap( const TapNote& tn, int iCol, int iRow, bool
 	Sprite* pBottomCap = GetHoldBottomCapSprite( NoteRowToBeat(iRow), tn.subType == TapNote::hold_head_roll, bIsBeingHeld );
 
 	pBottomCap->SetZoom( ArrowEffects::GetZoom( m_pPlayerState ) );
-	pBottomCap->SetRotationY( fRotationY );
 
 	// draw manually in small segments
 	RageTexture* pTexture = pBottomCap->GetTexture();
@@ -802,8 +783,6 @@ void NoteDisplay::DrawHoldBottomCap( const TapNote& tn, int iCol, int iRow, bool
 
 		queue.v[0].p = RageVector3(fXLeft,  fY, fZ);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
 		queue.v[1].p = RageVector3(fXRight, fY, fZ);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
-		LineRotateY( queue.v[0], DegreeToRadian(fRotationY) );
-		LineRotateY( queue.v[1], DegreeToRadian(-fRotationY) );
 		queue.v+=2;
 		if( queue.Free() < 2 )
 		{
@@ -820,7 +799,7 @@ void NoteDisplay::DrawHoldBottomCap( const TapNote& tn, int iCol, int iRow, bool
 		queue.Draw();
 }
 
-void NoteDisplay::DrawHoldTail( const TapNote& tn, int iCol, int iRow, bool bIsBeingHeld, float fYTail, float fPercentFadeToFail, float fColorScale, bool bGlow, float fYStartOffset, float fYEndOffset, float fRotationY )
+void NoteDisplay::DrawHoldTail( const TapNote& tn, int iCol, int iRow, bool bIsBeingHeld, float fYTail, float fPercentFadeToFail, float fColorScale, bool bGlow, float fYStartOffset, float fYEndOffset )
 {
 	//
 	// Draw the tail
@@ -828,7 +807,6 @@ void NoteDisplay::DrawHoldTail( const TapNote& tn, int iCol, int iRow, bool bIsB
 	Actor* pSprTail = GetHoldTailActor( NoteRowToBeat(iRow), tn.subType == TapNote::hold_head_roll, bIsBeingHeld );
 
 	pSprTail->SetZoom( ArrowEffects::GetZoom( m_pPlayerState ) );
-	pSprTail->SetRotationY( fRotationY );
 
 	const float fY				= fYTail;
 	const float fYOffset		= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
@@ -875,7 +853,7 @@ void NoteDisplay::DrawHoldTail( const TapNote& tn, int iCol, int iRow, bool bIsB
 	}
 }
 
-void NoteDisplay::DrawHoldHead( const TapNote& tn, int iCol, int iRow, bool bIsBeingHeld, float fYHead, float fPercentFadeToFail, float fColorScale, bool bGlow, float fYStartOffset, float fYEndOffset, float fRotationY )
+void NoteDisplay::DrawHoldHead( const TapNote& tn, int iCol, int iRow, bool bIsBeingHeld, float fYHead, float fPercentFadeToFail, float fColorScale, bool bGlow, float fYStartOffset, float fYEndOffset )
 {
 	//
 	// Draw the head
@@ -883,7 +861,6 @@ void NoteDisplay::DrawHoldHead( const TapNote& tn, int iCol, int iRow, bool bIsB
 	Actor* pActor = GetHoldHeadActor( NoteRowToBeat(iRow), tn.subType == TapNote::hold_head_roll, bIsBeingHeld );
 
 	pActor->SetZoom( ArrowEffects::GetZoom( m_pPlayerState ) );
-	pActor->SetRotationY( fRotationY );
 
 	// draw with normal Sprite
 	const float fY				= fYHead;
@@ -932,7 +909,7 @@ void NoteDisplay::DrawHoldHead( const TapNote& tn, int iCol, int iRow, bool bIsB
 	}
 }
 
-void NoteDisplay::DrawHold( const TapNote &tn, int iCol, float fBeat, int iRow, bool bIsBeingHeld, bool bIsActive, const HoldNoteResult &Result, float fPercentFadeToFail, bool bDrawGlowOnly, float fReverseOffsetPixels, float fYStartOffset, float fYEndOffset )
+void NoteDisplay::DrawHold( const TapNote &tn, int iCol, int iRow, bool bIsBeingHeld, bool bIsActive, const HoldNoteResult &Result, float fPercentFadeToFail, bool bDrawGlowOnly, float fReverseOffsetPixels, float fYStartOffset, float fYEndOffset )
 {
 	int iEndRow = iRow + tn.iDuration;
 
@@ -954,7 +931,6 @@ void NoteDisplay::DrawHold( const TapNote &tn, int iCol, float fBeat, int iRow, 
 	float fEndPeakYOffset	= 0;
 	bool bEndIsPastPeak = false;
 	float fEndYOffset	= ArrowEffects::GetYOffset( m_pPlayerState, iCol, NoteRowToBeat(iEndRow), fEndPeakYOffset, bEndIsPastPeak );
-	float fRotationY	= ArrowEffects::GetRotationY( m_pPlayerState, fBeat );
 
 	// In boomerang, the arrows reverse direction at Y offset value fPeakAtYOffset.  
 	// If fPeakAtYOffset lies inside of the hold we're drawing, then the we 
@@ -980,9 +956,9 @@ void NoteDisplay::DrawHold( const TapNote &tn, int iCol, float fBeat, int iRow, 
 	/* The body and caps should have no overlap, so their order doesn't matter.
 	 * Draw the head last, so it appears on top. */
 	if( !cache->m_bHoldHeadIsAboveWavyParts )
-		DrawHoldHead( tn, iCol, iRow, bIsBeingHeld, bFlipHeadAndTail ? fYTail : fYHead, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset, fRotationY );
+		DrawHoldHead( tn, iCol, iRow, bIsBeingHeld, bFlipHeadAndTail ? fYTail : fYHead, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset );
 	if( !cache->m_bHoldTailIsAboveWavyParts )
-		DrawHoldTail( tn, iCol, iRow, bIsBeingHeld, bFlipHeadAndTail ? fYHead : fYTail, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset, fRotationY );
+		DrawHoldTail( tn, iCol, iRow, bIsBeingHeld, bFlipHeadAndTail ? fYHead : fYTail, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset );
 
 	if( bDrawGlowOnly )
 		DISPLAY->SetTextureModeGlow();
@@ -992,20 +968,20 @@ void NoteDisplay::DrawHold( const TapNote &tn, int iCol, float fBeat, int iRow, 
 	DISPLAY->SetZWrite( WavyPartsNeedZBuffer );
 	
 	if( !bFlipHeadAndTail )
-		DrawHoldBottomCap( tn, iCol, iRow, bIsBeingHeld, fYHead, fYTail, fYStep, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset, fRotationY );
-	DrawHoldBody( tn, iCol, fBeat, iRow, bIsBeingHeld, fYHead, fYTail, fYStep, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset );
+		DrawHoldBottomCap( tn, iCol, iRow, bIsBeingHeld, fYHead, fYTail, fYStep, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset );
+	DrawHoldBody( tn, iCol, iRow, bIsBeingHeld, fYHead, fYTail, fYStep, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset );
 	if( bFlipHeadAndTail )
-		DrawHoldTopCap( tn, iCol, iRow, bIsBeingHeld, fYHead, fYTail, fYStep, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset, fRotationY );
+		DrawHoldTopCap( tn, iCol, iRow, bIsBeingHeld, fYHead, fYTail, fYStep, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset );
 
 	/* These set the texture mode themselves. */
 	if( cache->m_bHoldTailIsAboveWavyParts )
-		DrawHoldTail( tn, iCol, iRow, bIsBeingHeld, bFlipHeadAndTail ? fYHead : fYTail, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset, fRotationY );
+		DrawHoldTail( tn, iCol, iRow, bIsBeingHeld, bFlipHeadAndTail ? fYHead : fYTail, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset );
 	if( cache->m_bHoldHeadIsAboveWavyParts )
-		DrawHoldHead( tn, iCol, iRow, bIsBeingHeld, bFlipHeadAndTail ? fYTail : fYHead, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset, fRotationY );
+		DrawHoldHead( tn, iCol, iRow, bIsBeingHeld, bFlipHeadAndTail ? fYTail : fYHead, fPercentFadeToFail, fColorScale, bDrawGlowOnly, fYStartOffset, fYEndOffset );
 
 	// now, draw the glow pass
 	if( !bDrawGlowOnly )
-		DrawHold( tn, iCol, fBeat, iRow, bIsBeingHeld, bIsActive, Result, fPercentFadeToFail, true, fReverseOffsetPixels, fYStartOffset, fYEndOffset );
+		DrawHold( tn, iCol, iRow, bIsBeingHeld, bIsActive, Result, fPercentFadeToFail, true, fReverseOffsetPixels, fYStartOffset, fYEndOffset );
 }
 
 void NoteDisplay::DrawActor( Actor* pActor, int iCol, float fBeat, float fPercentFadeToFail, float fLife, float fReverseOffsetPixels, bool bUseLighting )

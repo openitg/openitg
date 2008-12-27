@@ -1663,6 +1663,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 						RelativePath="arch\Lights\LightsDriver_External.h">
 					</File>
 					<File
+						RelativePath=".\arch\Lights\LightsDriver_G15.cpp">
+					</File>
+					<File
+						RelativePath=".\arch\Lights\LightsDriver_G15.h">
+					</File>
+					<File
 						RelativePath="arch\Lights\LightsDriver_Null.h">
 					</File>
 					<File
@@ -3273,6 +3279,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 		<Filter
 			Name="Special I/O"
 			Filter="">
+			<File
+				RelativePath=".\io\G15.cpp">
+			</File>
+			<File
+				RelativePath=".\io\G15.h">
+			</File>
 			<File
 				RelativePath="io\ITGIO.cpp">
 			</File>

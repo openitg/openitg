@@ -14,6 +14,7 @@
 #include "LightsDriver_External.h"
 #include "LightsDriver_SystemMessage.h"
 #include "LightsDriver_PacDrive.h"
+#include "LightsDriver_G15.h"
 #include "LightsDriver_Null.h"
 
 #endif

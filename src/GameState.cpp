@@ -1094,6 +1094,9 @@ void GameState::ResetCurrentOptions()
 
 bool GameState::IsDisqualified( PlayerNumber pn )
 {
+	if( !IsPlayerEnabled(pn) )
+		return false;
+
 	if( !PREFSMAN->m_bDisqualification )
 		return false;
 

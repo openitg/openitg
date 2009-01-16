@@ -121,7 +121,7 @@ void ScreenArcadeDiagnostics::MenuBack( PlayerNumber pn )
 	if(!IsTransitioning())
 	{
 		this->PlayCommand( "Off" );
-		StartTransitioning( SM_GoToPrevScreen );		
+		StartTransitioning( SM_GoToPrevScreen );
 	}
 }
 

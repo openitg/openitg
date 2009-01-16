@@ -1290,6 +1290,16 @@ bool Song::HasBackground() const 	{return m_sBackgroundFile != ""		&&  IsAFile(G
 bool Song::HasCDTitle() const 		{return m_sCDTitleFile != ""		&&  IsAFile(GetCDTitlePath()); }
 bool Song::IsCustomSong() const		{ return m_bIsCustomSong; }
 
+bool Song::IsLong() const
+{
+	return !IsMarathon() && m_fMusicLengthSeconds > PREFSMAN->m_fLongVerSongSeconds;
+}
+
+bool Song::IsMarathon() const
+{
+	return m_fMusicLengthSeconds >= PREFSMAN->m_fMarathonVerSongSeconds;
+}
+
 bool Song::HasBGChanges() const
 {
 	/* I dunno, is there that big a demand for this? */
@@ -1676,6 +1686,10 @@ public:
 	static int GetSongDir( T* p, lua_State *L )	{ lua_pushstring(L, p->GetSongDir() ); return 1; }
 	static int GetBannerPath( T* p, lua_State *L )		{ if( !p->HasBanner() ) lua_pushnil(L); else lua_pushstring(L, p->GetBannerPath()); return 1; }
 	static int GetBackgroundPath( T* p, lua_State *L )	{ if( !p->HasBackground() ) lua_pushnil(L); else lua_pushstring(L, p->GetBackgroundPath()); return 1; }
+	static int GetGroupName( T* p, lua_State *L )		{ lua_pushstring(L, p->m_sGroupName); return 1; }
+	static int IsLong( T* p, lua_State *L )				{ lua_pushboolean(L, p->IsLong()); return 1; }
+	static int IsMarathon( T* p, lua_State *L )			{ lua_pushboolean(L, p->IsMarathon()); return 1; }
+	static int MusicLengthSeconds( T* p, lua_State *L )	{ lua_pushnumber(L, p->m_fMusicLengthSeconds); return 1; }
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( GetDisplayFullTitle )
@@ -1690,6 +1704,10 @@ public:
 		ADD_METHOD( GetSongDir )
 		ADD_METHOD( GetBannerPath )
 		ADD_METHOD( GetBackgroundPath )
+		ADD_METHOD( GetGroupName )
+		ADD_METHOD( IsLong )
+		ADD_METHOD( IsMarathon )
+		ADD_METHOD( MusicLengthSeconds )
 		Luna<T>::Register( L );
 	}
 };

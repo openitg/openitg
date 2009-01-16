@@ -1,5 +1,6 @@
 #include "global.h"
 #include "InputFilter.h"
+#include "Preference.h"
 #include "RageLog.h"
 #include "RageInput.h"
 #include "RageUtil.h"
@@ -15,6 +16,32 @@ static const float FAST_REPEATS_PER_SEC = 8;
 
 static float g_fTimeBeforeSlow, g_fTimeBeforeFast, g_fTimeBetweenSlow, g_fTimeBetweenFast;
 
+/*
+ * Some input devices require debouncing.  Do this on both press and release.  After
+ * reporting a change in state, don't report another for the debounce period.  If a
+ * button is reported pressed, report it.  If the button is immediately reported
+ * released, wait a period before reporting it; if the button is repressed during
+ * that time, the release is never reported.
+ *
+ * The detail is important: if a button is pressed for 1ms and released, we must
+ * always report it, even if the debounce period is 10ms, since it might be a coin
+ * counter with a very short signal.  The only time we discard events is if a button
+ * is pressed, released and then pressed again quickly.
+ *
+ * This delay in events is ordinarily not noticable, because we report initial
+ * presses and releases immediately.  However, if a real press is ever delayed,
+ * this won't cause timing problems, because the event timestamp is preserved.
+ */
+static Preference<float> g_fInputDebounceTime( "InputDebounceTime", 0 );
+
+ButtonState::ButtonState() :
+	m_BeingHeldTime(RageZeroTimer),
+	m_LastReportTime(RageZeroTimer)
+{
+	m_BeingHeld = false;
+	m_LastReportedHeld = false;
+	m_fSecsHeld = 0;
+}
 
 InputFilter::InputFilter()
 {
@@ -68,15 +95,39 @@ void InputFilter::ButtonPressed( DeviceInput di, bool Down )
 
 	ButtonState &bs = m_ButtonState[di.device][di.button];
 
-	bs.m_Level = di.level;
+	RageTimer now;
+	CheckButtonChange( bs, di, now );
 
-	if( bs.m_BeingHeld == Down )
+	if( bs.m_BeingHeld != Down )
+	{
+		bs.m_BeingHeld = Down;
+		bs.m_BeingHeldTime = di.ts;
+	}
+
+	/* Try to report presses immediately. */
+	CheckButtonChange( bs, di, now );
+}
+
+void InputFilter::CheckButtonChange( ButtonState &bs, DeviceInput di, const RageTimer &now )
+{
+	if( bs.m_BeingHeld == bs.m_LastReportedHeld )
 		return;
 
-	bs.m_BeingHeld = Down;
-	bs.m_fSecsHeld = 0;
+	/* If the last IET_FIRST_PRESS or IET_RELEASE event was sent too recently,
+	 * wait a while before sending it. */
+	if( now - bs.m_LastReportTime < g_fInputDebounceTime )
+		return;
 
-	queue.push_back( InputEvent(di,Down? IET_FIRST_PRESS:IET_RELEASE) );
+	bs.m_LastReportTime = now;
+	bs.m_LastReportedHeld = bs.m_BeingHeld;
+	bs.m_fSecsHeld = 0;
+	bs.m_LastInputTime = bs.m_BeingHeldTime;
+
+	di.ts = bs.m_BeingHeldTime;
+	if( !bs.m_LastReportedHeld )
+		di.level = 0;
+
+	queue.push_back( InputEvent(di, bs.m_LastReportedHeld?IET_FIRST_PRESS:IET_RELEASE) );
 }
 
 void InputFilter::SetButtonComment( DeviceInput di, const CString &sComment )
@@ -98,16 +149,6 @@ void InputFilter::Update(float fDeltaTime)
 {
 	RageTimer now;
 
-	// Constructing the DeviceInput inside the nested loops caues terrible 
-	// performance.  So, construct it once outside the loop, then change 
-	// .device and .button inside the loop.  I have no idea what is causing 
-	// the slowness.  DeviceInput is a very small and simple structure, but
-	// it's constructor was being called NUM_INPUT_DEVICES*NUM_DEVICE_BUTTONS
-	// (>2000) times per Update().
-	/* This should be fixed: DeviceInput's ctor uses an init list, so RageTimer
-	 * isn't initialized each time. */
-//	DeviceInput di( (InputDevice)0,0,now);
-
 	INPUTMAN->Update( fDeltaTime );
 
 	/* Make sure that nothing gets inserted while we do this, to prevent
@@ -126,22 +167,31 @@ void InputFilter::Update(float fDeltaTime)
 		{
 			ButtonState &bs = m_ButtonState[d][b];
 			di.button = b;
-			di.level = bs.m_Level;
+
+			CheckButtonChange( bs, di, now );
 
 			/* Generate IET_LEVEL_CHANGED events. */
-			if( bs.m_LastLevel != bs.m_Level )
+		/* EXPERIMENTAL: this doesn't seem to be used at all, so why bother?
+		 * Let's see if any weird bugs pop up as a result.
+		 *
+			 if( bs.m_LastLevel != bs.m_Level )
 			{
 				queue.push_back( InputEvent(di,IET_LEVEL_CHANGED) );
 				bs.m_LastLevel = bs.m_Level;
 			}
 
+		 */
+
 			/* Generate IET_FAST_REPEAT and IET_SLOW_REPEAT events. */
-			if( !bs.m_BeingHeld )
+			if( !bs.m_LastReportedHeld )
 				continue;
 
 			const float fOldHoldTime = bs.m_fSecsHeld;
 			bs.m_fSecsHeld += fDeltaTime;
 			const float fNewHoldTime = bs.m_fSecsHeld;
+			
+			if( fNewHoldTime <= g_fTimeBeforeSlow )
+				continue;
 
 			float fTimeBetweenRepeats;
 			InputEventType iet;
@@ -169,7 +219,7 @@ void InputFilter::Update(float fDeltaTime)
 
 bool InputFilter::IsBeingPressed( DeviceInput di )
 {
-	return m_ButtonState[di.device][di.button].m_BeingHeld;
+	return m_ButtonState[di.device][di.button].m_LastReportedHeld;
 }
 
 float InputFilter::GetSecsHeld( DeviceInput di )

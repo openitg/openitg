@@ -2,42 +2,19 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "InputMapper.h"
-
-/* TODO: add lights support */
-
+#include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_MK3.h"
 
-/* All ports are 16 bits. */
-const short INPUT_PORT_1 = 0x2A4;
-const short INPUT_PORT_2 = 0x2A6;
-
-const short OUTPUT_PORT_1 = 0x2A0;
-const short OUTPUT_PORT_2 = 0x2A2;
-
-#ifdef LINUX
-#include <sys/io.h>
-
-inline void Write( uint32_t iData )
-{
-	outw_p( (uint16_t)(iData>>16),	OUTPUT_PORT_1 );
-	outw_p( (uint16_t)(iData),		OUTPUT_PORT_2 );
-}
-
-inline void Read( uint32_t *pData )
-{
-	*pData = inw_p(INPUT_PORT_1) << 16 | inw_p(INPUT_PORT_2);
-}
-#else
-#error InputHandler_MK3 needs fixing up to work on a non-*nix OS.
-#endif
+// include system-specific low-level calls
+#include "arch/ArchHooks/ArchHooks.h"
+#include "InputHandler_MK3Helper.h"
 
 InputHandler_MK3::InputHandler_MK3()
 {
 	m_bFoundDevice = false;
 	m_bShutdown = false;
 
-	// XXX: non-portable command
-	if( iopl(3) == -1 )
+	if( !HOOKS->OpenMemoryRange(0x2A0, 8) )
 	{
 		LOG->Warn( "InputHandler_MK3 requires root privileges to run." );
 		return;
@@ -46,6 +23,8 @@ InputHandler_MK3::InputHandler_MK3()
 	// TO DO: figure out what kind of values we read when MK3 isn't
 	// initted, and more intelligently decide we have a device there.
 	m_bFoundDevice = true;
+
+	SetLightsMappings();
 
 	InputThread.SetName( "MK3 thread" );
 	InputThread.Create( InputThread_Start, this );
@@ -63,7 +42,37 @@ InputHandler_MK3::~InputHandler_MK3()
 
 	// reset all lights
 	if( m_bFoundDevice )
-		Write( 0 );
+		MK3::Write( 0 );
+
+	HOOKS->CloseMemoryRange(0x2A0, 8);
+}
+
+void InputHandler_MK3::SetLightsMappings()
+{
+	uint32_t iCabinetLights[NUM_CABINET_LIGHTS] = 
+	{
+		/* UL, UR, LL, LR marquee lights */
+		(1 << 23), (1 << 26), (1 << 25), (1 << 24),
+
+		/* selection buttons (not used), bass lights */
+		0, 0, (1 << 10), (1 << 10)
+	};
+
+	uint32_t iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] = 
+	{
+		/* Left, Right, Up, Down */
+		{ (1 << 20), (1 << 21), (1 << 18), (1 << 19) },	/* Player 1 */
+		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
+	};
+
+	m_LightsMappings.SetCabinetLights( iCabinetLights );
+	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
+		iGameLights[GAME_CONTROLLER_2] );
+	
+	m_LightsMappings.m_iCoinCounterOn = (1 << 28);
+	m_LightsMappings.m_iCoinCounterOff = (1 << 27);
+
+	LightsMapper::LoadMappings( "PIUIO", m_LightsMappings );
 }
 
 void InputHandler_MK3::GetDevicesAndDescriptions( vector<InputDevice> &vDevicesOut, vector<CString> &vDescriptionsOut )
@@ -99,8 +108,8 @@ void InputHandler_MK3::HandleInput()
 		m_iLightData |= (i | (i << 16));
 
 		// do one write/read cycle to get this sensor set
-		Write( m_iLightData );
-		Read( &m_iInputData[i] );
+		MK3::Write( m_iLightData );
+		MK3::Read( &m_iInputData[i] );
 
 		// PIUIO opens high - invert it
 		m_iInputData[i] = ~m_iInputData[i];
@@ -128,7 +137,27 @@ void InputHandler_MK3::HandleInput()
 // TODO: lol
 void InputHandler_MK3::UpdateLights()
 {
-	m_iLightData = 0xFFFFFFFF;
+	// set a const pointer to the "ext" LightsState to read from
+	static const LightsState *m_LightsState = LightsDriver_External::Get();
+
+	// reset
+	ZERO( m_iLightData );
+
+	// update marquee lights
+	FOREACH_CabinetLight( cl )
+		if( m_LightsState->m_bCabinetLights[cl] )
+			m_iLightData |= m_LightsMappings.m_iCabinetLights[cl];
+
+	FOREACH_GameController( gc )
+		FOREACH_GameButton( gb )
+			if( m_LightsState->m_bGameButtonLights[gc][gb] )
+				m_iLightData |= m_LightsMappings.m_iGameLights[gc][gb];
+
+	/* The coin counter moves halfway if we send bit 4, then the
+	 * rest of the way (or not at all) if we send bit 5. Send bit
+	 * 5 unless we have a coin event being recorded. */
+	m_iLightData |= m_LightsState->m_bCoinCounter ?
+		m_LightsMappings.m_iCoinCounterOn : m_LightsMappings.m_iCoinCounterOff;
 }
 
 /*

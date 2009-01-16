@@ -121,6 +121,14 @@ float HHMMSSToSeconds( const CString &sHHMMSS )
 	return fSeconds;
 }
 
+CString SecondsToMMSS( float fSecs )
+{
+	const int iMinsDisplay = (int)fSecs/60;
+	const int iSecsDisplay = int(fSecs) - iMinsDisplay*60;
+	CString sReturn = ssprintf( "%01d:%02d", iMinsDisplay, iSecsDisplay );
+	return sReturn;
+}
+
 CString SecondsToHHMMSS( float fSecs )
 {
 	const int iMinsDisplay = (int)fSecs/60;
@@ -147,10 +155,6 @@ CString SecondsToMSSMsMs( float fSecs )
 	return sReturn;
 }
 
-#include "LuaFunctions.h"
-#include "LuaManager.h"
-LuaFunction( SecondsToMSSMsMs, SecondsToMSSMsMs( FArg(1) ) )
-
 CString SecondsToMMSSMsMsMs( float fSecs )
 {
 	const int iMinsDisplay = (int)fSecs/60;
@@ -159,6 +163,14 @@ CString SecondsToMMSSMsMsMs( float fSecs )
 	CString sReturn = ssprintf( "%02d:%02d.%03d", iMinsDisplay, iSecsDisplay, min(999,iLeftoverDisplay) );
 	return sReturn;
 }
+
+#include "LuaFunctions.h"
+#include "LuaManager.h"
+LuaFunction( SecondsToMMSS, SecondsToMMSS( FArg(1) ) )
+LuaFunction( SecondsToHHMMSS, SecondsToHHMMSS( FArg(1) ) )
+LuaFunction( SecondsToMSSMsMs, SecondsToMSSMsMs( FArg(1) ) )
+LuaFunction( SecondsToMMSSMsMs, SecondsToMMSSMsMs( FArg(1) ) )
+LuaFunction( SecondsToMMSSMsMsMs, SecondsToMMSSMsMsMs( FArg(1) ) )
 
 CString PrettyPercent( float fNumerator, float fDenominator)
 {

@@ -23,6 +23,9 @@ public:
 	void BoostPriority();
 	void UnBoostPriority();
 
+	bool OpenMemoryRange( unsigned short start_port, unsigned short bytes );
+	void CloseMemoryRange( unsigned short start_port, unsigned short bytes );
+
 private:
 	void CheckVideoDriver();
 };

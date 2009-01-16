@@ -793,6 +793,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="ScreenPlayerOptions.h">
 			</File>
 			<File
+				RelativePath=".\ScreenPlayLights.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenPlayLights.h">
+			</File>
+			<File
 				RelativePath="ScreenProfileOptions.cpp">
 			</File>
 			<File
@@ -1568,6 +1574,15 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					</File>
 					<File
 						RelativePath="arch\InputHandler\InputHandler_Iow.h">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_MK3.cpp">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_MK3.h">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_MK3Helper.h">
 					</File>
 					<File
 						RelativePath="arch\InputHandler\InputHandler_MonkeyKeyboard.cpp">

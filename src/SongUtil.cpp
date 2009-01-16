@@ -182,6 +182,16 @@ int CompareSongPointersByGroupAndTitle(const Song *pSong1, const Song *pSong2)
 	return CompareSongPointersByTitle( pSong1, pSong2 );
 }
 
+int CompareSongPointersBySongLength( const Song *pSong1, const Song *pSong2 )
+{
+	return pSong1->m_fMusicLengthSeconds < pSong2->m_fMusicLengthSeconds;
+}
+
+void SongUtil::SortSongPointerArrayBySongLength( vector<Song*> &vpSongsInOut )
+{
+	sort( vpSongsInOut.begin(), vpSongsInOut.end(), CompareSongPointersBySongLength );
+}
+
 void SongUtil::SortSongPointerArrayByGroupAndTitle( vector<Song*> &vpSongsInOut )
 {
 	sort( vpSongsInOut.begin(), vpSongsInOut.end(), CompareSongPointersByGroupAndTitle );
@@ -241,6 +251,14 @@ CString SongUtil::GetSectionNameFromSongAndSort( const Song* pSong, SortOrder so
 		if( !pSong->m_sGenre.empty() )
 			return pSong->m_sGenre;
 		return "N/A";
+	case SORT_SONG_LENGTH:
+		{
+			const int iSortLengthSize = 5;
+			int iMaxLength = pSong->m_fMusicLengthSeconds;
+			iMaxLength += (iSortLengthSize - (iMaxLength%iSortLengthSize) - 1);
+			int iMinLength = iMaxLength - (iSortLengthSize-1);
+			return ssprintf( "%s-%s", SecondsToMMSS(iMinLength).c_str(), SecondsToMMSS(iMaxLength).c_str() );
+		}
 	case SORT_BPM:
 		{
 			const int iBPMGroupSize = 20;

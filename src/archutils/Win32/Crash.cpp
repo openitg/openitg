@@ -29,6 +29,9 @@
 
 static HFONT hFontMono = NULL;
 
+// needs to be accessible in several places
+static char s_sCrashLogPath[64];
+
 static void DoSave();
 
 ///////////////////////////////////////////////////////////////////////////
@@ -809,13 +812,10 @@ static void DoSave()
 	char szModName2[MAX_PATH];
 
 	/* Set up a timestamp for the crashlog. */
-	time_t seconds;
-	seconds = time( NULL );
-	
-	char sCrashLog[32];
-	sprintf( sCrashLog, "crashlog-%ld.txt", seconds );
+	time_t seconds = time( NULL );
+	sprintf( s_sCrashLogPath, "../Data/crashinfo-%ld.txt", seconds );
 
-	SpliceProgramPath(szModName2, sizeof szModName2, sCrashLog);
+	SpliceProgramPath(szModName2, sizeof szModName2, s_sCrashLogPath);
 
 	HANDLE hFile = CreateFile(szModName2, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (INVALID_HANDLE_VALUE == hFile)
@@ -870,7 +870,7 @@ static void DoSave()
 void ViewWithNotepad(const char *str)
 {
 	char buf[256] = "";
-	strcat(buf, "notepad.exe  ");
+	strcat(buf, "notepad.exe ");
 	strcat(buf, str);
 
 	char cwd[MAX_PATH];
@@ -922,7 +922,7 @@ BOOL APIENTRY CrashDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			// EndDialog(hDlg, TRUE); /* don't always exit on ENTER */
 			return TRUE;
 		case IDC_VIEW_LOG:
-			ViewWithNotepad("../log.txt");
+			ViewWithNotepad( "../log.txt" );
 			break;
 		case IDC_CRASH_SAVE:
 			if (!s_bHaveCallstack)
@@ -933,7 +933,7 @@ BOOL APIENTRY CrashDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 					PRODUCT_NAME " warning", MB_OK|MB_ICONEXCLAMATION))
 					return TRUE;
 
-			ViewWithNotepad("../crashinfo.txt");
+			ViewWithNotepad( s_sCrashLogPath );
 			return TRUE;
 		case IDC_BUTTON_RESTART:
 			{

@@ -214,6 +214,7 @@ int power_of_two(int input);
 bool IsAnInt( const CString &s );
 bool IsHexVal( const CString &s );
 float HHMMSSToSeconds( const CString &sHMS );
+CString SecondsToMMSS( float fSecs );
 CString SecondsToHHMMSS( float fSecs );
 CString SecondsToMSSMsMs( float fSecs );
 CString SecondsToMMSSMsMs( float fSecs );

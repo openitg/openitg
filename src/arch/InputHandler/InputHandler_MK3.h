@@ -3,6 +3,7 @@
 
 #include "InputHandler.h"
 #include "RageThreads.h"
+#include "LightsMapper.h"
 
 class InputHandler_MK3: public InputHandler
 {
@@ -13,6 +14,9 @@ public:
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
 	RageThread InputThread;
+
+	LightsMapping m_LightsMappings;
+	void SetLightsMappings();
 
 	void InputThreadMain();
 	static int InputThread_Start( void *p )
@@ -34,7 +38,7 @@ private:
 
 #define USE_INPUT_HANDLER_MK3
 
-#endif
+#endif // INPUT_HANDLER_MK3_H
 
 /*
  * (c) 2008 BoXoRRoXoRs

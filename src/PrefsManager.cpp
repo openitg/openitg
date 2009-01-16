@@ -269,7 +269,6 @@ PrefsManager::PrefsManager() :
 
 	m_fConstantUpdateDeltaSeconds	( "ConstantUpdateDeltaSeconds",	0 ),
 	m_fPadStickSeconds				( "PadStickSeconds",			0 ),
-	m_fInputDebounceTime			( "InputDebounceTime",		0 ),
 	m_bForceMipMaps					( "ForceMipMaps",				0 ),
 	m_bTrilinearFiltering			( "TrilinearFiltering",			0 ),
 	m_bAnisotropicFiltering			( "AnisotropicFiltering",		0 ),

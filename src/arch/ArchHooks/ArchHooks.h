@@ -29,6 +29,10 @@ public:
 	virtual void BoostPriority() { }
 	virtual void UnBoostPriority() { }
 
+	/* Call this to open access to attempt to claim the given privileged I/O port range. */
+	virtual bool OpenMemoryRange( unsigned short start_port, unsigned short bytes ) { return false; }
+	virtual void CloseMemoryRange( unsigned short start_port, unsigned short bytes ) { }
+
 	/*
 	 * Return the amount of time since the program started.  (This may actually be
 	 * since the initialization of HOOKS.

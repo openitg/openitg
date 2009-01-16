@@ -10,6 +10,10 @@ public:
 	void SystemReboot();
 
 	void SetTime( tm newtime );
+
+	bool OpenMemoryRange( unsigned short start_port, unsigned short bytes );
+	void CloseMemoryRange( unsigned short start_port, unsigned short bytes );
+
 	static int64_t m_iStartTime;
 	int64_t GetMicrosecondsSinceStart();
 };

@@ -37,22 +37,29 @@ struct InputEvent : public DeviceInput
 
 typedef vector<InputEvent> InputEventArray;
 
+struct ButtonState
+{
+	ButtonState();
+
+	bool m_BeingHeld, m_LastReportedHeld;
+	float m_fSecsHeld;
+	float m_Level, m_LastLevel;
+	CString m_sComment;
+
+	// Timestamp of m_BeingHeld changing.
+	RageTimer m_BeingHeldTime;
+
+	// The time that we actually reported the last event (used for debouncing).
+	RageTimer m_LastReportTime;
+
+	// The timestamp of the last reported change.  Unlike m_BeingHeldTime, this
+	// value is debounced along with the input state.  (This is the same as
+	// m_fSecsHeld, except this isn't affected by Update scaling.)
+	RageTimer m_LastInputTime;};
+
 class RageMutex;
 class InputFilter
 {
-	struct ButtonState
-	{
-		ButtonState() { m_BeingHeld = false; m_fSecsHeld = m_Level = m_LastLevel = 0; }
-		bool m_BeingHeld;
-		CString m_sComment;
-		float m_fSecsHeld;
-		float m_Level, m_LastLevel;
-	};
-	ButtonState m_ButtonState[NUM_INPUT_DEVICES][MAX_DEVICE_BUTTONS];
-
-	InputEventArray queue;
-	RageMutex *queuemutex;
-
 public:
 	void ButtonPressed( DeviceInput di, bool Down );
 	void SetButtonComment( DeviceInput di, const CString &sComment = "" );
@@ -72,6 +79,13 @@ public:
 	CString GetButtonComment( DeviceInput di ) const;
 	
 	void GetInputEvents( InputEventArray &array );
+private:
+	void CheckButtonChange( ButtonState &bs, DeviceInput di, const RageTimer &now );
+
+	ButtonState m_ButtonState[NUM_INPUT_DEVICES][MAX_DEVICE_BUTTONS];
+
+	InputEventArray queue;
+	RageMutex *queuemutex;
 };
 
 extern InputFilter*	INPUTFILTER;	// global and accessable from anywhere in our program

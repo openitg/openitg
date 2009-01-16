@@ -46,6 +46,7 @@ static const SortOrder g_SongSortOrders[] =
 	SORT_POPULARITY, 
 	SORT_ARTIST,
 	SORT_GENRE,
+	SORT_SONG_LENGTH
 };
 const vector<SortOrder> SONG_SORT_ORDERS( g_SongSortOrders, g_SongSortOrders + ARRAYSIZE(g_SongSortOrders) );
 	
@@ -476,6 +477,7 @@ void MusicWheel::BuildWheelItemDatas( vector<WheelItemData> &arrayWheelItemDatas
 	case SORT_TOP_GRADES:
 	case SORT_ARTIST:
 	case SORT_GENRE:
+	case SORT_SONG_LENGTH:
 	case SORT_EASY_METER:
 	case SORT_MEDIUM_METER:
 	case SORT_HARD_METER:
@@ -523,6 +525,9 @@ void MusicWheel::BuildWheelItemDatas( vector<WheelItemData> &arrayWheelItemDatas
 				break;
 			case SORT_GENRE:
 				SongUtil::SortSongPointerArrayByGenre( arraySongs );
+				break;
+			case SORT_SONG_LENGTH:
+				SongUtil::SortSongPointerArrayBySongLength( arraySongs );
 				break;
 			case SORT_EASY_METER:
 				SongUtil::SortSongPointerArrayByMeter( arraySongs, DIFFICULTY_EASY );

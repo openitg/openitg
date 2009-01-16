@@ -187,6 +187,17 @@ void ArchHooks_Win32::SystemReboot()
 	ExitGame();
 }
 
+bool ArchHooks_Win32::OpenMemoryRange( unsigned short start_port, unsigned short bytes )
+{
+	LOG->Info( "ArchHooks_Win32::OpenMemoryRange(): blindly returning true." );
+	return true;
+}
+
+void ArchHooks_Win32::CloseMemoryRange( unsigned short start_port, unsigned short bytes )
+{
+	return;
+}
+
 void ArchHooks_Win32::EnterTimeCriticalSection()
 {
 	TimeCritMutex->Lock();

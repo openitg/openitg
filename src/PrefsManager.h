@@ -260,9 +260,6 @@ public:
 	// Number of seconds it takes for a button on the controller to release
 	// after pressed.
 	Preference<float>	m_fPadStickSeconds;
-	
-	// Number of seconds to keep a button held before releasing.
-	Preference<float>	m_fInputDebounceTime;
 
 	// Useful for non 4:3 displays and resolutions < 640x480 where texels don't
 	// map directly to pixels.

@@ -3,8 +3,9 @@
 #include "RageUtil.h"
 #include "InputHandler.h"
 #include "RageLog.h"
-#include "PrefsManager.h" // XXX
 #include <map>
+
+#define UPDATE_WARN_LIMIT 100
 
 void InputHandler::UpdateTimer()
 {
@@ -22,7 +23,7 @@ void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 
 	INPUTFILTER->ButtonPressed( di, Down );
 
-	if( m_iInputsSinceUpdate >= 50 )
+	if( m_iInputsSinceUpdate >= UPDATE_WARN_LIMIT )
 	{
 		/*
 		 * We havn't received an update in a long time, so warn about it.  We expect to receive
@@ -35,8 +36,7 @@ void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 		 * driver that sends every key in one frame.  If that's really needed (wasteful), increase
 		 * the threshold.
 		 */
-		LOG->Warn( "InputHandler::ButtonPressed: Driver sent 50 updates without calling UpdateTimer" );
-		FAIL_M("Driver sent 50 updates without calling UpdateTimer");	// that wasn't so hard now, was it?
+		LOG->Warn( "InputHandler::ButtonPressed: Driver sent %d updates without calling UpdateTimer", UPDATE_WARN_LIMIT );
 	}
 }
 

@@ -283,7 +283,7 @@ void TournamentManager::FinishStage( StageStats &stats )
 		m_pCurStage->iPossiblePoints[pn] = stats.m_player[pn].iPossibleDancePoints;
 
 		// truncate the rest to avoid rounding errors
-		m_pCurStage->fPercentPoints[pn] = ftruncf( stats.m_player[pn].GetPercentDancePoints(), 0.0001 );
+		m_pCurStage->fPercentPoints[pn] = ftruncf( (float)stats.m_player[pn].GetPercentDancePoints(), 0.0001 );
 
 		FOREACH_TapNoteScore( tns )
 			m_pCurStage->iTapNoteScores[pn][tns] = stats.m_player[pn].iTapNoteScores[tns];

@@ -36,6 +36,44 @@ static bool IsFatalSignal( int signal )
 	}
 }
 
+bool ArchHooks_Unix::OpenMemoryRange( unsigned short start_port, unsigned short bytes )
+{
+	LOG->Trace( "ArchHooks_Unix::OpenMemoryRange( %#x, %d )", start_port, bytes );
+
+	if( (start_port+bytes) <= 0x3FF )
+	{
+		int ret = ioperm( start_port, bytes, 1 );
+
+		if( ret != 0 )
+			LOG->Warn( "OpenMemoryRange(): ioperm error: %s", strerror(errno) );
+
+		return (ret == 0);
+	}
+
+	LOG->Warn( "ArchHooks_Unix::OpenMemoryRange(): address range extends past ioperm, using iopl." );
+
+	int ret = iopl(3);
+
+	if( ret != 0 )
+		LOG->Warn( "OpenMemoryRange(): iopl error: %s", strerror(errno) );
+
+	return (ret == 0);
+}
+
+void ArchHooks_Unix::CloseMemoryRange( unsigned short start_port, unsigned short bytes )
+{
+	if( (start_port+bytes) <= 0x3FF )
+	{
+		if( ioperm( start_port, bytes, 0 ) != 0 )
+			LOG->Warn( "CloseMemoryRange(): ioperm error: %s", strerror(errno) );
+
+		return;
+	}
+
+	if( iopl(0) != 0 )
+		LOG->Warn( "CloseMemoryRange(): iopl error: %s", strerror(errno) );
+}
+
 void ArchHooks_Unix::SystemReboot()
 {
 	LOG->Trace( "ArchHooks_Unix::SystemReboot()" );

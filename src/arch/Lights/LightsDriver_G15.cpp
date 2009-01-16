@@ -85,9 +85,12 @@ LightsDriver_G15::~LightsDriver_G15()
 {
 	m_bThreadStop = true;
 
-	LOG->Trace( "Shutting down G15 thread..." );
-	m_WriteThread.Wait();
-	LOG->Trace( "G15 thread shut down." );
+	if( m_WriteThread.IsCreated() )
+	{
+		LOG->Trace( "Shutting down G15 thread..." );
+		m_WriteThread.Wait();
+		LOG->Trace( "G15 thread shut down." );
+	}
 
 	if( !m_bHasDevice )
 		return;

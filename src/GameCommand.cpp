@@ -328,7 +328,6 @@ void GameCommand::LoadOne( const Command& cmd )
 			m_bInvalid |= true;
 		}
 	}
-	
 	else if( sName == "weight" )
 	{
 		m_iWeightPounds = atoi( sValue );

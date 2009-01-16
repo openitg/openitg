@@ -1,49 +1,38 @@
-#ifndef SELECTOR_INPUT_HANDLER_H
-#define SELECTOR_INPUT_HANDLER_H
+#ifndef SCREEN_PLAY_LIGHTS_H
+#define SCREEN_PLAY_LIGHTS_H
 
-#include "arch/arch_platform.h"
+#include "RageSound.h"
+#include "ScreenWithMenuElements.h"
+#include "PlayerNumber.h"
 
-/* InputHandler drivers selector. */
-#if defined(HAVE_DIRECTX) && !defined(XBOX)
-#include "InputHandler_DirectInput.h"
+class ScreenPlayLights : public ScreenWithMenuElements
+{
+public:
+	ScreenPlayLights( CString sName );
+
+	virtual void Update( float fDeltaTime );
+	virtual void Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI );
+	virtual void HandleScreenMessage( const ScreenMessage SM );
+	virtual void DrawPrimitives();
+
+	virtual void MenuBack( PlayerNumber pn );
+	virtual void MenuStart( PlayerNumber pn );
+protected:
+	// these are very-nearly duplicated from ScreenGameplay for right now...
+	virtual void UpdateSongPosition( float fDeltaTime );
+	virtual void LoadLights();
+	virtual void UpdateLights();
+
+	NoteData m_CabinetNoteData;
+	NoteData m_NoteData[NUM_PLAYERS];
+
+	RageSound m_Music;
+};
+
 #endif
-
-/* USB input drivers; cross-platform for any system with libusb */
-#include "InputHandler_Iow.h"
-#include "InputHandler_PIUIO.h"
-
-/* ISA input driver; cross-platform, with some asterisks. */
-#include "InputHandler_MK3.h"
-
-#ifdef HAVE_LINUXKERNEL
-#include "InputHandler_Linux_Joystick.h"
-// XXX: Useless! Depends on SDL, which we'd use for input if it was available!
-// #include "InputHandler_Linux_tty.h"
-#endif
-
-#include "InputHandler_MonkeyKeyboard.h"
-
-// NOTE: If X11 is available, we don't use LLW_SDL, which IH_SDL depends on.
-#if defined(HAVE_X11)
-#include "InputHandler_X11.h"
-#elif defined(HAVE_SDL)
-#include "InputHandler_SDL.h"
-#endif
-
-#ifdef HAVE_WIN32
-#include "InputHandler_Win32_Pump.h"
-#include "InputHandler_Win32_Para.h"
-#include "InputHandler_Win32_MIDI.h"
-#endif
-
-#ifdef HAVE_XBOX
-#include "InputHandler_Xbox.h"
-#endif
-
-#endif // header
 
 /*
- * (c) 2005 Ben Anderson.
+ * (c) 2004 Chris Danford
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -66,3 +55,4 @@
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+

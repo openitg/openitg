@@ -3,7 +3,7 @@
 
 #include "ScreenWithMenuElements.h"
 #include "BitmapText.h"
-
+#include "LightsManager.h"
 
 class ScreenTestLights : public ScreenWithMenuElements
 {
@@ -24,6 +24,12 @@ public:
 
 private:
 	BitmapText	m_textInputs;
+
+	/* XXX: I really don't like this method for sending updates.
+	 * Can we do something more succinct than this? */
+	CabinetLight m_CurCabinetLight, m_LastCabinetLight;
+	GameController m_CurGameController, m_LastGameController;
+	GameButton m_CurGameButton, m_LastGameButton;	
 
 	RageTimer m_timerBackToAutoCycle;
 };

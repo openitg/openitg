@@ -1,25 +1,42 @@
 OpenITG, beta 1 (in development)
 --------------------------------
 -Obligatory code cleanup
+-New LUA bindings:
+     Song: "IsLong", "IsMarathon", "GetGroupName", and "MusicLengthSeconds"
+     RageUtil: "SecondsToMMSS", "SecondsToHHMMSS", "SecondsToMSSMsMs"
+-New Screen:
+     "ScreenPlayLights" - plays music, can run actors for cabinet/game lights
+-New InputHandler:
+     "MK3" - controls the Andamiro MK3 and MK5 ISA boards, for the heck of it
+-New LightsDriver:
+     "G15" - controls LCD on the G15 gaming keyboard, also for the heck of it
 -New features:
+     "SongLength" sort on the song wheel
      Separate bookkeeper counter for service credits in Bookkeeping
           (divided in the menu by Regular Credits / Service Credits)
      LightsMapper - set which bits are triggered on LIGHTSMAN events
-          (global settings for cabinet lights, per-game settings for input)
-     Added LightsMappings to ITGIO, PIUIO, and PacDrive
+     Added LightsMapping structs to ITGIO, PIUIO, and PacDrive
 -New modifiers:
      "Twirl" - rotates arrows around the Y axis
      "Roll" - rotates arrows around the X axis
 -Compilation updates:
      Added date/version text to ProductInfo and DiagnosticsUtil
      Rewrote "archutils/Win32/verinc.c" to generate a new verinfo.h
--Fixed bugs:
+-Fixed Windows bugs:
+     Crashlogs saving in Program (were supposed to save in Data)
+     "View crash dump" working incorrectly on the crash dialog
+     Inaccurate crashlog count in System Diagnostics
+-Fixed Linux bugs:
      64-bit crash on RageCryptInterface_ITG2 (thanks, dawnwolf)
-     Screensaver disable code doesn't work for X11
+     Screensaver disable code didn't work for X11
+-Fixed cross-platform bugs:
+     M-mods crashed on marathons
      M-mod code choked on some BPM gimmicks
      Crash when changing from Intense to Normal-only courses or vice versa
+     "Disqualification" display showed for unjoined players on music rate
      Sensor reading problems with PIUIO
 -Misc. changes:
+     Re-backported input debounce, except it works this time. :)
      Record service credits separately in MachineProfile and Coins.xml
      Load USB profile songs into memory, instead of onto the disk
 

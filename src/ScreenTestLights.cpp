@@ -51,11 +51,33 @@ void ScreenTestLights::Update( float fDeltaTime )
 		LIGHTSMAN->SetLightsMode( LIGHTSMODE_TEST_AUTO_CYCLE );
 	}
 
+	m_CurCabinetLight = LIGHTSMAN->GetFirstLitCabinetLight();
+	LIGHTSMAN->GetFirstLitGameButtonLight( m_CurGameController, m_CurGameButton );
 
-	CabinetLight cl = LIGHTSMAN->GetFirstLitCabinetLight();
-	GameController gc;
-	GameButton gb;
-	LIGHTSMAN->GetFirstLitGameButtonLight( gc, gb );
+	// XXX: I don't like the structure of this. It should be less hard-coded.
+	// on a new light, send an update message (one to clear all lights, one to pulse a light).
+	if( m_CurCabinetLight != m_LastCabinetLight )
+	{
+		m_LastCabinetLight = m_CurCabinetLight;
+		MESSAGEMAN->Broadcast( "CabinetReset" );
+		if( m_CurCabinetLight != LIGHT_INVALID )
+	        MESSAGEMAN->Broadcast( CabinetLightToString(m_CurCabinetLight) );
+	}
+
+	if( m_CurGameController != m_LastGameController || m_CurGameButton != m_LastGameButton )
+	{
+		m_LastGameController = m_CurGameController;
+		m_LastGameButton = m_CurGameButton;
+
+		MESSAGEMAN->Broadcast( "GameButtonReset" );
+
+		if( m_CurGameController != GAME_CONTROLLER_INVALID && m_CurGameButton != GAME_BUTTON_INVALID )
+		{
+			const Game *pGame = GAMESTATE->GetCurrentGame();
+			CString sButtonMsg = ssprintf( "%sP%i", pGame->m_szButtonNames[m_CurGameButton], m_CurGameController+1 );
+			MESSAGEMAN->Broadcast( sButtonMsg );
+		}
+	}
 
 	CString s;
 
@@ -69,24 +91,23 @@ void ScreenTestLights::Update( float fDeltaTime )
 		break;
 	}
 
-	if( cl == LIGHT_INVALID )
+	if( m_CurCabinetLight == LIGHT_INVALID )
 		s += "cabinet light: -----\n";
 	else
-		s += ssprintf( "cabinet light: %d %s\n", cl, CabinetLightToString(cl).c_str() );
+		s += ssprintf( "cabinet light: %d %s\n", m_CurCabinetLight, CabinetLightToString(m_CurCabinetLight).c_str() );
 
-	if( gc == GAME_CONTROLLER_INVALID )
+	if( m_CurGameController == GAME_CONTROLLER_INVALID )
 	{
 		s += ssprintf( "controller light: -----\n" );
 	}
 	else
 	{
-		CString sGameButton = GAMESTATE->GetCurrentGame()->m_szButtonNames[gb];
-		s += ssprintf( "controller light: P%d %d %s\n", gc+1, gb, sGameButton.c_str() );
+		CString sGameButton = GAMESTATE->GetCurrentGame()->m_szButtonNames[m_CurGameButton];
+		s += ssprintf( "controller light: P%d %d %s\n", m_CurGameController+1, m_CurGameButton, sGameButton.c_str() );
 	}
 
 	m_textInputs.SetText( s );
 }
-
 
 void ScreenTestLights::DrawPrimitives()
 {

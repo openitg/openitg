@@ -159,6 +159,8 @@ public:
 	bool HasLyrics() const;
 
 	bool IsCustomSong() const;
+	bool IsLong() const;
+	bool IsMarathon() const;
 
 	bool Matches(CString sGroup, CString sSong) const;
 

@@ -100,13 +100,10 @@ void LCDFill( unsigned char *pData, int rStart, int cStart, int width, int lengt
 	ASSERT(rStart+length <= 43);
 	ASSERT(cStart+width <= 160);
 
-	for (unsigned i = rStart; i < rStart+length; i++)
-	{
-		for(unsigned j = cStart; j < cStart+width; j++)
-		{
+	for ( int i = rStart; i < rStart+length; i++)
+		for( int j = cStart; j < cStart+width; j++)
 			pData[i*160 + j] ^= 1;
-		}
-	}
+
 }
 
 bool G15::Write( uint32_t iData )

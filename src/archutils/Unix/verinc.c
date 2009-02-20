@@ -10,27 +10,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
+#include <string.h>
 #include <time.h>
 
 typedef unsigned long ulong;
 
-int main(void)
+/* UGLY HACK: we've got no particularly good way to get the
+ * SVN version input, aside from stdin. So, we do that. */
+int main( int argc, char **argv )
 {
 	FILE *f;
-	ulong build=0, build_t;
+	int has_version = 0;
+	ulong build = 0;
 	char strdate[10], strtime[25];
 	time_t tm;
 
-	// try to read the last version seen
-	if ( f = fopen("version.bin","rb") )
-	{
-		if( fread(&build_t, sizeof(build_t), 1, f) == 4 )
-			build = build_t;
-		fclose( f );
-	}
+	// try to read the last version from stdin
+	if( argc >= 2 )
+		build = strtol( argv[1], NULL, 10 );
 
-	// increment the build number
-	++build;
+	if( build != 0 )
+		has_version = 1;
 
 	// get the current time
 	time(&tm);
@@ -48,15 +48,11 @@ int main(void)
 			"unsigned long VersionNumber = %ld;\n"
 			"extern const char *const VersionTime = \"%s\";\n"
 			"extern const char *const VersionDate = \"%s\";\n"
-			"extern const bool VersionSVN = false;\n",
-			build, strtime, strdate );
+			"extern const bool VersionSVN = %s;\n",
+			build, strtime, strdate,
+			has_version == 1 ? "true" : "false"
+			);
 
-		fclose( f );
-	}
-
-	if( f = fopen("version.bin","wb") )
-	{
-		fwrite( &build, sizeof(build), 1, f );
 		fclose( f );
 	}
 

@@ -89,13 +89,13 @@ void GraphDisplay::LoadFromStageStats( const StageStats &ss, const PlayerStageSt
 	if ( m_bColorize )
 	{
 		if ( pss.bFlag_FFC && pss.fFullFantasticComboBegin > -1.0f )
-			m_iFFCPoint = ( pss.fFullFantasticComboBegin * VALUE_RESOLUTION ) / fTotalStepSeconds;
+			m_iFFCPoint = (int)(( pss.fFullFantasticComboBegin * VALUE_RESOLUTION ) / fTotalStepSeconds);
 		if ( pss.bFlag_FEC && pss.fFullExcellentComboBegin > -1.0f )
-			m_iFECPoint = ( pss.fFullExcellentComboBegin * VALUE_RESOLUTION ) / fTotalStepSeconds;
+			m_iFECPoint = (int)(( pss.fFullExcellentComboBegin * VALUE_RESOLUTION ) / fTotalStepSeconds);
 		if ( pss.bFlag_FGC && pss.fFullGreatComboBegin > -1.0f )
-			m_iFGCPoint = ( pss.fFullGreatComboBegin * VALUE_RESOLUTION ) / fTotalStepSeconds;
+			m_iFGCPoint = (int)(( pss.fFullGreatComboBegin * VALUE_RESOLUTION ) / fTotalStepSeconds);
 		if ( pss.bFlag_PulsateEnd )
-			m_iPulseStopPoint = ( pss.fPulsatingComboEnd * VALUE_RESOLUTION ) / fTotalStepSeconds;
+			m_iPulseStopPoint = (int)(( pss.fPulsatingComboEnd * VALUE_RESOLUTION ) / fTotalStepSeconds);
 		else
 			m_iPulseStopPoint = VALUE_RESOLUTION - 1;
 	}

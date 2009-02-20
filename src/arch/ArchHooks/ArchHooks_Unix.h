@@ -14,6 +14,8 @@ public:
 	bool OpenMemoryRange( unsigned short start_port, unsigned short bytes );
 	void CloseMemoryRange( unsigned short start_port, unsigned short bytes );
 
+	bool GetNetworkAddress( CString &sIP, CString &sNetmask, CString &sError );
+
 	static int64_t m_iStartTime;
 	int64_t GetMicrosecondsSinceStart();
 };

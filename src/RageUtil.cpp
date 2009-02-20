@@ -121,18 +121,18 @@ float HHMMSSToSeconds( const CString &sHHMMSS )
 	return fSeconds;
 }
 
-CString SecondsToMMSS( float fSecs )
+CString SecondsToMMSS( int iSecs )
 {
-	const int iMinsDisplay = (int)fSecs/60;
-	const int iSecsDisplay = int(fSecs) - iMinsDisplay*60;
-	CString sReturn = ssprintf( "%01d:%02d", iMinsDisplay, iSecsDisplay );
+	const int iMinsDisplay = iSecs/60;
+	const int iSecsDisplay = iSecs - iMinsDisplay*60;
+	CString sReturn = ssprintf( "%02d:%02d", iMinsDisplay, iSecsDisplay );
 	return sReturn;
 }
 
-CString SecondsToHHMMSS( float fSecs )
+CString SecondsToHHMMSS( int iSecs )
 {
-	const int iMinsDisplay = (int)fSecs/60;
-	const int iSecsDisplay = (int)fSecs - iMinsDisplay*60;
+	const int iMinsDisplay = iSecs/60;
+	const int iSecsDisplay = iSecs - iMinsDisplay*60;
 	CString sReturn = ssprintf( "%02d:%02d:%02d", iMinsDisplay/60, iMinsDisplay%60, iSecsDisplay );
 	return sReturn;
 }
@@ -166,8 +166,9 @@ CString SecondsToMMSSMsMsMs( float fSecs )
 
 #include "LuaFunctions.h"
 #include "LuaManager.h"
-LuaFunction( SecondsToMMSS, SecondsToMMSS( FArg(1) ) )
-LuaFunction( SecondsToHHMMSS, SecondsToHHMMSS( FArg(1) ) )
+LuaFunction( SecondsToMMSS, SecondsToMMSS( IArg(1) ) )
+LuaFunction( SecondsToHHMMSS, SecondsToHHMMSS( IArg(1) ) )
+
 LuaFunction( SecondsToMSSMsMs, SecondsToMSSMsMs( FArg(1) ) )
 LuaFunction( SecondsToMMSSMsMs, SecondsToMMSSMsMs( FArg(1) ) )
 LuaFunction( SecondsToMMSSMsMsMs, SecondsToMMSSMsMsMs( FArg(1) ) )

@@ -254,7 +254,7 @@ CString SongUtil::GetSectionNameFromSongAndSort( const Song* pSong, SortOrder so
 	case SORT_SONG_LENGTH:
 		{
 			const int iSortLengthSize = 5;
-			int iMaxLength = pSong->m_fMusicLengthSeconds;
+			int iMaxLength = (int)pSong->m_fMusicLengthSeconds;
 			iMaxLength += (iSortLengthSize - (iMaxLength%iSortLengthSize) - 1);
 			int iMinLength = iMaxLength - (iSortLengthSize-1);
 			return ssprintf( "%s-%s", SecondsToMMSS(iMinLength).c_str(), SecondsToMMSS(iMaxLength).c_str() );

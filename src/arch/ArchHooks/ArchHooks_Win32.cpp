@@ -17,8 +17,10 @@
 #include "archutils/win32/WindowsResources.h"
 
 #include <mmsystem.h>
+#include <winsock2.h>
 #if defined(_MSC_VER)
 #pragma comment(lib, "winmm.lib") // for timeGetTime
+#pragma comment(lib, "ws2_32.lib") // for Winsock functions
 #endif
 
 /* Workaround for 'undefined' problem */
@@ -189,14 +191,69 @@ void ArchHooks_Win32::SystemReboot()
 
 bool ArchHooks_Win32::OpenMemoryRange( unsigned short start_port, unsigned short bytes )
 {
-	LOG->Info( "ArchHooks_Win32::OpenMemoryRange(): blindly returning true." );
+	LOG->Debug( "ArchHooks_Win32::OpenMemoryRange( %u, %u )", start_port, bytes );
+	
+	OSVERSIONINFO version;
+	version.dwOSVersionInfoSize=sizeof(version);
+	if( !GetVersionEx(&version) )
+	{
+		LOG->Warn( werr_ssprintf(GetLastError(), "OpenMemoryRange(): GetVersionEx failed") );
+		return false;
+	}
+
+	// pre-NT Windows systems always have I/O port access open;
+	// there's no need to request access for those systems.
+	if( version.dwPlatformId == 1 )
+	{
+		LOG->Debug( "OpenMemoryRange(): detected pre-NT kernel, returning true." );
+       	return true;
+	}
+
+	LOG->Warn( "OpenMemoryRange() not fully implemented!\nIf this crashes, disable the ISA driver." );
 	return true;
 }
 
 void ArchHooks_Win32::CloseMemoryRange( unsigned short start_port, unsigned short bytes )
 {
+	LOG->Trace( "CloseMemoryRange( %u, %u )", start_port, bytes );
 	return;
 }
+
+bool ArchHooks_Win32::GetNetworkAddress( CString &sIP, CString &sNetmask, CString &sError )
+{
+	/* This doesn't work at all right now. */
+	sError = "Not implemented";
+	return false;
+
+	// initialise the winsock layer
+	WSADATA wsaData;
+	WSAStartup( MAKEWORD(2,0), &wsaData );
+
+	char host_name[128];
+	if( ::gethostname( host_name, 128 ) )
+	{
+		WSACleanup();
+		sError = "Couldn't get host name";
+		return false;
+	}
+
+	struct hostent *host_entry = gethostbyname( host_name );
+	if( host_entry == NULL )
+	{
+		WSACleanup();
+		sError = "Couldn't get host entry";
+		return false;
+	}
+
+	sIP = inet_ntoa(*(struct in_addr *)host_entry->h_addr_list);
+	WSACleanup();
+
+	// not yet implemented
+	sNetmask = "Unknown";
+
+	return true;
+}
+
 
 void ArchHooks_Win32::EnterTimeCriticalSection()
 {

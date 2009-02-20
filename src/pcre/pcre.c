@@ -347,22 +347,20 @@ changed by the caller, but are shared between all threads. However, when
 compiling for Virtual Pascal, things are done differently (see pcre.in). */
 
 #ifndef VPCOMPAT
+
 #ifdef __cplusplus
 extern "C"
 {
+#endif
 	void *(*pcre_malloc)(size_t) = malloc;
 	void  (*pcre_free)(void *) = free;
 	void *(*pcre_stack_malloc)(size_t) = malloc;
 	void  (*pcre_stack_free)(void *) = free;
 	int   (*pcre_callout)(pcre_callout_block *) = NULL;
-}
-#else
-void *(*pcre_malloc)(size_t) = malloc;
-void  (*pcre_free)(void *) = free;
-void *(*pcre_stack_malloc)(size_t) = malloc;
-void  (*pcre_stack_free)(void *) = free;
-int   (*pcre_callout)(pcre_callout_block *) = NULL;
+#ifdef __cplusplus
+};
 #endif
+
 #endif
 
 

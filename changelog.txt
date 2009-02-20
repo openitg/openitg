@@ -1,9 +1,15 @@
-OpenITG, beta 1 (in development)
---------------------------------
+OpenITG, beta 1 (almost done)
+-----------------------------
 -Obligatory code cleanup
+-Windows additions:
+     OpenITG icon (thanks, Lightning)
+     Updated version information
 -New LUA bindings:
      Song: "IsLong", "IsMarathon", "GetGroupName", and "MusicLengthSeconds"
      RageUtil: "SecondsToMMSS", "SecondsToHHMMSS", "SecondsToMSSMsMs"
+-New LUA global:
+     "OPENITG_VERSION" - returns a 3-digit token for version information
+          (xyy - x is build type, yy is version; also in Win32 "Properties")
 -New Screen:
      "ScreenPlayLights" - plays music, can run actors for cabinet/game lights
 -New InputHandler:

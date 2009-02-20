@@ -76,6 +76,7 @@ static inline int64_t llabs( int64_t i ) { return i >= 0? i: -i; }
 #pragma warning (disable : 4063)
 #pragma warning (disable : 4127)
 #pragma warning (disable : 4786) /* VC6: identifier was truncated to '255' characters in the debug information */
+#pragma warning (disable : 4800) /* Forcing value to bool 'true' or 'false' - that's the whole point. Why warn us? */
 #endif
 
 #undef min

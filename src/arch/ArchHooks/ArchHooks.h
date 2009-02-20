@@ -33,6 +33,13 @@ public:
 	virtual bool OpenMemoryRange( unsigned short start_port, unsigned short bytes ) { return false; }
 	virtual void CloseMemoryRange( unsigned short start_port, unsigned short bytes ) { }
 
+	/* Get the IP and netmask, in StdString format, of the system. */
+	virtual bool GetNetworkAddress( CString &sIP, CString &sNetmask, CString &sError )
+	{
+		sError = "Not implemented";
+		return false;
+	}
+
 	/*
 	 * Return the amount of time since the program started.  (This may actually be
 	 * since the initialization of HOOKS.

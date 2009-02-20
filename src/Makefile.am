@@ -27,9 +27,10 @@ endif
 all: build_version
 
 build_version:
-	echo "#define BUILD_VERSION \"`svnversion -n`\"" > verinfo.h;
-	echo "#define BUILD_DATE \"`date +"%Y%m%d"`\"" >> verinfo.h;
-verinfo.h:
+	archutils/Unix/verinc `svnversion`
+	g++ -c verstub.cpp
+
+verstub.cpp:
 	$(MAKE) build_version
 
 $(srcdir)/libresample/libresample.a:
@@ -134,6 +135,7 @@ DataStructures += io/USBDriver.cpp io/USBDriver.h \
 		  io/PIUIO.cpp io/PIUIO.h \
 		  io/ITGIO.cpp io/ITGIO.h \
 		  io/PacDrive.cpp io/PacDrive.h \
+		  io/G15.cpp io/G15.h \
 		  io/USBDevice.h
 
 # these both use the same .h file
@@ -188,7 +190,8 @@ MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture
 Lights = arch/Lights/LightsDriver.h \
 		arch/Lights/LightsDriver_SystemMessage.cpp arch/Lights/LightsDriver_SystemMessage.h \
 		arch/Lights/LightsDriver_External.cpp arch/Lights/LightsDriver_External.h \
-		arch/Lights/LightsDriver_PacDrive.cpp arch/Lights/LightsDriver_PacDrive.h
+		arch/Lights/LightsDriver_PacDrive.cpp arch/Lights/LightsDriver_PacDrive.h \
+		arch/Lights/LightsDriver_G15.cpp arch/Lights/LightsDriver_G15.h
 
 MemoryCard = arch/MemoryCard/MemoryCardDriver.cpp arch/MemoryCard/MemoryCardDriver.h
 LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.h
@@ -424,7 +427,7 @@ main_LDADD = \
 		  $(XLIBS) \
 		  $(srcdir)/libresample/libresample.a
 
-nodist_openitg_SOURCES = verinfo.h
+nodist_openitg_SOURCES = verstub.cpp
 openitg_SOURCES = $(main_SOURCES)
 openitg_LDADD = $(main_LDADD) \
 	$(srcdir)/ffmpeg/lib/libavformat.a $(srcdir)/ffmpeg/lib/libavcodec.a

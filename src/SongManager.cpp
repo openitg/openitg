@@ -711,7 +711,7 @@ int SongManager::GetNumStagesForSong( const Song* pSong )
 
 void SongManager::InitCoursesFromDisk( LoadingWindow *ld )
 {
-	LOG->Trace( "Loading courses." );
+	LOG->Info( "Loading courses." );
 
 	m_sCourseGroupNames.clear();
 

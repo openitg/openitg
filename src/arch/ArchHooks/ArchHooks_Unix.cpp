@@ -11,15 +11,25 @@
 #include "archutils/Unix/EmergencyShutdown.h"
 #include "archutils/Unix/AssertionHandler.h"
 
+#include <sys/io.h>
 #include <sys/time.h>
 #include <sys/reboot.h>
 #include <unistd.h>
 #include <cerrno>
 
+// Include Unix/Linux networking types
+extern "C"
+{
+#include <ifaddrs.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+};
+
 #if defined(CRASH_HANDLER)
 #include "archutils/Unix/CrashHandler.h"
 #endif
-
 
 int64_t ArchHooks_Unix::m_iStartTime = 0;
 
@@ -72,6 +82,42 @@ void ArchHooks_Unix::CloseMemoryRange( unsigned short start_port, unsigned short
 
 	if( iopl(0) != 0 )
 		LOG->Warn( "CloseMemoryRange(): iopl error: %s", strerror(errno) );
+}
+
+bool ArchHooks_Unix::GetNetworkAddress( CString &sIP, CString &sNetmask, CString &sError )
+{
+	struct ifaddrs *ifaces;
+
+	if ( getifaddrs(&ifaces) != 0 )
+	{
+		sError = "Network interface error (getifaddrs() failed)";
+		return false;
+	}
+
+	for ( struct ifaddrs *iface = ifaces; iface; iface = iface->ifa_next )
+	{
+		// 0x1000 = uses broadcast
+		if ((iface->ifa_flags & 0x1000) == 0 || (iface->ifa_addr->sa_family != AF_INET))
+			continue;
+
+		struct sockaddr_in *sad = NULL;
+		struct sockaddr_in *snm = NULL;
+
+		sad = (struct sockaddr_in *)iface->ifa_addr;
+		snm = (struct sockaddr_in *)iface->ifa_netmask;
+		sIP = inet_ntoa(((struct sockaddr_in *)sad)->sin_addr);
+		sNetmask = inet_ntoa(((struct sockaddr_in *)snm)->sin_addr);
+		freeifaddrs(ifaces);
+	}
+	freeifaddrs(ifaces);
+
+	if( sIP.empty() || sNetmask.empty() )
+	{
+		sError = "Networking interface disabled";
+		return false;
+	}
+
+	return true;
 }
 
 void ArchHooks_Unix::SystemReboot()

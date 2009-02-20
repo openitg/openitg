@@ -41,9 +41,8 @@ static void DoSave();
 ///////////////////////////////////////////////////////////////////////////
 
 extern HINSTANCE g_hInstance;
-extern unsigned long version_num;
-
-
+extern unsigned long VersionNumber;
+extern const char *const VersionTime;
 
 extern HINSTANCE g_hInstance;
 #define BACKTRACE_MAX_SIZE 100
@@ -215,9 +214,9 @@ long __stdcall CrashHandler(EXCEPTION_POINTERS *pExc)
 
 	VDDebugInfoDeinit(&g_debugInfo);
 
-        bool bRestart = ExitWindowsEx( EWX_REBOOT | EWX_FORCEIFHUNG,
-        SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_MAINTENANCE
-        | SHTDN_REASON_FLAG_PLANNED );
+		ExitWindowsEx( EWX_REBOOT | EWX_FORCEIFHUNG,
+		SHTDN_REASON_MAJOR_APPLICATION | SHTDN_REASON_MINOR_MAINTENANCE
+		| SHTDN_REASON_FLAG_PLANNED );
 
 	return NULL;
 #endif
@@ -784,10 +783,10 @@ static bool ReportCallStack( HWND hwnd, HANDLE hFile, const void **Backtrace )
 		return false;
 	}
 
-	if( g_debugInfo.nBuildNumber != int(version_num) )
+	if( g_debugInfo.nBuildNumber != int(VersionNumber) )
 	{
 		Report(hwnd, hFile, "Incorrect %s file (build %d, expected %d) for this version of " PRODUCT_NAME " -- call stack unavailable.",
-			g_debugInfo.sFilename, g_debugInfo.nBuildNumber, int(version_num));
+			g_debugInfo.sFilename, g_debugInfo.nBuildNumber, int(VersionNumber));
 		return false;
 	}
 
@@ -824,7 +823,7 @@ static void DoSave()
 	Report(NULL, hFile,
 			"%s crash report (build %d)\r\n"
 			"--------------------------------------"
-			"\r\n", PRODUCT_NAME_VER, version_num);
+			"\r\n", PRODUCT_NAME_VER, VersionNumber);
 
 	ReportReason( NULL, hFile, &g_CrashInfo );
 	Report(NULL, hFile, "");

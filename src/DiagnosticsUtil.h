@@ -12,12 +12,14 @@ namespace DiagnosticsUtil
 
 	CString GetIP();
 	CString GetInputType();
+	CString GetProductName();
+
 	CString GetSerialNumber();
 	CString GenerateDebugSerial();
 
-	void SetInputType( CString sType );
-
 	bool HubIsConnected();
+
+	void SetInputType( CString sType );
 }
 
 

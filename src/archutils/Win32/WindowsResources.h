@@ -10,6 +10,7 @@
 #define BITMAP_ERROR                    129
 #define IDD_OK                          129
 #define IDD_DRIVER                      130
+#define IDI_ICON1                       135
 #define IDD_DISASM_CRASH                199
 #define IDC_SHOCKWAVEFLASH1             1000
 #define IDC_BUTTON_RESTART              1001
@@ -22,7 +23,6 @@
 #define IDM_CHANGETEXTURECOLOR          1005
 #define IDC_EDIT_ERROR                  1005
 #define IDM_TOGGLESTATISTICS            1006
-#define IDI_ICON                        1007
 #define IDC_CURSOR                      1008
 #define IDC_STATIC_MESSAGE1             1010
 #define IDC_STATIC_MESSAGE2             1011
@@ -44,7 +44,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        131
+#define _APS_NEXT_RESOURCE_VALUE        136
 #define _APS_NEXT_COMMAND_VALUE         40009
 #define _APS_NEXT_CONTROL_VALUE         1021
 #define _APS_NEXT_SYMED_VALUE           101

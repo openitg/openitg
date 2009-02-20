@@ -27,7 +27,7 @@
 				AdditionalOptions="/EHa"
 				Optimization="0"
 				OptimizeForProcessor="3"
-				AdditionalIncludeDirectories="libusb\include;.;vorbis;libjpeg;&quot;lua-5.0\include&quot;"
+				AdditionalIncludeDirectories="libusb\include;.;vorbis;libjpeg;&quot;lua-5.0\include&quot;;libusb\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,WINDOWS,DEBUG"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
@@ -51,7 +51,7 @@
 				OutputFile="../Program/OpenITG-debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="&quot;C:\openitg-src\src\libusb\lib\msvc&quot;"
+				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
 				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
 				AssemblyDebug="1"
@@ -190,7 +190,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories=".;vorbis;libjpeg;&quot;lua-5.0\include&quot;"
+				AdditionalIncludeDirectories=".;vorbis;libjpeg;&quot;lua-5.0\include&quot;;libusb\include"
 				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,WINDOWS,DEBUG"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="0"
@@ -209,11 +209,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 &quot;$(intdir)\verstub.obj&quot;"
+				AdditionalDependencies="libusb.lib"
 				OutputFile="../Program/StepMania-debug.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories=""
-				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib"
+				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
+				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="../Debug/StepMania-debug.pdb"
 				GenerateMapFile="TRUE"
@@ -471,7 +472,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				AdditionalDependencies="libusb.lib"
 				ShowProgress="0"
 				OutputFile="../Program/OpenITG-PC-SSE2.exe"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
 				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
@@ -1454,6 +1455,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath=".\StepMania.cpp">
+				<FileConfiguration
+					Name="Release-Home-SSE2|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Detect64BitPortabilityProblems="TRUE"/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\StepMania.h">
@@ -3243,9 +3250,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath=".\ibutton\crcutil.c">
 			</File>
 			<File
-				RelativePath="archutils\Win32\DialogCrashHeader.bmp">
-			</File>
-			<File
 				RelativePath=".\ibutton\ds2480.h">
 			</File>
 			<File
@@ -3320,7 +3324,13 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 		</Filter>
 		<File
+			RelativePath="archutils\Win32\DialogCrashHeader.bmp">
+		</File>
+		<File
 			RelativePath="archutils\Win32\DialogErrorHeader.bmp">
+		</File>
+		<File
+			RelativePath=".\archutils\Win32\OpenITG.ico">
 		</File>
 		<File
 			RelativePath="StepMania.xpm">

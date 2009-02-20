@@ -214,11 +214,16 @@ int power_of_two(int input);
 bool IsAnInt( const CString &s );
 bool IsHexVal( const CString &s );
 float HHMMSSToSeconds( const CString &sHMS );
-CString SecondsToMMSS( float fSecs );
-CString SecondsToHHMMSS( float fSecs );
+
+/* These should get better performance when we just stay with ints
+ * instead of passing float and casting everything to int repeatedly. */
+CString SecondsToMMSS( int iSecs );
+CString SecondsToHHMMSS( int iSecs );
+
 CString SecondsToMSSMsMs( float fSecs );
 CString SecondsToMMSSMsMs( float fSecs );
 CString SecondsToMMSSMsMsMs( float fSecs );
+
 CString PrettyPercent( float fNumerator, float fDenominator );
 inline CString PrettyPercent( int fNumerator, int fDenominator ) { return PrettyPercent( float(fNumerator), float(fDenominator) ); }
 CString Commify( int iNum );

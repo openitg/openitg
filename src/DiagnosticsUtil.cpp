@@ -6,6 +6,7 @@
 #include "SongManager.h"
 #include "LuaManager.h"
 #include "DiagnosticsUtil.h"
+#include "arch/ArchHooks/ArchHooks.h"
 
 #include "XmlFile.h"
 #include "ProductInfo.h"
@@ -14,28 +15,16 @@
 
 #include "ibutton/ibutton.h"
 
-// include Linux networking functions/types
-#ifndef WIN32
-extern "C" {
-#include <ifaddrs.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-}
-#endif
+// these should be defined in verstub.cpp across all platforms
+extern const bool VersionSVN;
+extern const char *const VersionDate;
+extern unsigned long VersionNumber;
 
-// "Stats" is mounted to "Data" in the VFS for non-arcade
-#if defined(ITG_ARCADE) && !defined(WIN32)
-#define STATS_DIR_PATH CString("/rootfs/stats/")
-#else
-#define STATS_DIR_PATH CString("Data/")
-#endif
-
+/* /stats/ is mounted to Data for arcade builds, so this should be okay. */
 int DiagnosticsUtil::GetNumCrashLogs()
 {
 	CStringArray aLogs;
-	GetDirListing( STATS_DIR_PATH + "crashinfo-*.txt" , aLogs );
+	GetDirListing( "Data/crashinfo-*.txt" , aLogs );
 	return aLogs.size();
 }
 
@@ -47,43 +36,19 @@ int DiagnosticsUtil::GetNumMachineEdits()
 	return aEdits.size();
 }
 
-// XXX: Win32 compatibility
 CString DiagnosticsUtil::GetIP()
 {
-#ifndef WIN32
-	struct ifaddrs *ifaces;
-	if (getifaddrs(&ifaces) != 0) return "Network interface error (getifaddrs() failed)";
+	CString sAddress, sNetmask, sError;
 
-	CString result = "";
-
-	for ( struct ifaddrs *iface = ifaces; iface; iface = iface->ifa_next )
-	{
-		// 0x1000 = uses broadcast
-		if ((iface->ifa_flags & 0x1000) == 0 || (iface->ifa_addr->sa_family != AF_INET)) continue;
-
-		struct sockaddr_in *sad = NULL;
-		struct sockaddr_in *snm = NULL;
-
-		sad = (struct sockaddr_in *)iface->ifa_addr;
-		snm = (struct sockaddr_in *)iface->ifa_netmask;
-		result += inet_ntoa(((struct sockaddr_in *)sad)->sin_addr);
-		result += CString(", Netmask: ") + inet_ntoa(((struct sockaddr_in *)snm)->sin_addr);
-		freeifaddrs(ifaces);
-		return result;
-	}
-
-	freeifaddrs(ifaces);
-#else
-	// Win32 code goes here
-#endif
-
-	/* fall through */
-	return "Network interface disabled";
+	if( HOOKS->GetNetworkAddress(sAddress, sNetmask, sError) )
+		return ssprintf( "%s, Netmask: %s", sAddress.c_str(), sNetmask.c_str() );
+	else
+		return sError;
 }
 
 int DiagnosticsUtil::GetRevision()
 {
-	CString sPath = STATS_DIR_PATH + "patch/patch.xml";
+	CString sPath = "Data/patch/patch.xml";
 
 	// Create the XML Handler, and clear it, for practice.
 	XNode *xml = new XNode;
@@ -121,7 +86,7 @@ int DiagnosticsUtil::GetRevision()
 
 int DiagnosticsUtil::GetNumMachineScores()
 {
-	CString sXMLPath = STATS_DIR_PATH + "/MachineProfile/Stats.xml";
+	CString sXMLPath = "Data/MachineProfile/Stats.xml";
 
 	// Create the XML Handler and clear it, for practice
 	XNode *xml = new XNode;
@@ -166,6 +131,14 @@ int DiagnosticsUtil::GetNumMachineScores()
 	return iScoreCount;
 }
 
+CString DiagnosticsUtil::GetProductName()
+{
+	if( VersionSVN )
+		return CString(PRODUCT_NAME_VER) + ssprintf( "r%lu", VersionNumber);
+
+	return CString(PRODUCT_NAME_VER);
+}
+
 CString DiagnosticsUtil::GetSerialNumber()
 {
 	static CString g_SerialNum;
@@ -189,32 +162,28 @@ CString DiagnosticsUtil::GetSerialNumber()
  * is defined in ProductInfo.h */
 CString DiagnosticsUtil::GenerateDebugSerial()
 {
-	CString sSerial, sSystem, sBuildType;
+	char system, type;
 
-	sSerial = "OITG-";
-
+// set the compilation OS
 #if defined(WIN32)
-	sSystem = "W"; /* Windows */
+	system = 'W'; /* Windows */
 #elif defined(LINUX)
-	sSystem = "L"; /* Unix/Linux */
+	system = 'L'; /* Unix/Linux */
 #elif defined(DARWIN)
-	sSystem = "M"; /* Mac OS */
+	system = 'M'; /* Mac OS */
 #else
-	sSystem = "U"; /* unknown */
+	system = 'U'; /* unknown */
 #endif
-	// "U-04292008-"
-	sSerial += sSystem + "-" + CString(BUILD_DATE) + "-";
 
+// set the compilation arcade type
 #ifdef ITG_ARCADE
-	sBuildType = "A";
+	type = 'A';
 #else
-	sBuildType = "P";
+	type = 'P';
 #endif
 
-	// "573-A"
-	sSerial += CString(BUILD_VERSION) + "-" + sBuildType;
-
-	return sSerial;
+	// "OITG-W-20090210-07A-P"
+	return ssprintf( "OITG-%c-%s-%03lu-%c", system, VersionDate, VersionNumber, type );
 }
 
 bool DiagnosticsUtil::HubIsConnected()
@@ -245,19 +214,21 @@ void DiagnosticsUtil::SetInputType( CString sType )
 	m_sInputType = sType;
 }
 
-void SetProgramGlobal( lua_State* L )
+void SetProgramGlobals( lua_State* L )
 {
 	LUA->SetGlobal( "OPENITG", true );
+	LUA->SetGlobal( "OPENITG_VERSION", PRODUCT_TOKEN );
 }
 
 // LUA bindings for diagnostics functions
 
 #include "LuaFunctions.h"
 
-LuaFunction_NoArgs( GetProductName,		CString( PRODUCT_NAME_VER ) ); // Return the product's name from ProductInfo.h
-LuaFunction_NoArgs( GetUptime,			SecondsToHHMMSS( RageTimer::GetTimeSinceStart() ) ); 
-
+LuaFunction_NoArgs( GetUptime,			SecondsToHHMMSS( (int)RageTimer::GetTimeSinceStart() ) ); 
 LuaFunction_NoArgs( GetNumIOErrors,		ITGIO::m_iInputErrorCount );
+
+// product name function
+LuaFunction_NoArgs( GetProductName,		DiagnosticsUtil::GetProductName() );
 
 // diagnostics enumeration functions
 LuaFunction_NoArgs( GetNumCrashLogs,		DiagnosticsUtil::GetNumCrashLogs() );
@@ -271,8 +242,8 @@ LuaFunction_NoArgs( GetSerialNumber,		DiagnosticsUtil::GetSerialNumber() );
 LuaFunction_NoArgs( HubIsConnected,		DiagnosticsUtil::HubIsConnected() );
 LuaFunction_NoArgs( GetInputType,		DiagnosticsUtil::GetInputType() );
 
-// set "OPENITG" as a global boolean for usage in scripting
-REGISTER_WITH_LUA_FUNCTION( SetProgramGlobal );
+// set OPENITG LUA variables from here
+REGISTER_WITH_LUA_FUNCTION( SetProgramGlobals );
 /*
  * (c) 2008 BoXoRRoXoRs
  * All rights reserved.

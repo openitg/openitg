@@ -67,7 +67,7 @@ void ScreenPlayLights::Update( float fDeltaTime )
 
 	// skew this a bit, but don't play past the music length,
 	float fSecondsToStop = GAMESTATE->m_pCurSong->GetElapsedTimeFromBeat( GAMESTATE->m_pCurSong->m_fLastBeat ) + 2;
-	CLAMP( fSecondsToStop, 1, GAMESTATE->m_pCurSong->m_fMusicLengthSeconds - 0.5 );
+	CLAMP( fSecondsToStop, 1.0f, GAMESTATE->m_pCurSong->m_fMusicLengthSeconds - 0.5f );
 
 	/* Make sure we keep going long enough to register a miss for the last note. */
 	if( GAMESTATE->m_fMusicSeconds > fSecondsToStop )

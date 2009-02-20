@@ -39,6 +39,15 @@
 #ifndef OWNET_H
 #define OWNET_H
 
+/* Vyhd note: if I'm ever adventurous enough, I'll fix this up and manually
+ * get rid of the warnings. Until then, there's #pragma warning. */
+
+#ifdef _MSC_VER
+#pragma warning (disable : 4100) // unreferenced formal parameter
+#pragma warning (disable : 4244) // conversion from blah to blah, possible loss of data
+#pragma warning (disable : 4701) // local variable may be used without having been initialized
+#endif
+
 //--------------------------------------------------------------//
 // Common Includes to ownet applications
 //--------------------------------------------------------------//

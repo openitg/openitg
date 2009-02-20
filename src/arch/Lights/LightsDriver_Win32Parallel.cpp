@@ -1,8 +1,8 @@
 #include "global.h"
 #include "LightsDriver_Win32Parallel.h"
 #include "windows.h"
+#include "RageLog.h"
 #include "RageUtil.h"
-
 
 HINSTANCE hDLL = NULL;
 
@@ -20,23 +20,7 @@ short LPT_ADDRESS[MAX_PARALLEL_PORTS] =
 	0x3bc,	// LPT3
 };
 
-int CabinetLightToIndex( CabinetLight cl )
-{
-	return cl;
-}
-
-int GameControllerAndGameButtonToIndex( GameController gc, GameButton gb )
-{
-	CLAMP( (int&)gb, 0, 3 );
-	return NUM_CABINET_LIGHTS + gc*4 + gb;
-}
-
-void IndexToLptAndPin( int index, int &lpt_out, int &pin_out )
-{
-	lpt_out = index / LIGHTS_PER_PARALLEL_PORT;
-	ASSERT( lpt_out >= 0 && lpt_out < MAX_PARALLEL_PORTS );
-	pin_out = index % LIGHTS_PER_PARALLEL_PORT;
-}
+unsigned char OUT_DATA[MAX_PARALLEL_PORTS] = {};
 
 LightsDriver_Win32Parallel::LightsDriver_Win32Parallel()
 {
@@ -60,52 +44,22 @@ LightsDriver_Win32Parallel::~LightsDriver_Win32Parallel()
 
 void LightsDriver_Win32Parallel::Set( const LightsState *ls )
 {
-	BYTE data[MAX_PARALLEL_PORTS] =
-	{
-		0x00,
-		0x00,
-		0x00
-	};
+	for( int i = 0; i < MAX_PARALLEL_PORTS; i++ )
+		OUT_DATA[i] = 0;
 
-	{
-		FOREACH_CabinetLight( cl )
-		{
-			bool bOn = ls->m_bCabinetLights[cl];
-			int index = CabinetLightToIndex( cl );
-			int lpt;
-			int pin;
-			IndexToLptAndPin( index, lpt, pin );
-			BYTE mask = (BYTE) (0x01 << pin);
-			if( bOn )
-				data[lpt] |= mask;
-			else
-				data[lpt] &= ~mask;
-		}
-	}
-	
+	FOREACH_CabinetLight( cl )
+		if( ls->m_bCabinetLights[cl] )
+			OUT_DATA[0] |= (unsigned char)(1 << cl);
+
 	FOREACH_GameController( gc )
-	{
 		FOREACH_GameButton( gb )
-		{
-			bool bOn = ls->m_bGameButtonLights[gc][gb];
-			int index = GameControllerAndGameButtonToIndex( gc, gb );
-			int lpt;
-			int pin;
-			IndexToLptAndPin( index, lpt, pin );
-			BYTE mask = (BYTE) (0x01 << pin);
-			if( bOn )
-				data[lpt] |= mask;
-			else
-				data[lpt] &= ~mask;
-		}
-	}
+			if( ls->m_bGameButtonLights[gc][gb] )
+				OUT_DATA[1+gc] |= (unsigned char)( 1 << gb );
 
+	for( int i=0; i<MAX_PARALLEL_PORTS; i++ )
 	{
-		for( int i=0; i<MAX_PARALLEL_PORTS; i++ )
-		{
-			short address = LPT_ADDRESS[i];
-			PortOut( address, data[i] );
-		}
+		LOG->Debug( "Address: %03X, %02X", LPT_ADDRESS[i], OUT_DATA[i] );
+		PortOut( LPT_ADDRESS[i], OUT_DATA[i] );
 	}
 }
 

@@ -36,6 +36,7 @@
 #include "RageSurface_Load.h"
 #include "arch/arch.h"
 #include "CatalogXml.h"
+#include "DiagnosticsUtil.h"
 
 //
 // StepMania global classes
@@ -82,19 +83,14 @@
 #include <cerrno>
 #endif
 
-// XXX: we should put these in a separate file, probably
-#define PATCH_PC_DIR	"Data/patch"
-#define PATCH_PC_FILE	"Data/patch/patch.zip"
-
-#ifdef WIN32
-#define PATCH_AC_DIR	PATCH_PC_DIR
-#define PATCH_AC_FILE	PATCH_AC_FILE
+/* Only use Linux-specific arcade fixups if needed. */
+#if defined(ITG_ARCADE) && defined(LINUX)
+#define PATCH_DIR	"/stats/patch"
+#define PATCH_FILE	"/rootfs/stats/patch/patch.zip"
 #else
-#define PATCH_AC_DIR	"/stats/patch"
-#define PATCH_AC_FILE	"/rootfs/stats/patch/patch.zip"
+#define PATCH_DIR	"Data/patch"
+#define PATCH_FILE	"Data/patch/patch.zip"
 #endif
-
-#define ZIPS_DIR "Packages/"
 
 int g_argc = 0;
 char **g_argv = NULL;
@@ -850,7 +846,7 @@ void SaveGamePrefsToDisk()
 	ini.WriteFile( GAMEPREFS_INI_PATH );
 }
 
-static void MountTreeOfZips( const CString &dir )
+static void MountTreeOfZips( const CString &dir, const CString &type )
 {
 	vector<CString> dirs;
 	dirs.push_back( dir );
@@ -869,14 +865,13 @@ static void MountTreeOfZips( const CString &dir )
 		vector<CString> zips;
 		GetDirListing( path + "/*.zip", zips, false, true );
 		GetDirListing( path + "/*.smzip", zips, false, true );
-		GetDirListing( path + "/*.dxl" , zips, false, true );
 
 		for( unsigned i = 0; i < zips.size(); ++i )
 		{
 			if( !IsAFile(zips[i]) )
 				continue;
 
-			LOG->Trace( "VFS: found %s", zips[i].c_str() );
+			LOG->Trace( "VFS: found %s (%s)", zips[i].c_str(), type.c_str() );
 			FILEMAN->Mount( "zip", zips[i], "/" );
 		}
 
@@ -884,18 +879,15 @@ static void MountTreeOfZips( const CString &dir )
 	}
 }
 
-#if defined(HAVE_VERSION_INFO)
-extern unsigned long version_num;
-extern const char *version_time;
-#endif
+extern const bool VersionSVN;
+extern unsigned long VersionNumber;
+extern const char *const VersionTime;
 
 static void WriteLogHeader()
 {
 	LOG->Info( PRODUCT_NAME_VER );
-
-#if defined(HAVE_VERSION_INFO)
-	LOG->Info( "Compiled %s (build %lu)", version_time, version_num );
-#endif
+	LOG->Info( "Compiled %s (%s %lu)", VersionTime, 
+		VersionSVN ? "revision" : "build", VersionNumber );
 
 	time_t cur_time;
 	time(&cur_time);
@@ -1046,42 +1038,17 @@ int main(int argc, char* argv[])
 			FILEMAN->Mount( "dir", dirs[i], "/Songs" );
 	}
 
-	MountTreeOfZips( ZIPS_DIR );
+	MountTreeOfZips( "Packages/", "normal" );
+	MountTreeOfZips( "CryptPackages/", "crypt" );
 
-	// TODO: soft-code this!
+	/* Mount patch data, if any. */
+	if ( IsAFile( PATCH_FILE ) )
 	{
-		CStringArray dzips;
-
-		GetDirListing( "/CryptPackages/*.zip", dzips, false, true );
-
-		for( unsigned i = 0; i < dzips.size(); ++i )
-		{
-			if( !IsAFile(dzips[i]) )
-				continue;
-
-			LOG->Trace( "VFS: found %s (crypt)", dzips[i].c_str() );
-			FILEMAN->Mount( "zip", dzips[i], "/" );
-		}
-	}
-
-	/* Mount the patch data. I know this is a bit less
-	 * efficient, but it is much more readable. -- Vyhd */
-
-#ifdef ITG_ARCADE
-	if ( IsAFile( PATCH_AC_FILE ) )
-	{
-		LOG->Info("VFS: mounting patch.zip");
-		FILEMAN->Mount( "patch", PATCH_AC_DIR, "/Patch" );
+		LOG->Info( "VFS: mounting patch.zip" );
+		FILEMAN->Mount( "patch", PATCH_DIR, "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
+		// MountTreeOfZips( PATCH_DIR, "patch" );
 	}
-#else
-	if ( IsAFile( PATCH_PC_FILE ) )
-	{
-		LOG->Info("VFS: mounting patch.zip");
-		FILEMAN->Mount( "patch", PATCH_PC_DIR, "/Patch" );
-		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
-	}
-#endif
 	else
 	{
 		LOG->Trace("VFS: No patch file found");

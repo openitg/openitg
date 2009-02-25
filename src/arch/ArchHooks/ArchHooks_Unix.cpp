@@ -14,6 +14,7 @@
 #include <sys/io.h>
 #include <sys/time.h>
 #include <sys/reboot.h>
+#include <sys/io.h>
 #include <unistd.h>
 #include <cerrno>
 
@@ -125,7 +126,7 @@ void ArchHooks_Unix::SystemReboot()
 	LOG->Trace( "ArchHooks_Unix::SystemReboot()" );
 
 #ifdef ITG_ARCADE
-	if( !IsAFile("/tmp/no-crash-reboot") )
+	if( !IsAFile("/rootfs/tmp/no-crash-reboot") )
 	{
 		LOG->Warn( "no-reboot not found. Rebooting." );
 

@@ -18,15 +18,22 @@ private:
 	LightsMapping m_LightsMappings;
 
 	void ThreadLoop();
+	void KeysThreadLoop();
 	static int ThreadStart( void *pG15 );
+	static int KeysThreadStart( void *pG15 );
+
+	void ReadSpecialKeys( unsigned char *pData );
 
 	G15 LCD;
 	bool m_bHasDevice;
 
 	RageThread m_WriteThread;
+	RageThread m_ReadThread;
 	bool m_bThreadStop;
 
 	uint32_t m_iSavedLightData;
+	uint32_t m_iLastLightData;
+	LCDDisplayState m_DisplayState;
 };
 
 #define USE_LIGHTS_DRIVER_G15

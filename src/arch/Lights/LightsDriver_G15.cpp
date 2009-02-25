@@ -24,9 +24,10 @@ LightsDriver_G15::LightsDriver_G15()
 	SetLightsMappings();
 
 	// clear all lights
-	LCD.Write( 0 );
+	LCD.Write( 0, G15_LIGHTS_MODE );
+	m_DisplayState = G15_LIGHTS_MODE;
 
-	/* this thing lags like crazy, so threads are futile */
+	/* this thing lags like crazy, so threads are a must */
 	m_bThreadStop = false;
 	m_WriteThread.SetName("G15 LCD Thread");
 	m_WriteThread.Create( ThreadStart, this );
@@ -44,7 +45,7 @@ void LightsDriver_G15::ThreadLoop()
 	while ( !m_bThreadStop && m_bHasDevice )
 	{
 		g_G15LightMutex.Lock();
-		ret = LCD.Write( m_iSavedLightData );
+		ret = LCD.Write( m_iSavedLightData, m_DisplayState );
 		g_G15LightMutex.Unlock();
 		usleep(50000);
 	
@@ -96,7 +97,7 @@ LightsDriver_G15::~LightsDriver_G15()
 		return;
 
 	// clear all lights and close the connection
-	LCD.Write( 0 );
+	LCD.Write( 0, G15_LIGHTS_MODE );
 	LCD.Close();
 }
 

@@ -10,6 +10,8 @@
 #include "MemoryCardManager.h"
 #include "ScreenDimensions.h"
 #include "RageFileManager.h"
+#include "RageFileDriverZip.h"
+#include "CryptManager.h"
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "ProfileManager.h"
@@ -21,8 +23,8 @@ static RageMutex MountMutex("ITGDataMount");
 
 REGISTER_SCREEN_CLASS( ScreenAddSongs );
 
-AutoScreenMessage( SM_ConfirmAddGroups );
-AutoScreenMessage( SM_AnswerConfirmAddGroups );
+AutoScreenMessage( SM_ConfirmAddZips );
+AutoScreenMessage( SM_AnswerConfirmAddZips );
 
 PlayerNumber g_CurrentPlayer;
 
@@ -47,12 +49,17 @@ ScreenAddSongs::~ScreenAddSongs()
 		HOOKS->SystemReboot();
 }
 
-/**
-	Ok I know what you're thinking Mark, and yes, this will be expanded upon --infamouspat
-*/
-void ScreenAddSongs::LoadAddedGroups()
+void ScreenAddSongs::LoadAddedZips()
 {
-	FILEMAN->GetDirListing( "/AdditionalSongs/*", m_asAddedGroups, true, false );
+	CStringArray m_asAddedZipNames;
+	GetDirListing( "/AdditionalSongs/*.zip", m_asAddedZipNames ); /**/
+
+	for( unsigned i = 0; i < m_asAddedZipNames.size(); i++ )
+	{
+		CString sMD5 = CRYPTMAN->GetMD5( "/AdditionalSongs/" + m_asAddedZipNames[i]);
+		m_mAddedZips.insert( make_pair(m_asAddedZipNames[i], sMD5 ) );
+		LOG->Debug("%s: %s (%s)", __FUNCTION__, m_asAddedZipNames[i].c_str(), sMD5.c_str());
+	}
 }
 
 int InitSASSongThread( void *pSAS )
@@ -63,27 +70,34 @@ int InitSASSongThread( void *pSAS )
 
 void ScreenAddSongs::Init()
 {
+	CStringArray m_asAddedZipNames;
+	map<CString,CString>::iterator iter;
 	ScreenWithMenuElements::Init();
 
-	LoadAddedGroups();
+	LoadAddedZips();
 
-	m_AddedGroupList.SetName( "LoadedSongList" );
-	///////XXX TEST CODE//////
-	m_AddedGroupList.LoadFromFont( THEME->GetPathF("Common","normal") );
-	m_AddedGroupList.SetXY( SCREEN_CENTER_X + 140, SCREEN_CENTER_Y );
-	m_AddedGroupList.SetText( join("\n", m_asAddedGroups) );
-	m_AddedGroupList.SetZoom( 0.4f );
-	//////////////////////////
-	this->AddChild( &m_AddedGroupList );
+	for( iter = m_mAddedZips.begin(); iter != m_mAddedZips.end(); iter++ )
+	{
+		m_asAddedZipNames.push_back( iter->first );
+	}
 
-	m_AddableGroupSelection.SetName( "AddableSongList" );
+	m_AddedZipList.SetName( "LoadedSongList" );
 	///////XXX TEST CODE//////
-	m_AddableGroupSelection.LoadFromFont( THEME->GetPathF("Common","normal") );
-	m_AddableGroupSelection.SetXY( SCREEN_CENTER_X - 140, SCREEN_CENTER_Y );
-	m_AddableGroupSelection.SetText( "Please insert memory card with additional songs for transfer" );
-	m_AddableGroupSelection.SetZoom( 0.4f );
+	m_AddedZipList.LoadFromFont( THEME->GetPathF("Common","normal") );
+	m_AddedZipList.SetXY( SCREEN_CENTER_X + 140, SCREEN_CENTER_Y );
+	m_AddedZipList.SetText( join("\n", m_asAddedZipNames) );
+	m_AddedZipList.SetZoom( 0.4f );
 	//////////////////////////
-	this->AddChild( &m_AddableGroupSelection );
+	this->AddChild( &m_AddedZipList );
+
+	m_AddableZipSelection.SetName( "AddableSongList" );
+	///////XXX TEST CODE//////
+	m_AddableZipSelection.LoadFromFont( THEME->GetPathF("Common","normal") );
+	m_AddableZipSelection.SetXY( SCREEN_CENTER_X - 140, SCREEN_CENTER_Y );
+	m_AddableZipSelection.SetText( "Please insert memory card with additional songs for transfer" );
+	m_AddableZipSelection.SetZoom( 0.4f );
+	//////////////////////////
+	this->AddChild( &m_AddableZipSelection );
 	this->SortByDrawOrder();
 
 	m_bStopThread = false;
@@ -101,41 +115,37 @@ void ScreenAddSongs::StartSongThread()
 			usleep( 1000 );
 			continue;
 		}
+
 		FOREACH_PlayerNumber( pn )
 		{
 			MemoryCardState PCardState = MEMCARDMAN->GetCardState(pn);
+			map<CString,CString>::iterator iter;
 			if (PCardState == MEMORY_CARD_STATE_READY && !m_bCardMounted[pn])
 			{
 				if( !PROFILEMAN->LoadProfileFromMemoryCard(pn) || !PROFILEMAN->IsPersistentProfile(pn) ) continue;
-				m_AddableGroupSelection.SetText( ssprintf("Loading Player %d songs...\n", pn+1) );
-				m_asAddableGroups[pn].clear();
+				m_AddableZipSelection.SetText( ssprintf("Loading Player %d songs...\n", pn+1) );
+				m_asAddableZips[pn].clear();
 				MEMCARDMAN->LockCards();
-				MEMCARDMAN->MountCard(pn);
+				MEMCARDMAN->MountCard(pn, 999);
 				
-				CStringArray asGroups;
+				CStringArray asZips;
 				CString sDir = PROFILEMAN->GetProfileDir(pn) + "/AdditionalSongs";
-				GetDirListing( sDir+"/*", asGroups, true, false );
-				for (unsigned i = 0; i < asGroups.size(); i++)
+				GetDirListing( sDir+"/*.zip", asZips ); /**/
+				for (unsigned i = 0; i < asZips.size(); i++)
 				{
 					bool bAdd = true;
 
-					// don't add duplicate groups
-					// TODO: support for overlaying songs into already existing groups
-					for (unsigned x = 0; x < m_asAddedGroups.size(); x++)
-						if ( m_asAddedGroups[x] == asGroups[i] ) bAdd = false;
-					if (!bAdd) continue;
+					// MD5summing it takes forever --infamouspat
+					//CString sMD5 = CRYPTMAN->GetMD5(sDir+"/"+asZips[i]);
 
-					CStringArray asCandidateSongs;
-					GetDirListing( sDir+"/"+asGroups[i]+"/*", asCandidateSongs, true, true );
-					if ( asCandidateSongs.size() == 0 ) continue;
-					for (unsigned j = 0; j < asCandidateSongs.size(); j++)
+					// don't add duplicate zips
+					for (iter = m_mAddedZips.begin(); iter != m_mAddedZips.end(); iter++)
 					{
-						Song *pSong = new Song;
-						if ( ! pSong->LoadFromCustomSongDir( asCandidateSongs[j] + "/", asGroups[i], pn ) )
-							bAdd = false;
-						delete pSong;
+						if ( iter->first == asZips[i] ) bAdd = false; // same file names?
+						//if ( iter->second == sMD5 ) bAdd = false; // same MD5 sums?
 					}
-					if (bAdd) m_asAddableGroups[pn].push_back( asGroups[i] );
+					if (!bAdd) continue;
+					m_asAddableZips[pn].push_back( asZips[i] );
 				}
 				
 				MEMCARDMAN->UnmountCard(pn);
@@ -147,31 +157,34 @@ void ScreenAddSongs::StartSongThread()
 			if (PCardState == MEMORY_CARD_STATE_NO_CARD && m_bCardMounted[pn])
 			{
 				LOG->Debug("Unmounting memory card for player %d", pn+1);
-				m_asAddableGroups[pn].clear();
+				m_asAddableZips[pn].clear();
 				m_bCardMounted[pn] = false;
 			}
 		}
 	
-#if 0
-		SCREENMAN->SystemMessageNoAnimate( ssprintf("Player1: %d, Player2: %d", 
-				m_bCardMounted[0], 
-				m_bCardMounted[1]
-		));
-#endif
-	
-		if ( m_asAddableGroups[PLAYER_1].size() + m_asAddableGroups[PLAYER_2].size() > 0 )
+		if ( m_asAddableZips[PLAYER_1].size() + m_asAddableZips[PLAYER_2].size() > 0 )
 		{
-			m_AddableGroupSelection.SetText( join("\n", m_asAddableGroups[PLAYER_1]) + "\n" + join("\n", m_asAddableGroups[PLAYER_2]) );
+			CStringArray asAddableZips;
+
+			FOREACH( CString, m_asAddableZips[PLAYER_1], iter )
+			{
+				asAddableZips.push_back( *iter );
+			}
+			FOREACH( CString, m_asAddableZips[PLAYER_2], iter )
+			{
+				asAddableZips.push_back( *iter );
+			}
+
+			m_AddableZipSelection.SetText( join("\n", asAddableZips ) );
 
 			if (bLaunchPrompt)
 			{
-				this->PostScreenMessage( SM_ConfirmAddGroups, 0.0f );
+				this->PostScreenMessage( SM_ConfirmAddZips, 0.0f );
 				m_bPrompt = true;
 			}
 		}
 		else
-			m_AddableGroupSelection.SetText( "Please insert memory card with additional songs for transfer" );
-	
+			m_AddableZipSelection.SetText( "Please insert memory card with additional songs for transfer" );
 		usleep( 1000 );
 	}
 }
@@ -199,23 +212,27 @@ void UpdateXferProgress( float fPercent )
 	SCREENMAN->Draw();
 }
 
+/* Folders not allowed in zip file root */
+#define NUM_BLACKLIST_FOLDERS 3
+static CString g_asBlacklistedFolders[] = { "Data", "Program" };
+
 void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 {
-	if ( SM == SM_ConfirmAddGroups )
+	if ( SM == SM_ConfirmAddZips )
 	{
-		SCREENMAN->Prompt( SM_AnswerConfirmAddGroups, 
-			m_AddableGroupSelection.GetText() + "\n\nProceed to add song packs to machine?",
+		SCREENMAN->Prompt( SM_AnswerConfirmAddZips, 
+			m_AddableZipSelection.GetText() + "\n\nProceed to add song packs to machine?",
 		PROMPT_YES_NO, ANSWER_NO );
 	}
-	if ( SM == SM_AnswerConfirmAddGroups )
+	if ( SM == SM_AnswerConfirmAddZips )
 	{
-		bool bSuccess = false, bBreakEarly = false;
+		bool bSuccess = false, bBreakEarly = false, bSkip = false;
 		CString sError;
 
 		m_bPrompt = false;
 		if (ScreenPrompt::s_LastAnswer == ANSWER_NO)
 		{
-			LOG->Debug("SM_AnswerConfirmAddGroups: returning...");
+			LOG->Debug("SM_AnswerConfirmAddZips: returning...");
 			return;
 		}
 		m_bStopThread = true;
@@ -227,28 +244,66 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 #endif
 		MEMCARDMAN->LockCards();
 		MEMCARDMAN->MountCard(g_CurrentPlayer, 99999);
-		for( unsigned i = 0; i < m_asAddableGroups[g_CurrentPlayer].size(); i++ )
+		for( unsigned i = 0; i < m_asAddableZips[g_CurrentPlayer].size(); i++ )
 		{
-			bBreakEarly = false;
-			CString sAddGroup = m_asAddableGroups[g_CurrentPlayer][i];
-			CString sAddDb = PROFILEMAN->GetProfileDir(g_CurrentPlayer) + "/AdditionalSongs/" + sAddGroup + "/";
-			CStringArray sFiles;
-			GetDirListingRecursive( sAddDb, "/*", sFiles );
-			for( unsigned j = 0; j < sFiles.size(); j++)
-			{
-				CString sFile = sFiles[j];
-				CStringArray parts;
-				split( sFile, "/", parts );
-				CString sDestFile = "/" + join( "/", parts.begin()+2, parts.end() );
+			CStringArray asRootFiles;
+			RageFileDriverZip *pZip = new RageFileDriverZip;
 
-				g_CurXferFile = sDestFile;
-				if (!CopyWithProgress(sFile, sDestFile, UpdateXferProgress, sError) )
+			bBreakEarly = false;
+			bSkip = false;
+
+			g_CurXferFile = PROFILEMAN->GetProfileDir(g_CurrentPlayer) + "/AdditionalSongs/" + m_asAddableZips[g_CurrentPlayer][i];
+			if ( !pZip->Load( g_CurXferFile ) )
+			{
+				SCREENMAN->SystemMessage( ssprintf("Skipping %s (corrupt zip file)", m_asAddableZips[g_CurrentPlayer][i].c_str()) );
+				SAFE_DELETE(pZip);
+				continue;
+			}
+
+			/* Sanity checks */
+			pZip->GetDirListing( "*", asRootFiles, false, false );
+
+			LOG->Debug("%s: root entries: %s", g_CurXferFile.c_str(), join( ", ", asRootFiles ).c_str()); // XXX
+
+			FOREACH( CString, asRootFiles, sRootFile )
+			{
+				bool bpBreak = false;
+				// do not allow actual files in the root of the zip, too sploity
+				if ( pZip->GetFileType(*sRootFile) == RageFileManager::TYPE_FILE )
 				{
-					SCREENMAN->SystemMessage( "Transfer error: " + sError );
-					bBreakEarly = true;
-					// TODO: delete remnant transfer contents
+					SCREENMAN->SystemMessage( ssprintf("Skipping %s (loose file %s not allowed in root of zip)", m_asAddableZips[g_CurrentPlayer][i].c_str(), sRootFile->c_str()) );
+					SAFE_DELETE(pZip);
+					bSkip = true;
 					break;
 				}
+
+				// do not allow zips that have protected folders to be added --infamouspat
+				//
+				// XXX: should Themes/ really be in the blacklist?
+				for( unsigned f = 0; f < NUM_BLACKLIST_FOLDERS; f++ )
+				{
+					if ( !sRootFile->CompareNoCase(g_asBlacklistedFolders[f]) )
+					{
+						SCREENMAN->SystemMessage( ssprintf("Skipping %s (directory %s is not allowed in root of zip)", m_asAddableZips[g_CurrentPlayer][i].c_str(), sRootFile->c_str()) );
+						SAFE_DELETE(pZip);
+						bSkip = true;
+						bpBreak = true;
+						break;
+					}
+					if (bpBreak) break;
+				}
+			}
+			if (bSkip) continue;
+
+			// sanity checks completed, proceeding...
+			SAFE_DELETE(pZip);
+
+			if (!CopyWithProgress(g_CurXferFile, "/AdditionalSongs/" + m_asAddableZips[g_CurrentPlayer][i], UpdateXferProgress, sError) )
+			{
+				SCREENMAN->SystemMessage( "Transfer error: " + sError );
+				bBreakEarly = true;
+				// TODO: delete remnant transfer contents
+				break;
 			}
 			if (bBreakEarly) break;
 		}
@@ -265,7 +320,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		// hmm...
 		if (bSuccess)
 		{
-			m_AddableGroupSelection.SetText(
+			m_AddableZipSelection.SetText(
 				"The song folders have been successfully added to the machine\n"
 				"Press enter to restart..." );
 			m_bRestart = true;

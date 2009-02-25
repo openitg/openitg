@@ -28,13 +28,13 @@ public:
 	bool m_bStopThread;
 
 private:
-	void LoadAddedGroups();
+	void LoadAddedZips();
 
-	CStringArray m_asAddedGroups;
-	BitmapText m_AddedGroupList;
+	map<CString,CString> m_mAddedZips;
+	BitmapText m_AddedZipList;
 
-	CStringArray m_asAddableGroups[NUM_PLAYERS];
-	BitmapText m_AddableGroupSelection;
+	CStringArray m_asAddableZips[NUM_PLAYERS];
+	BitmapText m_AddableZipSelection;
 
 	bool m_bRestart;
 

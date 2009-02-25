@@ -769,7 +769,7 @@ EXPERIMENT: will this make stats load and save properly?
 		CString sStatsXmlSigFile = fn+SIGNATURE_APPEND;
 		CString sDontShareFile = sDir + DONT_SHARE_SIG;
 
-		LOG->Trace( "Verifying don't share signature" );
+		LOG->Trace( "Verifying don't share signature: %s", sDontShareFile.c_str() );
 		// verify the stats.xml signature with the "don't share" file
 		if( !CryptManager::VerifyFileWithFile(sStatsXmlSigFile, sDontShareFile) )
 		{
@@ -1043,6 +1043,7 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 {
 	CString fn = sDir + EDITABLE_INI;
 	CString efn = sDir + EXTRA_INI;
+	m_sPlayerAdditionalModifiers.clear();
 
 	//
 	// Don't load unreasonably large editable.ini files.
@@ -1072,8 +1073,6 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	// TODO: strip invalid chars?
 	if( m_iWeightPounds != 0 )
 		CLAMP( m_iWeightPounds, 20, 1000 );
-
-	m_sPlayerAdditionalModifiers.clear();
 
 	if ( ! PREFSMAN->m_bAllowExtraPlayerOptions ) return success;
 	if ( FILEMAN->GetFileSizeInBytes(efn) > MAX_EDITABLE_INI_SIZE_BYTES )

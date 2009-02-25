@@ -173,7 +173,7 @@ void ScreenTitleMenu::HandleMessage( const CString& sMessage )
 	{
 		/* If the CoinMode was changed, we need to reload this screen
 		 * so that the right m_aGameCommands will show */
-		LOG->Debug( "Checkpoint 3: handled message %sChanged", PREFSMAN->m_CoinMode.GetName().c_str() );
+		//LOG->Debug( "Checkpoint 3: handled message %sChanged", PREFSMAN->m_CoinMode.GetName().c_str() );
 		SCREENMAN->SetNewScreen( COIN_MODE_CHANGE_SCREEN );
 	}
 }

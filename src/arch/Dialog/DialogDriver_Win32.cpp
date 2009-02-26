@@ -3,6 +3,7 @@
 #include "RageUtil.h"
 #include "CommonMetrics.h"	// for WINDOW_TITLE
 #include "ThemeManager.h"
+#include "Preference.h"
 
 #include "archutils/win32/AppInstance.h"
 #include "archutils/win32/GotoURL.h"
@@ -13,6 +14,7 @@
 static bool g_bHush;
 static CString g_sMessage;
 static bool g_bAllowHush;
+static Preference<bool> g_bDebugTheme( "DebugTheme", 0 );
 
 static BOOL CALLBACK OKWndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
@@ -143,6 +145,8 @@ void DialogDriver_Win32::Error( CString sError, CString sID )
 Dialog::Result DialogDriver_Win32::AbortRetryIgnore( CString sMessage, CString ID )
 {
 	CString sWindowTitle = WINDOW_TITLE.IsLoaded() ? WINDOW_TITLE.GetValue() : "";
+
+	if ( g_bDebugTheme.Get() == false ) return Dialog::ignore;
 
 	switch( MessageBox(GraphicsWindow::GetHwnd(), sMessage, sWindowTitle, MB_ABORTRETRYIGNORE|MB_DEFBUTTON3 ) )
 	{

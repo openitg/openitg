@@ -36,6 +36,8 @@ private:
 	CStringArray m_asAddableZips[NUM_PLAYERS];
 	BitmapText m_AddableZipSelection;
 
+	BitmapText m_Disclaimer;
+
 	bool m_bRestart;
 
 	bool m_bCardMounted[NUM_PLAYERS];

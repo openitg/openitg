@@ -45,6 +45,9 @@ ScreenAddSongs::~ScreenAddSongs()
 	FOREACH_PlayerNumber( pn )
 		MEMCARDMAN->UnmountCard( pn );
 
+	OFF_COMMAND( m_AddedZipList );
+	OFF_COMMAND( m_AddableZipSelection );
+
 	if ( m_bRestart )
 		HOOKS->SystemReboot();
 }
@@ -58,7 +61,6 @@ void ScreenAddSongs::LoadAddedZips()
 	{
 		CString sMD5 = CRYPTMAN->GetMD5( "/AdditionalSongs/" + m_asAddedZipNames[i]);
 		m_mAddedZips.insert( make_pair(m_asAddedZipNames[i], sMD5 ) );
-		LOG->Debug("%s: %s (%s)", __FUNCTION__, m_asAddedZipNames[i].c_str(), sMD5.c_str());
 	}
 }
 
@@ -82,22 +84,23 @@ void ScreenAddSongs::Init()
 	}
 
 	m_AddedZipList.SetName( "LoadedSongList" );
-	///////XXX TEST CODE//////
-	m_AddedZipList.LoadFromFont( THEME->GetPathF("Common","normal") );
-	m_AddedZipList.SetXY( SCREEN_CENTER_X + 140, SCREEN_CENTER_Y );
+	m_AddedZipList.LoadFromFont( THEME->GetPathF( "ScreenAddSongs", "text" ) );
+	SET_XY_AND_ON_COMMAND( m_AddedZipList );
 	m_AddedZipList.SetText( join("\n", m_asAddedZipNames) );
-	m_AddedZipList.SetZoom( 0.4f );
-	//////////////////////////
 	this->AddChild( &m_AddedZipList );
 
 	m_AddableZipSelection.SetName( "AddableSongList" );
-	///////XXX TEST CODE//////
-	m_AddableZipSelection.LoadFromFont( THEME->GetPathF("Common","normal") );
-	m_AddableZipSelection.SetXY( SCREEN_CENTER_X - 140, SCREEN_CENTER_Y );
-	m_AddableZipSelection.SetText( "Please insert memory card with additional songs for transfer" );
-	m_AddableZipSelection.SetZoom( 0.4f );
-	//////////////////////////
+	m_AddableZipSelection.LoadFromFont( THEME->GetPathF( "ScreenAddSongs", "text" ) );
+	m_AddableZipSelection.SetText( THEME->GetMetric(m_sName,"AddableSongListHelpText") );
+	SET_XY_AND_ON_COMMAND( m_AddableZipSelection );
 	this->AddChild( &m_AddableZipSelection );
+
+	m_Disclaimer.SetName( "Disclaimer" );
+	m_Disclaimer.LoadFromFont( THEME->GetPathF( "ScreenAddSongs", "text" ) );
+	m_Disclaimer.SetText( THEME->GetMetric(m_sName, "DisclaimerText") );
+	SET_XY_AND_ON_COMMAND( m_Disclaimer );
+	this->AddChild( &m_Disclaimer );
+
 	this->SortByDrawOrder();
 
 	m_bStopThread = false;
@@ -213,7 +216,7 @@ void UpdateXferProgress( float fPercent )
 }
 
 /* Folders not allowed in zip file root */
-#define NUM_BLACKLIST_FOLDERS 3
+#define NUM_BLACKLIST_FOLDERS 2
 static CString g_asBlacklistedFolders[] = { "Data", "Program" };
 
 void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
@@ -310,6 +313,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		MEMCARDMAN->UnmountCard(g_CurrentPlayer);
 		MEMCARDMAN->UnlockCards();
 #if defined(LINUX) && defined(ITG_ARCADE)
+		sync();
 		system( "mount -o remount,ro /itgdata" );
 #endif
 		MountMutex.Unlock();

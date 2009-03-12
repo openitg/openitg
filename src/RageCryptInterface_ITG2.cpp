@@ -46,7 +46,7 @@ crypt_file *RageCryptInterface_ITG2::crypt_copy_internal( crypt_file *cf )
 bool RageCryptInterface_ITG2::crypt_open_internal(crypt_file *newfile, CString secret)
 {
 	CHECKPOINT;
-	LOG->Debug( "RageCryptInterface_ITG2::crypt_open( %s, \"%s\" )", newfile->path.c_str(), secret.c_str() );
+	//LOG->Debug( "RageCryptInterface_ITG2::crypt_open( %s, \"%s\" )", newfile->path.c_str(), secret.c_str() );
 
 	char header[2];
 	unsigned char *subkey, verifyblock[16];
@@ -106,7 +106,7 @@ bool RageCryptInterface_ITG2::crypt_open_internal(crypt_file *newfile, CString s
 	tKeyMap::iterator iter = RageCryptInterface_ITG2::KnownKeys.find(newfile->path.c_str());
 	if (iter != RageCryptInterface_ITG2::KnownKeys.end())
 	{
-		LOG->Debug( "Decryption key found: %s", iter->second );
+		//LOG->Debug( "Decryption key found: %s", iter->second );
 		CHECKPOINT_M("cache");
 		AESKey = iter->second;
 	}
@@ -132,7 +132,7 @@ bool RageCryptInterface_ITG2::crypt_open_internal(crypt_file *newfile, CString s
 		unsigned char *cAESKey = new unsigned char[24];
 		memcpy(cAESKey, AESKey, 24);
 		RageCryptInterface_ITG2::KnownKeys[newfile->path.c_str()] = cAESKey;
-		LOG->Debug( "Key saved: %s", cAESKey );
+		//LOG->Debug( "Key saved: %s", cAESKey );
 	}
 	delete subkey;
 
@@ -143,10 +143,10 @@ bool RageCryptInterface_ITG2::crypt_open_internal(crypt_file *newfile, CString s
 		LOG->Warn("RageCryptInterface_ITG2: %s: decrypt failed, unexpected decryption magic", newfile->path.c_str());
 		return false;
 	}
-	else
+	/*else
 	{
 		LOG->Debug("RageCryptInterface_ITG2: %s: decrypt succeeded", newfile->path.c_str() );
-	}
+	}*/
 
 	newfile->filepos = 0;
 	newfile->header_size = lseek(newfile->fd, 0, SEEK_CUR);

@@ -36,6 +36,9 @@ void GraphDisplay::Load( const CString &TexturePath, float fInitialHeight, const
 	m_size.y = (float) m_pTexture->GetSourceHeight();
 	m_bColorize = bColorize;
 
+	if ( !IsAFile(sTextureFFC) || !IsAFile(sTextureFEC) || !IsAFile(sTextureFGC) )
+		m_bColorize = false;
+
 	if (m_bColorize)
 	{
 		m_pTextureFFC = TEXTUREMAN->LoadTexture( sTextureFFC );

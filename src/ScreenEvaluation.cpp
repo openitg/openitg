@@ -82,9 +82,6 @@ const char* STATS_STRING[NUM_STATS_LINES] =
 #define MAX_COMBO_NUM_DIGITS				THEME->GetMetricI(m_sName,"MaxComboNumDigits")
 #define PLAYER_OPTIONS_SEPARATOR			THEME->GetMetric (m_sName,"PlayerOptionsSeparator")
 #define COLORIZE_GRAPH					THEME->GetMetricB(m_sName,"ColorizeLifeGraph")
-#define COLORIZE_GRAPH_FANTASTIC( i )			THEME->GetMetricC(m_sName,ssprintf("ColorizeLifeGraphFantasticP%d",i+1))
-#define COLORIZE_GRAPH_EXCELLENT( i )			THEME->GetMetricC(m_sName,ssprintf("ColorizeLifeGraphExcellentP%d",i+1))
-#define COLORIZE_GRAPH_GREAT( i )			THEME->GetMetricC(m_sName,ssprintf("ColorizeLifeGraphGreatP%d",i+1))
 
 
 static const int NUM_SHOWN_RADAR_CATEGORIES = 5;
@@ -444,11 +441,6 @@ void ScreenEvaluation::Init()
 	{
 		FOREACH_EnabledPlayer( p )
 		{
-			LOG->Debug("P%d: fFullFantasticComboBegin: %f", (int)(p+1), stageStats.m_player[p].fFullFantasticComboBegin);
-			LOG->Debug("P%d: fFullExcellentComboBegin: %f", (int)(p+1), stageStats.m_player[p].fFullExcellentComboBegin);
-			LOG->Debug("P%d: fFullGreatComboBegin: %f", (int)(p+1), stageStats.m_player[p].fFullGreatComboBegin);
-			LOG->Debug("P%d: fPulsatingComboEnd: %f", (int)(p+1), stageStats.m_player[p].fPulsatingComboEnd);
-
 			m_sprGraphFrame[p].Load( THEME->GetPathG(m_sName,ssprintf("graph frame p%d",p+1)) );
 			m_sprGraphFrame[p]->SetName( ssprintf("GraphFrameP%d",p+1) );
 			SET_XY_AND_ON_COMMAND( m_sprGraphFrame[p] );

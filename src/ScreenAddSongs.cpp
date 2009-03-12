@@ -54,14 +54,7 @@ ScreenAddSongs::~ScreenAddSongs()
 
 void ScreenAddSongs::LoadAddedZips()
 {
-	CStringArray m_asAddedZipNames;
-	GetDirListing( "/AdditionalSongs/*.zip", m_asAddedZipNames ); /**/
-
-	for( unsigned i = 0; i < m_asAddedZipNames.size(); i++ )
-	{
-		CString sMD5 = CRYPTMAN->GetMD5( "/AdditionalSongs/" + m_asAddedZipNames[i]);
-		m_mAddedZips.insert( make_pair(m_asAddedZipNames[i], sMD5 ) );
-	}
+	GetDirListing( "/AdditionalSongs/*.zip", m_asAddedZips ); /**/
 }
 
 int InitSASSongThread( void *pSAS )
@@ -72,21 +65,15 @@ int InitSASSongThread( void *pSAS )
 
 void ScreenAddSongs::Init()
 {
-	CStringArray m_asAddedZipNames;
 	map<CString,CString>::iterator iter;
 	ScreenWithMenuElements::Init();
 
 	LoadAddedZips();
 
-	for( iter = m_mAddedZips.begin(); iter != m_mAddedZips.end(); iter++ )
-	{
-		m_asAddedZipNames.push_back( iter->first );
-	}
-
 	m_AddedZipList.SetName( "LoadedSongList" );
 	m_AddedZipList.LoadFromFont( THEME->GetPathF( "ScreenAddSongs", "text" ) );
 	SET_XY_AND_ON_COMMAND( m_AddedZipList );
-	m_AddedZipList.SetText( join("\n", m_asAddedZipNames) );
+	m_AddedZipList.SetText( join("\n", m_asAddedZips) );
 	this->AddChild( &m_AddedZipList );
 
 	m_AddableZipSelection.SetName( "AddableSongList" );
@@ -138,15 +125,17 @@ void ScreenAddSongs::StartSongThread()
 				{
 					bool bAdd = true;
 
-					// MD5summing it takes forever --infamouspat
-					//CString sMD5 = CRYPTMAN->GetMD5(sDir+"/"+asZips[i]);
-
 					// don't add duplicate zips
-					for (iter = m_mAddedZips.begin(); iter != m_mAddedZips.end(); iter++)
+					FOREACH_CONST( CString, m_asAddedZips, iter )
 					{
-						if ( iter->first == asZips[i] ) bAdd = false; // same file names?
-						//if ( iter->second == sMD5 ) bAdd = false; // same MD5 sums?
+#if defined(WIN32)
+						// Windows: no case sensitivity, don't take chances
+						if ( iter->CompareNoCase(asZips[i]) == 0 ) bAdd = false;
+#else
+						if ( *iter == asZips[i] ) bAdd = false; // same file names?
+#endif
 					}
+					
 					if (!bAdd) continue;
 					m_asAddableZips[pn].push_back( asZips[i] );
 				}

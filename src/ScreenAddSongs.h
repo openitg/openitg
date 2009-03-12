@@ -30,7 +30,7 @@ public:
 private:
 	void LoadAddedZips();
 
-	map<CString,CString> m_mAddedZips;
+	CStringArray m_asAddedZips;
 	BitmapText m_AddedZipList;
 
 	CStringArray m_asAddableZips[NUM_PLAYERS];

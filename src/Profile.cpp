@@ -1074,7 +1074,11 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	if( m_iWeightPounds != 0 )
 		CLAMP( m_iWeightPounds, 20, 1000 );
 
-	if ( ! PREFSMAN->m_bAllowExtraPlayerOptions ) return success;
+	if ( ! PREFSMAN->m_bAllowExtraPlayerOptions )
+	{
+		LOG->Warn( "AllowExtraPlayerOptions turned off, skipping Extra.ini" );
+		return success;
+	}
 	if ( FILEMAN->GetFileSizeInBytes(efn) > MAX_EDITABLE_INI_SIZE_BYTES )
 	{
 		LOG->Warn( "The file '%s' is unreasonably large.  It won't be loaded.", efn.c_str() );
@@ -1110,11 +1114,12 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 			CString candidate = *iter;
 			TrimLeft(candidate);
 			TrimRight(candidate);
-			Regex mult("^([0-9]+(\\.[0-9]+)?)x$");
+			Regex mult("^[0-9]{1,2}(\\.[0-9]{1,2})?x$");
 			Regex constmod("^C[0-9]{1,4}$");
 			Regex mmod("^M[0-9]{1,4}$");
 			if (mult.Compare(candidate) || constmod.Compare(candidate) || mmod.Compare(candidate))
 			{
+				LOG->Trace( "Added custom speed mod '%s'", candidate.c_str() );
 				m_sPlayerAdditionalModifiers.push_back(candidate);
 			}
 		}

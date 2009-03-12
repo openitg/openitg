@@ -179,27 +179,27 @@ public:
 			}
 			FOREACHS_CONST( CString, additionalSet, addit_mod )
 			{
-				Regex mult("^([0-9]+(\\.[0-9]{1,2})?)x$");
+				Regex mult("^[0-9]{1,2}(\\.[0-9]{1,2})?x$");
 				Regex constmod("^C[0-9]{1,4}$");
 				Regex mmod("^M[0-9]{1,4}$");
 				CString sAdditModName;
 				if (mult.Compare(*addit_mod))
 				{
 					float factor = 1.0f;
-					if (sscanf(*addit_mod, "%.2fx", &factor) == 1)
-						sAdditModName = ssprintf("x%.2f", factor);
+					sscanf(*addit_mod, "%fx", &factor);
+					sAdditModName = ssprintf("x%.1f", factor);
 				}
 				else if (constmod.Compare(*addit_mod))
 				{
 					unsigned bpm = 300;
-					if (sscanf(*addit_mod, "C%u", &bpm) == 1)
-						sAdditModName = ssprintf("c%u", bpm);
+					sscanf(*addit_mod, "C%u", &bpm);
+					sAdditModName = ssprintf("c%u", bpm);
 				}
 				else if (mmod.Compare(*addit_mod))
 				{
 					unsigned bpm = 600;
-					if (sscanf(*addit_mod, "M%u", &bpm) == 1)
-						sAdditModName = ssprintf("m%u", bpm);
+					sscanf(*addit_mod, "M%u", &bpm);
+					sAdditModName = ssprintf("m%u", bpm);
 				}
 				else ASSERT(0); // how'd it get in here in the first place...
 

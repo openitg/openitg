@@ -110,7 +110,6 @@ bool ArchHooks_Unix::GetNetworkAddress( CString &sIP, CString &sNetmask, CString
 		sNetmask = inet_ntoa(((struct sockaddr_in *)snm)->sin_addr);
 		freeifaddrs(ifaces);
 	}
-	freeifaddrs(ifaces);
 
 	if( sIP.empty() || sNetmask.empty() )
 	{

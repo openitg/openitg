@@ -169,7 +169,7 @@ void ScreenArcadePatch::CheckForPatches()
 
 		/* Call once for each directory path we want to find */
 		AddPatches( "ITG 2 *.itg" );
-		AddPatches( "OpenITG *.bxr" );
+		//AddPatches( "OpenITG *.bxr" );
 
 		/* Nothing found in any of the above */
 		if( m_vsPatches.size() == 0 )
@@ -325,7 +325,7 @@ bool ScreenArcadePatch::LoadPatch( CString sPath, bool bOnCard )
 
 	int iErr;
 	unsigned filesize;
-	CString patchRSA, patchSig, sErr;
+	CString patchRSA_ITG2 = "", patchRSA_OpenITG = "", patchSig, sErr;
 	RageFileBasic *fSig, *fZip;
 
 	CHECKPOINT;
@@ -334,10 +334,14 @@ bool ScreenArcadePatch::LoadPatch( CString sPath, bool bOnCard )
 	CHECKPOINT;
 
 	/////////// LOLOLOLOLOLOLOL /////////////
-	if( GetExtension( m_sPatchPath ) == "bxr" ) /* OpenITG patch */
-		GetFileContents("Data/Patch-OpenITG.rsa", patchRSA);
-	else if( GetExtension( m_sPatchPath ) == "itg" ) /* regular ITG patch */
-		GetFileContents("Data/Patch.rsa", patchRSA);		
+	if( IsAFile( "Data/Patch-OpenITG.rsa" ) )
+		GetFileContents("Data/Patch-OpenITG.rsa", patchRSA_OpenITG);
+	GetFileContents("Data/Patch.rsa", patchRSA_ITG2);
+
+	//if( GetExtension( m_sPatchPath ) == "bxr" ) /* OpenITG patch */
+		//GetFileContents("Data/Patch-OpenITG.rsa", patchRSA_OpenTG);
+	//else if( GetExtension( m_sPatchPath ) == "itg" ) /* regular ITG patch */
+		//GetFileContents("Data/Patch.rsa", patchRSA_ITG2);
 	///////////////////////////////////////////////////////////
 
 	CHECKPOINT;
@@ -356,7 +360,7 @@ bool ScreenArcadePatch::LoadPatch( CString sPath, bool bOnCard )
 	fZip = new RageFileDriverSlice( rf, 0, filesize - 128 );
 	
 	CHECKPOINT;
-	if (! CryptHelpers::VerifyFile( *fZip, patchSig, patchRSA, sErr ) )
+	if (!CryptHelpers::VerifyFile(*fZip, patchSig, patchRSA_OpenITG, sErr) && !CryptHelpers::VerifyFile(*fZip, patchSig, patchRSA_ITG2, sErr) )
 	{
 		g_sStatus = ssprintf("Patch signature verification failed:\n%s", sErr.c_str() );
 		m_textHelp->SetText( THEME->GetMetric( "ScreenArcadePatch", "HelpTextError" ) );

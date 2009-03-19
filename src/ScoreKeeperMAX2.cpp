@@ -66,7 +66,7 @@ void ScoreKeeperMAX2::Load(
 		 */
 		NoteDataUtil::TransformNoteData( nd, aa, pSteps->m_StepsType, pSong );
 		RadarValues rvPre;
-		NoteDataUtil::CalculateRadarValues( nd, pSong->m_fMusicLengthSeconds, rvPre );
+		NoteDataUtil::CalculateRadarValues( nd, pSong->MusicLengthSeconds(), rvPre );
 
 		/* Apply user transforms to find out how the notes will really look. 
 		 *
@@ -77,7 +77,7 @@ void ScoreKeeperMAX2::Load(
 		 * mean moving the queues in ScreenGameplay to GameState ... */
 		NoteDataUtil::TransformNoteData( nd, m_pPlayerState->m_PlayerOptions, pSteps->m_StepsType );
 		RadarValues rvPost;
-		NoteDataUtil::CalculateRadarValues( nd, pSong->m_fMusicLengthSeconds, rvPost );
+		NoteDataUtil::CalculateRadarValues( nd, pSong->MusicLengthSeconds(), rvPost );
 		 
 		iTotalPossibleDancePoints += this->GetPossibleDancePoints( rvPre, rvPost );
 		iTotalPossibleGradePoints += this->GetPossibleGradePoints( rvPre, rvPost );

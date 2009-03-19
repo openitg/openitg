@@ -3,11 +3,18 @@
 
 #include "io/USBDriver.h"
 
+enum G15DisplayState
+{
+	G15_LIGHTS_MODE,
+	G15_STATS_MODE,
+	NUM_G15_DISPLAY_STATES
+};
+
 class G15: public USBDriver
 {
 public:
 	bool Read( uint32_t *pData ) { return false; }
-	bool Write( uint32_t iData );
+	bool Write( uint32_t iData, G15DisplayState throwaway );
 
 protected:
 	bool Matches( int idVendor, int idProduct ) const;

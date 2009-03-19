@@ -35,8 +35,11 @@
 #include "MemoryCardManager.h" 
 #include "InputQueue.h"
 #include "OptionsList.h"
-#include "FontCharAliases.h" // XXX
-#include "DiagnosticsUtil.h" // XXX
+
+// XXX: custom song loading. remove these if we can.
+#include "RageFileDriverTimeout.h"
+#include "FontCharAliases.h"
+#include "DiagnosticsUtil.h"
 
 const int NUM_SCORE_DIGITS	=	9;
 
@@ -1309,15 +1312,12 @@ void ScreenSelectMusic::HandleScreenMessage( const ScreenMessage SM )
 // XXX: lots of ctors/dtors and redundant calls. How can we best fix this?
 void UpdateLoadProgress( float fPercent )
 {
-	LOG->Trace( "UpdateLoadProgress( %f )", fPercent );
-
 //	CString sMessage = ssprintf( "%s\n%i%%\n%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
 //		(int)fPercent, CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
 
 	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n\n", (int)fPercent );
 
-	LOG->Debug( "GetInputType: %s", DiagnosticsUtil::GetInputType().c_str() );
-	// this will be themeable soon, ideally. for now, assume Select is available unless ITGIO is loaded
+	// this might be themeable soon, ideally. for now, assume Select is available unless ITGIO is loaded
 	static CString sCancelText = ssprintf( "Pressing %s will cancel this selection.\n\n",
 		DiagnosticsUtil::GetInputType() == "ITGIO" ? "&MENULEFT; + &MENURIGHT;" : "&SELECT;" );
 
@@ -1354,19 +1354,21 @@ void UpdateLoadProgress( float fPercent )
 }
 
 // run a few basic tests to be sure we aren't breaking any limits...
-// XXX: make this themeable
 bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 {
 	LOG->Trace( "ScreenSelectMusic::ValidateCustomSong()" );
 
 	// Interesting hack: I can't get this to work properly except through a new CString.
-//	CString sMessage = ssprintf( "%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str() );
+	// XXX: make this themeable
+	//	CString sMessage = ssprintf( "%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str() );
 	CString sMessage = ssprintf( "Please wait ..." );
 	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();
 
+	// set a timeout for USB access, so we don't get flooded with messages.
+	RageFileDriverTimeout::SetTimeout( 30 );
+
 	// whoever owns the song we're reading, mount their card.
-	// timeout is high so slow, but valid, loads don't get interrupted
 #ifndef WIN32
 	if( !PREFSMAN->m_bCustomSongPreviews )
 		MEMCARDMAN->MountCard( pSong->m_SongOwner, 20 );
@@ -1412,6 +1414,9 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 	// force a zero on next update so the animation doesn't
 	// skip - we spent a lot of time loading.
 	SCREENMAN->ZeroNextUpdate();
+
+	// reset the USB timeout
+	RageFileDriverTimeout::ResetTimeout();
 
 	return bVerified && bCopied;
 }
@@ -1900,6 +1905,10 @@ void ScreenSelectMusic::AfterMusicChange()
 	case TYPE_SONG:
 	case TYPE_PORTAL:
 		{
+			// this can occur if the song wheel only has custom songs on it.
+			if( !pSong )
+				break;
+
 			// UGLY: grab the path to _silent.ogg so timing
 			// data still runs - it'll only run if we play audio
 			if( pSong->IsCustomSong() && !PREFSMAN->m_bCustomSongPreviews )
@@ -1912,7 +1921,7 @@ void ScreenSelectMusic::AfterMusicChange()
 			m_fSampleLengthSeconds = pSong->m_fMusicSampleLengthSeconds;
 
 			m_textNumSongs.SetText( ssprintf("%d", SongManager::GetNumStagesForSong(pSong) ) );
-			m_textTotalTime.SetText( SecondsToMMSSMsMs(pSong->m_fMusicLengthSeconds) );
+			m_textTotalTime.SetText( SecondsToMMSSMsMs(pSong->MusicLengthSeconds()) );
 
 			pSong->GetSteps( m_vpSteps, GAMESTATE->GetCurrentStyle()->m_StepsType );
 
@@ -1954,7 +1963,7 @@ void ScreenSelectMusic::AfterMusicChange()
 			 * up when scrolling fast.  It'll still show up in "slow" scrolling,
 			 * but it doesn't look at weird as it does in "fast", and I don't
 			 * like the effect with a lot of delay. */
-			if( pSong->m_fMusicLengthSeconds > PREFSMAN->m_fMarathonVerSongSeconds )
+			if( pSong->IsMarathon() )
 			{
 				m_sprMarathonBalloon->StopTweening();
 				SET_XY( m_sprMarathonBalloon );
@@ -1964,7 +1973,7 @@ void ScreenSelectMusic::AfterMusicChange()
 				COMMAND( m_sprLongBalloon, "Hide" );
 
 			}
-			else if( pSong->m_fMusicLengthSeconds > PREFSMAN->m_fLongVerSongSeconds )
+			else if( pSong->IsLong() )
 			{
 				m_sprLongBalloon->StopTweening();
 				SET_XY( m_sprLongBalloon );

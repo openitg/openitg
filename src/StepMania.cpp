@@ -1090,7 +1090,7 @@ int main(int argc, char* argv[])
 	}
 
 	MountTreeOfZips( "Packages/", "normal" );
-	MountTreeOfZips( "CryptPackages/", "crypt" );
+//	MountTreeOfZips( "CryptPackages/", "crypt" );
 	MountTreeOfZips( ADDITIONAL_SONGS_DIR, "user addon", true );
 
 	/* Mount patch data, if any. */

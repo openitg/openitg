@@ -48,6 +48,8 @@
 #include "RageLog.h"
 #include <errno.h>
 
+REGISTER_FILE_DRIVER(Timeout, "TIMEOUT")
+
 enum ThreadRequest
 {
 	REQ_OPEN,
@@ -776,7 +778,7 @@ private:
 	ThreadedFileWorker *m_pWorker;
 };
 
-RageFileDriverTimeout::RageFileDriverTimeout( CString sPath ):
+RageFileDriverTimeout::RageFileDriverTimeout( const CString &sPath ):
         RageFileDriver( new TimedFilenameDB() )
 {
 	m_pWorker = new ThreadedFileWorker( sPath );
@@ -830,12 +832,6 @@ RageFileDriverTimeout::~RageFileDriverTimeout()
 {
 	delete m_pWorker;
 }
-
-static struct FileDriverEntry_Timeout: public FileDriverEntry
-{
-        FileDriverEntry_Timeout(): FileDriverEntry( "TIMEOUT" ) { }
-        RageFileDriver *Create( CString Root ) const { return new RageFileDriverTimeout( Root ); }
-} const g_RegisterDriver;
 
 /*
  * Copyright (c) 2005 Glenn Maynard

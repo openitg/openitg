@@ -5,6 +5,13 @@
 
 #include "RageFileManager.h"
 
+#define REGISTER_FILE_DRIVER(name,type) \
+	static struct FileDriverEntry_##name : public FileDriverEntry \
+	{	\
+		FileDriverEntry_##name(): FileDriverEntry( type ) { } \
+		RageFileDriver *Create( const CString &sRoot ) const { return new RageFileDriver##name( sRoot ); } \
+	} const g_RegisterDriver;
+
 class RageFileBasic;
 class FilenameDB;
 class RageFileDriver
@@ -33,14 +40,14 @@ public:
 /* This is used to register the driver, so RageFileManager can see it. */
 struct FileDriverEntry
 {
-	FileDriverEntry( CString Type );
+	FileDriverEntry( const CString &sType );
 	virtual ~FileDriverEntry();
-	virtual RageFileDriver *Create( CString Root ) const = 0;
+	virtual RageFileDriver *Create( const CString &sRoot ) const = 0;
 
 	CString m_Type;
 	const FileDriverEntry *m_Link;
 };
-RageFileDriver *MakeFileDriver( CString Type, CString Root );
+RageFileDriver *MakeFileDriver( const CString &sType, const CString &sRoot );
 
 #endif
 

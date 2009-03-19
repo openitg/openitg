@@ -70,11 +70,11 @@ void RageFileDriver::FlushDirCache( const CString &sPath )
 
 const struct FileDriverEntry *g_FileDriverList = NULL;
 
-FileDriverEntry::FileDriverEntry( CString Type )
+FileDriverEntry::FileDriverEntry( const CString &sType )
 {
 	m_Link = g_FileDriverList;
 	g_FileDriverList = this;
-	m_Type = Type;
+	m_Type = sType;
 }
 
 FileDriverEntry::~FileDriverEntry()
@@ -82,11 +82,11 @@ FileDriverEntry::~FileDriverEntry()
 	g_FileDriverList = NULL; /* invalidate */
 }
 
-RageFileDriver *MakeFileDriver( CString Type, CString Root )
+RageFileDriver *MakeFileDriver( const CString &sType, const CString &sRoot )
 {
 	for( const FileDriverEntry *p = g_FileDriverList; p; p = p->m_Link )
-		if( !p->m_Type.CompareNoCase(Type) )
-			return p->Create( Root );
+		if( !p->m_Type.CompareNoCase(sType) )
+			return p->Create( sRoot );
 	return NULL;
 }
 

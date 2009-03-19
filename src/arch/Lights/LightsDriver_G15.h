@@ -33,7 +33,7 @@ private:
 
 	uint32_t m_iSavedLightData;
 	uint32_t m_iLastLightData;
-	LCDDisplayState m_DisplayState;
+	G15DisplayState m_DisplayState;
 };
 
 #define USE_LIGHTS_DRIVER_G15

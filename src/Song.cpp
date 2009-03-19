@@ -302,6 +302,9 @@ bool Song::LoadFromSongDir( CString sDir )
 	/* Make sure we point to the correct place */
 	m_sGameplayMusic = GetMusicPath();
 
+	/* Get the length of the steps, so we have an accurate indicator of play length */
+	m_fStepsLengthSeconds = m_Timing.GetElapsedTimeFromBeat( m_fLastBeat );
+
 	if( !m_bHasMusic )
 	{
 		LOG->Trace( "Song \"%s\" ignored (no music)", sDir.c_str() );
@@ -338,7 +341,6 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 
 	TidyUpData();
 	ld->TidyUpData( *this, false );
-
 	delete ld;
 
 	for( unsigned i=0; i<m_vpSteps.size(); i++ )
@@ -346,6 +348,9 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 		m_vpSteps[i]->SetFile( NULL ); // avoid loading from cache
 		m_vpSteps[i]->Compress();
 	}
+
+	/* Get the length of the steps, so we have an accurate indicator of play length */
+	m_fStepsLengthSeconds = m_Timing.GetElapsedTimeFromBeat( m_fLastBeat );
 
 	// these won't load anyway -  don't bother
 	m_sBannerFile = "";
@@ -846,7 +851,7 @@ void Song::ReCalculateRadarValuesAndLastBeat()
 	{
 		Steps* pSteps = m_vpSteps[i];
 
-		pSteps->CalculateRadarValues( m_fMusicLengthSeconds );
+		pSteps->CalculateRadarValues( MusicLengthSeconds() );
 
 		//
 		// calculate lastBeat
@@ -1292,12 +1297,17 @@ bool Song::IsCustomSong() const		{ return m_bIsCustomSong; }
 
 bool Song::IsLong() const
 {
-	return !IsMarathon() && m_fMusicLengthSeconds > PREFSMAN->m_fLongVerSongSeconds;
+	return !IsMarathon() && MusicLengthSeconds() > PREFSMAN->m_fLongVerSongSeconds;
 }
 
 bool Song::IsMarathon() const
 {
-	return m_fMusicLengthSeconds >= PREFSMAN->m_fMarathonVerSongSeconds;
+	return MusicLengthSeconds() >= PREFSMAN->m_fMarathonVerSongSeconds;
+}
+
+float Song::MusicLengthSeconds() const
+{
+	return max( m_fMusicLengthSeconds, m_fStepsLengthSeconds );
 }
 
 bool Song::HasBGChanges() const
@@ -1626,6 +1636,8 @@ bool Song::CheckCustomSong( CString &sError )
 		return false;
 	}
 
+	// while we could refer to m_fMusicLengthSeconds for song length,
+	// this method is preferred because we need to test the USB device.
 	CString sResult;
 	SoundReader *Sample = SoundReader_FileReader::OpenFile( GetMusicPath(), sResult );
 
@@ -1638,16 +1650,18 @@ bool Song::CheckCustomSong( CString &sError )
 		return false;
 	}
 
-	float fLength = Sample->GetLength() / 1000.0f;
+	float fMusicLength = max(Sample->GetLength()/1000.0f, MusicLengthSeconds() );
+	SAFE_DELETE( Sample );
 
-	// memory leak possibility if we forget about this.
-	delete Sample;
-
-	if( PREFSMAN->m_iCustomMaxSeconds > 0 && fLength > (float)PREFSMAN->m_iCustomMaxSeconds )
+	// music too long?
+	if( PREFSMAN->m_iCustomMaxSeconds > 0 && fMusicLength > (float)PREFSMAN->m_iCustomMaxSeconds )
 	{
-		sError = ssprintf( "This song is %.0f seconds long. The maximum length is %.0f seconds.", fLength, (float)PREFSMAN->m_iCustomMaxSeconds );
+		sError = ssprintf( "This song is %.0f seconds long. The maximum length is %.0f seconds.", fMusicLength, (float)PREFSMAN->m_iCustomMaxSeconds );
 		return false;
 	}
+
+	// steps too long?
+	
 
 	//the file's fine. let's head on back.
 	return true;
@@ -1689,7 +1703,8 @@ public:
 	static int GetGroupName( T* p, lua_State *L )		{ lua_pushstring(L, p->m_sGroupName); return 1; }
 	static int IsLong( T* p, lua_State *L )				{ lua_pushboolean(L, p->IsLong()); return 1; }
 	static int IsMarathon( T* p, lua_State *L )			{ lua_pushboolean(L, p->IsMarathon()); return 1; }
-	static int MusicLengthSeconds( T* p, lua_State *L )	{ lua_pushnumber(L, p->m_fMusicLengthSeconds); return 1; }
+	static int IsCustomSong( T* p, lua_State *L )		{ lua_pushboolean(L, p->IsCustomSong()); return 1; }
+	static int MusicLengthSeconds( T* p, lua_State *L )	{ lua_pushnumber(L, p->MusicLengthSeconds()); return 1; }
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( GetDisplayFullTitle )
@@ -1707,6 +1722,7 @@ public:
 		ADD_METHOD( GetGroupName )
 		ADD_METHOD( IsLong )
 		ADD_METHOD( IsMarathon )
+		ADD_METHOD( IsCustomSong )
 		ADD_METHOD( MusicLengthSeconds )
 		Luna<T>::Register( L );
 	}

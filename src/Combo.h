@@ -37,6 +37,7 @@ protected:
 	ThemeMetric<apActorCommands>	FULL_COMBO_PERFECTS_COMMAND;
 	ThemeMetric<apActorCommands>	FULL_COMBO_MARVELOUSES_COMMAND;
 	ThemeMetric<apActorCommands>	FULL_COMBO_BROKEN_COMMAND;
+	ThemeMetric<apActorCommands>	MISS_COMBO_COMMAND;
 	ThemeMetric<bool>				SHOW_MISS_COMBO;
 
 	PlayerState *m_pPlayerState;

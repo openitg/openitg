@@ -118,8 +118,12 @@ public:
 	/* This is read and saved, but never actually used. */
 	CString	m_sCredit;
 
+	/* This can be different from m_fMusicLengthSeconds, depending on step length. */
+	float MusicLengthSeconds() const;
+
 	CString	m_sMusicFile;
 	float	m_fMusicLengthSeconds;
+	float	m_fStepsLengthSeconds;
 	float	m_fFirstBeat;	// beat of first note
 	float	m_fLastBeat;	// beat of last note
 	float	m_fMusicSampleStartSeconds;

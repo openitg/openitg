@@ -539,9 +539,23 @@ void LightTransformHelper( const NoteData &in, NoteData &out, const vector<int> 
 	}
 }
 
-/* For every track enabled in "in", enable all tracks in "out". */
+
+#include "LightsManager.h" // for LIGHT_*
+/* These transforms are specific to STEPS_TYPE_LIGHTS_CABINET. */
 void NoteDataUtil::LoadTransformedLights( const NoteData &in, NoteData &out, int iNewNumTracks )
 {
+	NoteData bass;
+	bass.Init();
+
+	// copy from the marquee data, but slim down the notes.
+	// this makes it look more bass-ish and less like the original chart.
+	bass.CopyAll( in );
+	RemoveHoldNotes( bass );
+	Little( bass );
+
+	LoadTransformedLightsFromTwo( in, bass, out );
+
+	/* Old implementation: turn on all lights for each note.
 	// reset all notes
 	out.Init();
 
@@ -552,10 +566,9 @@ void NoteDataUtil::LoadTransformedLights( const NoteData &in, NoteData &out, int
 		aiTracks.push_back( i );
 
 	LightTransformHelper( in, out, aiTracks );
+*/
 }
 
-/* This transform is specific to STEPS_TYPE_LIGHTS_CABINET. */
-#include "LightsManager.h" // for LIGHT_*
 void NoteDataUtil::LoadTransformedLightsFromTwo( const NoteData &marquee, const NoteData &bass, NoteData &out )
 {
 	ASSERT( marquee.GetNumTracks() >= 4 );
@@ -1842,7 +1855,7 @@ void NoteDataUtil::AddTapAttacks( NoteData &nd, Song* pSong )
 		"dizzy",
 	};
 
-	for( float sec=15; sec<pSong->m_fMusicLengthSeconds; sec+=30 )
+	for( float sec=15; sec<pSong->MusicLengthSeconds(); sec+=30 )
 	{
 		float fBeat = pSong->GetBeatFromElapsedTime( sec );
 		int iBeat = (int)fBeat;

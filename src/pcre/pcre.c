@@ -48,6 +48,11 @@ pre-processor statements. I suppose it's only been 10 years... */
 #define DPRINTF(p) /*nothing*/
 #endif
 
+/* Disable some annoying Visual C++ warnings we can't do much about. - Vyhd */
+#ifdef _MSC_VER
+#pragma warning( disable: 4232) // nonstandard extension used
+#endif
+
 /* Include the internals header, which itself includes "config.h", the Standard
 C headers, and the external pcre header. */
 
@@ -347,7 +352,6 @@ changed by the caller, but are shared between all threads. However, when
 compiling for Virtual Pascal, things are done differently (see pcre.in). */
 
 #ifndef VPCOMPAT
-
 #ifdef __cplusplus
 extern "C"
 {

@@ -3,45 +3,59 @@
 #ifndef RAGE_FILE_DRIVER_DIRECT_H
 #define RAGE_FILE_DRIVER_DIRECT_H
 
+#include "RageFile.h"
 #include "RageFileDriver.h"
-
-class RageFileDriverDirect: public RageFileDriver
-{
-public:
-	RageFileDriverDirect( CString root );
-
-	RageFileBasic *Open( const CString &path, int mode, int &err );
-	bool Remove( const CString &sPath );
-	bool Remount( const CString &sPath );
-
-private:
-	CString root;
-};
 
 /* This driver handles direct file access. */
 
 class RageFileObjDirect: public RageFileObj
 {
 public:
-	RageFileObjDirect( const CString &sPath, int iFD, int iMode );
+	RageFileObjDirect();
 	virtual ~RageFileObjDirect();
+
+	// attempt to open a file of the given type
+	virtual bool OpenInternal( const CString &sPath, int iMode, int &iError );
+
 	virtual int ReadInternal( void *pBuffer, size_t iBytes );
 	virtual int WriteInternal( const void *pBuffer, size_t iBytes );
 	virtual int FlushInternal();
 	virtual int SeekInternal( int offset );
-	virtual RageFileBasic *Copy() const;
+	virtual RageFileObjDirect *Copy() const;
 	virtual CString GetDisplayPath() const { return m_sPath; }
 	virtual int GetFileSize() const;
 
-private:
+protected:
 	int m_iFD;
+	int m_iMode;
 	CString m_sPath; /* for Copy */
 
-	CString m_sWriteBuf;
-	
+private:
 	bool FinalFlush();
+	
+	/*
+	 * When not streaming to disk, we write to a temporary file, and rename to the
+	 * real file on completion.  If any write, this is aborted.  When streaming to
+	 * disk, allow recovering from errors.
+	 */
+	bool m_bWriteFailed;
+	bool WriteFailed() const { return !(m_iMode & RageFile::STREAMED) && m_bWriteFailed; }
+};
 
-	int m_iMode;
+class RageFileDriverDirect: public RageFileDriver
+{
+public:
+	RageFileDriverDirect( const CString &sRoot );
+	virtual RageFileBasic *Open( const CString &sPath, int iMode, int &iError );
+
+	bool Remove( const CString &sPath );
+	bool Remount( const CString &sPath );
+
+protected:
+	/* creates a new internal object type */
+	virtual RageFileObjDirect *CreateInternal() { return new RageFileObjDirect; }
+
+	CString m_sRoot;
 };
 
 #endif

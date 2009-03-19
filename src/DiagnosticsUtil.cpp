@@ -234,11 +234,11 @@ LuaFunction_NoArgs( GetProductName,		DiagnosticsUtil::GetProductName() );
 LuaFunction_NoArgs( GetNumCrashLogs,		DiagnosticsUtil::GetNumCrashLogs() );
 LuaFunction_NoArgs( GetNumMachineScores,	DiagnosticsUtil::GetNumMachineScores() );
 LuaFunction_NoArgs( GetNumMachineEdits, 	DiagnosticsUtil::GetNumMachineEdits() );
-LuaFunction_NoArgs( GetRevision,		DiagnosticsUtil::GetRevision() );
+LuaFunction_NoArgs( GetRevision,			DiagnosticsUtil::GetRevision() );
 
 // arcade diagnostics
-LuaFunction_NoArgs( GetIP,			DiagnosticsUtil::GetIP() );
-LuaFunction_NoArgs( GetSerialNumber,		DiagnosticsUtil::GetSerialNumber() );
+LuaFunction_NoArgs( GetIP,				DiagnosticsUtil::GetIP() );
+LuaFunction_NoArgs( GetSerialNumber,	DiagnosticsUtil::GetSerialNumber() );
 LuaFunction_NoArgs( HubIsConnected,		DiagnosticsUtil::HubIsConnected() );
 LuaFunction_NoArgs( GetInputType,		DiagnosticsUtil::GetInputType() );
 

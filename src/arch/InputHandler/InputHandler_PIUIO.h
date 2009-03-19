@@ -1,17 +1,14 @@
 #ifndef INPUT_HANDLER_PIUIO_H
 #define INPUT_HANDLER_PIUIO_H
 
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <stdint.h>
-#endif
-
 #include "InputHandler.h"
 #include "RageThreads.h"
 #include "RageTimer.h"
+
 #include "LightsMapper.h"
 #include "io/PIUIO.h"
+
+struct lua_State;
 
 class InputHandler_PIUIO: public InputHandler
 {
@@ -20,10 +17,13 @@ public:
 	~InputHandler_PIUIO();
 
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
+
+	// used for LUA bindings
+	uint32_t GetSensorSet( int iSet );
+	void PushSelf( lua_State *L );
 private:
 	// allow only one handler to control the board at a time, in case
-	// several are loaded. this should prevent bizarre collision-related
-	// errors.
+	// several are loaded. this should prevent bizarre collision errors.
 	static bool bInitialized;
 
 	PIUIO Board;
@@ -33,33 +33,30 @@ private:
 	LightsMapping m_LightsMappings;
 
 	void HandleInput();
-
-	void HandleInputNormal();
-	void HandleInputKernel();
-
-	// a function pointer to which of the two input handlers we use
-	void (InputHandler_PIUIO::*InternalInputHandler)();
-
-	// allow this driver to update lights with "ext"
 	void UpdateLights();
 
-	static int InputThread_Start( void *p );
+
+	// HandleInputKernel() uses the r16 kernel hack if available; the
+	// function pointer below points to whichever function is used.
+	void HandleInputNormal();
+	void HandleInputKernel();
+	void (InputHandler_PIUIO::*InternalInputHandler)();
+
 	void InputThreadMain();
+	static int InputThread_Start( void *p ) { ((InputHandler_PIUIO *) p)->InputThreadMain(); return 0; }
 
-	/* the fully combined bit field that input is read from */
+	bool m_bShutdown;
+	bool m_bFoundDevice;
+
+	// input field is a combination of each sensor set in m_iInputData
 	uint32_t m_iInputField;
-
-	/* used for normal reads - one uint32_t per sensor set */
 	uint32_t m_iInputData[4];
 
-	/* used for r16 kernel hack reads - translates to m_iInputData */
+	// used for the r16 kernel hack and translates to m_iInputData
 	uint32_t m_iBulkReadData[8];
 
-	/* data that will be written to PIUIO */
+	// data that will be written to PIUIO (lights, sensors)
 	uint32_t m_iLightData;
-
-	bool m_bFoundDevice;
-	bool m_bShutdown;
 
 	/* debug code */
 	void RunTimingCode();

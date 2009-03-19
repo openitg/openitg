@@ -63,19 +63,19 @@ CString FromMapping( uint32_t iMap )
 	return join( ",", sArray );
 }
 
-void LightsMapper::LoadMappings( CString sDevice, LightsMapping &mapping )
+void LightsMapper::LoadMappings( const CString &sDeviceName, LightsMapping &mapping )
 {
 	IniFile ini;
 
 	const Game* pGame = GAMESTATE->GetCurrentGame();
 
 	// check for a pre-existing key set
-	if( !ini.ReadFile( LIGHTS_INI_PATH ) || ini.GetChild( sDevice ) == NULL )
+	if( !ini.ReadFile( LIGHTS_INI_PATH ) || ini.GetChild( sDeviceName ) == NULL )
 	{
 		LOG->Warn( "Mappings not set for device \"%s\", game \"%s\". Writing default mappings.",
-			sDevice.c_str(), pGame->m_szName );
+			sDeviceName.c_str(), pGame->m_szName );
 
-		LightsMapper::WriteMappings( sDevice, mapping );
+		LightsMapper::WriteMappings( sDeviceName, mapping );
 		return;
 	}
 
@@ -85,17 +85,17 @@ void LightsMapper::LoadMappings( CString sDevice, LightsMapping &mapping )
 	// load cabinet-light data and convert the string to a uint32_t
 	FOREACH_CabinetLight( cl )
 	{
-		ini.GetValue( sDevice, CabinetLightToString(cl), sBuffer );
+		ini.GetValue( sDeviceName, CabinetLightToString(cl), sBuffer );
 		ToMapping( sBuffer, mapping.m_iCabinetLights[cl] );
 	}
 
-	ini.GetValue( sDevice, "CoinCounterOn", sBuffer );
+	ini.GetValue( sDeviceName, "CoinCounterOn", sBuffer );
 	ToMapping( sBuffer, mapping.m_iCoinCounterOn );
-	ini.GetValue( sDevice, "CoinCounterOff", sBuffer );
+	ini.GetValue( sDeviceName, "CoinCounterOff", sBuffer );
 	ToMapping( sBuffer, mapping.m_iCoinCounterOff );
 
 	// "PIUIO-dance-", "PIUIO-pump-", etc.
-	CString sBaseKey = sDevice + "-" + pGame->m_szName + "-";
+	CString sBaseKey = sDeviceName + "-" + pGame->m_szName + "-";
 
 	FOREACH_GameController( gc )
 	{
@@ -111,10 +111,10 @@ void LightsMapper::LoadMappings( CString sDevice, LightsMapping &mapping )
 	}
 
 	// re-write, to update all the values
-	LightsMapper::WriteMappings( sDevice, mapping );
+	LightsMapper::WriteMappings( sDeviceName, mapping );
 }
 
-void LightsMapper::WriteMappings( CString sDevice, LightsMapping &mapping )
+void LightsMapper::WriteMappings( const CString &sDeviceName, LightsMapping &mapping )
 {
 	IniFile ini;
 	ini.ReadFile( LIGHTS_INI_PATH );
@@ -122,14 +122,14 @@ void LightsMapper::WriteMappings( CString sDevice, LightsMapping &mapping )
 	const Game* pGame = GAMESTATE->GetCurrentGame();
 
 	// set cabinet and counter data
-	ini.SetValue( sDevice, "CoinCounterOn", FromMapping(mapping.m_iCoinCounterOn) );
-	ini.SetValue( sDevice, "CoinCounterOff", FromMapping(mapping.m_iCoinCounterOff) );
+	ini.SetValue( sDeviceName, "CoinCounterOn", FromMapping(mapping.m_iCoinCounterOn) );
+	ini.SetValue( sDeviceName, "CoinCounterOff", FromMapping(mapping.m_iCoinCounterOff) );
 
 	FOREACH_CabinetLight( cl )
-		ini.SetValue( sDevice, CabinetLightToString(cl), FromMapping(mapping.m_iCabinetLights[cl]) );
+		ini.SetValue( sDeviceName, CabinetLightToString(cl), FromMapping(mapping.m_iCabinetLights[cl]) );
 
 	// "PIUIO-dance-", "PIUIO-pump-", etc.
-	CString sBaseKey = sDevice + "-" + pGame->m_szName + "-";
+	CString sBaseKey = sDeviceName + "-" + pGame->m_szName + "-";
 
 	FOREACH_GameController( gc )
 	{

@@ -40,6 +40,7 @@ void Combo::Load( PlayerState *pPlayerState, PlayerStageStats *pPlayerStageStats
 	FULL_COMBO_PERFECTS_COMMAND		.Load(m_sName,"FullComboPerfectsCommand");
 	FULL_COMBO_MARVELOUSES_COMMAND	.Load(m_sName,"FullComboMarvelousesCommand");
 	FULL_COMBO_BROKEN_COMMAND		.Load(m_sName,"FullComboBrokenCommand");
+	MISS_COMBO_COMMAND				.Load(m_sName,"MissComboCommand");
 	SHOW_MISS_COMBO					.Load(m_sName,"ShowMissCombo");
 	
 	m_spr100Milestone.Load( THEME->GetPathG(m_sName,"100milestone") );
@@ -179,9 +180,14 @@ void Combo::SetCombo( int iCombo, int iMisses, float fLastStepsSeconds )
 
 	// don't show a colored combo until 1/4 of the way through the song
 	bool bPastMidpoint = GAMESTATE->GetCourseSongIndex()>0 ||
-		GAMESTATE->m_fMusicSeconds > GAMESTATE->m_pCurSong->m_fMusicLengthSeconds/4;
+		GAMESTATE->m_fMusicSeconds > GAMESTATE->m_pCurSong->MusicLengthSeconds()/4;
 
-	if( bPastMidpoint )
+	if( bMisses )
+	{
+		sprLabel->RunCommands( MISS_COMBO_COMMAND );
+		m_textNumber.RunCommands( MISS_COMBO_COMMAND );
+	}
+	else if( bPastMidpoint )
 	{
 		if( m_pPlayerStageStats->FullComboOfScore(TNS_MARVELOUS) )
 		{

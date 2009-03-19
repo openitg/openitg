@@ -251,7 +251,7 @@ void ScreenEditMenu::MenuStart( PlayerNumber pn )
 			CString sEditName;
 			if( pSourceSteps )
 			{
-				pSteps->CopyFrom( pSourceSteps, st, pSong->m_fMusicLengthSeconds );
+				pSteps->CopyFrom( pSourceSteps, st, pSong->MusicLengthSeconds() );
 				sEditName = GetCopyDescription(pSourceSteps);
 			}
 			else

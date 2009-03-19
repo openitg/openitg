@@ -1,16 +1,18 @@
 #include "global.h"
-#include "ScreenTestInput.h"
-#include "ScreenManager.h"
 #include "RageLog.h"
+#include "RageInput.h"
+#include "ScreenManager.h"
+#include "LightsManager.h"
 #include "InputMapper.h"
 #include "GameState.h"
+#include "GameManager.h"
 #include "GameSoundManager.h"
+#include "PrefsManager.h"
 #include "ThemeManager.h"
 #include "Game.h"
 #include "ScreenDimensions.h"
-#include "GameManager.h"
-#include "PrefsManager.h"
-#include "RageInput.h"
+#include "ScreenTestInput.h"
+#include "PlayerNumber.h"
 
 
 REGISTER_SCREEN_CLASS( ScreenTestInput );
@@ -21,6 +23,11 @@ ScreenTestInput::ScreenTestInput( CString sClassName ) : ScreenWithMenuElements(
 
 void ScreenTestInput::Init()
 {
+	// XXX: Manually set GameState's player-joined status true, so inputs
+	// light up when pressed, but we don't accidentally begin a game.
+	FOREACH_PlayerNumber( pn )
+		GAMESTATE->m_bSideIsJoined[pn] = true;
+
 	ScreenWithMenuElements::Init();
 
 	m_textDevices.LoadFromFont( THEME->GetPathF("Common","normal") );
@@ -59,6 +66,10 @@ void ScreenTestInput::Init()
 ScreenTestInput::~ScreenTestInput()
 {
 	LOG->Trace( "ScreenTestInput::~ScreenTestInput()" );
+
+	// manually set joined status false - see ::Init()
+	FOREACH_PlayerNumber( pn )
+		GAMESTATE->m_bSideIsJoined[pn] = false;
 }
 
 

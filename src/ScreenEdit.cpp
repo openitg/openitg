@@ -2025,7 +2025,7 @@ void ScreenEdit::HandleMainMenuChoice( MainMenuChoice c, const vector<int> &iAns
 				ASSERT( pSteps );
 
 				pSteps->SetNoteData( m_NoteDataEdit );
-				pSteps->CalculateRadarValues( pSong->m_fMusicLengthSeconds );
+				pSteps->CalculateRadarValues( pSong->MusicLengthSeconds() );
 
 				switch( EDIT_MODE.GetValue() )
 				{

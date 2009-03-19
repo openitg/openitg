@@ -277,20 +277,18 @@ void RageFileManager::MountInitialFilesystems()
 	if( Root == "" && !stat( InitialWorkingDirectory + "/Songs", &st ) && st.st_mode&S_IFDIR )
 		Root = InitialWorkingDirectory;
 
-
 #ifdef ITG_ARCADE
+	// Arcade-specific path fixups
 	RageFileManager::Mount( "dir", "/stats", "/Data" );
-	// do not overlap /CryptPackages, that's already declared in StepMania.cpp, keep to /Packages
-	//    --infamouspat
 	RageFileManager::Mount( "kry", "/itgdata", "/Packages" );
 
-	// here goes nothing... --infamouspat
+	// OpenITG-specific arcade paths
 	RageFileManager::Mount( "dir", "/itgdata/cache-sink", "/Cache" );
-
 	RageFileManager::Mount( "dir", "/itgdata/AdditionalSongs", "/AdditionalSongs" );
 #else
+	// XXX TESTING
+	RageFileManager::Mount( "patch", Root + "/CryptPackages", "/Packages" );
 
-	//RageFileManager::Mount( "kry", Root + "/CryptPackages", "/CryptPackages" );
 	/* This mounts everything else, including Data, etc. */
 	RageFileManager::Mount( "dir", Root, "/" );
 #endif // ITG_ARCADE
@@ -315,7 +313,8 @@ void RageFileManager::MountInitialFilesystems()
 	{
 		Dir = join( "/", parts.begin(), parts.end()-2 );
 	}
-	RageFileManager::Mount( "kry", Dir + "/CryptPackages", "/CryptPackages" );
+	// XXX TESTING
+	RageFileManager::Mount( "patch", Dir + "/CryptPackages", "/Packages" );
 	RageFileManager::Mount( "dir", Dir + "/AdditionalSongs", "/Songs" );
 	RageFileManager::Mount( "dir", Dir, "/" );
 

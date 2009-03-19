@@ -1,4 +1,4 @@
-/* Customize what bits for output are enabled, as set by the Outputs.ini. */
+/* Customize what bits for output are enabled, as set by the LightsMaps.ini. */
 
 #ifndef LIGHTS_MAPPER_H
 #define LIGHTS_MAPPER_H
@@ -11,7 +11,6 @@
 // might not be. 
 struct LightsMapping
 {
-	// set a default of eight outputs (one byte) unless otherwise noted
 	LightsMapping()
 	{
 		ZERO(m_iCabinetLights);
@@ -43,8 +42,8 @@ struct LightsMapping
 
 namespace LightsMapper
 {
-	void LoadMappings( CString sDevice, LightsMapping &mapping );
-	void WriteMappings( CString sDevice, LightsMapping &mapping );
+	void LoadMappings( const CString &sDeviceName, LightsMapping &mapping );
+	void WriteMappings( const CString &sDeviceName, LightsMapping &mapping );
 };
 
 #endif

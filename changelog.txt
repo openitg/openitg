@@ -5,7 +5,7 @@ OpenITG, beta 1 (almost done)
      OpenITG icon (thanks, Lightning)
      Updated version information
 -New LUA bindings:
-     Song: "IsLong", "IsMarathon", "GetGroupName", and "MusicLengthSeconds"
+     Song: "IsLong", "IsMarathon", "IsCustomSong", "GetGroupName", and "MusicLengthSeconds"
      RageUtil: "SecondsToMMSS", "SecondsToHHMMSS", "SecondsToMSSMsMs"
 -New LUA global:
      "OPENITG_VERSION" - returns a 3-digit token for version information
@@ -17,7 +17,9 @@ OpenITG, beta 1 (almost done)
 -New LightsDriver:
      "G15" - controls LCD on the G15 gaming keyboard, also for the heck of it
 -New features:
+     "MissComboCommand" metric for Combo display
      "SongLength" sort on the song wheel
+     More intelligent lights autogeneration for single charts
      Separate bookkeeper counter for service credits in Bookkeeping
           (divided in the menu by Regular Credits / Service Credits)
      LightsMapper - set which bits are triggered on LIGHTSMAN events
@@ -41,6 +43,8 @@ OpenITG, beta 1 (almost done)
      Crash when changing from Intense to Normal-only courses or vice versa
      "Disqualification" display showed for unjoined players on music rate
      Sensor reading problems with PIUIO
+     Patched OGG songs circumvented Long/Marathon song limits
+     No-timeout warning flood on custom song loading
 -Misc. changes:
      Re-backported input debounce, except it works this time. :)
      Record service credits separately in MachineProfile and Coins.xml

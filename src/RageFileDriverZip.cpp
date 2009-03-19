@@ -11,12 +11,7 @@
 #include "RageUtil_FileDB.h"
 #include <cerrno>
 
-static struct FileDriverEntry_ZIP: public FileDriverEntry
-{
-	FileDriverEntry_ZIP(): FileDriverEntry( "ZIP" ) { }
-	RageFileDriver *Create( CString Root ) const { return new RageFileDriverZip( Root ); }
-} const g_RegisterDriver;
-
+REGISTER_FILE_DRIVER( Zip, "ZIP" );
 
 RageFileDriverZip::RageFileDriverZip():
 	RageFileDriver( new NullFilenameDB ),
@@ -26,7 +21,7 @@ RageFileDriverZip::RageFileDriverZip():
 	m_pZip = NULL;
 }
 
-RageFileDriverZip::RageFileDriverZip( CString sPath ):
+RageFileDriverZip::RageFileDriverZip( const CString &sPath ):
 	RageFileDriver( new NullFilenameDB ),
 	m_Mutex( "RageFileDriverZip" )
 {
@@ -106,6 +101,8 @@ bool RageFileDriverZip::SeekToEndCentralRecord()
 	const int iSearchTo = max( m_pZip->GetFileSize() - 1024*32, 0 );
 	int iRealPos = m_pZip->GetFileSize();
 
+	LOG->Info( "iRealPos: %i, iSearchTo: %i", iRealPos, iSearchTo );
+
 	while( iRealPos > 0 && iRealPos >= iSearchTo )
 	{
 		/* Move back in the file; leave some overlap between checks, to handle
@@ -116,6 +113,7 @@ bool RageFileDriverZip::SeekToEndCentralRecord()
 		m_pZip->Seek( iRealPos );
 
 		int iGot = m_pZip->Read( buf, sizeof(buf) );
+
 		if( iGot == -1 )
 		{
 			LOG->Warn( "%s: %s", m_sPath.c_str(), m_pZip->GetError().c_str() );
@@ -126,6 +124,8 @@ bool RageFileDriverZip::SeekToEndCentralRecord()
 		{
 			if( memcmp(buf + iPos, "\x50\x4B\x05\x06", 4) )
 				continue;
+
+			LOG->Warn( "End-of-central directory found at %i", m_pZip->Tell() - iPos );
 
 			m_pZip->Seek( iRealPos + iPos );
 			return true;
@@ -165,6 +165,7 @@ bool RageFileDriverZip::ParseZipfile()
 		FileInfo *pInfo = new FileInfo( info );
 		m_pFiles.push_back( pInfo );
 		FDB->AddFile( "/" + pInfo->m_sName, pInfo->m_iUncompressedSize, pInfo->m_iCRC32, pInfo );
+		LOG->Debug( "Add file: %s, %d, %08X", pInfo->m_sName.c_str(), pInfo->m_iUncompressedSize, pInfo->m_iCRC32 );
 	}
 
 	if( m_pFiles.size() == 0 )

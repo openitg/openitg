@@ -65,7 +65,8 @@
 #define COMPARE_SCORES							THEME->GetMetricB(m_sName, "CompareScores" )
 
 // set an adjusted limit based off the song allowance
-#define MAX_CUSTOM_LENGTH ((float)(PREFSMAN->m_iCustomMaxSeconds + 10))
+// r590: made redundant
+//#define MAX_CUSTOM_LENGTH ((float)(PREFSMAN->m_iCustomMaxSeconds + 10))
 
 static ThemeMetric<float> INITIAL_BACKGROUND_BRIGHTNESS	("ScreenGameplay","InitialBackgroundBrightness");
 static ThemeMetric<float> SECONDS_BETWEEN_COMMENTS	("ScreenGameplay","SecondsBetweenComments");
@@ -1340,15 +1341,18 @@ void ScreenGameplay::UpdateSongPosition( float fDeltaTime )
 	float fSecondsTotal = fSeconds+fAdjust; 
 
 	// give a bit of leeway - ITG's R23 feature cuts off at 2:10 instead of 2:00, so add 10 to the limit
+	// UPDATE: made obsolete with the new custom song system
+	/*
 	if (m_bSongIsCustom && (PREFSMAN->m_iCustomMaxSeconds > 0) && fSecondsTotal > MAX_CUSTOM_LENGTH )
 	{
 		LOG->Warn( "Custom songs time limit of %f seconds exceeded (%f seconds); ending early.",
 			MAX_CUSTOM_LENGTH, fSecondsTotal );
 
                 m_pSoundMusic->StopPlaying();
-                m_soundAssistTick.StopPlaying(); /* Stop any queued assist ticks. */
+                m_soundAssistTick.StopPlaying(); // Stop any queued assist ticks.
 		m_SongFinished.StartTransitioning( SM_NotesEnded );
 	}
+	*/
 
 	GAMESTATE->UpdateSongPosition( fSecondsTotal, GAMESTATE->m_pCurSong->m_Timing, tm+fAdjust );
 }
@@ -2071,10 +2075,10 @@ void ScreenGameplay::SongFinished()
 		 * not for the percentages (RADAR_AIR). */
 		RadarValues v;
 		
-		NoteDataUtil::CalculateRadarValues( m_Player[p].m_NoteData, GAMESTATE->m_pCurSong->m_fMusicLengthSeconds, v );
+		NoteDataUtil::CalculateRadarValues( m_Player[p].m_NoteData, GAMESTATE->m_pCurSong->MusicLengthSeconds(), v );
 		STATSMAN->m_CurStageStats.m_player[p].radarPossible += v;
 
-		NoteDataWithScoring::GetActualRadarValues( m_Player[p].m_NoteData, p, GAMESTATE->m_pCurSong->m_fMusicLengthSeconds, v );
+		NoteDataWithScoring::GetActualRadarValues( m_Player[p].m_NoteData, p, GAMESTATE->m_pCurSong->MusicLengthSeconds(), v );
 		STATSMAN->m_CurStageStats.m_player[p].radarActual += v;
 	}
 
@@ -2458,6 +2462,10 @@ void ScreenGameplay::TweenOnScreen()
 void ScreenGameplay::TweenOffScreen()
 {
 	ScreenWithMenuElements::TweenOffScreen();
+
+	// end gameplay music and stop updating scores
+	m_pSoundMusic->StopPlaying();
+	m_soundAssistTick.StopPlaying();
 
 	OFF_COMMAND( m_sprLifeFrame );
 	OFF_COMMAND( m_sprCourseSongNumber );

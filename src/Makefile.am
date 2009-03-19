@@ -316,8 +316,8 @@ RageFileDriverMemory.cpp RageFileDriverMemory.h RageFileDriverZip.cpp RageFileDr
 RageFileDriverDeflate.cpp RageFileDriverDeflate.h \
 RageFileDriverSlice.cpp RageFileDriverSlice.h \
 RageFileDriverTimeout.cpp RageFileDriverTimeout.h \
-RageFileDriverCrypt.cpp RageFileDriverCrypt.h RageFileDriverPatch.cpp RageFileDriverPatch.h \
-RageCryptInterface.cpp RageCryptInterface.h RageCryptInterface_ITG2.cpp RageCryptInterface_ITG2.h
+RageFileDriverCrypt.cpp RageFileDriverCrypt.h \
+RageFileDriverCrypt_ITG2.cpp RageFileDriverCrypt_ITG2.h
 
 Rage = $(PCRE) $(RageFile) $(RageSoundFileReaders) \
 RageBitmapTexture.cpp RageBitmapTexture.h RageDisplay.cpp RageDisplay.h RageDisplay_OGL.cpp RageDisplay_OGL.h \

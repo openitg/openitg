@@ -50,7 +50,7 @@ ScreenAttract::~ScreenAttract()
 
 void ScreenAttract::SetAttractVolume( bool bInAttract )
 {
-	LOG->Debug( "ScreenAttract::SetAttractVolume( %s )", bInAttract ? "true" : "false" );
+	LOG->Trace( "ScreenAttract::SetAttractVolume( %s )", bInAttract ? "true" : "false" );
 
 	// ignore attract volume settings if we have the -1 sentinel (see GameState)
 	if( !bInAttract || (GAMESTATE->m_iNumTimesThroughAttract == -1) )
@@ -65,8 +65,6 @@ void ScreenAttract::SetAttractVolume( bool bInAttract )
 		else
 			SOUNDMAN->SetPrefs( 0 ); // mutes most sounds
 	}
-
-	LOG->Debug( "New mixer volume: %f", SOUNDMAN->GetMixVolume() );
 }
 
 void ScreenAttract::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )

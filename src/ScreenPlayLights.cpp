@@ -71,11 +71,7 @@ void ScreenPlayLights::Update( float fDeltaTime )
 
 	/* Make sure we keep going long enough to register a miss for the last note. */
 	if( GAMESTATE->m_fMusicSeconds > fSecondsToStop )
-	{
-		LOG->Debug( "m_fMusicSeconds: %f, MusicLengthSeconds(): %f, fSecondsToStop: %f",
-			GAMESTATE->m_fMusicSeconds, GAMESTATE->m_pCurSong->MusicLengthSeconds(), fSecondsToStop );
 		m_Out.StartTransitioning( SM_GoToPrevScreen );
-	}
 
 	UpdateLights();
 	Screen::Update( fDeltaTime );

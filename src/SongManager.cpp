@@ -316,7 +316,7 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 		CHECKPOINT;
 		// TODO: make sure songs exist and are not custom songs --infamouspat
 
-		LOG->Debug( "Adding custom course \"%s\"", crs->GetDisplayFullTitle().c_str() );
+		LOG->Trace( "SongManager::LoadPlayerCourses(): Adding custom course \"%s\"", crs->GetDisplayFullTitle().c_str() );
 		m_pCourses.push_back( crs );
 	}
 	if (i > 0) m_sCourseGroupNames.push_back( sGroupName );
@@ -419,7 +419,7 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 			continue;
 		}
 		
-		LOG->Debug( "Loading custom song '%s'...", pNewSong->m_sMainTitle.c_str() );
+		LOG->Trace( "Loading custom song '%s'...", pNewSong->m_sMainTitle.c_str() );
 		m_pSongs.push_back( pNewSong );
 		iSongsLoaded++;
 	}

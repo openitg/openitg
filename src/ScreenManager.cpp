@@ -267,7 +267,7 @@ void ScreenManager::Input( const DeviceInput& DeviceI, const InputEventType type
 /* Just create a new screen; don't do any associated cleanup. */
 Screen* ScreenManager::MakeNewScreenInternal( const CString &sScreenName )
 {
-	LOG->Debug( "ScreenManager::MakeNewScreenInternal( %s )", sScreenName.c_str() );
+	LOG->Trace( "ScreenManager::MakeNewScreenInternal( %s )", sScreenName.c_str() );
 	RageTimer t;
 	LOG->Trace( "Loading screen name '%s'", sScreenName.c_str() );
 
@@ -288,7 +288,7 @@ Screen* ScreenManager::MakeNewScreenInternal( const CString &sScreenName )
 
 Screen* ScreenManager::MakeNewScreen( const CString &sScreenName )
 {
-	LOG->Debug( "ScreenManager::MakeNewScreen( %s )", sScreenName.c_str() );
+	LOG->Trace( "ScreenManager::MakeNewScreen( %s )", sScreenName.c_str() );
 	m_bZeroNextUpdate = true;
 
 	/* By default, RageSounds handles the song timer.  When we change screens, reset this;
@@ -358,7 +358,7 @@ void ScreenManager::ClearScreenStack()
  * current screens are removed.  This is the only function that adds to m_ScreenStack. */
 void ScreenManager::SetFromNewScreen( Screen *pNewScreen, bool Stack )
 {
-	LOG->Debug( "ScreenManager::SetFromNewScreen()" );
+	LOG->Trace( "ScreenManager::SetFromNewScreen()" );
 
 	if( !Stack )
 		ClearScreenStack();
@@ -372,7 +372,7 @@ void ScreenManager::SetFromNewScreen( Screen *pNewScreen, bool Stack )
 
 void ScreenManager::SetNewScreen( const CString &sScreenName )
 {
-	LOG->Debug( "ScreenManager::SetNewScreen( %s )", sScreenName.c_str() );
+	LOG->Trace( "ScreenManager::SetNewScreen( %s )", sScreenName.c_str() );
 	ASSERT( sScreenName != "" );
 	m_sDelayedScreen = sScreenName;
 

@@ -194,14 +194,11 @@ void Player::Init(
 	}
 
 	// calculate M-mod speed here, so we can adjust properly on a per-song basis.
-	LOG->Debug( "Calculating M-mod speed..." );
 
 	// EXPERIMENTAL: derive this entirely off the display BPMs and don't use actual BPMs.
 	// if this works, we'll use it, but it could get messy. we'll see what happens...
 	if( GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fMaxScrollBPM != 0 )
 	{
-		LOG->Debug( "M-mod speed: %f", GAMESTATE->m_pPlayerState[pn]->m_PlayerOptions.m_fMaxScrollBPM );
-
 		DisplayBpms bpms;
 		if( GAMESTATE->IsCourseMode() )
 		{
@@ -216,12 +213,9 @@ void Player::Init(
 
 		// get the maximum listed value for the song or course
 		float fMaxBPM = bpms.GetMax();
-		LOG->Debug( "fMaxBPM set to %f", fMaxBPM );
 
 		GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fScrollSpeed =
 			( GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fMaxScrollBPM / fMaxBPM );
-
-		LOG->Debug( "m_fScrollSpeed: %f", GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fScrollSpeed );
 	}
 
 	RageSoundParams p;

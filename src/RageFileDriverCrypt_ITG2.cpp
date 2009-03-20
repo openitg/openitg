@@ -21,6 +21,7 @@ REGISTER_ITG2_FILE_DRIVER( ITG2, "kry", "" );
 REGISTER_ITG2_FILE_DRIVER( PATCH, "patch", ITG2_PATCH_KEY );
 REGISTER_ITG2_FILE_DRIVER( OITG, "oitg", OITG_KEY );
 
+// helpful little debug function
 void print_hex( const CString &sName, const unsigned char *value, unsigned int length )
 {
 	CString sValues = "";
@@ -66,8 +67,6 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 		return false;
 	}
 
-	//print_hex( "header", (unsigned char *)&header, 2 );
-
 	if( m_sSecret.empty() )
 	{
 		if (header[0] != ':' || header[1] != '|')
@@ -93,7 +92,6 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 	}
 	m_iHeaderSize += 4;
 
-	//print_hex( "size", (unsigned char *)&m_iFileSize, 4 );
 
 	uint32_t subkey_size;
 	if( ReadDirect(&subkey_size, 4) < 4 )
@@ -112,8 +110,6 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 		return false;
 	}
 	m_iHeaderSize += subkey_size;
-
-	//print_hex( "subkey", subkey, subkey_size );
 
 	unsigned char verifyblock[16];
 	if ((got = ReadDirect(&verifyblock, 16)) < 16)
@@ -187,8 +183,6 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 	}
 
 	// everything's good. let's head on back.
-	LOG->Debug( "RageFileObjCrypt_ITG2: decrypt succeeded: %s", sPath.c_str() );
-
 	return true;
 }
 

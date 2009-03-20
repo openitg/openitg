@@ -165,7 +165,6 @@ bool RageFileDriverZip::ParseZipfile()
 		FileInfo *pInfo = new FileInfo( info );
 		m_pFiles.push_back( pInfo );
 		FDB->AddFile( "/" + pInfo->m_sName, pInfo->m_iUncompressedSize, pInfo->m_iCRC32, pInfo );
-		LOG->Debug( "Add file: %s, %d, %08X", pInfo->m_sName.c_str(), pInfo->m_iUncompressedSize, pInfo->m_iCRC32 );
 	}
 
 	if( m_pFiles.size() == 0 )

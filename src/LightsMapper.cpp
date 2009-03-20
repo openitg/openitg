@@ -22,7 +22,7 @@
  * input; FromMapping does not. This is because we never
  * have a reason to convert a LightsMapping value to a
  * proper number from a bit mapping. */
-void ToMapping( CString &sBits, uint32_t &iByte )
+static void ToMapping( const CString &sBits, uint32_t &iByte )
 {
 	// reset
 	iByte = 0;
@@ -35,30 +35,22 @@ void ToMapping( CString &sBits, uint32_t &iByte )
 	for( unsigned char i = 0; i < sArray.size(); i++ )
 	{
 		unsigned shift = atoi( sArray[i].c_str() );
-		LOG->Debug( "atoi(%s) = %u", sArray[i].c_str(), shift );
 
 		if( shift > 0 || shift <= 32 )
 			iByte |= (1 << (32-shift));
 		else
-			LOG->Debug( "ToMapping(): invalid value \"%u\" (1 << %u)", shift, (1 << (31-shift)) );
+			LOG->Warn( "ToMapping(): invalid value \"%u\" (1 << %u)", shift, (1 << (31-shift)) );
 	}
-
-	LOG->Debug( "ToMapping(): translated %s to %u", sBits.c_str(), iByte );
 }
 
-CString FromMapping( uint32_t iMap )
+static CString FromMapping( uint32_t iMap )
 {
 	CStringArray sArray;
 
+	// offset: our test starts at 0, ini values start at 1	
 	for( int i = 0; i < 32; i++ )
 		if( iMap & (1 << (31-i)) )
-		{
-			// offset: our test starts at 0, ini values start at 1
 			sArray.push_back( ssprintf("%u", i+1) );
-			LOG->Warn( "FromMapping(): match at i=%u (%u)", i, i+1 );
-		}
-
-	LOG->Debug( "FromMapping(): translated %u to \"%s\"", iMap, join(",",sArray).c_str() );
 
 	return join( ",", sArray );
 }

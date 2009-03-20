@@ -319,9 +319,6 @@ void SetDeviceInfo( UsbStorageDevice &usbd, CString sPath )
 			asBits.clear();
 			split( sHostPort, ".", asBits );
 
-			//for( unsigned i = 0; i < asBits.size(); i++ )
-				//LOG->Debug( "asBits[%i]: %s", i, asBits[i].c_str() );
-
 			if( asBits.size() > 1 )
 			{
 				usbd.iBus = atoi( asBits[0] );
@@ -466,7 +463,7 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 	for( unsigned i=0; i<vDevicesOut.size(); i++ )
 	{
 		UsbStorageDevice& usbd = vDevicesOut[i];
-		LOG->Debug( "    sDevice: %s, iBus: %d, iLevel: %d, iPort: %d, id: %04X:%04X, Vendor: '%s', Product: '%s', sSerial: \"%s\", sOsMountDir: %s",
+		LOG->Trace( "    sDevice: %s, iBus: %d, iLevel: %d, iPort: %d, id: %04X:%04X, Vendor: '%s', Product: '%s', sSerial: \"%s\", sOsMountDir: %s",
 				usbd.sDevice.c_str(), usbd.iBus, usbd.iLevel, usbd.iPort, usbd.idVendor, usbd.idProduct, usbd.sVendor.c_str(),
 				usbd.sProduct.c_str(), usbd.sSerial.c_str(), usbd.sOsMountDir.c_str() );
 	}

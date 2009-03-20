@@ -518,7 +518,7 @@ void WheelBase::TweenOffScreenUpdateItems(bool changing_sort)
 
 void WheelBase::ChangeMusicUnlessLocked( int n )
 {
-	LOG->Debug( "WheelBase::ChangeMusicUnlessLocked(%i)", n );
+	LOG->Trace( "WheelBase::ChangeMusicUnlessLocked(%i)", n );
 	if( m_WheelState == STATE_LOCKED )
 	{
 		if( n )

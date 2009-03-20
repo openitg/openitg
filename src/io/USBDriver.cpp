@@ -93,7 +93,7 @@ bool USBDriver::Open()
 			{
 			// no kernel drivers needed detached ("No data available") - continue
 			case -61:
-				LOG->Debug( "No kernel drivers needed detached." );
+				LOG->Trace( "USBDriver:Open(): kernel detach - no kernel drivers needed detached." );
 			// no error
 			case 0:
 				continue;

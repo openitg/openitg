@@ -191,7 +191,7 @@ void ArchHooks_Win32::SystemReboot()
 
 bool ArchHooks_Win32::OpenMemoryRange( unsigned short start_port, unsigned short bytes )
 {
-	LOG->Debug( "ArchHooks_Win32::OpenMemoryRange( %u, %u )", start_port, bytes );
+	LOG->Trace( "ArchHooks_Win32::OpenMemoryRange( %u, %u )", start_port, bytes );
 	
 	OSVERSIONINFO version;
 	version.dwOSVersionInfoSize=sizeof(version);
@@ -205,7 +205,7 @@ bool ArchHooks_Win32::OpenMemoryRange( unsigned short start_port, unsigned short
 	// there's no need to request access for those systems.
 	if( version.dwPlatformId == 1 )
 	{
-		LOG->Debug( "OpenMemoryRange(): detected pre-NT kernel, returning true." );
+		LOG->Trace( "OpenMemoryRange(): detected pre-NT kernel, returning true." );
        	return true;
 	}
 

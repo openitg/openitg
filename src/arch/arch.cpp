@@ -81,7 +81,7 @@ void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add)
 
 	FOREACH_CONST( CString, DriversToTry, s )
 	{
-		LOG->Debug( "Initializing lights driver: %s", s->c_str() );
+		LOG->Trace( "Initializing lights driver: %s", s->c_str() );
 		LightsDriver *ret = NULL;
 
 #ifdef USE_LIGHTS_DRIVER_EXTERNAL

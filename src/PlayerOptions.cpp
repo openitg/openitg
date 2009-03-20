@@ -281,7 +281,6 @@ void PlayerOptions::FromString( CString sOptions, bool bWarnOnInvalid )
 		// XXX: will not properly tween, I don't think.
 		else if( sscanf( sBit, "m%f", &level ) == 1 )
 		{
-			LOG->Debug( "Speed mod m%f set.", level );
 			SET_FLOAT( fMaxScrollBPM )
 			m_fTimeSpacing = 0;
 		}

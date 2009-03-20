@@ -11,7 +11,7 @@ LightsState LightsDriver_External::m_LightsState;
 LightsDriver_External::LightsDriver_External()
 {
 	ZERO( m_LightsState );
-	LOG->Debug( "LightsDriver_External::LightsDriver_External()" );
+	LOG->Trace( "LightsDriver_External::LightsDriver_External()" );
 }
 
 LightsDriver_External::~LightsDriver_External()

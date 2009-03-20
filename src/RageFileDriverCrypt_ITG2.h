@@ -25,7 +25,7 @@ public:
 	int ReadInternal( void *buffer, size_t bytes );
 	int GetFileSize() { return m_iFileSize; }
 
-	RageFileObjDirect *Copy() const { return new RageFileObjCrypt_ITG2((*this)); }
+	virtual RageFileObjCrypt_ITG2 *Copy() const;
 private:
 	size_t m_iFileSize;
 	size_t m_iHeaderSize;

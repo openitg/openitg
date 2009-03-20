@@ -49,6 +49,7 @@ OpenITG, beta 1 (almost done)
      Re-backported input debounce, except it works this time. :)
      Record service credits separately in MachineProfile and Coins.xml
      Load USB profile songs into memory, instead of onto the disk
+     Complete crypto rewrite - should be much more flexible
 
 OpenITG, prebeta (November 25th, 2008)
 --------------------------------------

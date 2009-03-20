@@ -472,7 +472,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				AdditionalDependencies="libusb.lib"
 				ShowProgress="0"
 				OutputFile="../Program/OpenITG-PC-SSE2.exe"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;libusb\lib\msvc&quot;"
 				IgnoreDefaultLibraryNames="wininet.lib;msimg32.lib;libci.lib;libcmt.lib"
@@ -2364,18 +2364,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath=".\RageBitmapTexture.h">
 			</File>
 			<File
-				RelativePath="RageCryptInterface.cpp">
-			</File>
-			<File
-				RelativePath="RageCryptInterface.h">
-			</File>
-			<File
-				RelativePath="RageCryptInterface_ITG2.cpp">
-			</File>
-			<File
-				RelativePath="RageCryptInterface_ITG2.h">
-			</File>
-			<File
 				RelativePath="RageDisplay.cpp">
 			</File>
 			<File
@@ -2436,6 +2424,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="RageFileDriverCrypt.h">
 			</File>
 			<File
+				RelativePath=".\RageFileDriverCrypt_ITG2.cpp">
+			</File>
+			<File
+				RelativePath=".\RageFileDriverCrypt_ITG2.h">
+			</File>
+			<File
 				RelativePath="RageFileDriverDeflate.cpp">
 			</File>
 			<File
@@ -2458,9 +2452,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="RageFileDriverMemory.h">
-			</File>
-			<File
-				RelativePath="RageFileDriverPatch.cpp">
 			</File>
 			<File
 				RelativePath="RageFileDriverSlice.cpp">

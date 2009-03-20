@@ -1,47 +1,43 @@
 #ifndef RAGE_FILE_DRIVER_CRYPT_H
 #define RAGE_FILE_DRIVER_CRYPT_H
 
-#include "RageFileDriver.h"
+#include "RageFile.h"
+#include "RageFileBasic.h"
 #include "RageFileDriverDirect.h"
-#include "RageFileDriverDirectHelpers.h"
-#include "RageCryptInterface.h"
 
-// shamelessly ganked straight from RageFileDriverDirect
-class RageFileDriverCrypt: public RageFileDriver
+class RageFileObjCrypt: public RageFileObjDirect
 {
 public:
-	RageFileDriverCrypt( CString root, CString _secret );
+	RageFileObjCrypt( const RageFileObjCrypt &cpy ) : RageFileObjDirect(cpy) { }
 
-	RageFileBasic *Open( const CString &path, int mode, int &err );
-	//bool Remove( const CString &sPath );
-	//bool Remount(const CString &sPath);
+	RageFileObjCrypt() { }
+	virtual ~RageFileObjCrypt() { }
 
-protected:
-	CString secret;
-	CString root;
+	virtual bool OpenInternal( const CString &sPath, int iMode, int &iError ) = 0;
+	virtual int ReadInternal( void *pBuffer, size_t iBytes ) = 0;
+	virtual RageFileObjDirect *Copy() const = 0;
+
+	// call this in order to read non-cryptographically
+	virtual int ReadDirect( void *pBuffer, size_t iBytes );
+
+	virtual int WriteInternal( const void *pBuffer, size_t iBytes );
+	virtual int GetFileSize() const;
 };
 
-class RageFileObjCrypt: public RageFileObj
+class RageFileDriverCrypt: public RageFileDriverDirect
 {
-private:
-	crypt_file *cf;
-	CString secret;
-
 public:
-	RageFileObjCrypt();
-	RageFileObjCrypt(crypt_file *cf_);
-	virtual ~RageFileObjCrypt();
-	virtual int ReadInternal(void *buffer, size_t bytes);
-	virtual int SeekInternal(int offset);
-	virtual int WriteInternal(const void *buffer, size_t bytes);
-        virtual RageFileBasic *Copy() const;
-        virtual int GetFileSize() const;
+	RageFileDriverCrypt( const CString &root ) : RageFileDriverDirect(root) { }
+
+protected:
+	// attempts to open and return a file of a derivative type
+	virtual RageFileObjDirect *CreateInternal() { return NULL; }
 };
 
 #endif
 
 /*
- * Copyright (c) 2005 Glenn Maynard reimplemented by infamouspat
+ * Copyright (c) 2009 Marc Cannon ("Vyhd")
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

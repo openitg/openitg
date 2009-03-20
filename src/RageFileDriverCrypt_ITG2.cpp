@@ -43,6 +43,10 @@ RageFileDriverCrypt_ITG2::RageFileDriverCrypt_ITG2( const CString &sRoot, const 
 
 RageFileObjCrypt_ITG2::RageFileObjCrypt_ITG2( const RageFileObjCrypt_ITG2 &cpy ) : RageFileObjCrypt(cpy)
 {
+	// set the file size data
+	m_iHeaderSize = cpy.m_iHeaderSize;
+	m_iFileSize = cpy.m_iFileSize;
+
 	// deep-copy the decryption ctx
 	memcpy( m_ctx, cpy.m_ctx, sizeof(cpy.m_ctx) );
 	m_sSecret = cpy.m_sSecret;
@@ -62,7 +66,7 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 		return false;
 	}
 
-	print_hex( "header", (unsigned char *)&header, 2 );
+	//print_hex( "header", (unsigned char *)&header, 2 );
 
 	if( m_sSecret.empty() )
 	{
@@ -89,7 +93,7 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 	}
 	m_iHeaderSize += 4;
 
-	print_hex( "size", (unsigned char *)&m_iFileSize, 4 );
+	//print_hex( "size", (unsigned char *)&m_iFileSize, 4 );
 
 	uint32_t subkey_size;
 	if( ReadDirect(&subkey_size, 4) < 4 )
@@ -109,7 +113,7 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 	}
 	m_iHeaderSize += subkey_size;
 
-	print_hex( "subkey", subkey, subkey_size );
+	//print_hex( "subkey", subkey, subkey_size );
 
 	unsigned char verifyblock[16];
 	if ((got = ReadDirect(&verifyblock, 16)) < 16)
@@ -257,6 +261,22 @@ int RageFileObjCrypt_ITG2::ReadInternal( void *buffer, size_t bytes )
 		for( int i = 0; i < 2; i++ );
 
 	return bytes;
+}
+
+RageFileObjCrypt_ITG2 *RageFileObjCrypt_ITG2::Copy() const
+{
+        int iErr;
+        RageFileObjCrypt_ITG2 *ret = new RageFileObjCrypt_ITG2(*this);
+
+        if( ret->OpenInternal( m_sPath, m_iMode, iErr ) )
+        {
+                ret->SeekInternal( Tell() );
+                return ret;
+        }
+
+        RageException::Throw( "Couldn't reopen \"%s\": %s", m_sPath.c_str(), strerror(iErr) );
+        delete ret;
+        return NULL;
 }
 
 /*

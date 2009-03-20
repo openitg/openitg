@@ -10,6 +10,8 @@ public:
 	ArchHooks_Win32();
 	~ArchHooks_Win32();
 
+	void MountInitialFilesystems( const CString &sDirOfExecutable );
+
 	void DumpDebugInfo();
 	void RestartProgram();
 	void SystemReboot();

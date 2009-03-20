@@ -4,6 +4,7 @@
 #include "RageThreads.h"
 #include "RageTimer.h"
 #include "RageUtil.h"
+#include "RageFileManager.h"
 #include "archutils/Darwin/Crash.h"
 #include "archutils/Unix/CrashHandler.h"
 #include "archutils/Unix/SignalHandler.h"
@@ -74,6 +75,20 @@ ArchHooks_darwin::ArchHooks_darwin()
 ArchHooks_darwin::~ArchHooks_darwin()
 {
 	delete TimeCritMutex;
+}
+
+void ArchHooks_darwin::MountInitialFilesystems( const CString &sDirOfExecutable )
+{
+	CHECKPOINT_M( ssprintf("DOE \"%s\"", DirOfExecutable.c_str()) );
+
+	CStringArray parts;
+	split( DirOfExecutable, "/", parts );
+
+	ASSERT( parts.size() > 3 );
+	CString Dir = '/' + join( "/", parts.begin(), parts.end()-3 );
+
+	FILEMAN->Mount( "kry", Dir + "/CryptPackages", "/Packages" );
+	FILEMAN->Mount( "dir", Dir, "/" );
 }
 
 #define CASE_GESTALT_M(str,code,result) case gestalt##code: str = result; break

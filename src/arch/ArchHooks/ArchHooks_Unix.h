@@ -6,6 +6,9 @@ class ArchHooks_Unix: public ArchHooks
 {
 public:
 	ArchHooks_Unix();
+
+	void MountInitialFilesystems( const CString &sDirOfExecutable );
+
 	void DumpDebugInfo();
 	void SystemReboot();
 

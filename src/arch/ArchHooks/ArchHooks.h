@@ -1,6 +1,9 @@
 #ifndef ARCH_HOOKS_H
 #define ARCH_HOOKS_H
 
+/* All ArchHooks require this header for filesystem mounts. */
+#include "RageFileManager.h"
+
 class ArchHooks
 {
 public:
@@ -11,6 +14,10 @@ public:
 	virtual ~ArchHooks() { }
 	/* This is called once each time through the game loop */
 	virtual void Update(float delta) { }
+
+	/* Mount StepMania's virtual file systems. This is called early, so
+	 * assume only RageFileManager routines are available here. */
+	virtual void MountInitialFilesystems( const CString &sDirOfExecutable );
 
 	/* Re-exec the game.  If this is implemented, it doesn't return. */
 	virtual void RestartProgram() { }

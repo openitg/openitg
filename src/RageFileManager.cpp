@@ -6,6 +6,9 @@
 #include "RageLog.h"
 #include "RageThreads.h"
 
+/* Used for system-specific filesystem mounting. */
+#include "arch/ArchHooks/ArchHooks.h"
+
 #include <cerrno>
 #if defined(LINUX)
 #include <sys/stat.h>
@@ -254,87 +257,7 @@ RageFileManager::RageFileManager( CString argv0 )
 
 void RageFileManager::MountInitialFilesystems()
 {
-	/* Add file search paths, higher priority first. */
-#if defined(XBOX)
-	/* ITG_ARCADE not implemented here -- Vyhd */
-	RageFileManager::Mount( "dir", "D:\\", "/" );
-
-#elif defined(LINUX)
-	/* Mount the root filesystem, so we can read files in /proc, /etc, and so on.
-	 * This is /rootfs, not /root, to avoid confusion with root's home directory. */
-	RageFileManager::Mount( "dir", "/", "/rootfs" );
-
-        /* Mount /proc, so Alsa9Buf::GetSoundCardDebugInfo() and others can access it.
-	 * (Deprecated; use rootfs.) */
-	RageFileManager::Mount( "dir", "/proc", "/proc" );
-
-	/* FileDB cannot accept relative paths, so Root must be absolute */
-	/* using DirOfExecutable for now  --infamouspat */
-	CString Root = DirOfExecutable;
-	struct stat st;
-	if( Root == "" && !stat( DirOfExecutable + "/Songs", &st ) && st.st_mode&S_IFDIR )
-		Root = DirOfExecutable;
-	if( Root == "" && !stat( InitialWorkingDirectory + "/Songs", &st ) && st.st_mode&S_IFDIR )
-		Root = InitialWorkingDirectory;
-
-#ifdef ITG_ARCADE
-	// Arcade-specific path fixups
-	RageFileManager::Mount( "dir", "/stats", "/Data" );
-	RageFileManager::Mount( "kry", "/itgdata", "/Packages" );
-
-	// OpenITG-specific arcade paths
-	RageFileManager::Mount( "dir", "/itgdata/cache-sink", "/Cache" );
-	RageFileManager::Mount( "dir", "/itgdata/AdditionalSongs", "/AdditionalSongs" );
-#else
-	// XXX TESTING
-	RageFileManager::Mount( "patch", Root + "/CryptPackages", "/Packages" );
-
-	/* This mounts everything else, including Data, etc. */
-	RageFileManager::Mount( "dir", Root, "/" );
-#endif // ITG_ARCADE
-
-#elif defined(_WINDOWS)
-	/* All Windows data goes in the directory one level above the executable. */
-	CHECKPOINT_M( ssprintf( "DOE \"%s\"", DirOfExecutable.c_str()) );
-
-	CStringArray parts;
-	split( DirOfExecutable, "/", parts );
-
-	CHECKPOINT_M( ssprintf( "... %i parts", parts.size()) );
-	ASSERT_M( parts.size() > 1, ssprintf("Strange DirOfExecutable: %s", DirOfExecutable.c_str()) );
-
-	CString Dir = join( "/", parts.begin(), parts.end()-1 );
-
-
-	/* XXX: how are directories going to be arranged on a Windows arcade machine? */
-	if (parts.size() > 2 &&
-		!parts[parts.size() - 2].CompareNoCase("Data") &&
-		!parts[parts.size() - 1].CompareNoCase("patch"))
-	{
-		Dir = join( "/", parts.begin(), parts.end()-2 );
-	}
-	// XXX TESTING
-	RageFileManager::Mount( "patch", Dir + "/CryptPackages", "/Packages" );
-	RageFileManager::Mount( "dir", Dir + "/AdditionalSongs", "/Songs" );
-	RageFileManager::Mount( "dir", Dir, "/" );
-
-#elif defined(DARWIN)
-	CHECKPOINT_M( ssprintf("DOE \"%s\"", DirOfExecutable.c_str()) );
-
-	CStringArray parts;
-	split( DirOfExecutable, "/", parts );
-
-	ASSERT( parts.size() > 3 );
-	CString Dir = '/' + join( "/", parts.begin(), parts.end()-3 );
-
-	RageFileManager::Mount( "kry", Dir + "/CryptPackages", "/CryptPackages" );
-	RageFileManager::Mount( "dir", Dir, "/" );
-
-#else
-	/* Paths relative to the CWD: */
-	RageFileManager::Mount( "dir", ".", "/" );
-
-#endif
+	HOOKS->MountInitialFilesystems( DirOfExecutable );
 }
 
 RageFileManager::~RageFileManager()

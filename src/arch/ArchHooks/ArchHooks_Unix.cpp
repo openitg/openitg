@@ -47,6 +47,47 @@ static bool IsFatalSignal( int signal )
 	}
 }
 
+void ArchHooks_Unix::MountInitialFilesystems( const CString &sDirOfExecutable )
+{
+	/* Mount the root filesystem, so we can read files in /proc, /etc, and so on.
+	 * This is /rootfs, not /root, to avoid confusion with root's home directory. */
+	FILEMAN->Mount( "dir", "/", "/rootfs" );
+
+	/* Mount /proc, so Alsa9Buf::GetSoundCardDebugInfo() and others can access it.
+	 * (Deprecated; use rootfs.) */
+	FILEMAN->Mount( "dir", "/proc", "/proc" );
+
+	/* FileDB cannot accept relative paths, so Root must be absolute */
+	/* using DirOfExecutable for now  --infamouspat */
+	CString Root = sDirOfExecutable;
+
+/*	XXX - do we really need this?
+
+struct stat st;
+	if( Root == "" && !stat( sDirOfExecutable + "/Songs", &st ) && st.st_mode&S_IFDIR )
+		Root = sDirOfExecutable;
+	if( Root == "" && !stat( InitialWorkingDirectory + "/Songs", &st ) && st.st_mode&S_IFDIR )
+		Root = InitialWorkingDirectory;
+*/
+
+#ifdef ITG_ARCADE
+	/* ITG-specific arcade paths */
+	FILEMAN->Mount( "kry", "/itgdata", "/Packages" );
+	FILEMAN->Mount( "dir", "/stats", "/Data" );
+
+	/* OpenITG-specific arcade paths */
+	FILEMAN->Mount( "dir", "/itgdata/AdditionalSongs", "/AdditionalSongs" );
+	FILEMAN->Mount( "dir", "/itgdata/cache-sink", "/Cache" );
+#else
+	/* OpenITG-specific paths */
+	FILEMAN->Mount( "kry", Root + "/CryptPackages", "/Packages" );
+	FILEMAN->Mount( "dir", Root + "/AdditionalSongs", "/AdditionalSongs" );
+
+	/* This mounts everything else, including Data, etc. */
+	FILEMAN->Mount( "dir", Root, "/" );
+#endif // ITG_ARCADE
+}
+
 bool ArchHooks_Unix::OpenMemoryRange( unsigned short start_port, unsigned short bytes )
 {
 	LOG->Trace( "ArchHooks_Unix::OpenMemoryRange( %#x, %d )", start_port, bytes );

@@ -22,6 +22,11 @@ static void InitTimer()
 	g_iStartTime = timeGetTime();
 }
 
+void ArchHooks_Xbox::MountInitialFileSystems( const CString &sDirOfExecutable )
+{
+	FILEMAN->Mount( "dir", "D:\\", "/" );
+}
+
 int64_t ArchHooks::GetMicrosecondsSinceStart( bool bAccurate )
 {
 	if( !g_bTimerInitialized )

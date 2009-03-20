@@ -17,6 +17,9 @@ class ArchHooks_darwin : public ArchHooks
 public:
     ArchHooks_darwin();
     ~ArchHooks_darwin();
+
+	void MountInitialFilesystems( const CString &sDirOfExecutable );
+
     void DumpDebugInfo();
 
 	void EnterTimeCriticalSection();

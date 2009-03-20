@@ -1,7 +1,7 @@
 #include "global.h"
 #include "ArchHooks_Win32.h"
-#include "RageUtil.h"
 #include "RageLog.h"
+#include "RageUtil.h"
 #include "RageThreads.h"
 #include "PrefsManager.h"
 #include "StepMania.h"
@@ -166,6 +166,35 @@ void ArchHooks_Win32::CheckVideoDriver()
 void ArchHooks_Win32::RestartProgram()
 {
 	Win32RestartProgram();
+}
+
+void ArchHooks_Win32::MountInitialFilesystems( const CString &sDirOfExecutable )
+{
+	/* All Windows data goes in the directory one level above the executable. */
+	CHECKPOINT_M( ssprintf( "DOE \"%s\"", sDirOfExecutable.c_str()) );
+
+	CStringArray parts;
+	split( sDirOfExecutable, "/", parts );
+
+	CHECKPOINT_M( ssprintf( "... %i parts", parts.size()) );
+	ASSERT_M( parts.size() > 1, ssprintf("Strange DirOfExecutable: %s", sDirOfExecutable.c_str()) );
+
+	CString Dir = join( "/", parts.begin(), parts.end()-1 );
+
+	/* XXX: how are directories going to be arranged on a Windows arcade machine? */
+	if (parts.size() > 2 &&
+		!parts[parts.size()-2].CompareNoCase("Data") &&
+		!parts[parts.size()-1].CompareNoCase("patch"))
+	{
+		Dir = join( "/", parts.begin(), parts.end()-2 );
+	}
+
+	// OpenITG-specific file paths
+	FILEMAN->Mount( "kry", Dir + "/CryptPackages", "/Packages" );
+	FILEMAN->Mount( "dir", Dir + "/AdditionalSongs", "/Songs" );
+
+	/* This mounts everything else, including Data, etc. */
+	FILEMAN->Mount( "dir", Dir, "/" );
 }
 
 void ArchHooks_Win32::SystemReboot()

@@ -9,6 +9,13 @@ ArchHooks *MakeArchHooks()
 	return new ARCH_HOOKS;
 }
 
+/* Default filesystem mount for a non-specified ArchHooks. */
+void ArchHooks::MountInitialFilesystems( const CString &sDirOfExecutable )
+{
+	/* Paths relative to the CWD: */
+	FILEMAN->Mount( "dir", ".", "/" );
+}
+
 /*
  * This is a helper for GetMicrosecondsSinceStart on systems with a system
  * timer that may loop or move backwards.

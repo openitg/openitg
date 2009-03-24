@@ -23,6 +23,7 @@ Testers:
  - JJSz / Beaver Valley Mall
  - Boxorroxors.net
  - Rhythmatic.net/ITGFreak.com
+ - Sigma
 
 Special Thanks:
  - KholdFuzion

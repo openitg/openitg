@@ -846,6 +846,7 @@ void Song::ReCalculateRadarValuesAndLastBeat()
 {
 	float fFirstBeat = FLT_MAX; /* inf */
 	float fLastBeat = 0;
+	CHECKPOINT;
 
 	for( unsigned i=0; i<m_vpSteps.size(); i++ )
 	{
@@ -861,10 +862,13 @@ void Song::ReCalculateRadarValuesAndLastBeat()
 		if( pSteps->IsAutogen() )
 			continue;
 
+		CHECKPOINT_M( m_sSongFileName + " begin");
 		/* Don't calculate with edits.  Otherwise, edits installed on the machine could 
 		 * extend the length of the song. */
-		if( pSteps->IsAnEdit() )
+		/* 3/25/09: edit charts loaded from disk rather than profile need calculation --infamouspat */
+		if( pSteps->IsAnEdit() && pSteps->WasLoadedFromProfile() )
 			continue;
+		CHECKPOINT_M( m_sSongFileName + " end");
 		
 		// Don't set first/last beat based on lights.  They often start very 
 		// early and end very late.
@@ -883,6 +887,7 @@ void Song::ReCalculateRadarValuesAndLastBeat()
 		fLastBeat = max( fLastBeat, tempNoteData.GetLastBeat() );
 	}
 
+	CHECKPOINT_M( m_sSongFileName + " tail" );
 	m_fFirstBeat = fFirstBeat;
 	m_fLastBeat = fLastBeat;
 }

@@ -45,6 +45,7 @@ OpenITG, beta 1 (almost done)
      Sensor reading problems with PIUIO
      Patched OGG songs circumvented Long/Marathon song limits
      No-timeout warning flood on custom song loading
+     Crash on Edit-only songs (not a bug, but...)
 -Misc. changes:
      Re-backported input debounce, except it works this time. :)
      Record service credits separately in MachineProfile and Coins.xml

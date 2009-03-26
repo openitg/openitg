@@ -1068,16 +1068,6 @@ void ScreenGameplay::LoadNextSong()
 	m_bZeroDeltaOnNextUpdate = true;
 	SCREENMAN->ZeroNextUpdate();
 
-	// load the lights and manually update once, THEN set the state,
-	// so we avoid skipping between the state and transition here.
-	LoadLights();
-	UpdateLights();
-
-	if( GAMESTATE->m_bDemonstrationOrJukebox )
-		LIGHTSMAN->SetLightsMode( LIGHTSMODE_DEMONSTRATION );
-	else
-		LIGHTSMAN->SetLightsMode( LIGHTSMODE_GAMEPLAY );
-
 	/* Load the music last, since it may start streaming and we don't want the music
 	 * to compete with other loading. */
 
@@ -1370,6 +1360,17 @@ void ScreenGameplay::Update( float fDeltaTime )
 
 	if( m_bFirstUpdate )
 	{
+		// load the lights and manually update once, THEN set the state,
+		// so we avoid skipping between the state and transition here.
+		LoadLights();
+		UpdateLights();
+
+		if( GAMESTATE->m_bDemonstrationOrJukebox )
+			LIGHTSMAN->SetLightsMode( LIGHTSMODE_DEMONSTRATION );
+		else
+			LIGHTSMAN->SetLightsMode( LIGHTSMODE_GAMEPLAY );
+
+
 		SOUND->PlayOnceFromAnnouncer( "gameplay intro" );	// crowd cheer
 
 		//

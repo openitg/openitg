@@ -101,8 +101,6 @@ bool RageFileDriverZip::SeekToEndCentralRecord()
 	const int iSearchTo = max( m_pZip->GetFileSize() - 1024*32, 0 );
 	int iRealPos = m_pZip->GetFileSize();
 
-	LOG->Info( "iRealPos: %i, iSearchTo: %i", iRealPos, iSearchTo );
-
 	while( iRealPos > 0 && iRealPos >= iSearchTo )
 	{
 		/* Move back in the file; leave some overlap between checks, to handle
@@ -124,8 +122,6 @@ bool RageFileDriverZip::SeekToEndCentralRecord()
 		{
 			if( memcmp(buf + iPos, "\x50\x4B\x05\x06", 4) )
 				continue;
-
-			LOG->Warn( "End-of-central directory found at %i", m_pZip->Tell() - iPos );
 
 			m_pZip->Seek( iRealPos + iPos );
 			return true;

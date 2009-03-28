@@ -8,7 +8,7 @@
 #include "config.h" // for ITG_ARCADE
 #endif
 
-//#define OFFICIAL_RELEASE
+#define OFFICIAL_RELEASE 1
 
 /* (x?)xyy - x is release type, y is release version */
 #define PRODUCT_TOKEN 101

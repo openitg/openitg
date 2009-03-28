@@ -13,13 +13,17 @@
 /* This is the additional key used for ITG2's patch files */
 #define ITG2_PATCH_KEY "58691958710496814910943867304986071324198643072"
 
-/* Use a default key for OITG 'encryption' */
-#define OITG_KEY "65487573252940086457044055343188392138734144585"
+/* If no key is given, the driver will use the dongle for file keys.
+ * Provide a default key for PC builds, and use the dongle for AC. */
+#ifndef ITG_ARCADE
+#define CRYPT_KEY "65487573252940086457044055343188392138734144585"
+#else
+#define CRYPT_KEY ""
+#endif
 
-/* Register all the file drivers we're going to be using here */
-REGISTER_ITG2_FILE_DRIVER( ITG2, "kry", "" );
+/* Register all the file drivers we're going to be using */
+REGISTER_ITG2_FILE_DRIVER( ITG2, "kry", CRYPT_KEY );
 REGISTER_ITG2_FILE_DRIVER( PATCH, "patch", ITG2_PATCH_KEY );
-REGISTER_ITG2_FILE_DRIVER( OITG, "oitg", OITG_KEY );
 
 // helpful little debug function
 void print_hex( const CString &sName, const unsigned char *value, unsigned int length )

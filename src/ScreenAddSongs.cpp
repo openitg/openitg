@@ -66,7 +66,15 @@ int InitSASSongThread( void *pSAS )
 void ScreenAddSongs::Init()
 {
 	map<CString,CString>::iterator iter;
+
+	/////// XXX Temporarily disabled until I code in an OptionsList for each package list /////
+	SCREENMAN->SystemMessage("Adding songs screen is still in its alpha stage, so it is disabled for now.");
+	SCREENMAN->SetNewScreen( THEME->GetMetric(m_sName,"PrevScreen") );
+	return;
+	///////////////////////////////////////////////////////////////////////////////////
+
 	ScreenWithMenuElements::Init();
+
 
 	LoadAddedZips();
 

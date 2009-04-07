@@ -69,7 +69,9 @@
 #include "MessageManager.h"
 #include "StatsManager.h"
 #include "TournamentManager.h"
-#include "io/ITGIO.h" // for I/O error reporting
+
+// XXX: for I/O error reports
+#include "io/ITGIO.h"
 
 #if defined(XBOX)
 #include "Archutils/Xbox/VirtualMemory.h"
@@ -1597,7 +1599,6 @@ static void CheckSkips( float fDeltaTime )
 static void GameLoop()
 {
 	RageTimer timer;
-	CString sLastInputError;
 
 	while(!g_bQuitting)
 	{
@@ -1606,12 +1607,13 @@ static void GameLoop()
 		 * Update
 		 */
 
-		/* XXX: sLastInputError factors into this, but I'm too
-		 * tired to figure it out at this point in time. -- Vyhd */
-		if( ITGIO::m_sInputError != "" )
+		// XXX: the Iow InputHandler acts as a singleton removed from
+		// the game loop. It needs an external error monitor because
+		// it waits until reconnecting to continue...can we improve this?
+		if( !ITGIO::m_sInputError.empty() )
 		{
 			SCREENMAN->SystemMessage( ITGIO::m_sInputError );
-			ITGIO::m_sInputError = "";
+			ITGIO::m_sInputError.clear();
 		}
 
 		float fDeltaTime = timer.GetDeltaTime();

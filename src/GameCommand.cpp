@@ -741,7 +741,8 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 	if( m_sTheme != "" && m_sTheme != THEME->GetCurThemeName() )
 	{
 		THEME->SwitchThemeAndLanguage( m_sTheme, THEME->GetCurLanguage() );
-		SONGMAN->LoadGroupColors();
+		SONGMAN->LoadGroupColors();	// XXX: is this necessary with ApplyGraphicOptions() set?
+		ApplyGraphicOptions();
 	}
 
 	/* This demonstrates a non-trivial error in the LUA subsystem,

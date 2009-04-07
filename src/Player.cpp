@@ -194,12 +194,11 @@ void Player::Init(
 	}
 
 	// calculate M-mod speed here, so we can adjust properly on a per-song basis.
-
-	// EXPERIMENTAL: derive this entirely off the display BPMs and don't use actual BPMs.
-	// if this works, we'll use it, but it could get messy. we'll see what happens...
+	// XXX: can we find a better location for this?
 	if( GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fMaxScrollBPM != 0 )
 	{
 		DisplayBpms bpms;
+
 		if( GAMESTATE->IsCourseMode() )
 		{
 			ASSERT( GAMESTATE->m_pCurTrail[pn] );
@@ -211,9 +210,35 @@ void Player::Init(
 			GAMESTATE->m_pCurSong->GetDisplayBpms( bpms );
 		}
 
-		// get the maximum listed value for the song or course
-		float fMaxBPM = bpms.GetMax();
+		float fThrowAway, fMaxBPM = 0;
 
+		if( !bpms.IsSecret() )
+		{
+			// all BPMs are listed and available, so we can use the displayed BPMs.
+			// get the maximum listed value for the song or course
+			fMaxBPM = bpms.GetMax();
+		}
+		else
+		{
+			// we can't rely on the displayed BPMs, so manually calculate.
+			if( GAMESTATE->IsCourseMode() )
+			{
+				FOREACH_CONST( TrailEntry, GAMESTATE->m_pCurTrail[pn]->m_vEntries, e )
+				{
+					float fMaxForEntry;
+					e->pSong->m_Timing.GetActualBPM( fThrowAway, fMaxForEntry );
+					fMaxBPM = max( fMaxForEntry, fMaxBPM );
+				}
+			}
+			else
+			{
+				GAMESTATE->m_pCurSong->m_Timing.GetActualBPM( fThrowAway, fMaxBPM );
+			}
+		}
+
+		ASSERT( fMaxBPM > 0 );
+
+		// set an X-mod equal to Mnum / fMaxBPM (e.g. M600 with 150 becomes 4x)
 		GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fScrollSpeed =
 			( GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fMaxScrollBPM / fMaxBPM );
 	}

@@ -955,11 +955,23 @@ public:
 
 	static int GetMetric( T* p, lua_State *L )			{ lua_pushstring(L, p->GetMetric(SArg(1),SArg(2)) ); return 1; }
 	static int GetPath( T* p, lua_State *L )			{ lua_pushstring(L, p->GetPath((ElementCategory)IArg(1),SArg(2),SArg(3)) ); return 1; }
+	static int GetCurLanguage( T* p, lua_State *L )		{ lua_pushstring(L, p->GetCurLanguage()); return 1; }
+	static int GetCurThemeName( T* p, lua_State *L )	{ lua_pushstring(L, p->GetCurThemeName()); return 1; }
+	static int GetThemeNames( T* p, lua_State *L )
+	{
+		vector<CString> sNames;
+		p->GetThemeNames( sNames );
+		LuaHelpers::CreateTableFromArray<CString>( sNames, L );
+		return 1;
+	}
 
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( GetMetric )
 		ADD_METHOD( GetPath )
+		ADD_METHOD( GetCurThemeName )
+		ADD_METHOD( GetCurLanguage )
+		ADD_METHOD( GetThemeNames )
 
 		Luna<T>::Register( L );
 

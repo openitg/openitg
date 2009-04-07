@@ -255,9 +255,6 @@ int RageFileObjCrypt_ITG2::ReadInternal( void *buffer, size_t bytes )
 	delete[] crbuf;
 	delete[] dcbuf;
 
-	if( bufsize > 96 )
-		for( int i = 0; i < 2; i++ );
-
 	return bytes;
 }
 

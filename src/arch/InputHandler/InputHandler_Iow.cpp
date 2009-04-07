@@ -2,8 +2,6 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "DiagnosticsUtil.h"
-
-#include "PrefsManager.h" // for m_bDebugUSBInput
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
 
@@ -32,10 +30,6 @@ InputHandler_Iow::InputHandler_Iow()
 
 	LOG->Trace( "Opened ITGIO board." );
 	m_bFoundDevice = true;
-
-	/* warn if "ext" isn't enabled */
-	if( PREFSMAN->GetLightsDriver().Find("ext") == -1 )
-		LOG->Warn( "\"ext\" is not an enabled LightsDriver. The I/O board cannot run lights." );
 
 	// set any alternate lights mappings, if they exist
 	SetLightsMappings();

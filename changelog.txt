@@ -7,10 +7,12 @@ OpenITG, beta 1 (almost done)
 -New LUA bindings:
      Song: "IsLong", "IsMarathon", "IsCustomSong", "GetGroupName", and "MusicLengthSeconds"
      RageUtil: "SecondsToMMSS", "SecondsToHHMMSS", "SecondsToMSSMsMs"
+     ThemeManager: "GetCurLanguage", "GetCurThemeName", "GetThemeNames"
 -New LUA global:
      "OPENITG_VERSION" - returns a 3-digit token for version information
           (xyy - x is build type, yy is version; also in Win32 "Properties")
--New Screen:
+-New Screens:
+     "ScreenAddSongs" - allows addition of game data through operator menu (temp. disabled)
      "ScreenPlayLights" - plays music, can run actors for cabinet/game lights
 -New InputHandler:
      "MK3" - controls the Andamiro MK3 and MK5 ISA boards, for the heck of it
@@ -40,17 +42,22 @@ OpenITG, beta 1 (almost done)
 -Fixed cross-platform bugs:
      M-mods crashed on marathons
      M-mod code choked on some BPM gimmicks
+     M-mod code didn't adjust to songs or courses with hidden BPMs
      Crash when changing from Intense to Normal-only courses or vice versa
      "Disqualification" display showed for unjoined players on music rate
      Sensor reading problems with PIUIO
      Patched OGG songs circumvented Long/Marathon song limits
      No-timeout warning flood on custom song loading
      Crash on Edit-only songs (not a bug, but...)
+     Tentative fix for strange crashes on "theme" GameCommand
 -Misc. changes:
+     M-mods disqualify on songs with hidden BPMs
+          (because it makes it easier to select an easy modifier)
      Re-backported input debounce, except it works this time. :)
      Record service credits separately in MachineProfile and Coins.xml
      Load USB profile songs into memory, instead of onto the disk
      Complete crypto rewrite - should be much more flexible
+     LightsDriver_External always loaded, to prevent arcade I/O problems
 
 OpenITG, prebeta (November 25th, 2008)
 --------------------------------------

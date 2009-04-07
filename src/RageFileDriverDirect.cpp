@@ -22,6 +22,9 @@
 
 REGISTER_FILE_DRIVER( Direct, "DIR" );
 
+// 64 KB buffer
+static const unsigned int BUFFER_SIZE = 1024*64;
+
 RageFileDriverDirect::RageFileDriverDirect( const CString &sRoot ):
 	RageFileDriver( new DirectFilenameDB(sRoot) )
 {
@@ -304,32 +307,46 @@ static int RetriedWrite( int iFD, const void *pBuf, size_t iCount )
 
 int RageFileObjDirect::FlushInternal()
 {
-	if( WriteFailed() )
+	if( !m_sWriteBuf.size() )
+		return 0;
+
+	int iRet = RetriedWrite( m_iFD, m_sWriteBuf.data(), m_sWriteBuf.size() );
+	if( iRet == -1 )
 	{
-		SetError( "previous write failed" );
-		return -1;
+		LOG->Warn("Error writing %s: %s", this->m_sPath.c_str(), strerror(errno) );
+		SetError( strerror(errno) );
 	}
 
-	return 0;
+	m_sWriteBuf.erase();
+	m_sWriteBuf.reserve( BUFFER_SIZE );
+	return iRet;
 }
 
 int RageFileObjDirect::WriteInternal( const void *pBuf, size_t iBytes )
 {
-	if( WriteFailed() )
+	if( m_sWriteBuf.size()+iBytes > BUFFER_SIZE )
 	{
-		SetError( "previous write failed" );
-		return -1;
+		if( Flush() == -1 )
+			return -1;
+
+		ASSERT( !m_sWriteBuf.size() );
+
+		/* The buffer is cleared.  If we still don't have space, it's bigger than
+		 * the buffer size, so just write it directly. */
+		if( iBytes >= BUFFER_SIZE )
+		{
+			int iRet = RetriedWrite( m_iFD, pBuf, iBytes );
+			if( iRet == -1 )
+			{
+				LOG->Warn("Error writing %s: %s", this->m_sPath.c_str(), strerror(errno) );
+				SetError( strerror(errno) );
+				return -1;
+			}
+			return iBytes;
+		}
 	}
 
-	/* The buffer is cleared.  If we still don't have space, it's bigger than
-	 * the buffer size, so just write it directly. */
-	int iRet = RetriedWrite( m_iFD, pBuf, iBytes );
-	if( iRet == -1 )
-	{
-		SetError( strerror(errno) );
-		m_bWriteFailed = true;
-		return -1;
-	}
+	m_sWriteBuf.append( (const char *) pBuf, (const char *) pBuf+iBytes );
 	return iBytes;
 }
 

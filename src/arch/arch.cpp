@@ -84,10 +84,6 @@ void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add)
 		LOG->Trace( "Initializing lights driver: %s", s->c_str() );
 		LightsDriver *ret = NULL;
 
-#ifdef USE_LIGHTS_DRIVER_EXTERNAL
-		if( !s->CompareNoCase("Ext") )
-			ret = new LightsDriver_External;
-#endif
 #ifdef USE_LIGHTS_DRIVER_PACDRIVE
 		if( !s->CompareNoCase("PacDrive") )
 			ret = new LightsDriver_PacDrive;
@@ -115,8 +111,11 @@ void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add)
 			Add.push_back( ret );
 	}
 
-	// always add system message
+	// always add system message, for lights debug
 	Add.push_back( new LightsDriver_SystemMessage );
+
+	// always add ext, so we never need to worry about I/O lights not working
+	Add.push_back( new LightsDriver_External );
 }
 
 #include "LoadingWindow/Selector_LoadingWindow.h"

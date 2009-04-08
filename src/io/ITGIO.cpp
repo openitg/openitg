@@ -62,24 +62,18 @@ bool ITGIO::Write( uint32_t iData )
 
 void ITGIO::Reconnect()
 {
-	LOG->Warn( "Attempting to reconnect ITGIO" );
-	//if( ??? )
-	//	m_sInputError = "I/O timeout";
-	
-	if( g_bIgnoreNextITGIOError )
-	{
-		g_bIgnoreNextITGIOError = false;
-		return;
-	}
+	LOG->Warn( "Attempting to reconnect ITGIO." );
 
 	m_sInputError = "I/O error";
-	m_iInputErrorCount++;
-
 	Close();
 
 	// attempt to reconnect every 0.1 seconds
-	while( !Open() )
+	do
+	{
+		m_iInputErrorCount++;
 		usleep(100000);
+	}
+	while( !Open() );
 
 	m_sInputError = "";
 }

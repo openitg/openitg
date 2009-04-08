@@ -218,7 +218,7 @@ void InputHandler_PIUIO::HandleInput()
 		RunTimingCode();
 }
 
-/* Requires "LightsDriver=ext", which is loaded by default. */
+/* Requires LightsDriver_External. */
 void InputHandler_PIUIO::UpdateLights()
 {
 	// set a const pointer to the "ext" LightsState to read from

@@ -133,10 +133,10 @@ void InputHandler_Iow::HandleInput()
 	}
 }
 
-/* Requires "LightsDriver=ext" */
+/* Requires LightsDriver_External. */
 void InputHandler_Iow::UpdateLights()
 {
-	// set a pointer to the "ext" LightsState for use
+	// set a pointer to the LightsState for access
 	static const LightsState *m_LightsState = LightsDriver_External::Get();
 
 	ZERO( m_iWriteData );

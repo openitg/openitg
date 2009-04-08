@@ -863,11 +863,12 @@ void Song::ReCalculateRadarValuesAndLastBeat()
 			continue;
 
 		CHECKPOINT_M( m_sSongFileName + " begin");
-		/* Don't calculate with edits.  Otherwise, edits installed on the machine could 
-		 * extend the length of the song. */
-		/* 3/25/09: edit charts loaded from disk rather than profile need calculation --infamouspat */
-		if( pSteps->IsAnEdit() && pSteps->WasLoadedFromProfile() )
+
+		/* Don't calculate based off edits from the machine profile. Use them
+		 * only if they were in the original .SM file to begin with. */
+		if( pSteps->WasLoadedFromProfile() )
 			continue;
+
 		CHECKPOINT_M( m_sSongFileName + " end");
 		
 		// Don't set first/last beat based on lights.  They often start very 

@@ -1,18 +1,18 @@
 #include "global.h"
-#include "ScreenArcadeDiagnostics.h"
-#include "ScreenManager.h"
 #include "RageLog.h"
-#include "InputMapper.h"
-#include "GameState.h"
-#include "GameSoundManager.h"
+#include "RageInput.h"
+#include "ScreenManager.h"
 #include "ThemeManager.h"
-#include "Game.h"
-#include "ScreenDimensions.h"
 #include "GameManager.h"
 #include "PrefsManager.h"
-#include "RageInput.h"
+#include "GameSoundManager.h"
+#include "InputMapper.h"
+#include "GameState.h"
+#include "ScreenDimensions.h"
+#include "Game.h"
 #include "ActorUtil.h"
-#include "ActorFrame.h" // We need this to call PlayCommand,Refresh and update the uptime.
+#include "ActorFrame.h"
+#include "ScreenArcadeDiagnostics.h"
 #include "io/USBDevice.h"
 
 REGISTER_SCREEN_CLASS( ScreenArcadeDiagnostics );
@@ -32,7 +32,6 @@ void ScreenArcadeDiagnostics::Init()
 	m_Title.LoadFromFont( THEME->GetPathF( "ScreenArcadeDiagnostics", "text" ) );
 	m_Title.SetName( "Title" );
 
-	// You can use some #define'd macros in ActorUtil.h for these. -- Vyhd
 	SET_XY_AND_ON_COMMAND( m_USBInfo );
 	SET_XY_AND_ON_COMMAND( m_Title );
 	
@@ -48,10 +47,24 @@ ScreenArcadeDiagnostics::~ScreenArcadeDiagnostics()
 
 void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 {
-	this->PlayCommand( "Refresh" ); // This updates our uptime.
+	// quick hack: only update the screen data once per second.
+	// this allows us to keep the screen running smoothly while
+	// maintaining a one-second detection granularity.
+	if( m_bFirstUpdate || m_UpdateTimer.Ago() > 1.0f )
+	{
+		m_UpdateTimer.Touch();
+		UpdateElements();
+	}
 
 	Screen::Update( fDeltaTime );
+}
 
+void ScreenArcadeDiagnostics::UpdateElements()
+{
+	// update the theme elements (uptime, etc.)
+	PlayCommand( "Refresh" );
+
+	// update the USB devices list
 	vector<USBDevice> vDevList;
 	GetUSBDeviceList( vDevList );
 
@@ -69,8 +82,6 @@ void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 
 	CString sInfo, sTitleInfo;
 
-	/* You can just access the device directly through the vector.
-	 * No need to create a new device. :) -- Vyhd */
 	for (unsigned i = 0; i < vDevList.size(); i++)
 	{
 		sTitleInfo += vDevList[i].GetDeviceDir() + ":\n";

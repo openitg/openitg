@@ -3,6 +3,7 @@
 #ifndef SCREEN_ARCADE_DIAGNOSTICS_H
 #define SCREEN_ARCADE_DIAGNOSTICS_H
 
+#include "RageTimer.h"
 #include "ScreenWithMenuElements.h"
 #include "BitmapText.h"
 
@@ -23,9 +24,13 @@ public:
 	virtual void MenuBack( PlayerNumber pn );
 
 private:
+	void UpdateElements();
+
 	BitmapText m_USBInfo;
-	unsigned int m_iLastSeenDevices;
 	BitmapText m_Title;
+
+	unsigned int m_iLastSeenDevices;
+	RageTimer m_UpdateTimer;
 };
 
 #endif

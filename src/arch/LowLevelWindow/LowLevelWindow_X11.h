@@ -16,6 +16,11 @@ struct XScreenSaverData
 	int prefer_blanking, allow_exposures;
 };
 
+struct DPMSTimeouts
+{
+	unsigned short standby, suspend, off;
+};
+
 class LowLevelWindow_X11 : public LowLevelWindow
 {
 public:
@@ -34,7 +39,8 @@ private:
 	RageDisplay::VideoModeParams CurrentParams;
 
 	bool m_bDisableScreenSaver;
-	XScreenSaverData ScreenData;
+	XScreenSaverData m_ScreenData;
+	DPMSTimeouts m_DPMSData;
 };
 
 #ifdef ARCH_LOW_LEVEL_WINDOW

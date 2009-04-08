@@ -18,13 +18,7 @@ protected:
 	bool Matches( int idVendor, int idProduct ) const;
 
 	void Reconnect();
-
-	/* Until we know where this is called, I'd appreciate
-	 * not having all the unnecessary linker errors. -- Vyhd */
-	bool g_bIgnoreNextITGIOError; 
 };
-
-//extern bool g_bIgnoreNextITGIOError;
 
 #endif /* IO_ITGIO_H */
 

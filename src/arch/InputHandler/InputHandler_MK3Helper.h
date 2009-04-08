@@ -10,7 +10,33 @@ const short MK3_OUTPUT_PORT_2 = 0x2A2;
 
 namespace MK3
 {
-#ifdef LINUX
+#ifdef WINDOWS
+	inline void __fastcall Write( uint32_t iData )
+	{
+		__asm
+		{
+			mov eax,ecx					; load 'data' into eax
+			mov dx,MK3_OUTPUT_PORT_2	; set the second port
+			out	dx,ax					; write the lower word first
+			shr eax,16					; move the high word over
+			mov dx,MK3_OUTPUT_PORT_1	; set the first port
+			out dx,ax					; write the high word
+		}
+	}
+
+	inline void __fastcall Read( uint32_t *pData )
+	{
+		__asm
+		{
+			mov dx,MK3_INPUT_PORT_1		; set the first port
+			in ax, dx					; read in one 16-bit port
+			shl eax,16					; shift eax left 16 to clear ax
+			mov dx,MK3_INPUT_PORT_2		; set the second port
+			in ax, dx					; read the second 16-bit port
+			mov dword ptr [ecx], eax	; assign our value
+		}
+	}
+#else
 	#include <sys/io.h>
 
 	inline void Write( uint32_t iData )
@@ -22,32 +48,6 @@ namespace MK3
 	inline void Read( uint32_t *pData )
 	{
 		*pData = inw_p(MK3_INPUT_PORT_1) << 16 | inw_p(MK3_INPUT_PORT_2);
-	}
-#elif defined(WINDOWS)
-	inline void __fastcall Write( uint32_t iData )
-	{
-		__asm
-		{
-			mov eax,ecx				; load 'data' into eax
-			mov dx,MK3_OUTPUT_PORT_2	; set the second port
-			out	dx,ax				; write the lower word first
-			shr eax,16				; move the high word over
-			mov dx,MK3_OUTPUT_PORT_1	; set the first port
-			out dx,ax				; write the high word
-		}
-	}
-
-	inline void __fastcall Read( uint32_t *pData )
-	{
-		__asm
-		{
-			mov dx,MK3_INPUT_PORT_1			; set the first port
-			in ax, dx					; read in one 16-bit port
-			shl eax,16					; shift eax left 16 to clear ax
-			mov dx,MK3_INPUT_PORT_2			; set the second port
-			in ax, dx					; read the second 16-bit port
-			mov dword ptr [ecx], eax	; assign our value
-		}
 	}
 #endif
 };

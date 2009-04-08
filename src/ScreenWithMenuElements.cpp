@@ -183,6 +183,8 @@ void ScreenWithMenuElements::Update( float fDeltaTime )
 
 void ScreenWithMenuElements::LoadLights()
 {
+	LOG->Trace( "ScreenWithMenuElements::LoadLights()" );
+
 	/* XXX: surely there's a better way to do this... */
 	CString sDir, sName, sExt, sFilePath;
 	splitpath( THEME->GetPathS(m_sName, "music"), sDir, sName, sExt );
@@ -190,14 +192,14 @@ void ScreenWithMenuElements::LoadLights()
 
 	if( !IsAFile(sFilePath) )
 	{
-		LOG->Warn( "SM file \"%s\" does not exist.", sFilePath.c_str() );
+		LOG->Trace( "SM file \"%s\" does not exist.", sFilePath.c_str() );
 		return;
 	}
 
 	SMLoader ld;
 	if( !ld.LoadFromSMFile(sFilePath, m_SongData) )
 	{
-		LOG->Warn( "SM file loading failed. Lights are disabled." );
+		LOG->Trace( "SM file loading failed. Lights are disabled." );
 		return;
 	}
 
@@ -205,7 +207,7 @@ void ScreenWithMenuElements::LoadLights()
 
 	if( pLights == NULL )
 	{
-		LOG->Warn( "SM file \"%s\" has no lights-cabinet charts.", sFilePath.c_str() );
+		LOG->Trace( "SM file \"%s\" has no lights-cabinet charts.", sFilePath.c_str() );
 		return;
 	}
 

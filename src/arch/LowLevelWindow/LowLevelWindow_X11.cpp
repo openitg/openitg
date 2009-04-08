@@ -10,6 +10,7 @@
 #include <math.h>	// ceil()
 #include <X11/Xatom.h>
 #include <X11/extensions/Xrandr.h>
+#include <X11/extensions/dpms.h>
 
 // XXX HACK: RageDisplay_OGL is expecting us to set this for it so it can do
 // GLX-specific queries and whatnot. It's one ugly hackish mess, but hey,
@@ -37,22 +38,29 @@ LowLevelWindow_X11::LowLevelWindow_X11()
 	if( m_bDisableScreenSaver )
 	{
 		// load current screensaver data and disable the screensaver
-		XGetScreenSaver( g_X11Display, &ScreenData.timeout, &ScreenData.interval,
-			&ScreenData.prefer_blanking, &ScreenData.allow_exposures );
+		XGetScreenSaver( g_X11Display, &m_ScreenData.timeout, &m_ScreenData.interval,
+			&m_ScreenData.prefer_blanking, &m_ScreenData.allow_exposures );
 
 		XResetScreenSaver( g_X11Display );
 		XSetScreenSaver( g_X11Display, 0, 0, DontPreferBlanking, DontAllowExposures );
+
+		// load current timeouts and manually disable DPMS
+		DPMSForceLevel( g_X11Display, DPMSModeOn );
+		DPMSGetTimeouts( g_X11Display, &m_DPMSData.standby, &m_DPMSData.suspend, &m_DPMSData.off );
+		DPMSSetTimeouts( g_X11Display, 0, 0, 0 );
 	}
 }
 
 LowLevelWindow_X11::~LowLevelWindow_X11()
 {
-	// re-apply our previous screensaver options
+	// re-apply our previous screensaver and DPMS options
 	if( m_bDisableScreenSaver )
 	{
 		XResetScreenSaver( g_X11Display );
-		XSetScreenSaver( g_X11Display, ScreenData.timeout, ScreenData.interval,
-			ScreenData.prefer_blanking, ScreenData.allow_exposures );
+		XSetScreenSaver( g_X11Display, m_ScreenData.timeout, m_ScreenData.interval,
+			m_ScreenData.prefer_blanking, m_ScreenData.allow_exposures );
+
+		DPMSSetTimeouts( g_X11Display, m_DPMSData.standby, m_DPMSData.suspend, m_DPMSData.off );
 	}
 
 	{

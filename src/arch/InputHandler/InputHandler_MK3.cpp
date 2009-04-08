@@ -14,7 +14,8 @@ InputHandler_MK3::InputHandler_MK3()
 	m_bFoundDevice = false;
 	m_bShutdown = false;
 
-	if( !HOOKS->OpenMemoryRange(0x2A0, 8) )
+	/* Claim both 16-bit output ports and both 16-bit input ports */
+	if( !HOOKS->OpenMemoryRange(MK3_OUTPUT_PORT_1, 8) )
 	{
 		LOG->Warn( "InputHandler_MK3 requires root privileges to run." );
 		return;
@@ -44,7 +45,7 @@ InputHandler_MK3::~InputHandler_MK3()
 	if( m_bFoundDevice )
 		MK3::Write( 0 );
 
-	HOOKS->CloseMemoryRange(0x2A0, 8);
+	HOOKS->CloseMemoryRange(MK3_OUTPUT_PORT_1, 8);
 }
 
 void InputHandler_MK3::SetLightsMappings()

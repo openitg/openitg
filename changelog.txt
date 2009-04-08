@@ -58,6 +58,7 @@ OpenITG, beta 1 (almost done)
      Load USB profile songs into memory, instead of onto the disk
      Complete crypto rewrite - should be much more flexible
      LightsDriver_External always loaded, to prevent arcade I/O problems
+     ScreenArcadeDiagnostics updates once per second, to alleviate lag
 
 OpenITG, prebeta (November 25th, 2008)
 --------------------------------------

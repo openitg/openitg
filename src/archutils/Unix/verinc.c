@@ -32,6 +32,19 @@ int main( int argc, char **argv )
 	if( build != 0 )
 		has_version = 1;
 
+	// no version available - use version.bin and
+	// update the build version from there.
+	if( has_version == 0 )
+	{
+		if( f = fopen("version.bin", "r") )
+			fread( &build, sizeof(ulong), 1, f );
+
+		build++;
+
+		if( f = fopen("version.bin", "w") )
+			fwrite( &build, sizeof(ulong), 1, f );
+	}
+
 	// get the current time
 	time(&tm);
 

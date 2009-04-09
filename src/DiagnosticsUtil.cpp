@@ -134,7 +134,7 @@ int DiagnosticsUtil::GetNumMachineScores()
 CString DiagnosticsUtil::GetProductName()
 {
 	if( VersionSVN )
-		return CString(PRODUCT_NAME_VER) + ssprintf( "r%lu", VersionNumber);
+		return CString(PRODUCT_NAME_VER) + " " + ssprintf( "r%lu", VersionNumber);
 
 	return CString(PRODUCT_NAME_VER);
 }
@@ -168,7 +168,10 @@ CString DiagnosticsUtil::GenerateDebugSerial()
 #if defined(WIN32)
 	system = 'W'; /* Windows */
 #elif defined(LINUX)
-	system = 'L'; /* Unix/Linux */
+	if( VersionSVN )
+		system = 'S'; /*nix, with SVN */
+	else
+		system = 'L'; /*nix, no SVN */
 #elif defined(DARWIN)
 	system = 'M'; /* Mac OS */
 #else
@@ -182,8 +185,12 @@ CString DiagnosticsUtil::GenerateDebugSerial()
 	type = 'P';
 #endif
 
-	// "OITG-W-20090210-07A-P"
-	return ssprintf( "OITG-%c-%s-%03lu-%c", system, VersionDate, VersionNumber, type );
+	// if SVN, display it regularly: "OITG-W-20090409-600-P"
+	// if no SVN, display the build in hex: "OITG-W-20090409-08A-P"
+	if( VersionSVN )
+		return ssprintf( "OITG-%c-%s-%03lu-%c", system, VersionDate, VersionNumber, type );
+	else
+		return ssprintf( "OITG-%c-%s-%03x-%c", system, VersionDate, VersionNumber, type );
 }
 
 bool DiagnosticsUtil::HubIsConnected()

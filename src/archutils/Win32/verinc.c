@@ -17,20 +17,25 @@ typedef unsigned long ulong;
 int main(void)
 {
 	FILE *f;
-	ulong build=0, build_t;
+	ulong build = 0;
 	char strdate[10], strtime[25];
 	time_t tm;
 
 	// try to read the last version seen
-	if ( f = fopen("version.bin","rb") )
+	if( f = fopen("version.bin", "r") )
 	{
-		if( fread(&build_t, sizeof(build_t), 1, f) == 4 )
-			build = build_t;
+		fread( &build, sizeof(ulong), 1, f );
 		fclose( f );
 	}
 
-	// increment the build number
-	++build;
+	// increment the build number and write it
+	build++;
+
+	if( f = fopen("version.bin", "w") )
+	{
+		fwrite( &build, sizeof(ulong), 1, f );
+		fclose( f );
+	}
 
 	// get the current time
 	time(&tm);
@@ -51,12 +56,6 @@ int main(void)
 			"extern const bool VersionSVN = false;\n",
 			build, strtime, strdate );
 
-		fclose( f );
-	}
-
-	if( f = fopen("version.bin","wb") )
-	{
-		fwrite( &build, sizeof(build), 1, f );
 		fclose( f );
 	}
 

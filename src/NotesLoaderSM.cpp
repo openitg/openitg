@@ -54,7 +54,10 @@ void SMLoader::LoadFromSMTokens(
 			v[rc] = strtof( saValues[rc], NULL );
 		out.SetCachedRadarValues( v ); 
 	}
-    
+
+	/* XXX: on first cache, this ends up with extraneous spaces in place of comments.
+	 * This causes a hash fail, which prevents Edits from loading until they're compressed
+	 * from the cache. What can we do about it? -- Vyhd */
 	out.SetSMNoteData(sNoteData);
 
 	out.TidyUpData();

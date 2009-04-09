@@ -17,6 +17,9 @@
 
 REGISTER_SCREEN_CLASS( ScreenArcadeDiagnostics );
 
+// how much time to wait between re-enumerating devices (which is expensive)
+const float USB_UPDATE_TIME = 0.5f;
+
 ScreenArcadeDiagnostics::ScreenArcadeDiagnostics( CString sClassName ) : ScreenWithMenuElements( sClassName )
 {
 	LOG->Trace( "ScreenArcadeDiagnostics::ScreenArcadeDiagnostics()" );
@@ -47,10 +50,13 @@ ScreenArcadeDiagnostics::~ScreenArcadeDiagnostics()
 
 void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 {
-	// quick hack: only update the screen data once per second.
+	// update the theme elements (uptime, etc.)
+	PlayCommand( "Refresh" );
+
+	// only update the USB list once per UPDATE_TIME period.
 	// this allows us to keep the screen running smoothly while
-	// maintaining a one-second detection granularity.
-	if( m_bFirstUpdate || m_UpdateTimer.Ago() > 1.0f )
+	// maintaining a low detection granularity.
+	if( m_bFirstUpdate || m_UpdateTimer.Ago() > USB_UPDATE_TIME )
 	{
 		m_UpdateTimer.Touch();
 		UpdateElements();
@@ -61,9 +67,6 @@ void ScreenArcadeDiagnostics::Update( float fDeltaTime )
 
 void ScreenArcadeDiagnostics::UpdateElements()
 {
-	// update the theme elements (uptime, etc.)
-	PlayCommand( "Refresh" );
-
 	// update the USB devices list
 	vector<USBDevice> vDevList;
 	GetUSBDeviceList( vDevList );

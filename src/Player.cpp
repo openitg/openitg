@@ -210,17 +210,22 @@ void Player::Init(
 			GAMESTATE->m_pCurSong->GetDisplayBpms( bpms );
 		}
 
-		float fThrowAway, fMaxBPM = 0;
+		float fMaxBPM = 0;
 
+		// all BPMs are listed and available, so try them first.
+		// get the maximum listed value for the song or course.
+		// if the BPMs are < 0, reset and get the actual values.
 		if( !bpms.IsSecret() )
 		{
-			// all BPMs are listed and available, so we can use the displayed BPMs.
-			// get the maximum listed value for the song or course
 			fMaxBPM = bpms.GetMax();
+			fMaxBPM = max( 0, fMaxBPM );
 		}
-		else
+
+		// we can't rely on the displayed BPMs, so manually calculate.
+		if( fMaxBPM == 0 )
 		{
-			// we can't rely on the displayed BPMs, so manually calculate.
+			float fThrowAway = 0;
+
 			if( GAMESTATE->IsCourseMode() )
 			{
 				FOREACH_CONST( TrailEntry, GAMESTATE->m_pCurTrail[pn]->m_vEntries, e )

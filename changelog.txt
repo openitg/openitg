@@ -19,6 +19,7 @@ OpenITG, beta 1 (almost done)
 -New LightsDriver:
      "G15" - controls LCD on the G15 gaming keyboard, also for the heck of it
 -New features:
+     ScreenTestInput now triggers lights when arrows are pressed
      "MissComboCommand" metric for Combo display
      "SongLength" sort on the song wheel
      More intelligent lights autogeneration for single charts
@@ -48,7 +49,8 @@ OpenITG, beta 1 (almost done)
      Sensor reading problems with PIUIO
      Patched OGG songs circumvented Long/Marathon song limits
      No-timeout warning flood on custom song loading
-     Crash on Edit-only songs (not a bug, but...)
+     Crash on machine Edit-only songs (not a bug, but...)
+     Huge slowdown on ScreenArcadeDiagnostics due to heavy polling
      Tentative fix for strange crashes on "theme" GameCommand
 -Misc. changes:
      M-mods disqualify on songs with hidden BPMs
@@ -58,7 +60,7 @@ OpenITG, beta 1 (almost done)
      Load USB profile songs into memory, instead of onto the disk
      Complete crypto rewrite - should be much more flexible
      LightsDriver_External always loaded, to prevent arcade I/O problems
-     ScreenArcadeDiagnostics updates once per second, to alleviate lag
+     ScreenOptionsMenu switched to "Menu" lights mode
 
 OpenITG, prebeta (November 25th, 2008)
 --------------------------------------

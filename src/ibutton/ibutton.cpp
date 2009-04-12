@@ -54,7 +54,7 @@ CString iButton::GetSerialNumber()
 	if( (copr.portnum = owAcquireEx(SERIAL_PORT)) == -1 )
 	{
 		LOG->Warn("GetSerialNumber(): failed to acquire port.");
-		return "????????";
+		return CString();
 	}
 
 	FindNewSHA(copr.portnum, copr.devAN, true);

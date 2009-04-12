@@ -146,13 +146,13 @@ CString DiagnosticsUtil::GetSerialNumber()
 	if ( !g_SerialNum.empty() )
 		return g_SerialNum;
 
-/* Grab the serial number from the dongle if we're
- * an arcade build, otherwise generate a fake one. */
-#ifdef ITG_ARCADE
+/* Try to grab a serial number from a dongle;
+ * otherwise generate a fake one. */
+
 	g_SerialNum = iButton::GetSerialNumber();
-#else
-	g_SerialNum = GenerateDebugSerial();
-#endif
+
+	if( g_SerialNum.empty() )
+		g_SerialNum = GenerateDebugSerial();
 
 	return g_SerialNum;
 }
@@ -190,7 +190,7 @@ CString DiagnosticsUtil::GenerateDebugSerial()
 	if( VersionSVN )
 		return ssprintf( "OITG-%c-%s-%03lu-%c", system, VersionDate, VersionNumber, type );
 	else
-		return ssprintf( "OITG-%c-%s-%03x-%c", system, VersionDate, VersionNumber, type );
+		return ssprintf( "OITG-%c-%s-%03X-%c", system, VersionDate, VersionNumber, type );
 }
 
 bool DiagnosticsUtil::HubIsConnected()

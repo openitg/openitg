@@ -4,10 +4,12 @@ OpenITG, beta 1 (almost done)
 -Windows additions:
      OpenITG icon (thanks, Lightning)
      Updated version information
+-New LUA calls + bindings:
+     GameState: "DelayedGameCommand" (required for "theme" GameCommands)
+     ThemeManager: "GetCurLanguage", "GetCurThemeName", "GetThemeNames"
 -New LUA bindings:
      Song: "IsLong", "IsMarathon", "IsCustomSong", "GetGroupName", and "MusicLengthSeconds"
      RageUtil: "SecondsToMMSS", "SecondsToHHMMSS", "SecondsToMSSMsMs"
-     ThemeManager: "GetCurLanguage", "GetCurThemeName", "GetThemeNames"
 -New LUA global:
      "OPENITG_VERSION" - returns a 3-digit token for version information
           (xyy - x is build type, yy is version; also in Win32 "Properties")
@@ -19,6 +21,7 @@ OpenITG, beta 1 (almost done)
 -New LightsDriver:
      "G15" - controls LCD on the G15 gaming keyboard, also for the heck of it
 -New features:
+     Record service credits separately in MachineProfile and Coins.xml
      ScreenTestInput now triggers lights when arrows are pressed
      "MissComboCommand" metric for Combo display
      "SongLength" sort on the song wheel
@@ -56,11 +59,11 @@ OpenITG, beta 1 (almost done)
      M-mods disqualify on songs with hidden BPMs
           (because it makes it easier to select an easy modifier)
      Re-backported input debounce, except it works this time. :)
-     Record service credits separately in MachineProfile and Coins.xml
      Load USB profile songs into memory, instead of onto the disk
      Complete crypto rewrite - should be much more flexible
      LightsDriver_External always loaded, to prevent arcade I/O problems
      ScreenOptionsMenu switched to "Menu" lights mode
+     Always grab a serial number from the dongle, and autogen on fallback
 
 OpenITG, prebeta (November 25th, 2008)
 --------------------------------------

@@ -621,6 +621,13 @@ void GameState::Update( float fDelta )
 			MESSAGEMAN->Broadcast( (Message)(MESSAGE_GOAL_COMPLETE_P1+p) );
 		}
 	}
+
+	// apply any delayed game commands that were issued
+	if( !m_sDelayedGameCommand.empty() )
+	{
+		this->ApplyGameCommand( m_sDelayedGameCommand );
+		m_sDelayedGameCommand.clear();
+	}
 }
 
 void GameState::ReloadCharacters()
@@ -2094,6 +2101,7 @@ public:
 		else		 { lua_pushnil(L); }
 		return 1;
 	}
+	static int DelayedGameCommand( T* p, lua_State *L )		{ p->m_sDelayedGameCommand = SArg(1); return 1; }
 	static int GetPreferredDifficulty( T* p, lua_State *L )	{ lua_pushnumber(L, p->m_PreferredDifficulty[IArg(1)] ); return 1; }
 	static int AnyPlayerHasRankingFeats( T* p, lua_State *L )	{ lua_pushboolean(L, p->AnyPlayerHasRankingFeats() ); return 1; }
 	static int IsCourseMode( T* p, lua_State *L )			{ lua_pushboolean(L, p->IsCourseMode() ); return 1; }
@@ -2147,6 +2155,7 @@ public:
 		ADD_METHOD( SetEnv )
 		ADD_METHOD( GetEnv )
 		ADD_METHOD( GetEditSourceSteps )
+		ADD_METHOD( DelayedGameCommand )
 		ADD_METHOD( GetPreferredDifficulty )
 		ADD_METHOD( AnyPlayerHasRankingFeats )
 		ADD_METHOD( IsCourseMode )

@@ -5,6 +5,7 @@
 #include "ActorFrame.h"
 #include "ThemeManager.h"
 #include "ScreenManager.h"
+#include "LightsManager.h"
 #include "ScreenArcadeStart.h"
 
 /* Serial number functions */
@@ -38,9 +39,10 @@ ScreenArcadeStart::ScreenArcadeStart( CString sClassName ) : ScreenWithMenuEleme
 
 void ScreenArcadeStart::Init()
 {
-	CString sGameSerial = DiagnosticsUtil::GetSerialNumber();
-
 	ScreenWithMenuElements::Init();
+
+	/* HACK: use LIGHTSMODE_JOINING to force all lights off. */
+	LIGHTSMAN->SetLightsMode( LIGHTSMODE_JOINING );
 
 	m_Error.LoadFromFont( THEME->GetPathF( "ScreenArcadeStart", "error" ) );
 	m_Error.SetName( "Error" );

@@ -44,6 +44,10 @@ public:
 
 	void Update( float fDelta );
 
+	//
+	// Delayed command stuff
+	//
+	CString m_sDelayedGameCommand;
 
 	//
 	// Main state info
@@ -291,7 +295,7 @@ public:
 	bool		IsEventMode() const;
 	CoinMode	GetCoinMode();
 	Premium		GetPremium();
-	
+
 	//
 	// Edit stuff
 	//

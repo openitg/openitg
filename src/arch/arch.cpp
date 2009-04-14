@@ -107,7 +107,10 @@ void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add)
 
 		// HACK: we auto-load external, but don't freak people out.
 		// don't tell them it's unknown, since it's the default.
-		if( ret == NULL && s->CompareNoCase("ext") )
+		if( !s->CompareNoCase("Ext") )
+			continue;
+
+		if( ret == NULL )
 			LOG->Warn( "Unknown lights driver name: %s", s->c_str() );
 		else
 			Add.push_back( ret );

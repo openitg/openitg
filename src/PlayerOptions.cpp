@@ -641,8 +641,8 @@ bool PlayerOptions::IsEasierForSongAndSteps( Song* pSong, Steps* pSteps )
 			GAMESTATE->m_pCurSong->GetDisplayBpms( bpms );
 		}
 
-		// maximum BPM is obfuscated
-		if( bpms.GetMax() < 0 )
+		// maximum BPM is obfuscated, so M-mods will set a playable speed.
+		if( bpms.GetMax() <= 0 )
 			return true;
 	}
 	return false;

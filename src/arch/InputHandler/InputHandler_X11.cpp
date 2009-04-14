@@ -157,8 +157,8 @@ void InputHandler_X11::Update(float fDeltaTime)
 		while(XCheckTypedWindowEvent(X11Helper::Dpy,
 					X11Helper::Win, KeyPress, &event) )
 		{
-			LOG->Trace("key: sym %i, key %i, state true",
-				XLookupKeysym(&event.xkey,0), XSymToKeySym(XLookupKeysym(&event.xkey,0)));
+//			LOG->Trace("key: sym %i, key %i, state true",
+//				XLookupKeysym(&event.xkey,0), XSymToKeySym(XLookupKeysym(&event.xkey,0)));
 
 			DeviceInput di( DEVICE_KEYBOARD,
 						XSymToKeySym(XLookupKeysym(&event.xkey,0)) );
@@ -167,8 +167,8 @@ void InputHandler_X11::Update(float fDeltaTime)
 		while(XCheckTypedWindowEvent(X11Helper::Dpy,
 					X11Helper::Win, KeyRelease, &event) )
 		{
-			LOG->Trace("key: sym %i, key %i, state false",
-				XLookupKeysym(&event.xkey,0), XSymToKeySym(XLookupKeysym(&event.xkey,0)));
+//			LOG->Trace("key: sym %i, key %i, state false",
+//				XLookupKeysym(&event.xkey,0), XSymToKeySym(XLookupKeysym(&event.xkey,0)));
 
 			DeviceInput di( DEVICE_KEYBOARD,
 						XSymToKeySym(XLookupKeysym(&event.xkey,0)) );

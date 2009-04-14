@@ -149,8 +149,8 @@ bool ArchHooks_Unix::GetNetworkAddress( CString &sIP, CString &sNetmask, CString
 		snm = (struct sockaddr_in *)iface->ifa_netmask;
 		sIP = inet_ntoa(((struct sockaddr_in *)sad)->sin_addr);
 		sNetmask = inet_ntoa(((struct sockaddr_in *)snm)->sin_addr);
-		freeifaddrs(ifaces);
 	}
+	freeifaddrs(ifaces);
 
 	if( sIP.empty() || sNetmask.empty() )
 	{

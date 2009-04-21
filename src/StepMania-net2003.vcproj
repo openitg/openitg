@@ -3010,6 +3010,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath=".\ThemeManager.h">
 			</File>
 			<File
+				RelativePath=".\TournamentManager.cpp">
+			</File>
+			<File
+				RelativePath=".\TournamentManager.h">
+			</File>
+			<File
 				RelativePath="UnlockManager.cpp">
 			</File>
 			<File

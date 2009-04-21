@@ -40,9 +40,9 @@ InputHandler_Iow::InputHandler_Iow()
 	SetLightsMappings();
 
 	// report every 5000 updates
-	m_DebugTimer.m_sName = "ITGIO";
-	m_DebugTimer.m_bAutoUpdate = false;
-	m_DebugTimer.m_iReportInterval = 5000;
+	m_DebugTimer.SetName( "ITGIO" );
+	m_DebugTimer.AutoReport( false );
+	m_DebugTimer.SetInterval( 5000 );
 
 	InputThread.SetName( "Iow thread" );
 	InputThread.Create( InputThread_Start, this );

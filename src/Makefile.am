@@ -27,10 +27,10 @@ endif
 all: build_version
 
 build_version:
-	$(CC) -O2 archutils/Unix/verinc.c -o archutils/Unix/verinc
+	gcc -O2 archutils/Unix/verinc.c -o archutils/Unix/verinc
 	chmod +x archutils/Unix/verinc
 	archutils/Unix/verinc `svnversion`
-	$(CXX) -c verstub.cpp
+	g++ -c verstub.cpp
 
 verstub.cpp:
 	$(MAKE) build_version
@@ -77,7 +77,8 @@ ScreenSplash.cpp ScreenSplash.h \
 ScreenStage.cpp ScreenStage.h \
 ScreenTest.cpp ScreenTest.h ScreenTestFonts.cpp ScreenTestFonts.h ScreenTestInput.cpp ScreenTestInput.h \
 ScreenTestLights.cpp ScreenTestLights.h ScreenTestSound.cpp ScreenTestSound.h ScreenTextEntry.cpp ScreenTextEntry.h \
-ScreenTitleMenu.cpp ScreenTitleMenu.h ScreenUnlock.cpp ScreenUnlock.h ScreenWithMenuElements.cpp ScreenWithMenuElements.h
+ScreenTitleMenu.cpp ScreenTitleMenu.h ScreenTournamentOptions.cpp ScreenTournamentOptions.h \
+ScreenUnlock.cpp ScreenUnlock.h ScreenWithMenuElements.cpp ScreenWithMenuElements.h
 
 if !WITHOUT_NETWORKING
 Screens += ScreenGameplayMultiplayer.cpp ScreenGameplayMultiplayer.h ScreenSMOnlineLogin.cpp ScreenSMOnlineLogin.h
@@ -91,7 +92,6 @@ Character.cpp Character.h \
 CodeDetector.cpp CodeDetector.h \
 Command.cpp Command.h \
 CommonMetrics.cpp CommonMetrics.h \
-DebugTimer.h \
 DiagnosticsUtil.cpp DiagnosticsUtil.h \
 Difficulty.cpp Difficulty.h EnumHelper.cpp EnumHelper.h Course.cpp Course.h \
 CourseUtil.cpp CourseUtil.h DateTime.cpp DateTime.h Font.cpp Font.h FontCharAliases.cpp FontCharAliases.h \
@@ -372,6 +372,7 @@ PrefsManager.cpp PrefsManager.h ProfileManager.cpp ProfileManager.h ScreenManage
 ScreenManager.h SongManager.cpp SongManager.h \
 StatsManager.cpp StatsManager.h \
 ThemeManager.cpp ThemeManager.h \
+TournamentManager.cpp TournamentManager.h \
 UnlockManager.cpp UnlockManager.h
 
 if !WITHOUT_NETWORKING

@@ -86,11 +86,10 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 
 	SetLightsMappings();
 
-	// tell us to report every 5000 updates,
-	// but leave us to do the reporting.
-	m_DebugTimer.m_sName = "MK6";
-	m_DebugTimer.m_bAutoReport = false;
-	m_DebugTimer.m_iReportInterval = 5;
+	// leave us to do the reporting.
+	m_DebugTimer.SetName( "MK6" );
+	m_DebugTimer.AutoReport( false );
+	m_DebugTimer.SetInterval( 5 );
 
 	InputThread.SetName( "PIUIO thread" );
 	InputThread.Create( InputThread_Start, this );
@@ -171,9 +170,9 @@ void InputHandler_PIUIO::InputThreadMain()
 
 		if( g_bDebugInputDrivers && m_DebugTimer.TimeToReport() )
 		{
-			m_DebugTimer.Report();
 			CString sLine = DebugLine( m_iInputData, m_iLightData );
 			SCREENMAN->SystemMessageNoAnimate( sLine );
+			m_DebugTimer.Reset();
 		}
 	}
 }

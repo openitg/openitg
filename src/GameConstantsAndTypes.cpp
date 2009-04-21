@@ -384,28 +384,6 @@ static const CString StageNames[] = {
 };
 XToString( Stage, NUM_STAGES );
 
-static const CString TournamentRoundNames[] = {
-	"Qualifiers",
-	"1",
-	"2",
-	"3",
-	"4",
-	"5",
-	"6",
-	"7",
-	"8",
-	"9",
-	"10",
-	"11",
-	"12",
-	"13",
-	"Quarterfinals",
-	"Semifinals",
-	"Finals",
-};
-XToString( TournamentRound, NUM_ROUNDS );
-
-
 /*
  * (c) 2001-2004 Chris Danford
  * All rights reserved.

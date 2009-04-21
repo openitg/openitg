@@ -13,15 +13,13 @@
 #include <string.h>
 #include <time.h>
 
-typedef unsigned long ulong;
-
 /* UGLY HACK: we've got no particularly good way to get the
  * SVN version input, aside from stdin. So, we do that. */
 int main( int argc, char **argv )
 {
 	FILE *f;
 	int has_version = 0;
-	ulong build = 0;
+	unsigned long build = 0;
 	char strdate[10], strtime[25];
 	time_t tm;
 
@@ -37,12 +35,12 @@ int main( int argc, char **argv )
 	if( has_version == 0 )
 	{
 		if( f = fopen("version.bin", "r") )
-			fread( &build, sizeof(ulong), 1, f );
+			fread( &build, sizeof(unsigned long), 1, f );
 
 		build++;
 
 		if( f = fopen("version.bin", "w") )
-			fwrite( &build, sizeof(ulong), 1, f );
+			fwrite( &build, sizeof(unsigned long), 1, f );
 	}
 
 	// get the current time

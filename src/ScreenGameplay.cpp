@@ -35,7 +35,6 @@
 #include "Course.h"
 #include "NoteDataUtil.h"
 #include "UnlockManager.h"
-#include "TournamentManager.h"
 #include "LightsManager.h"
 #include "ProfileManager.h"
 #include "StatsManager.h"
@@ -1360,16 +1359,10 @@ void ScreenGameplay::Update( float fDeltaTime )
 
 	if( m_bFirstUpdate )
 	{
-		// load the lights and manually update once, THEN set the state,
-		// so we avoid skipping between the state and transition here.
+		// load the lights and manually update, then set the state below,
+		// so we avoid skipping between the stage and gameplay.
 		LoadLights();
 		UpdateLights();
-
-		if( GAMESTATE->m_bDemonstrationOrJukebox )
-			LIGHTSMAN->SetLightsMode( LIGHTSMODE_DEMONSTRATION );
-		else
-			LIGHTSMAN->SetLightsMode( LIGHTSMODE_GAMEPLAY );
-
 
 		SOUND->PlayOnceFromAnnouncer( "gameplay intro" );	// crowd cheer
 
@@ -1419,6 +1412,11 @@ void ScreenGameplay::Update( float fDeltaTime )
 
 			/*float delay =*/ StartPlayingSong( fMinTimeToNotes, fMinTimeToMusic );
 		}
+
+		if( GAMESTATE->m_bDemonstrationOrJukebox )
+			LIGHTSMAN->SetLightsMode( LIGHTSMODE_DEMONSTRATION );
+		else
+			LIGHTSMAN->SetLightsMode( LIGHTSMODE_GAMEPLAY );
 	}
 
 
@@ -1919,8 +1917,6 @@ void ScreenGameplay::SendCrossedMessages()
 
 void ScreenGameplay::BackOutFromGameplay()
 {
-	TOURNAMENT->CancelMatch();
-
 	m_DancingState = STATE_OUTRO;
 	AbortGiveUp( false );
 	

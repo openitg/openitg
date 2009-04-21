@@ -3,7 +3,6 @@
 #include "LuaManager.h"
 #include "ScreenOptionsMasterPrefs.h"
 #include "NoteSkinManager.h"
-#include "TournamentManager.h"
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "GameState.h"
@@ -72,8 +71,7 @@ public:
 		ASSERT( sParam.size() );
 
 		if( sParam.CompareNoCase("NoteSkins")==0 )		{ FillNoteSkins( defOut, sParam );		return; }
-		// we want to lock steps together if we're in tournament mode
-		else if( sParam.CompareNoCase("Steps")==0 )		{ FillSteps( defOut, sParam, TOURNAMENT->IsTournamentMode() );	return; }
+		else if( sParam.CompareNoCase("Steps")==0 )		{ FillSteps( defOut, sParam, false );	return; }
 		else if( sParam.CompareNoCase("StepsLocked")==0 )	{ FillSteps( defOut, sParam, true );	return; }
 		else if( sParam.CompareNoCase("Characters")==0 )	{ FillCharacters( defOut, sParam );		return; }
 		else if( sParam.CompareNoCase("Styles")==0 )		{ FillStyles( defOut, sParam );			return; }
@@ -389,7 +387,6 @@ public:
 			Song *pSong = GAMESTATE->m_pCurSong;
 			pSong->GetSteps( vpSteps, GAMESTATE->GetCurrentStyle()->m_StepsType );
 			StepsUtil::RemoveLockedSteps( pSong, vpSteps );
-			TOURNAMENT->RemoveStepsOutsideLimits( vpSteps );
 			StepsUtil::SortNotesArrayByDifficulty( vpSteps );
 			for( unsigned i=0; i<vpSteps.size(); i++ )
 			{

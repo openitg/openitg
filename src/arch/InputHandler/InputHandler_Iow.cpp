@@ -1,9 +1,14 @@
 #include "global.h"
 #include "RageLog.h"
-#include "RageUtil.h"
 #include "DiagnosticsUtil.h"
+
+// lights
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
+
+// debug stuff
+#include "RageUtil.h"
+#include "ScreenManager.h"
 
 #include "InputHandler_Iow.h"
 
@@ -34,6 +39,11 @@ InputHandler_Iow::InputHandler_Iow()
 	// set any alternate lights mappings, if they exist
 	SetLightsMappings();
 
+	// report every 5000 updates
+	m_DebugTimer.m_sName = "ITGIO";
+	m_DebugTimer.m_bAutoUpdate = false;
+	m_DebugTimer.m_iReportInterval = 5000;
+
 	InputThread.SetName( "Iow thread" );
 	InputThread.Create( InputThread_Start, this );
 }
@@ -44,6 +54,7 @@ InputHandler_Iow::~InputHandler_Iow()
 		return;
 
 	m_bShutdown = true;
+	m_DebugTimer.Report();
 
 	LOG->Trace( "Shutting down Iow thread..." );
 	InputThread.Wait();
@@ -104,6 +115,8 @@ void InputHandler_Iow::InputThreadMain()
 {
 	while( !m_bShutdown )
 	{
+		m_DebugTimer.StartUpdate();
+
 		UpdateLights();
 
 		// this appears to be AND'd over input (bits 1-16)
@@ -114,6 +127,11 @@ void InputHandler_Iow::InputThreadMain()
 		m_iReadData = ~m_iReadData;
 
 		HandleInput();
+
+		m_DebugTimer.EndUpdate();
+
+		if( g_bDebugInputDrivers && m_DebugTimer.TimeToReport() )
+			SCREENMAN->SystemMessageNoAnimate( BitsToString(m_iReadData) );
 	}
 }
 

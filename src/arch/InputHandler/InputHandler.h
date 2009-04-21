@@ -21,11 +21,20 @@
  * We don't need this now; I'll write it if it becomes needed.)
  */
 #include "RageInputDevice.h"	// for InputDevice
+#include "Preference.h"		// for the controller debug
+#include "DebugTimer.h"		// for timing data debug
+
+extern Preference<bool>		g_bDebugInputDrivers;
 
 class InputHandler
 {
 public:
-	InputHandler() { m_iInputsSinceUpdate = 0; }
+	InputHandler()
+	{
+		m_iInputsSinceUpdate = 0;
+		m_DebugTimer.m_bAutoReport = g_bDebugInputDrivers;
+	}
+
 	virtual ~InputHandler() { }
 	virtual void Update( float fDeltaTime ) { }
 	virtual void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut ) = 0;
@@ -53,6 +62,8 @@ protected:
 	/* Call this at the end of polling input. */
 	void UpdateTimer();
 
+	/* Call StartUpdate() / EndUpdate() for each input loop */
+	DebugTimer m_DebugTimer;
 private:
 	RageTimer m_LastUpdate;
 	int m_iInputsSinceUpdate;

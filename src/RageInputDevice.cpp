@@ -8,7 +8,6 @@
 #include "RageUtil.h"
 #include "EnumHelper.h"
 
-
 CString RageKeySymToString( RageKeySym key )
 {
 	if( key >= 33 && key < 127 &&

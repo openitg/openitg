@@ -112,6 +112,8 @@ InputHandler_DInput::InputHandler_DInput()
 			Devices[i].buffered? "buffered": "unbuffered" );
 	}
 
+	m_DebugTimer.m_sName = "DirectInput";
+
 	StartThread();
 }
 
@@ -481,6 +483,7 @@ void InputHandler_DInput::InputThreadMain()
 
 	while(!shutdown)
 	{
+		m_DebugTimer.StartUpdate();
 		CHECKPOINT;
 		if( BufferedDevices.size() )
 		{
@@ -507,6 +510,8 @@ void InputHandler_DInput::InputThreadMain()
 		if( BufferedDevices.size() == 0 )
 			usleep( 50000 );
 		CHECKPOINT;
+
+		m_DebugTimer.EndUpdate();
 	}
 	CHECKPOINT;
 

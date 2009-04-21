@@ -124,27 +124,23 @@ static RageKeySym XSymToKeySym( int key )
 
 InputHandler_X11::InputHandler_X11()
 {
-	// save the original keyboard repeat setting
-	XKeyboardState InitialState;
-	XGetKeyboardControl( X11Helper::Dpy, &InitialState );
-	m_iRepeatSetting = InitialState.global_auto_repeat;
-
-	LOG->Warn( "Initial state: %i", m_iRepeatSetting );
+	m_DebugTimer.m_sName = "X11";
 
 	XKeyboardControl state;
 	state.auto_repeat_mode = AutoRepeatModeOff;
 	XChangeKeyboardControl( X11Helper::Dpy, KBAutoRepeatMode, &state );
+
 	X11Helper::Go();
 	X11Helper::OpenMask(KeyPressMask); X11Helper::OpenMask(KeyReleaseMask);
 }
 
 InputHandler_X11::~InputHandler_X11()
 {
+	/* Force a reset of key repeat mode here. */
 	XKeyboardControl state;
-	state.auto_repeat_mode = m_iRepeatSetting;
-	LOG->Warn( "Setting state: %i", state.auto_repeat_mode );
-
+	state.auto_repeat_mode = AutoRepeatModeOn;
 	XChangeKeyboardControl( X11Helper::Dpy, KBAutoRepeatMode, &state );
+
 	X11Helper::CloseMask(KeyPressMask); X11Helper::CloseMask(KeyReleaseMask);
 	X11Helper::Stop();
 }
@@ -177,6 +173,11 @@ void InputHandler_X11::Update(float fDeltaTime)
 		}
 
 	InputHandler::UpdateTimer();
+
+	// tricky: this is called with a delta. manually apply it.
+	m_DebugTimer.m_Timer.Touch();
+	m_DebugTimer.m_Timer += -fDeltaTime;
+	m_DebugTimer.EndUpdate();
 }
 
 

@@ -35,7 +35,6 @@ private:
 	void HandleInput();
 	void UpdateLights();
 
-
 	// HandleInputKernel() uses the r16 kernel hack if available; the
 	// function pointer below points to whichever function is used.
 	void HandleInputNormal();
@@ -57,13 +56,6 @@ private:
 
 	// data that will be written to PIUIO (lights, sensors)
 	uint32_t m_iLightData;
-
-	/* debug code */
-	void RunTimingCode();
-	RageTimer m_InputTimer;
-	RageTimer m_USBTimer;
-	unsigned int m_iReadCount;
-	float m_fTotalReadTime;
 };
 
 

@@ -12,9 +12,6 @@ public:
 	~InputHandler_X11();
 	void Update( float fDeltaTime );
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
-private:
-	// UGLY: keep the initial repeat setting in memory
-	int m_iRepeatSetting;
 };
 
 #define USE_INPUT_HANDLER_X11

@@ -22,9 +22,6 @@ namespace StepsUtil
 	bool CompareStepsPointersByDescription(const Steps *pStep1, const Steps *pStep2);
 	void SortStepsByDescription( vector<Steps*> &vpStepsInOut );
 	void RemoveLockedSteps( const Song *pSong, vector<Steps*> &vpStepsInOut );	
-	// tournament functions
-	void RemoveStepsOutsideMeterRange( vector<Steps*> &vpStepsInOut, int iLowLimit, int iHighLimit );
-	void RemoveStepsOutsideDifficultyRange( vector<Steps*> &vpStepsInOut, Difficulty d1, Difficulty d2 );
 };
 
 class StepsID

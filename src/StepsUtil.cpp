@@ -131,35 +131,6 @@ void StepsUtil::RemoveLockedSteps( const Song *pSong, vector<Steps*> &vpSteps )
 	}		
 }
 
-void StepsUtil::RemoveStepsOutsideMeterRange( vector<Steps*> &vpSteps, int iLow, int iHigh )
-{
-	if( iLow == -1 && iHigh == -1 )
-		return;
-
-	for( int i=vpSteps.size()-1; i>=0; i-- )
-	{
-		int iMeter = vpSteps[i]->GetMeter();
-
-		if( iMeter < iLow || iMeter > iHigh )
-			vpSteps.erase( vpSteps.begin()+i );
-	}
-}
-
-void StepsUtil::RemoveStepsOutsideDifficultyRange( vector<Steps*> &vpSteps, Difficulty dLow, Difficulty dHigh )
-{
-	if( dLow == DIFFICULTY_INVALID && dHigh == DIFFICULTY_INVALID )
-		return;
-
-	for( int i=vpSteps.size()-1; i>=0; i-- )
-	{
-		Difficulty iDifficulty = vpSteps[i]->GetDifficulty();
-
-		if( iDifficulty < dLow || iDifficulty > dHigh )
-			vpSteps.erase( vpSteps.begin()+i );
-	}
-}
-
-
 ////////////////////////////////
 // StepsID
 ////////////////////////////////

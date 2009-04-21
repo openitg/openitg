@@ -299,6 +299,25 @@ typedef int DeviceButton;
 //CString DeviceButtonToString( InputDevice device, DeviceButton i );
 //DeviceButton StringToDeviceButton( InputDevice device, const CString& s );
 
+// workaround for GCC 3.3's (deficient) handling of jump tables
+#if defined(__GNUC__) && ( __GNUC__ == 3 ) && (__GNUC_MINOR__ < 4)
+int GetNumDeviceButtons( InputDevice device )
+{
+	if( device == DEVICE_KEYBOARD )
+		return NUM_KEYS;
+	if( device == DEVICE_PUMP1 || device == DEVICE_PUMP2 )
+		return NUM_PUMP_PAD_BUTTONS;
+	if( device == DEVICE_MIDI )
+		return NUM_MIDI_CHANNELS;
+	if( device == DEVICE_PARA1 )
+		return NUM_PARA_PAD_BUTTONS;
+	if( device >= DEVICE_JOY1 && device <= DEVICE_JOY16 )
+		return NUM_JOYSTICK_BUTTONS;
+
+	ASSERT( 0 );
+	return 0;
+}
+#else
 inline int GetNumDeviceButtons( InputDevice device )
 {
 	switch( device )
@@ -327,6 +346,8 @@ inline int GetNumDeviceButtons( InputDevice device )
 	default:	ASSERT(0);	return 0;
 	}
 };
+#endif
+
 const int MAX_DEVICE_BUTTONS = NUM_KEYS;
 const DeviceButton DEVICE_BUTTON_INVALID = MAX_DEVICE_BUTTONS+1;
 

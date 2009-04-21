@@ -443,11 +443,33 @@ bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float
 
 // a few bitwise operators that may come in handy
 template<class T>
-void SetBit( T data, short bit, bool on );
+bool IsBitSet( T data, short bit )
+{
+	int iBits = sizeof(T) * 8;
+	ASSERT_M( iBits > bit, "bit out of range" );
+
+	return data & ((T)1 << (iBits-bit));
+}
+
 template<class T>
-bool IsBitSet( T data, short bit );
+void SetBit( T &data, short bit, bool on )
+{
+	int iBits = sizeof(T) * 8;
+	ASSERT_M( iBits > bit, "bit out of range" );
+}
+
 template<class T>
-CString BitsToString( T data );
+CString BitsToString( T data )
+{
+	int iBits = sizeof(T) * 8;
+	CString ret;
+
+	for( int i = 0; i < iBits; i++ )
+		ret.append( IsBitSet<T>( data, i ) ? "1" : "0" );
+
+	return ret;
+}
+
 
 #endif
 

@@ -2,10 +2,13 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 
-#include "PrefsManager.h"
 #include "LightsManager.h"
 #include "InputFilter.h"
 #include "LuaManager.h"
+
+/* for debug data */
+#include "ScreenManager.h"
+#include "Preference.h"
 
 #include "DiagnosticsUtil.h"
 #include "arch/Lights/LightsDriver_External.h"
@@ -30,6 +33,21 @@ static CString GetSensorDescription( uint32_t iArray[4], int iBit )
 		return "";
 
 	return join(", ", sensors);
+}
+
+static CString DebugLine( const uint32_t iArray[4], const uint32_t &iWriteData )
+{
+	CString sRet = "Input:\n";
+
+	for( int i = 0; i < 4; i++ )
+	{
+		sRet += "\t" + BitsToString( iArray[i] );
+		sRet += "\n";
+	}
+
+	sRet += "Output:\n\t" + BitsToString( iWriteData );
+
+	return sRet;
 }
 
 InputHandler_PIUIO::InputHandler_PIUIO()
@@ -68,12 +86,21 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 
 	SetLightsMappings();
 
+	// tell us to report every 5000 updates,
+	// but leave us to do the reporting.
+	m_DebugTimer.m_sName = "MK6";
+	m_DebugTimer.m_bAutoReport = false;
+	m_DebugTimer.m_iReportInterval = 5;
+
 	InputThread.SetName( "PIUIO thread" );
 	InputThread.Create( InputThread_Start, this );
 }
 
 InputHandler_PIUIO::~InputHandler_PIUIO()
 {
+	// give a final report
+	m_DebugTimer.Report();
+
 	if( InputThread.IsCreated() )
 	{
 		m_bShutdown = true;
@@ -132,11 +159,22 @@ void InputHandler_PIUIO::InputThreadMain()
 {
 	while( !m_bShutdown )
 	{
+		m_DebugTimer.StartUpdate();
+
 		/* Figure out the lights and write them */
 		UpdateLights();
 
 		/* Find our sensors, report to RageInput */
 		HandleInput();
+
+		m_DebugTimer.EndUpdate();
+
+		if( g_bDebugInputDrivers && m_DebugTimer.TimeToReport() )
+		{
+			m_DebugTimer.Report();
+			CString sLine = DebugLine( m_iInputData, m_iLightData );
+			SCREENMAN->SystemMessageNoAnimate( sLine );
+		}
 	}
 }
 
@@ -183,8 +221,6 @@ void InputHandler_PIUIO::HandleInputNormal()
 
 void InputHandler_PIUIO::HandleInput()
 {
-	m_InputTimer.Touch();
-
 	// reset our reading data
 	ZERO( m_iInputField );
 	ZERO( m_iInputData );
@@ -213,9 +249,6 @@ void InputHandler_PIUIO::HandleInput()
 		/* Is the button we're looking for flagged in the input data? */
 		ButtonPressed( di, m_iInputField & (1 << (31-iButton)) );
 	}
-
-	if( PREFSMAN->m_bDebugUSBInput )
-		RunTimingCode();
 }
 
 /* Requires LightsDriver_External. */
@@ -251,33 +284,6 @@ uint32_t InputHandler_PIUIO::GetSensorSet( int iSet )
 		return 0;
 
 	return m_iInputData[iSet];
-}
-
-// temporary debug function
-void InputHandler_PIUIO::RunTimingCode()
-{
-	float fReadTime = m_InputTimer.GetDeltaTime();
-
-	/* loading latency or something similar - discard */
-	if( fReadTime > 0.1f )
-		return;
-
-	m_fTotalReadTime += fReadTime;
-	m_iReadCount++;
-
-	/* we take the average every 1,000 reads */
-	if( m_iReadCount < 1000 )
-		return;
-
-	/* even if the count is off for some value,
-	 * this will still work as expected. */
-	float fAverage = m_fTotalReadTime / (float)m_iReadCount;
-
-	LOG->Info( "PIUIO read average: %f seconds in %i reads. (approx. %i reads per second)", fAverage, m_iReadCount, (int)(1.0f/fAverage) );
-
-	/* reset */
-	m_iReadCount = 0;
-	m_fTotalReadTime = 0;
 }
 
 #include "LuaBinding.h"

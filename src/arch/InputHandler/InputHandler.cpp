@@ -5,6 +5,8 @@
 #include "RageLog.h"
 #include <map>
 
+Preference<bool> g_bDebugInputDrivers( "DebugInputDrivers", false );
+
 #define UPDATE_WARN_LIMIT 100
 
 void InputHandler::UpdateTimer()

@@ -13,7 +13,6 @@
 #include "GameState.h"
 #include "CodeDetector.h"
 #include "ThemeManager.h"
-#include "TournamentManager.h"
 #include "Steps.h"
 #include "ActorUtil.h"
 #include "RageDisplay.h"
@@ -120,8 +119,6 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 
 void ScreenSelectMusic::Init()
 {
-	TOURNAMENT->CancelMatch(); // flush any old match data that wasn't saved by ScreenEvaluation
-
 	m_bSelectIsDown = false; // used by LoadHelpText which is called by ScreenWithMenuElements::Init()
 
 	ScreenWithMenuElements::Init();
@@ -1566,8 +1563,6 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 	if( m_bMadeChoice )
 	{
 		MESSAGEMAN->Broadcast("SongChosen");
-		// do this immediately, so our timestamp is accurate
-		TOURNAMENT->StartMatch();
 
 		TweenOffScreen();
 
@@ -1926,7 +1921,6 @@ void ScreenSelectMusic::AfterMusicChange()
 			pSong->GetSteps( m_vpSteps, GAMESTATE->GetCurrentStyle()->m_StepsType );
 
 			StepsUtil::RemoveLockedSteps( pSong, m_vpSteps );
-			TOURNAMENT->RemoveStepsOutsideLimits( m_vpSteps );
 			StepsUtil::SortNotesArrayByDifficulty( m_vpSteps );
 
 			// if it's a custom, load the 'edit' banner.

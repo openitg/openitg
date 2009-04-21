@@ -29,12 +29,6 @@
 #include "RageUtil.h"		// I need this for copying the patch
 #include "RageFile.h"		// For the .itg extraction
 
-#ifdef ITG_ARCADE
-#define PATCH_DIR CString("/stats/")
-#else
-#define PATCH_DIR CString("Data/")
-#endif
-
 /* global so the screen and the thread can both access these */
 CString g_sPatch;
 CString g_sStatus;
@@ -296,7 +290,7 @@ bool ScreenArcadePatch::LoadPatch( CString sPath, bool bOnCard )
 	m_textHelp->SetText( sPath.c_str() );
 
 #ifdef ITG_ARCADE
-	m_sPatchPath = "/rootfs/tmp/" + sPath;
+	m_sPatchPath = "/rootfs/stats/" + sPath;
 #else
 	m_sPatchPath = "Temp/" + sPath;
 #endif
@@ -513,7 +507,7 @@ bool ScreenArcadePatch::FinalizePatch()
 #endif
 			fCopyDest.Close();
 
-			sPath = PATCH_DIR + "new-patch-unchecked/" + sPath;
+			sPath = "Data/new-patch-unchecked/" + sPath;
 #ifdef LINUX
 			chmod( sPath.c_str(), fi->m_iFilePermissions );
 #endif
@@ -521,7 +515,8 @@ bool ScreenArcadePatch::FinalizePatch()
 		rfdZip->GetDirListing( sDirPath + "/*", patchDirs, true, true );
 
 	}
-	rename( PATCH_DIR + "new-patch-unchecked", PATCH_DIR + "/new-patch" );
+
+	rename( "Data/new-patch-unchecked", "Data/new-patch" );
 
 	/* It's been verified, copied, and installed. We're good. */
 	return true;

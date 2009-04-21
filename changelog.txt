@@ -1,4 +1,4 @@
-OpenITG, beta 1 (almost done)
+OpenITG, beta 1 (almost done, really)
 -----------------------------
 -Obligatory code cleanup
 -Windows additions:
@@ -140,6 +140,7 @@ OpenITG, alpha 7 (July 11th, 2008)
 -New messages:
     "CardReadyP1", "CardReadyP2" - played when a card is verified ready
 -New preferences:
+    "DebugInputDrivers" - replaces DebugUSBInput, provides stats on I/O speed
     "SoundVolumeAttract" - volume during attract sequences
     "ThreadedLights" - run the lights outside the regular game loop, more accurate
     "UseUnstablePIUIODriver" - set true to use the experimental I/O driver

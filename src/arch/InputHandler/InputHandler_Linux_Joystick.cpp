@@ -74,6 +74,8 @@ InputHandler_Linux_Joystick::InputHandler_Linux_Joystick()
 
 	m_bShutdown = false;
 
+	m_DebugTimer.m_sName = "Linux_Joystick";
+
 	if( bFoundAnyJoysticks )
 	{
 		m_InputThread.SetName( "Joystick thread" );
@@ -105,8 +107,7 @@ void InputHandler_Linux_Joystick::InputThread()
 {
 	while( !m_bShutdown )
 	{
-		if( PREFSMAN->m_bDebugUSBInput )
-			m_InputTimer.Touch();
+		m_DebugTimer.StartUpdate();
 
 		fd_set fdset;
 		FD_ZERO(&fdset);
@@ -185,30 +186,7 @@ void InputHandler_Linux_Joystick::InputThread()
 
 		InputHandler::UpdateTimer();
 
-		// if this isn't being debugged, skip the rest
-		if( !PREFSMAN->m_bDebugUSBInput )
-			continue;
-
-		float fReadTime = m_InputTimer.GetDeltaTime();
-
-		// discard oddly high read times due to loading, etc.
-		if( fReadTime > 0.1 )
-			continue;
-
-		m_fTotalReadTime += fReadTime;
-		m_iReadCount++;
-
-		// take the average every 1,000 reads
-		if( m_iReadCount < 1000 )
-			return;
-
-		// XXX: casting int to float is pretty expensive...is it needed?
-		float fAverage = m_fTotalReadTime / (float)m_iReadCount;
-
-		LOG->Info( "Joystick read average: %f seconds over %i reads. (Approx. %i reads per second)", fAverage, m_iReadCount, (int)(1.0f/fAverage) );
-
-		// reset
-		m_iReadCount = 0; m_fTotalReadTime = 0;
+		m_DebugTimer.EndUpdate();
 	}
 }
 

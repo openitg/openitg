@@ -1653,34 +1653,6 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bRe
 	return true;
 }
 
-template<class T>
-bool IsBitSet( T data, short bit )
-{
-	int iBits = sizeof(T) * 8;
-	ASSERT_M( iBits > bit, "bit out of range" );
-
-	return data && ((T)1 << (iBits-bit));
-}
-
-template<class T>
-void SetBit( T &data, short bit, bool on )
-{
-	int iBits = sizeof(T) * 8;
-	ASSERT_M( iBits > bit, "bit out of range" );
-}
-
-template<class T>
-CString BitsToString( T data )
-{
-	int iBits = sizeof(T) * 8;
-	CString ret;
-
-	for( int i = 0; i < iBits; i++ )
-		ret.Insert( IsBitSet<T>( data, i ) ? "1" : "0" );
-
-	return ret;
-}
-
 /*
  * Copyright (c) 2001-2004 Chris Danford, Glenn Maynard
  * Copyright (c) 2008 BoXoRRoXoRs

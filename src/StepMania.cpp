@@ -68,7 +68,6 @@
 #include "NetworkSyncManager.h"
 #include "MessageManager.h"
 #include "StatsManager.h"
-#include "TournamentManager.h"
 
 // XXX: for I/O error reports
 #include "io/ITGIO.h"
@@ -264,7 +263,6 @@ void ShutdownGame()
 	SAFE_DELETE( THEME );
 	SAFE_DELETE( ANNOUNCER );
 	SAFE_DELETE( BOOKKEEPER );
-	SAFE_DELETE( TOURNAMENT );
 	SAFE_DELETE( LIGHTSMAN );
 	SAFE_DELETE( SOUNDMAN );
 	SAFE_DELETE( FONT );
@@ -1183,7 +1181,6 @@ int main(int argc, char* argv[])
 	SOUND		= new GameSoundManager;
 	BOOKKEEPER	= new Bookkeeper;
 	LIGHTSMAN	= new LightsManager( PREFSMAN->GetLightsDriver() );
-	TOURNAMENT	= new TournamentManager;
 	INPUTFILTER	= new InputFilter;
 	INPUTMAPPER	= new InputMapper;
 	INPUTQUEUE	= new InputQueue;

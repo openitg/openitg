@@ -1,7 +1,6 @@
 #include "global.h"
 #include "DifficultyList.h"
 #include "GameState.h"
-#include "TournamentManager.h"
 #include "song.h"
 #include "Steps.h"
 #include "Style.h"
@@ -285,7 +284,6 @@ void DifficultyList::SetFromGameState()
 
 			/* Should match the sort in ScreenSelectMusic::AfterMusicChange. */
 			StepsUtil::RemoveLockedSteps( pSong, CurSteps );
-			TOURNAMENT->RemoveStepsOutsideLimits( CurSteps );
 			StepsUtil::SortNotesArrayByDifficulty( CurSteps );
 
 			m_Rows.resize( CurSteps.size() );

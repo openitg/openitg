@@ -77,8 +77,7 @@ ScreenSplash.cpp ScreenSplash.h \
 ScreenStage.cpp ScreenStage.h \
 ScreenTest.cpp ScreenTest.h ScreenTestFonts.cpp ScreenTestFonts.h ScreenTestInput.cpp ScreenTestInput.h \
 ScreenTestLights.cpp ScreenTestLights.h ScreenTestSound.cpp ScreenTestSound.h ScreenTextEntry.cpp ScreenTextEntry.h \
-ScreenTitleMenu.cpp ScreenTitleMenu.h ScreenTournamentOptions.cpp ScreenTournamentOptions.h \
-ScreenUnlock.cpp ScreenUnlock.h ScreenWithMenuElements.cpp ScreenWithMenuElements.h
+ScreenTitleMenu.cpp ScreenTitleMenu.h ScreenUnlock.cpp ScreenUnlock.h ScreenWithMenuElements.cpp ScreenWithMenuElements.h
 
 if !WITHOUT_NETWORKING
 Screens += ScreenGameplayMultiplayer.cpp ScreenGameplayMultiplayer.h ScreenSMOnlineLogin.cpp ScreenSMOnlineLogin.h
@@ -94,7 +93,8 @@ Command.cpp Command.h \
 CommonMetrics.cpp CommonMetrics.h \
 DiagnosticsUtil.cpp DiagnosticsUtil.h \
 Difficulty.cpp Difficulty.h EnumHelper.cpp EnumHelper.h Course.cpp Course.h \
-CourseUtil.cpp CourseUtil.h DateTime.cpp DateTime.h Font.cpp Font.h FontCharAliases.cpp FontCharAliases.h \
+CourseUtil.cpp CourseUtil.h DateTime.cpp DateTime.h \
+DebugTimer.h Font.cpp Font.h FontCharAliases.cpp FontCharAliases.h \
 FontCharmaps.cpp FontCharmaps.h Game.cpp Game.h GameCommand.cpp GameCommand.h \
 GameConstantsAndTypes.cpp GameConstantsAndTypes.h \
 GameInput.cpp GameInput.h Grade.cpp Grade.h HighScore.cpp HighScore.h Inventory.cpp Inventory.h \
@@ -372,7 +372,6 @@ PrefsManager.cpp PrefsManager.h ProfileManager.cpp ProfileManager.h ScreenManage
 ScreenManager.h SongManager.cpp SongManager.h \
 StatsManager.cpp StatsManager.h \
 ThemeManager.cpp ThemeManager.h \
-TournamentManager.cpp TournamentManager.h \
 UnlockManager.cpp UnlockManager.h
 
 if !WITHOUT_NETWORKING

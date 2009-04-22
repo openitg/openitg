@@ -41,8 +41,8 @@ struct DebugTimer
 	void Reset();
 
 	/* aliases for simple, but useful, functions */
-	inline int GetUpdateRate()	{ return (1.0/m_fUpdateTime); }
-	inline float GetUpdateTime()	{ return (m_fUpdateTime/m_iUpdates); }
+	inline int GetUpdateRate()	{ return m_fUpdateTime == 0 ? 0 : (int)(1/m_fUpdateTime); }
+	inline float GetUpdateTime()	{ return m_iUpdates == 0 ? 0 : (m_fUpdateTime/m_iUpdates); }
 	inline bool TimeToReport()	{ return (m_iUpdates >= m_iReportInterval); }
 
 	/* more user-friendly assignment aliases */

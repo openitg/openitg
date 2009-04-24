@@ -2,21 +2,20 @@
 #include "RageLog.h"
 #include "DiagnosticsUtil.h"
 
-// lights
+// required I/O routines
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
+#include "InputHandler_Iow.h"
 
 // debug stuff
 #include "RageUtil.h"
 #include "ScreenManager.h"
 
-#include "InputHandler_Iow.h"
-
-bool InputHandler_Iow::bInitialized = false;
+bool InputHandler_Iow::s_bInitialized = false;
 
 InputHandler_Iow::InputHandler_Iow()
 {
-	if( InputHandler_Iow::bInitialized )
+	if( s_bInitialized )
 	{
 		LOG->Warn( "Redundant Iow driver loaded. Disabling..." );
 		return;
@@ -31,7 +30,7 @@ InputHandler_Iow::InputHandler_Iow()
 		return;
 	}
 	// set our board lock
-	InputHandler_Iow::bInitialized = true;
+	s_bInitialized = true;
 
 	LOG->Trace( "Opened ITGIO board." );
 	m_bFoundDevice = true;
@@ -66,7 +65,7 @@ InputHandler_Iow::~InputHandler_Iow()
 		Board.Write( 0 );
 		Board.Close();
 
-		InputHandler_Iow::bInitialized = false;
+		s_bInitialized = false;
 	}
 }
 
@@ -130,7 +129,7 @@ void InputHandler_Iow::InputThreadMain()
 
 		m_DebugTimer.EndUpdate();
 
-		if( g_bDebugInputDrivers && m_DebugTimer.TimeToReport() )
+		if( g_bDebugInputDrivers && m_DebugTimer.TimeToReport() && SCREENMAN )
 			SCREENMAN->SystemMessageNoAnimate( BitsToString(m_iReadData) );
 	}
 }

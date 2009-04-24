@@ -441,21 +441,28 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bRe
 bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float), CString &sError );
 
 
-// a few bitwise operators that may come in handy
+// a few bitwise operators that may come in handy.
+// all operations are 1-32, i.e. one-indexed.
 template<class T>
-bool IsBitSet( T data, short bit )
+inline bool IsBitSet( T data, short bit )
 {
 	int iBits = sizeof(T) * 8;
-	ASSERT_M( iBits > bit, "bit out of range" );
+	ASSERT_M( iBits >= bit, ssprintf("bit out of range: %i/%i", bit,iBits) );
 
 	return data & ((T)1 << (iBits-bit));
 }
 
 template<class T>
-void SetBit( T &data, short bit, bool on )
+inline void SetBit( T &data, short bit, bool on = true )
 {
 	int iBits = sizeof(T) * 8;
-	ASSERT_M( iBits > bit, "bit out of range" );
+	ASSERT_M( iBits >= bit, ssprintf("bit out of range: %i/%i", bit,iBits) );
+	int bitval = ((T)1 << (iBits-bit));
+
+	if( on )
+		data |= bitval;
+	else
+		data &= ~bitval;
 }
 
 template<class T>
@@ -464,8 +471,8 @@ CString BitsToString( T data )
 	int iBits = sizeof(T) * 8;
 	CString ret;
 
-	for( int i = 0; i < iBits; i++ )
-		ret.append( IsBitSet<T>( data, i ) ? "1" : "0" );
+	for( short i = 0; i < iBits; i++ )
+		ret.append( IsBitSet( data, i ) ? "1" : "0" );
 
 	return ret;
 }

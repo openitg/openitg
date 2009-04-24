@@ -179,6 +179,8 @@ InputHandler = arch/InputHandler/InputHandler.cpp arch/InputHandler/InputHandler
 # Add the arcade input drivers
 InputHandler += arch/InputHandler/InputHandler_PIUIO.h \
 		arch/InputHandler/InputHandler_PIUIO.cpp \
+		arch/InputHandler/InputHandler_PIUIO_Helper.h \
+		arch/InputHandler/InputHandler_PIUIO_Helper.cpp \
 		arch/InputHandler/InputHandler_Iow.h \
 		arch/InputHandler/InputHandler_Iow.cpp \
 		arch/InputHandler/InputHandler_MK3.h \

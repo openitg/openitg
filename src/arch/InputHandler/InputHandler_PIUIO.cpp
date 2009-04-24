@@ -1,58 +1,22 @@
 #include "global.h"
+
+/* helper functions */
 #include "RageLog.h"
-#include "RageUtil.h"
-
-#include "LightsManager.h"
 #include "InputFilter.h"
-#include "LuaManager.h"
-
-/* for debug data */
-#include "ScreenManager.h"
-#include "Preference.h"
-
 #include "DiagnosticsUtil.h"
+
+/* core I/O handling */
+#include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_PIUIO.h"
+#include "InputHandler_PIUIO_Helper.h"
 
 // initialize the global usage flag
-bool InputHandler_PIUIO::bInitialized = false;
-
-static CString SensorNames[] = { "right", "left", "bottom", "top" };
-
-static CString GetSensorDescription( uint32_t iArray[4], int iBit )
-{
-	CStringArray sensors;
-
-	for( int i = 0; i < 4; i++ )
-		if( iArray[i] & (1 << (31-iBit)) )
-			sensors.push_back( SensorNames[i] );
-
-	/* HACK: if all sensors are reporting, then don't return anything.
-	 * On PIUIO, all buttons always return all sensors except pads. */
-	if( sensors.size() == 4 )
-		return "";
-
-	return join(", ", sensors);
-}
-
-static CString DebugLine( const uint32_t iArray[4], const uint32_t &iWriteData )
-{
-	CString sRet = "Input:\n";
-
-	for( int i = 0; i < 4; i++ )
-	{
-		sRet += "\t" + BitsToString( iArray[i] );
-		sRet += "\n";
-	}
-
-	sRet += "Output:\n\t" + BitsToString( iWriteData );
-
-	return sRet;
-}
+bool InputHandler_PIUIO::s_bInitialized = false;
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
-	if( InputHandler_PIUIO::bInitialized )
+	if( s_bInitialized )
 	{
 		LOG->Warn( "Redundant PIUIO driver loaded. Disabling..." );
 		return;
@@ -72,17 +36,14 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 	LOG->Trace( "Opened PIUIO board." );
 
 	// set the relevant global flags (static flag, input type)
-	InputHandler_PIUIO::bInitialized = true;
+	s_bInitialized = true;
 	DiagnosticsUtil::SetInputType( "PIUIO" );
 
-	// set the handler's function pointer
+	// set the low-level I/O handler, use r16 kernel hack if available
 	InternalInputHandler = &InputHandler_PIUIO::HandleInputNormal;
 
-// use the r16 kernel hack code if it's available
-#ifdef LINUX
-	if( IsAFile("/rootfs/stats/patch/modules/usbcore.ko") )
+	if( MK6Helper::HasKernelPatch() )
 		InternalInputHandler = &InputHandler_PIUIO::HandleInputKernel;
-#endif
 
 	SetLightsMappings();
 
@@ -113,7 +74,7 @@ InputHandler_PIUIO::~InputHandler_PIUIO()
 	{
 		Board.Write( 0 );
 		Board.Close();
-		InputHandler_PIUIO::bInitialized = false;
+		s_bInitialized = false;
 	}
 }
 
@@ -168,10 +129,12 @@ void InputHandler_PIUIO::InputThreadMain()
 
 		m_DebugTimer.EndUpdate();
 
+		// export the data to PIUIO_Helper to use, export to LUA, etc.
+		MK6Helper::Import( m_iInputData, m_iLightData );
+
 		if( g_bDebugInputDrivers && m_DebugTimer.TimeToReport() )
 		{
-			CString sLine = DebugLine( m_iInputData, m_iLightData );
-			SCREENMAN->SystemMessageNoAnimate( sLine );
+			MK6Helper::DebugOutput( m_DebugTimer );
 			m_DebugTimer.Reset();
 		}
 	}
@@ -187,6 +150,7 @@ void InputHandler_PIUIO::HandleInputKernel()
 {
 	ZERO( m_iBulkReadData );
 
+	// zero the sensor bits
 	m_iLightData &= 0xFFFCFFFC;
 
 	// write each light state at once - array members 0, 2, 4, and 6
@@ -234,7 +198,7 @@ void InputHandler_PIUIO::HandleInput()
 	// construct outside the loop, to save some processor time
 	DeviceInput di(DEVICE_JOY1, JOY_1);
 
-	for( int iButton = 0; iButton < 32; iButton++ )
+	for( short iButton = 0; iButton < 32; iButton++ )
 	{
 		di.button = JOY_1+iButton;
 
@@ -243,7 +207,7 @@ void InputHandler_PIUIO::HandleInput()
 			di.ts.Touch();
 
 		/* Set a description of detected sensors to the arrows */
-		INPUTFILTER->SetButtonComment( di, GetSensorDescription(m_iInputData, iButton) );
+		INPUTFILTER->SetButtonComment( di, MK6Helper::GetSensorDescription(m_iInputData, iButton) );
 
 		/* Is the button we're looking for flagged in the input data? */
 		ButtonPressed( di, m_iInputField & (1 << (31-iButton)) );
@@ -275,48 +239,6 @@ void InputHandler_PIUIO::UpdateLights()
 	m_iLightData |= m_LightsState->m_bCoinCounter ?
 		m_LightsMappings.m_iCoinCounterOn : m_LightsMappings.m_iCoinCounterOff;
 }
-
-uint32_t InputHandler_PIUIO::GetSensorSet( int iSet )
-{
-	// bounds checking
-	if( iSet >= 3 )
-		return 0;
-
-	return m_iInputData[iSet];
-}
-
-#include "LuaBinding.h"
-
-template<class T>
-class LunaInputHandler_PIUIO: public Luna<T>
-{
-public:
-	LunaInputHandler_PIUIO() { LUA->Register( Register ); }
-
-	static int GetSensorSet( T* p, lua_State *L )
-	{
-		vector<bool> vSensors;
-		uint32_t iSensors = p->GetSensorSet( IArg(1) );
-
-		for( int i = 0; i < 32; i++ )
-		{
-			bool temp = iSensors & (1 << (31-i));
-			vSensors.push_back( temp );
-		}
-
-		LuaHelpers::CreateTableFromArrayB( L, vSensors );
-		return 0;
-	}
-
-	static void Register( lua_State *L )
-	{
-		ADD_METHOD( GetSensorSet )
-		Luna<T>::Register( L );
-	}
-};
-
-// doesn't work yet...
-//LUA_REGISTER_CLASS( InputHandler_PIUIO );
 
 /*
  * (c) 2005 Chris Danford, Glenn Maynard.  Re-implemented by vyhd, infamouspat

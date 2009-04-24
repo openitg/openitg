@@ -18,13 +18,10 @@ public:
 
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 
-	// used for LUA bindings
-	uint32_t GetSensorSet( int iSet );
-	void PushSelf( lua_State *L );
 private:
 	// allow only one handler to control the board at a time, in case
 	// several are loaded. this should prevent bizarre collision errors.
-	static bool bInitialized;
+	static bool s_bInitialized;
 
 	PIUIO Board;
 	RageThread InputThread;
@@ -58,9 +55,6 @@ private:
 	uint32_t m_iLightData;
 };
 
-
-
-
 #define USE_INPUT_HANDLER_PIUIO
 
 #endif
@@ -89,4 +83,3 @@ private:
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
-

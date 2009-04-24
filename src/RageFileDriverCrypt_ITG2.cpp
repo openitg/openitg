@@ -25,21 +25,8 @@
 REGISTER_ITG2_FILE_DRIVER( ITG2, "kry", CRYPT_KEY );
 REGISTER_ITG2_FILE_DRIVER( PATCH, "patch", ITG2_PATCH_KEY );
 
-// helpful little debug function
-void print_hex( const CString &sName, const unsigned char *value, unsigned int length )
-{
-	CString sValues = "";
-
-	for( unsigned i = 0; i < length; i++ )
-		sValues += ssprintf( "%02X ", value[i] );
-
-	LOG->Debug( "print_hex( %s ): %s", sName.c_str(), sValues.c_str() );
-}
-
-// contains pre-hashed decryption keys, for faster loading
-// To do: move into RageFileDriverCrypt_ITG2?
-typedef std::map<const char *, unsigned char*> tKeyMap;
-tKeyMap g_KnownKeys;
+/* Declare the static key map used by the crypto implementation */
+tKeyMap RageFileObjCrypt_ITG2::m_sKnownKeys;
 
 RageFileDriverCrypt_ITG2::RageFileDriverCrypt_ITG2( const CString &sRoot, const CString &secret ): RageFileDriverCrypt(sRoot)
 {
@@ -125,10 +112,10 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 
 	// try to find the key in our stored data, if possible - otherwise, generate it
 	unsigned char *AESKey;
-	tKeyMap::iterator iter = g_KnownKeys.find( sPath.c_str() );
+	tKeyMap::iterator iter = m_sKnownKeys.find( sPath.c_str() );
 
 	// no key found. generate it.
-	if (iter == g_KnownKeys.end())
+	if (iter == m_sKnownKeys.end())
 	{
 		// allocate space for the AES key
 		AESKey = new unsigned char[24];
@@ -162,7 +149,7 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 		}
 
 		// save the key to the cache
-		g_KnownKeys[sPath.c_str()] = AESKey;
+		m_sKnownKeys[sPath.c_str()] = AESKey;
 	}
 	else
 	{

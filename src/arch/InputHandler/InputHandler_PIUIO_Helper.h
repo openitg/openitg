@@ -1,48 +1,24 @@
-#ifndef INPUT_HANDLER_IOW_H
-#define INPUT_HANDLER_IOW_H
+#ifndef INPUT_HANDLER_PIUIO_HELPER_H
+#define INPUT_HANDLER_PIUIO_HELPER_H
 
-#include "InputHandler.h"
-#include "RageThreads.h"
-#include "LightsMapper.h"
-#include "io/ITGIO.h"
+struct DebugTimer;
 
-class InputHandler_Iow: public InputHandler
+// I like this name better than PIUIO. Cooler. Less wordy.
+class MK6Helper
 {
 public:
-	InputHandler_Iow();
-	~InputHandler_Iow();
+	static bool HasKernelPatch();
 
-	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
-private:
-	// in case several handlers exist for some reason, allow only one
-	// to claim the device and run I/O, so we waste memory and not cycles.
-	static bool s_bInitialized;
+	static CString GetSensorDescription( const uint32_t iSensors[4], short iBit );
+	static void Import( const uint32_t iSensorsIn[4], const uint32_t iLightsIn );
 
-	ITGIO Board;
-	RageThread InputThread;
-
-	void SetLightsMappings();
-	LightsMapping m_LightsMappings;
-
-	bool m_bFoundDevice;
-	bool m_bShutdown;
-
-	uint32_t m_iReadData;
-	uint32_t m_iWriteData;
-
-	void InputThreadMain();
-	static int InputThread_Start( void *p );
-
-	void HandleInput();
-	void UpdateLights();
+	static void DebugOutput( const DebugTimer &timer );
 };
 
-#define USE_INPUT_HANDLER_IOW
-
-#endif // INPUT_HANDLER_IOW
+#endif // INPUT_HANDLER_PIUIO_HELPER_H
 
 /*
- * (c) 2008 BoXoRRoXoRs
+ * (c) 2008-2009 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -65,4 +41,3 @@ private:
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
-

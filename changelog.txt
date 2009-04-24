@@ -10,6 +10,7 @@ OpenITG, beta 1 (almost done, really)
 -New LUA bindings:
      Song: "IsLong", "IsMarathon", "IsCustomSong", "GetGroupName", and "MusicLengthSeconds"
      RageUtil: "SecondsToMMSS", "SecondsToHHMMSS", "SecondsToMSSMsMs"
+     PIUIO: "MK6_GetSensors"
 -New LUA global:
      "OPENITG_VERSION" - returns a 3-digit token for version information
           (xyy - x is build type, yy is version; also in Win32 "Properties")

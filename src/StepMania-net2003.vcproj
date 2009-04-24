@@ -1062,6 +1062,9 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="DateTime.h">
 			</File>
 			<File
+				RelativePath=".\DebugTimer.h">
+			</File>
+			<File
 				RelativePath="DiagnosticsUtil.cpp">
 			</File>
 			<File
@@ -1602,6 +1605,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					</File>
 					<File
 						RelativePath="arch\InputHandler\InputHandler_PIUIO.h">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_PIUIO_Helper.cpp">
+					</File>
+					<File
+						RelativePath=".\arch\InputHandler\InputHandler_PIUIO_Helper.h">
 					</File>
 					<File
 						RelativePath=".\arch\InputHandler\InputHandler_Win32_MIDI.cpp">
@@ -3008,12 +3017,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath=".\ThemeManager.h">
-			</File>
-			<File
-				RelativePath=".\TournamentManager.cpp">
-			</File>
-			<File
-				RelativePath=".\TournamentManager.h">
 			</File>
 			<File
 				RelativePath="UnlockManager.cpp">

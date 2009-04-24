@@ -15,6 +15,8 @@ static struct FileDriverEntry_##name: public FileDriverEntry \
 	} \
 } const g_RegisterDriver_##name;
 
+typedef std::map<const char *, unsigned char*> tKeyMap;
+
 class RageFileObjCrypt_ITG2: public RageFileObjCrypt
 {
 public:
@@ -27,6 +29,9 @@ public:
 
 	virtual RageFileObjCrypt_ITG2 *Copy() const;
 private:
+	// contains pre-hashed decryption keys
+	static tKeyMap m_sKnownKeys;
+
 	size_t m_iFileSize;
 	size_t m_iHeaderSize;
 	CString m_sSecret;

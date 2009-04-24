@@ -7,7 +7,6 @@
  *
  * StartUpdate() and EndUpdate() are to be called at the start
  * and end of a function you want to time, respectively.
- *
  */
 
 #include "RageLog.h"
@@ -41,9 +40,9 @@ struct DebugTimer
 	void Reset();
 
 	/* aliases for simple, but useful, functions */
-	inline int GetUpdateRate()	{ return m_fUpdateTime == 0 ? 0 : (int)(1/m_fUpdateTime); }
-	inline float GetUpdateTime()	{ return m_iUpdates == 0 ? 0 : (m_fUpdateTime/m_iUpdates); }
-	inline bool TimeToReport()	{ return (m_iUpdates >= m_iReportInterval); }
+	inline int GetUpdateRate()	const	{ return m_fUpdateTime == 0 ? 0 : (int)(1/m_fUpdateTime); }
+	inline float GetUpdateTime() const	{ return m_iUpdates == 0 ? 0 : (float)(m_fUpdateTime/m_iUpdates); }
+	inline bool TimeToReport() const	{ return (m_iUpdates >= m_iReportInterval); }
 
 	/* more user-friendly assignment aliases */
 	inline void AutoReport( bool bAuto )		{ m_bAutoReport = bAuto; } 

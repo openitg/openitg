@@ -7,7 +7,8 @@
 #include "RageLog.h"
 #include "StepMania.h"
 #ifdef WIN32
-	#include <shellapi.h>
+#include <windows.h>
+#include <shellapi.h>
 #endif
 
 #define EXEC_PATH		THEME->GetMetric(m_sName, "ExecPath")

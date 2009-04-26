@@ -1,5 +1,7 @@
 #include "global.h"
 #include "RageUtil.h"
+#include "GameState.h"
+#include "InputMapper.h"
 #include "ScreenManager.h"
 #include "DebugTimer.h"
 #include "InputHandler_PIUIO_Helper.h"
@@ -7,6 +9,48 @@
 // keep these in local scope
 uint32_t g_iSensors[4];
 uint32_t g_iLights;
+
+bool g_bReportSensors[32];
+bool g_bSensorInitted = false;
+
+/* determine which inputs are used for gameplay and
+ * cache them, so we have a quick reference later. */
+/* XXX: this probably won't be able to pick up on
+ * automappings. How can we fix that? */
+bool MK6Helper::InitDeviceMap()
+{
+	ASSERT( INPUTMAPPER );
+
+	DeviceInput DeviceI;
+	GameInput GameI;
+	StyleInput StyleI;
+
+	/* starting settings */
+	DeviceI.device = DEVICE_JOY1;
+	DeviceI.button = JOY_1;
+
+	/* if the StyleInput is mapped, this input is used
+	 * for gameplay and we want to report sensors for it. */
+	for( int i = 0; i < 32; i++ )
+	{
+		g_bReportSensors[i] = false;
+
+		INPUTMAPPER->DeviceToGame( DeviceI, GameI );
+		if( !GameI.IsValid() )
+			continue;
+
+		INPUTMAPPER->GameToStyle( GameI, StyleI );
+		if( StyleI.IsValid() )
+			g_bReportSensors[i] = true;
+	}
+
+	/* Did we get any actual data or not? */
+	for( int i = 0; i < 32; i++ )
+		if( g_bReportSensors[i] )
+			return true;
+
+	return false;
+}
 
 /* Do we have the r16 kernel hack available to use? */
 bool MK6Helper::HasKernelPatch()

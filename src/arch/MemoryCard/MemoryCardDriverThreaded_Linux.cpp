@@ -227,6 +227,12 @@ bool MemoryCardDriverThreaded_Linux::DoOneUpdate( bool bMount, vector<UsbStorage
 				continue;
 			}
 
+			/* it's possible that the block device will appear in /sys/ before it
+			 * appears in /dev/. Don't mount until we know the dev file exists. */
+			struct stat data;
+			if( stat(d.sDevice, &data) == -1 )
+				continue;
+
 			if( !ExecuteCommand("mount " + d.sDevice) )
 			{
 				d.SetError( "MountFailed" );
@@ -384,23 +390,6 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 				continue; // already warned
 			if( atoi(sBuf) != 1 )
 				continue;
-
-			/* Okay, let me rephrase. Not having the "1" breaks cards on ITG. -- Vyhd */
-			/**
-			*   === = = === =  =   =   = ===  =
-			*   =   = = =   = =     = =  =   = =
-			*   === = = =   ==       =   === ===
-			*   =   = = =   = =      =   =   = =
-			*   =   === === =  =     =   === = =
-			*       -- infamouspat
-			*/
-			// doesn't work. devices return false on this.
-/*
-			if ( IsAFile( "/rootfs/dev/" + sDevice + "1" ) )
-				usbd.sDevice = "/dev/" + sDevice + "1";
-			else
-				usbd.sDevice = "/dev/" + sDevice;
-*/
 
 			usbd.sDevice = "/dev/" + sDevice + "1";
 

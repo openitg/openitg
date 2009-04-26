@@ -7,6 +7,7 @@ struct DebugTimer;
 class MK6Helper
 {
 public:
+	static bool InitDeviceMap();
 	static bool HasKernelPatch();
 
 	static CString GetSensorDescription( const uint32_t iSensors[4], short iBit );

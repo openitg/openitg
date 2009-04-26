@@ -40,7 +40,7 @@ struct DebugTimer
 	void Reset();
 
 	/* aliases for simple, but useful, functions */
-	inline int GetUpdateRate()	const	{ return m_fUpdateTime == 0 ? 0 : (int)(1/m_fUpdateTime); }
+	inline int GetUpdateRate()	const	{ return m_fUpdateTime == 0 ? 0 : (int)(1/GetUpdateTime()); }
 	inline float GetUpdateTime() const	{ return m_iUpdates == 0 ? 0 : (float)(m_fUpdateTime/m_iUpdates); }
 	inline bool TimeToReport() const	{ return (m_iUpdates >= m_iReportInterval); }
 

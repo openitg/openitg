@@ -262,7 +262,6 @@ void NoteDataUtil::InsertHoldTails( NoteData &inout )
 
 void NoteDataUtil::GetSMNoteDataString( const NoteData &in_, CString &notes_out )
 {
-	LOG->Trace( "NoteDataUtil::GetSMNoteDataString()" );
 	//
 	// Get note data
 	//

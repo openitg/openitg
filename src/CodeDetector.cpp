@@ -54,6 +54,8 @@ const CString CodeNames[] = {
 	"SaveScreenshot2",
 	"CancelAllPlayerOptions",
 	"BackInEventMode",
+	"OptionsListOpen1",
+	"OptionsListOpen2"
 };
 XToString( Code, NUM_CODES );
 

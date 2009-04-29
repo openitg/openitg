@@ -431,7 +431,7 @@ void OptionsList::Input( const DeviceInput& DeviceI, const InputEventType type, 
 
 	/* XXX: if there were a good reason to switch to InputEventPlus, this is it */
 	// would Start ever be down in ITG? --infamouspat
-	if( m_bStartIsDown && false )
+	if( m_bStartIsDown )
 	{
 		if( MenuI.button == MENU_BUTTON_LEFT || MenuI.button == MENU_BUTTON_RIGHT )
 		{

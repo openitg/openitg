@@ -857,29 +857,30 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 	if( m_bMadeChoice )		return;		// ignore
 
 	// handle options list input
-        if( USE_OPTIONS_LIST )
-        {
-                PlayerNumber pn = MenuI.player;
-                if( pn != PLAYER_INVALID )
-                {
-                        if( m_OptionsList[pn].IsOpened() )
-                        {
-                                //m_OptionsList[pn].Input( input );
+	if( USE_OPTIONS_LIST )
+	{
+		PlayerNumber pn = MenuI.player;
+		if( pn != PLAYER_INVALID )
+		{
+			if( m_OptionsList[pn].IsOpened() )
+			{
+				//m_OptionsList[pn].Input( input );
 				m_OptionsList[pn].Input( DeviceI, type, GameI, MenuI, StyleI );
 
-                                if( !m_OptionsList[pn].IsOpened() )
-                                        CloseOptionsList( pn );
+				if( !m_OptionsList[pn].IsOpened() )
+					CloseOptionsList( pn );
 
-                                return;
-                        }
-                        else
-                        {
-                                if( type == IET_RELEASE  &&  MenuI.button == MENU_BUTTON_SELECT /* && m_bAcceptSelectRelease[pn] */ )
-                                        OpenOptionsList( pn );
-                        }
-                }
-        }
-
+				return;
+			}
+			else
+			{
+			if( type == IET_RELEASE 
+				&& ( CodeDetector::EnteredCode( GameI.controller, CODE_OPTIONS_LIST_OPEN1 )
+					|| CodeDetector::EnteredCode( GameI.controller, CODE_OPTIONS_LIST_OPEN2 ) ) )
+						OpenOptionsList( pn );
+			}
+		}
+	}
 
 	LoadHelpText();
 
@@ -1085,6 +1086,7 @@ void ScreenSelectMusic::LoadHelpText()
 		bSelectIsDown = false;
 
 	/* If m_soundSelectPressed isn't loaded yet, wait until it is before we do this. */
+	/*
 	if( m_bSelectIsDown != bSelectIsDown && m_soundSelectPressed.IsLoaded() && !USE_OPTIONS_LIST )
 	{
 		if( bSelectIsDown )
@@ -1095,7 +1097,7 @@ void ScreenSelectMusic::LoadHelpText()
 			MESSAGEMAN->Broadcast( "SelectMenuOn" );
 		else
 			MESSAGEMAN->Broadcast( "SelectMenuOff" );
-	}
+	}*/
 }
 
 void ScreenSelectMusic::ChangeDifficulty( PlayerNumber pn, int dir )

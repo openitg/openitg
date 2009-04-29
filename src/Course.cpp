@@ -1364,6 +1364,7 @@ public:
 	static int GetPlayMode( T* p, lua_State *L )			{ lua_pushnumber(L, p->GetPlayMode() ); return 1; }
 	static int GetDisplayFullTitle( T* p, lua_State *L )	{ lua_pushstring(L, p->GetDisplayFullTitle() ); return 1; }
 	static int GetTranslitFullTitle( T* p, lua_State *L )	{ lua_pushstring(L, p->GetTranslitFullTitle() ); return 1; }
+	static int GetCourseDir( T* p, lua_State *L )			{ lua_pushstring(L, p->m_sPath ); return 1; }
 
 	static void Register(lua_State *L)
 	{

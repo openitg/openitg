@@ -161,6 +161,7 @@ public:
 	Preference<MusicWheelUsesSections>		m_MusicWheelUsesSections;
 	Preference<int>		m_iMusicWheelSwitchSpeed;
 	Preference<bool>	m_bEasterEggs;
+	Preference<bool>	m_bEasterEggs2;
 	enum MarvelousTiming { MARVELOUS_NEVER, MARVELOUS_COURSES_ONLY, MARVELOUS_EVERYWHERE };
 	Preference<MarvelousTiming>		m_MarvelousTiming;
 	Preference<bool>	m_bEventMode;

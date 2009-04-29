@@ -186,6 +186,7 @@ PrefsManager::PrefsManager() :
 	m_MusicWheelUsesSections	( "MusicWheelUsesSections",		ALWAYS ),
 	m_iMusicWheelSwitchSpeed	( "MusicWheelSwitchSpeed",		10 ),
 	m_bEasterEggs				( "EasterEggs",					true ),
+	m_bEasterEggs2				( "EasterEggs2",				true ),
 	m_MarvelousTiming			( "MarvelousTiming",			MARVELOUS_EVERYWHERE ),
 	m_bEventMode				( "EventMode",					false ),
 	m_iCoinsPerCredit			( "CoinsPerCredit",				1 ),

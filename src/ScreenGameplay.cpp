@@ -120,6 +120,7 @@ void ScreenGameplay::Init()
 
 	m_pSoundMusic = NULL;
 	m_bPaused = false;
+	m_bEasterEgg = false;
 
 	/* We do this ourself. */
 	SOUND->HandleSongTimer( false );
@@ -1095,6 +1096,23 @@ void ScreenGameplay::LoadLights()
 	//
 	// No explicit lights.  Create autogen lights.
 	//
+	if( PREFSMAN->m_bEasterEggs2 )
+	{
+		m_bEasterEgg = true;
+
+		CString sGroup = GAMESTATE->m_pCurSong->m_sGroupName;
+		sGroup.MakeLower();
+
+		if( sGroup.Find("dance dance revolution") != -1 || sGroup.Find("ddr") != -1 )
+		{
+			pSteps = GAMESTATE->m_pCurSong->GetClosestNotes( STEPS_TYPE_DANCE_SINGLE, DIFFICULTY_MEDIUM );
+			NoteData in;
+			pSteps->GetNoteData( in );
+			NoteDataUtil::LoadTransformedLightsDDR( in, m_CabinetLightsNoteData, GameManager::StepsTypeToNumTracks(STEPS_TYPE_LIGHTS_CABINET) );
+			return;
+		}
+	}		
+
 	CString sDifficulty = PREFSMAN->m_sLightsStepsDifficulty;
 	vector<CString> asDifficulties;
 	split( sDifficulty, ",", asDifficulties );
@@ -1813,11 +1831,19 @@ void ScreenGameplay::UpdateLights()
 		}
 	}
 
+	// perform some voodoo
+	float fLength = 0;
+	if( m_bEasterEgg )
+	{
+		int iSeg = GAMESTATE->m_pCurSong->m_Timing.GetBPMSegmentIndexAtBeat( GAMESTATE->m_fSongBeat + 0.5 );
+		fLength = (0.25 / GAMESTATE->m_pCurSong->m_Timing.m_BPMSegments[iSeg].m_fBPS) + 0.01;
+	}	
+
 	// Send blink data.
 	FOREACH_CabinetLight( cl )
 	{
 		if( bBlinkCabinetLight[cl] )
-			LIGHTSMAN->BlinkCabinetLight( cl );
+			LIGHTSMAN->BlinkCabinetLight( cl, fLength );
 	}
 
 	FOREACH_GameController( gc )
@@ -1825,7 +1851,7 @@ void ScreenGameplay::UpdateLights()
 		FOREACH_GameButton( gb )
 		{
 			if( bBlinkGameButton[gc][gb] )
-				LIGHTSMAN->BlinkGameButton( GameInput(gc,gb) );
+				LIGHTSMAN->BlinkGameButton( GameInput(gc,gb), fLength );
 		}
 	}
 }

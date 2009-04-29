@@ -127,6 +127,7 @@ protected:
 
 	bool				m_ShowScoreboard;
 	bool				m_bSongIsCustom;
+	bool				m_bEasterEgg;
 
 	BitmapText			m_textDebug;
 

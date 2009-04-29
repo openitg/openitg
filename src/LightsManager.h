@@ -66,8 +66,8 @@ public:
 	void Update( float fDeltaTime );
 	bool IsEnabled() const;
 
-	void BlinkCabinetLight( CabinetLight cl );
-	void BlinkGameButton( GameInput gi );
+	void BlinkCabinetLight( CabinetLight cl, float fLength = 0 );
+	void BlinkGameButton( GameInput gi, float fLength = 0 );
 	void BlinkActorLight( CabinetLight cl );
 	void PulseCoinCounter() { ++m_iQueuedCoinCounterPulses; }
 	float GetActorLightLatencySeconds() const;

@@ -446,14 +446,14 @@ void LightsManager::Update( float fDeltaTime )
 		(*iter)->Set( &m_LightsState );
 }
 
-void LightsManager::BlinkCabinetLight( CabinetLight cl )
+void LightsManager::BlinkCabinetLight( CabinetLight cl, float fLength )
 {
-	m_fSecsLeftInCabinetLightBlink[cl] = g_fLightsFalloffSeconds;
+	m_fSecsLeftInCabinetLightBlink[cl] = (fLength == 0) ? g_fLightsFalloffSeconds : fLength;
 }
 
-void LightsManager::BlinkGameButton( GameInput gi )
+void LightsManager::BlinkGameButton( GameInput gi, float fLength )
 {
-	m_fSecsLeftInGameButtonBlink[gi.controller][gi.button] = g_fLightsFalloffSeconds;
+	m_fSecsLeftInGameButtonBlink[gi.controller][gi.button] = (fLength == 0) ? g_fLightsFalloffSeconds : fLength;
 }
 
 void LightsManager::SetLightsMode( LightsMode lm )

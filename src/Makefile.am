@@ -27,10 +27,10 @@ endif
 all: build_version
 
 build_version:
-	gcc -O2 archutils/Unix/verinc.c -o archutils/Unix/verinc
+	$(CC) -O2 archutils/Unix/verinc.c -o archutils/Unix/verinc
 	chmod +x archutils/Unix/verinc
 	archutils/Unix/verinc `svnversion`
-	g++ -c verstub.cpp
+	$(CXX) -c verstub.cpp
 
 verstub.cpp:
 	$(MAKE) build_version

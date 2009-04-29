@@ -495,6 +495,22 @@ int FindLongestOverlappingHoldNoteForAnyTrack( const NoteData &in, int iRow )
 }
 
 /* For every row in "in" with a tap or hold on any track, enable the specified tracks in "out". */
+void LightTransformHelperNoHolds( const NoteData &in, NoteData &out, const vector<int> &aiTracks )
+{
+	FOREACH_NONEMPTY_ROW_ALL_TRACKS( in, r )
+	{
+		if( in.IsRowEmpty(r) )
+			continue;
+
+		/* Enable every track in the output. */
+		for( unsigned i = 0; i < aiTracks.size(); ++i )
+		{
+			int t = aiTracks[i];
+			out.SetTapNote( t, r, TAP_ORIGINAL_TAP );
+		}
+	}
+}
+
 void LightTransformHelper( const NoteData &in, NoteData &out, const vector<int> &aiTracks )
 {
 	for( unsigned i = 0; i < aiTracks.size(); ++i )
@@ -566,6 +582,20 @@ void NoteDataUtil::LoadTransformedLights( const NoteData &in, NoteData &out, int
 
 	LightTransformHelper( in, out, aiTracks );
 */
+}
+
+void NoteDataUtil::LoadTransformedLightsDDR( const NoteData &in, NoteData &out, int iNewNumTracks )
+{
+	out.Init();
+	out.SetNumTracks( iNewNumTracks );
+
+	// don't add buttons to the output
+	vector<int> aiTracks;
+	for( int i = 0; i < out.GetNumTracks(); ++i )
+		if( i != LIGHT_BUTTONS_LEFT && i != LIGHT_BUTTONS_RIGHT )
+			aiTracks.push_back( i );
+
+	LightTransformHelperNoHolds( in, out, aiTracks );	
 }
 
 void NoteDataUtil::LoadTransformedLightsFromTwo( const NoteData &marquee, const NoteData &bass, NoteData &out )

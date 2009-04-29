@@ -89,6 +89,24 @@ void RadarValues::FromString( CString sRadarValues )
     
 }
 
+#include "LuaBinding.h"
+
+template<class T>
+class LunaRadarValues : public Luna<T>
+{
+public:
+	LunaRadarValues() { LUA->Register( Register ); }
+
+	static int GetValue( T* p, lua_State *L ) { lua_pushnumber( L, p->m_Values.f[IArg(1)] ); return 1; }
+
+	static void Register(lua_State *L)
+	{
+		ADD_METHOD( GetValue )
+		Luna<T>::Register( L );
+	}
+};
+
+LUA_REGISTER_CLASS( RadarValues )
 /*
  * (c) 2001-2004 Chris Danford
  * All rights reserved.

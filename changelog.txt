@@ -4,14 +4,21 @@ OpenITG, beta 1 (almost done, really)
 -Windows additions:
      OpenITG icon (thanks, Lightning)
      Updated version information
+-New Preferences:
+     "DebugInputDrivers" - additional debugging info for various I/O drivers
+     "EasterEggs2" - OpenITG-specific easter eggs (hint: play from a DDR group folder)
 -New LUA calls + bindings:
      GameState: "DelayedGameCommand" (required for "theme" GameCommands)
      ThemeManager: "GetCurLanguage", "GetCurThemeName", "GetThemeNames"
 -New LUA bindings:
-     Song: "IsLong", "IsMarathon", "IsCustomSong", "GetGroupName", and "MusicLengthSeconds"
-     RageUtil: "SecondsToMMSS", "SecondsToHHMMSS", "SecondsToMSSMsMs"
+     Course: "GetCourseDir"
      PIUIO: "MK6_GetSensors"
--New LUA global:
+     RadarValues: "GetValue"
+     RageUtil: "SecondsToMMSS", "SecondsToHHMMSS", "SecondsToMSSMsMs"
+     Song: "IsLong", "IsMarathon", "IsCustomSong", "GetGroupName", and "MusicLengthSeconds"
+     Steps, Trail: "GetRadarValues"
+-New LUA globals:
+     "RADAR_CATEGORY_TAPS", "RADAR_CATEGORY_HOLDS", etc. for RadarValues
      "OPENITG_VERSION" - returns a 3-digit token for version information
           (xyy - x is build type, yy is version; also in Win32 "Properties")
 -New Screens:
@@ -22,6 +29,7 @@ OpenITG, beta 1 (almost done, really)
 -New LightsDriver:
      "G15" - controls LCD on the G15 gaming keyboard, also for the heck of it
 -New features:
+     CodeDetector ties for opening the OptionsList on ScreenSelectMusic
      Record service credits separately in MachineProfile and Coins.xml
      ScreenTestInput now triggers lights when arrows are pressed
      "MissComboCommand" metric for Combo display
@@ -66,7 +74,6 @@ OpenITG, beta 1 (almost done, really)
      LightsDriver_External always loaded, to prevent arcade I/O problems
      ScreenOptionsMenu switched to "Menu" lights mode
      Always grab a serial number from the dongle, and autogen on fallback
-     OptionsList now uses player codes from CodeDetector ("OptionsListOpen1", "OptionsListOpen2")
 
 OpenITG, prebeta (November 25th, 2008)
 --------------------------------------

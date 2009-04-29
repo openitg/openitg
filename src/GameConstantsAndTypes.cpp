@@ -35,6 +35,16 @@ static const CString RadarCategoryNames[] = {
 XToString( RadarCategory, NUM_RADAR_CATEGORIES );
 XToThemedString( RadarCategory, NUM_RADAR_CATEGORIES );
 
+static void LuaRadarCategory(lua_State* L)
+{
+	FOREACH_RadarCategory( rc )
+	{
+		CString s = RadarCategoryNames[rc];
+		s.MakeUpper();
+		LUA->SetGlobal( "RADAR_CATEGORY_"+s, rc );
+	}
+}
+REGISTER_WITH_LUA_FUNCTION( LuaRadarCategory );
 
 static void LuaStepsType(lua_State* L)
 {

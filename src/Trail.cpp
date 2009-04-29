@@ -193,10 +193,17 @@ public:
 	LunaTrail() { LUA->Register( Register ); }
 
 	static int GetDifficulty( T* p, lua_State *L )	{ lua_pushnumber(L, p->m_CourseDifficulty ); return 1; }
+	static int GetRadarValues( T* p, lua_State *L )
+	{
+		RadarValues &rv = const_cast<RadarValues &>(p->GetRadarValues());
+		rv.PushSelf(L);
+		return 1;
+	}
 
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( GetDifficulty )
+		ADD_METHOD( GetRadarValues )
 		Luna<T>::Register( L );
 	}
 };

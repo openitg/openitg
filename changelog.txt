@@ -66,6 +66,7 @@ OpenITG, beta 1 (almost done, really)
      LightsDriver_External always loaded, to prevent arcade I/O problems
      ScreenOptionsMenu switched to "Menu" lights mode
      Always grab a serial number from the dongle, and autogen on fallback
+     OptionsList now uses player codes from CodeDetector ("OptionsListOpen1", "OptionsListOpen2")
 
 OpenITG, prebeta (November 25th, 2008)
 --------------------------------------

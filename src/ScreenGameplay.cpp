@@ -1098,13 +1098,12 @@ void ScreenGameplay::LoadLights()
 	//
 	if( PREFSMAN->m_bEasterEggs2 )
 	{
-		m_bEasterEgg = true;
-
 		CString sGroup = GAMESTATE->m_pCurSong->m_sGroupName;
 		sGroup.MakeLower();
 
 		if( sGroup.Find("dance dance revolution") != -1 || sGroup.Find("ddr") != -1 )
 		{
+			m_bEasterEgg = true;
 			pSteps = GAMESTATE->m_pCurSong->GetClosestNotes( STEPS_TYPE_DANCE_SINGLE, DIFFICULTY_MEDIUM );
 			NoteData in;
 			pSteps->GetNoteData( in );
@@ -1816,7 +1815,7 @@ void ScreenGameplay::UpdateLights()
 	}
 
 	// Before the first beat of the song, all cabinet lights solid on (except for menu buttons).
-	bool bOverrideCabinetBlink = (GAMESTATE->m_fSongBeat < GAMESTATE->m_pCurSong->m_fFirstBeat);
+	bool bOverrideCabinetBlink = !m_bEasterEgg && (GAMESTATE->m_fSongBeat < GAMESTATE->m_pCurSong->m_fFirstBeat);
 	FOREACH_CabinetLight( cl )
 	{
 		switch( cl )

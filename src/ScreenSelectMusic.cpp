@@ -884,7 +884,7 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 
 	LoadHelpText();
 
-	bool bSelectIsPressed = !USE_OPTIONS_LIST && SELECT_MENU_AVAILABLE && INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
+	bool bSelectIsPressed = SELECT_MENU_AVAILABLE && INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
 
 	if( bSelectIsPressed )
 	{
@@ -1086,8 +1086,7 @@ void ScreenSelectMusic::LoadHelpText()
 		bSelectIsDown = false;
 
 	/* If m_soundSelectPressed isn't loaded yet, wait until it is before we do this. */
-	/*
-	if( m_bSelectIsDown != bSelectIsDown && m_soundSelectPressed.IsLoaded() && !USE_OPTIONS_LIST )
+	if( m_bSelectIsDown != bSelectIsDown && m_soundSelectPressed.IsLoaded() )
 	{
 		if( bSelectIsDown )
 			m_soundSelectPressed.Play();
@@ -1097,7 +1096,7 @@ void ScreenSelectMusic::LoadHelpText()
 			MESSAGEMAN->Broadcast( "SelectMenuOn" );
 		else
 			MESSAGEMAN->Broadcast( "SelectMenuOff" );
-	}*/
+	}
 }
 
 void ScreenSelectMusic::ChangeDifficulty( PlayerNumber pn, int dir )

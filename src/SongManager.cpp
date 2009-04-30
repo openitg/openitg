@@ -1481,6 +1481,14 @@ void SongManager::FreeAllLoadedPlayerCourses()
 		m_pCourses.push_back( m_pSavedCourses[i] );
 }
 
+/* MAJOR OPTIMIZATION OPPORTUNITIES (self-note):
+ * Keep custom songs in a separate array, use vector::insert()
+ * to merge them and m_pMachineSongs into m_pSongs on load.
+ * In FreeAllLoadedPlayerSongs(), simply clear m_pSongs, insert()
+ * m_pMachineSongs, then iterate over the custom array and
+ * free each song and clear that array. Then, if this is called
+ * when m_pCustomSongs has no members, we can simply return.
+ */
 void SongManager::FreeAllLoadedPlayerSongs()
 {
 	LOG->Trace( "SongManager::FreeAllLoadedPlayerSongs()" );

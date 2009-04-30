@@ -42,8 +42,6 @@ void ScreenWithMenuElements::Init()
 
 	Screen::Init();
 
-	LIGHTSMAN->SetLightsMode( LIGHTSMODE_MENU );
-
 	FIRST_UPDATE_COMMAND.Load( m_sName, "FirstUpdateCommand" );
 
 	ASSERT( this->m_SubActors.empty() );	// don't call Init twice!

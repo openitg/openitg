@@ -1371,6 +1371,7 @@ public:
 		ADD_METHOD( GetPlayMode )
 		ADD_METHOD( GetDisplayFullTitle )
 		ADD_METHOD( GetTranslitFullTitle )
+		ADD_METHOD( GetCourseDir )
 		Luna<T>::Register( L );
 	}
 };

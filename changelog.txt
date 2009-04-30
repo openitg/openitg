@@ -28,11 +28,13 @@ OpenITG, beta 1 (almost done, really)
      "MK3" - controls the Andamiro MK3 and MK5 ISA boards, for the heck of it
 -New LightsDriver:
      "G15" - controls LCD on the G15 gaming keyboard, also for the heck of it
+-New metrics:
+     "MissComboCommand" metric for Combo display
 -New features:
+     Re-backported input debounce, except it works this time. :)
      CodeDetector ties for opening the OptionsList on ScreenSelectMusic
      Record service credits separately in MachineProfile and Coins.xml
      ScreenTestInput now triggers lights when arrows are pressed
-     "MissComboCommand" metric for Combo display
      "SongLength" sort on the song wheel
      More intelligent lights autogeneration for single charts
      Separate bookkeeper counter for service credits in Bookkeeping
@@ -53,22 +55,21 @@ OpenITG, beta 1 (almost done, really)
      Tentative fix for memory card mounting issues (thanks, Matt1360)
      64-bit crash on RageCryptInterface_ITG2 (thanks, dawnwolf)
      Screensaver disable code didn't work for X11
--Fixed cross-platform bugs:
-     M-mods crashed on marathons
-     M-mod code choked on some BPM gimmicks
-     M-mod code didn't adjust to songs or courses with hidden BPMs
-     Crash when changing from Intense to Normal-only courses or vice versa
+-Fixed minor cross-platform bugs:
      "Disqualification" display showed for unjoined players on music rate
-     Sensor reading problems with PIUIO
-     Patched OGG songs circumvented Long/Marathon song limits
+     M-mod code didn't adjust to songs or courses with hidden BPMs
+     Slowdown on ScreenArcadeDiagnostics due to heavy device polling
      No-timeout warning flood on custom song loading
+     Sensor reading problems with PIUIO
+-Fixed major cross-platform bugs:
+     Crash when changing from Intense to Normal-only courses or vice versa
+     Patched OGG songs circumvented Long/Marathon song limits
      Crash on machine Edit-only songs (not a bug, but...)
-     Huge slowdown on ScreenArcadeDiagnostics due to heavy polling
+     M-mods crashed on marathons and malfunctioned on gimmicks
      Tentative fix for strange crashes on "theme" GameCommand
 -Misc. changes:
      M-mods disqualify on songs with hidden BPMs
-          (because it makes it easier to select an easy modifier)
-     Re-backported input debounce, except it works this time. :)
+          (because it makes it easier to select a 'safe' modifier)
      Load USB profile songs into memory, instead of onto the disk
      Complete crypto rewrite - should be much more flexible
      LightsDriver_External always loaded, to prevent arcade I/O problems

@@ -459,6 +459,10 @@ void OptionsList::Input( const DeviceInput& DeviceI, const InputEventType type, 
 					CString sDir = (MenuI.button == MENU_BUTTON_RIGHT? "Right":"Left");
 					wrap( iSelection, bTargetSelections.size() );
 					SelectItem( sDest, iSelection );
+					if ( iDir == 1 )
+						m_soundRight.Play();
+					else
+						m_soundLeft.Play();
 
 					CString msg(ssprintf("OptionsListQuickChange%sP%d",sDir.c_str(),pn+1));
 					

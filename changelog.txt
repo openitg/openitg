@@ -68,6 +68,7 @@ OpenITG, beta 1 (almost done, really)
      M-mods crashed on marathons and malfunctioned on gimmicks
      Tentative fix for strange crashes on "theme" GameCommand
 -Misc. changes:
+     "Tiny" can be used in place of "Mini" (4.0 compatibility)
      M-mods disqualify on songs with hidden BPMs
           (because it makes it easier to select a 'safe' modifier)
      Load USB profile songs into memory, instead of onto the disk

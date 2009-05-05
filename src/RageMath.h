@@ -16,6 +16,9 @@ struct RageMatrix;
 void RageVec3ClearBounds( RageVector3 &mins, RageVector3 &maxs );
 void RageVec3AddToBounds( const RageVector3 &p, RageVector3 &mins, RageVector3 &maxs );
 
+/* for Twirl */
+void RageVec3RotateY( RageVector3* pOut, float theta );
+
 void RageVec2Normalize( RageVector2* pOut, const RageVector2* pV );
 void RageVec3Normalize( RageVector3* pOut, const RageVector3* pV );
 void RageVec3TransformCoord( RageVector3* pOut, const RageVector3* pV, const RageMatrix* pM );

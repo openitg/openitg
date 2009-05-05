@@ -42,7 +42,7 @@ OpenITG, beta 1 (almost done, really)
      LightsMapper - set which bits are triggered on LIGHTSMAN events
      Added LightsMapping structs to ITGIO, PIUIO, and PacDrive
 -New modifiers:
-     "Twirl" - rotates arrows around the Y axis
+     "Twirl" - rotates arrows (and holds!) around the Y axis
      "Roll" - rotates arrows around the X axis
 -Compilation updates:
      Added date/version text to ProductInfo and DiagnosticsUtil

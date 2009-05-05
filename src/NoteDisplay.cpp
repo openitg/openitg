@@ -13,6 +13,7 @@
 #include "Game.h"
 #include "ArrowEffects.h"
 #include "PlayerState.h"
+#include "RageMath.h" // for RageVec3 transform
 
 enum Part
 {
@@ -583,6 +584,7 @@ void NoteDisplay::DrawHoldTopCap( const TapNote& tn, int iCol, int iRow, bool bI
 		}
 
 		const float fYOffset				= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
+		const float fRotationY				= ArrowEffects::GetRotationY( m_pPlayerState, fY );
 		const float fZ						= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
 		const float fX						= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
 		const float fXLeft					= fX - fFrameWidth/2;
@@ -599,6 +601,13 @@ void NoteDisplay::DrawHoldTopCap( const TapNote& tn, int iCol, int iRow, bool bI
 
 		queue.v[0].p = RageVector3(fXLeft,  fY, fZ);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
 		queue.v[1].p = RageVector3(fXRight, fY, fZ);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
+		// transform the vectors if needed for Twirl
+		if( fRotationY != 0 )
+		{
+			RageVec3RotateY( &queue.v[0].p, fRotationY );
+			RageVec3RotateY( &queue.v[1].p, fRotationY );
+		}
+
 		queue.v+=2;
 		if( queue.Free() < 2 )
 		{
@@ -676,6 +685,7 @@ void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, int iRow, bool bIsB
 		}
 
 		const float fYOffset			= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
+		const float fRotationY			= ArrowEffects::GetRotationY( m_pPlayerState, fY );
 		const float fZ					= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
 		const float fX					= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
 		const float fXLeft				= fX - fFrameWidth/2;
@@ -698,6 +708,14 @@ void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, int iRow, bool bIsB
 
 		queue.v[0].p = RageVector3(fXLeft,  fY, fZ);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
 		queue.v[1].p = RageVector3(fXRight, fY, fZ);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
+
+		// transform the vectors if needed for Twirl
+		if( fRotationY != 0 )
+		{
+			RageVec3RotateY( &queue.v[0].p, fRotationY );
+			RageVec3RotateY( &queue.v[1].p, fRotationY );
+		}
+
 		queue.v+=2;
 		if( queue.Free() < 2 )
 		{
@@ -767,6 +785,7 @@ void NoteDisplay::DrawHoldBottomCap( const TapNote& tn, int iCol, int iRow, bool
 		}
 
 		const float fYOffset				= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
+		const float fRotationY				= ArrowEffects::GetRotationY( m_pPlayerState, fY );
 		const float fZ						= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
 		const float fX						= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
 		const float fXLeft					= fX - fFrameWidth/2;
@@ -783,6 +802,14 @@ void NoteDisplay::DrawHoldBottomCap( const TapNote& tn, int iCol, int iRow, bool
 
 		queue.v[0].p = RageVector3(fXLeft,  fY, fZ);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
 		queue.v[1].p = RageVector3(fXRight, fY, fZ);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
+
+		// transform the vectors if needed for Twirl
+		if( fRotationY != 0 )
+		{
+			RageVec3RotateY( &queue.v[0].p, fRotationY );
+			RageVec3RotateY( &queue.v[1].p, fRotationY );
+		}
+
 		queue.v+=2;
 		if( queue.Free() < 2 )
 		{
@@ -812,6 +839,7 @@ void NoteDisplay::DrawHoldTail( const TapNote& tn, int iCol, int iRow, bool bIsB
 	const float fYOffset		= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
 	if( fYOffset < fYStartOffset || fYOffset > fYEndOffset )
 			return;
+	const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset );
 	const float fX				= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
 	const float fZ				= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
 	const float	fAlpha			= ArrowEffects::GetAlpha( m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );
@@ -819,6 +847,7 @@ void NoteDisplay::DrawHoldTail( const TapNote& tn, int iCol, int iRow, bool bIsB
 	const RageColor colorDiffuse= RageColor(fColorScale,fColorScale,fColorScale,fAlpha);
 	const RageColor colorGlow	= RageColor(1,1,1,fGlow);
 
+	pSprTail->SetRotationY( fRotationY );
 	pSprTail->SetXY( fX, fY );
 	pSprTail->SetZ( fZ );
 	
@@ -867,6 +896,7 @@ void NoteDisplay::DrawHoldHead( const TapNote& tn, int iCol, int iRow, bool bIsB
 	const float fYOffset		= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
 	if( fYOffset < fYStartOffset || fYOffset > fYEndOffset )
 			return;
+	const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset );
 	const float fX				= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
 	const float fZ				= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
 	const float	fAlpha			= ArrowEffects::GetAlpha( m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );
@@ -874,6 +904,7 @@ void NoteDisplay::DrawHoldHead( const TapNote& tn, int iCol, int iRow, bool bIsB
 	const RageColor colorDiffuse= RageColor(fColorScale,fColorScale,fColorScale,fAlpha);
 	const RageColor colorGlow	= RageColor(1,1,1,fGlow);
 
+	pActor->SetRotationY( fRotationY );
 	pActor->SetRotationZ( 0 );
 	pActor->SetXY( fX, fY );
 	pActor->SetZ( fZ );
@@ -988,8 +1019,8 @@ void NoteDisplay::DrawActor( Actor* pActor, int iCol, float fBeat, float fPercen
 {
 	const float fYOffset		= ArrowEffects::GetYOffset(	m_pPlayerState, iCol, fBeat );
 	const float fYPos			= ArrowEffects::GetYPos(	m_pPlayerState, iCol, fYOffset, fReverseOffsetPixels );
-	const float fRotationX		= ArrowEffects::GetRotationX(	m_pPlayerState, fBeat );
-	const float fRotationY		= ArrowEffects::GetRotationY(	m_pPlayerState, fBeat );
+	const float fRotationX		= ArrowEffects::GetRotationX(	m_pPlayerState, fYOffset );
+	const float fRotationY		= ArrowEffects::GetRotationY(	m_pPlayerState, fYOffset );
 	const float fRotationZ		= ArrowEffects::GetRotationZ(	m_pPlayerState, fBeat );
 	const float fXPos			= ArrowEffects::GetXPos(		m_pPlayerState, iCol, fYOffset );
 	const float fZPos			= ArrowEffects::GetZPos(	   m_pPlayerState, iCol, fYOffset );

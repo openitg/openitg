@@ -347,32 +347,22 @@ float ArrowEffects::GetXPos( const PlayerState* pPlayerState, int iColNum, float
 	return fPixelOffsetFromCenter;
 }
 
-float ArrowEffects::GetRotationX( const PlayerState *pPlayerState, float fNoteBeat )
+float ArrowEffects::GetRotationX( const PlayerState *pPlayerState, float fYOffset )
 {
+	const float* fEffects = pPlayerState->m_CurrentPlayerOptions.m_fEffects;
+
 	if( pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_ROLL] != 0 )
-	{
-		const float fSongBeat = GAMESTATE->m_fSongBeatVisible;
-		float fRollRotation = fNoteBeat - fSongBeat;
-		fRollRotation *= pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_ROLL];
-		fRollRotation = fmodf( fRollRotation, 2*PI );
-		fRollRotation *= 180/PI;
-		return fRollRotation;
-	}
+		return fEffects[PlayerOptions::EFFECT_ROLL] * fYOffset/2;
 	else
 		return 0;
 }
 
-float ArrowEffects::GetRotationY( const PlayerState *pPlayerState, float fNoteBeat )
+float ArrowEffects::GetRotationY( const PlayerState *pPlayerState, float fYOffset )
 {
-	if( pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_TWIRL] != 0 )
-	{
-		const float fSongBeat = GAMESTATE->m_fSongBeatVisible;
-		float fTwirlRotation = fNoteBeat - fSongBeat;
-		fTwirlRotation *= pPlayerState->m_CurrentPlayerOptions.m_fEffects[PlayerOptions::EFFECT_TWIRL];
-		fTwirlRotation = fmodf( fTwirlRotation, 2*PI );
-		fTwirlRotation *= 180/PI;
-		return fTwirlRotation;
-	}
+	const float* fEffects = pPlayerState->m_CurrentPlayerOptions.m_fEffects;
+
+	if( fEffects[PlayerOptions::EFFECT_TWIRL] != 0 )
+		return fEffects[PlayerOptions::EFFECT_TWIRL] * fYOffset/2;
 	else
 		return 0;
 }
@@ -548,8 +538,9 @@ float ArrowEffects::GetZPos( const PlayerState* pPlayerState, int iCol, float fY
 
 bool ArrowEffects::NeedZBuffer( const PlayerState* pPlayerState )
 {
+	/* We also need to use the Z buffer if twirl is in play, because of hold modulation. */
 	const float* fEffects = pPlayerState->m_CurrentPlayerOptions.m_fEffects;
-	if( fEffects[PlayerOptions::EFFECT_BUMPY] != 0 )
+	if( fEffects[PlayerOptions::EFFECT_BUMPY] != 0 || fEffects[PlayerOptions::EFFECT_TWIRL] != 0 )
 		return true;
 
 	return false;

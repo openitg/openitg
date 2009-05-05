@@ -205,17 +205,6 @@ public:
 	bool HasStepsType( StepsType st ) const;
 	bool HasStepsTypeAndDifficulty( StepsType st, Difficulty dc ) const;
 
-	// XXX: can we make this cleaner?
-	bool HasStepsWithinMeterAndDifficultyRange( int iLow, int iHigh, Difficulty dLow, Difficulty dHigh, StepsType st = STEPS_TYPE_INVALID ) const;
-	bool HasStepsWithinMeterRange( int iLow, int iHigh, StepsType st = STEPS_TYPE_INVALID ) const
-	{
-		return HasStepsWithinMeterAndDifficultyRange(iLow, iHigh, DIFFICULTY_BEGINNER, DIFFICULTY_EDIT, st);
-	}
-	bool HasStepsWithinDifficultyRange( Difficulty dLow, Difficulty dHigh, StepsType st = STEPS_TYPE_INVALID ) const
-	{
-		return HasStepsWithinMeterAndDifficultyRange(0, INT_MAX, dLow, dHigh, st );
-	}
-
 	const vector<Steps*>& GetAllSteps() const { return m_vpSteps; }
 	const vector<Steps*>& GetStepsByStepsType( StepsType st ) const { return m_vpStepsByType[st]; }
 	void GetSteps( 

@@ -60,6 +60,7 @@ D3DDISPLAYMODE			g_DesktopMode;
 D3DPRESENT_PARAMETERS	g_d3dpp;
 int						g_ModelMatrixCnt=0;
 int						g_iCurrentTextureIndex = 0;
+bool					g_bSphereMapping[MAX_TEXTURE_UNITS];
 
 /* Direct3D doesn't associate a palette with textures.
  * Instead, we load a palette into a slot.  We need to keep track
@@ -741,18 +742,67 @@ RageDisplay::VideoModeParams RageDisplay_D3D::GetVideoModeParams() const { retur
 
 void RageDisplay_D3D::SendCurrentMatrices()
 {
+	RageMatrix m;
+	RageMatrixMultiply( &m, GetCentering(), GetProjectionTop() );
+
+	/* Convert to OpenGL-style "pixel-centered" coords */
+	RageMatrix m2 = GetCenteringMatrix( -0.5f, -0.5f, 0, 0 );
 	RageMatrix projection;
-	RageMatrixMultiply( &projection, GetCentering(), GetProjectionTop() );
+	RageMatrixMultiply( &projection, &m2, &m );
 	g_pd3dDevice->SetTransform( D3DTS_PROJECTION, (D3DMATRIX*)&projection );
 
 	g_pd3dDevice->SetTransform( D3DTS_VIEW, (D3DMATRIX*)GetViewTop() );
+	g_pd3dDevice->SetTransform( D3DTS_WORLD, (D3DMATRIX*)GetWorldTop() );
 
-	/* Convert to OpenGL-style "pixel-centered" coords */
-	RageMatrix m;
-	RageMatrixTranslation( &m, -0.5f, -0.5f, 0 );
-	RageMatrixMultiply( &m, &m, GetWorldTop() );
-	g_pd3dDevice->SetTransform( D3DTS_WORLD, (D3DMATRIX*)&m );
-	g_pd3dDevice->SetTransform( D3DTS_TEXTURE0, (D3DMATRIX*)GetTextureTop() );
+	for( unsigned tu = 0; tu < 2; tu++ )
+	{
+		// Optimization opportunity: Turn off texture transform if not using texture coords.
+		g_pd3dDevice->SetTextureStageState( tu, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+		
+		// If no texture is set for this texture unit, don't bother setting it up.
+		IDirect3DBaseTexture8* pTexture = NULL;
+		g_pd3dDevice->GetTexture( tu, &pTexture );
+		if( pTexture == NULL )
+			 continue;
+		pTexture->Release();
+
+		if( g_bSphereMapping[tu] )
+		{
+			static const RageMatrix tex = RageMatrix
+			(
+				0.5f,   0.0f,  0.0f, 0.0f,
+				0.0f,  -0.5f,  0.0f, 0.0f,
+				0.0f,   0.0f,  0.0f, 0.0f,
+				0.5f,  -0.5f,  0.0f, 1.0f
+			);
+			g_pd3dDevice->SetTransform( (D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0+tu), (D3DMATRIX*)&tex );
+
+			// Tell D3D to use transformed reflection vectors as texture co-ordinate 0
+			// and then transform this coordinate by the specified texture matrix.
+			g_pd3dDevice->SetTextureStageState( tu, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_CAMERASPACEREFLECTIONVECTOR );
+		}
+		else
+		{
+			/*
+			 * Direct3D is expecting a 3x3 matrix loaded into the 4x4 in order to transform
+			 * the 2-component texture coordinates.  We currently only use translate and scale,
+			 * and ignore the z component entirely, so convert the texture matrix from
+			 * 4x4 to 3x3 by dropping z.
+			 */
+
+			const RageMatrix &tex1 = *GetTextureTop();
+			const RageMatrix tex2 = RageMatrix
+			(
+				tex1.m[0][0], tex1.m[0][1],  tex1.m[0][3],	0,
+				tex1.m[1][0], tex1.m[1][1],  tex1.m[1][3],	0,
+				tex1.m[3][0], tex1.m[3][1],  tex1.m[3][3],	0,
+				0,				0,			0,		0
+			);
+			g_pd3dDevice->SetTransform( D3DTRANSFORMSTATETYPE(D3DTS_TEXTURE0+tu), (D3DMATRIX*)&tex2 );
+
+			g_pd3dDevice->SetTextureStageState( tu, D3DTSS_TEXCOORDINDEX, D3DTSS_TCI_PASSTHRU );
+		}
+	}
 }
 
 class RageCompiledGeometrySWD3D : public RageCompiledGeometry
@@ -783,6 +833,25 @@ public:
 	void Draw( int iMeshIndex ) const
 	{
 		const MeshInfo& meshInfo = m_vMeshInfo[iMeshIndex];
+
+		/*
+		OpenITG: iMeshIndex > 0 is a noteskin hack
+		
+		The first noteskin mesh should always be the inside coloring, which NEVER
+		needs texture matrix scaling.
+		*/
+		if( meshInfo.bNeedsTextureMatrixScale && iMeshIndex > 0 )
+		{
+			// Kill the texture translation.
+			// XXX: Change me to scale the translation by the TextureTranslationScale of the first vertex.
+			RageMatrix m;
+			g_pd3dDevice->GetTransform( D3DTS_TEXTURE0, (D3DMATRIX*)&m );
+
+			m.m[2][0] = 0;
+			m.m[2][1] = 0;
+
+			g_pd3dDevice->SetTransform( D3DTS_TEXTURE0, (D3DMATRIX*)&m );
+		}
 
 		g_pd3dDevice->SetVertexShader( D3DFVF_RageModelVertex );
 		g_pd3dDevice->DrawIndexedPrimitiveUP(

@@ -34,6 +34,7 @@ protected:
 		int iVertexCount;
 		int iTriangleStart;
 		int iTriangleCount;
+		bool bNeedsTextureMatrixScale;
 	};
 	vector<MeshInfo>	m_vMeshInfo;
 	bool m_bNeedsNormals;
@@ -197,6 +198,8 @@ public:
 		const RageVector3 &dir ) = 0;
 
 	virtual void SetSphereEnvironmentMapping( bool b ) = 0;
+
+	RageMatrix GetCenteringMatrix( float fTranslateX, float fTranslateY, float fAddWidth, float fAddHeight ) const;
 
 	virtual RageCompiledGeometry* CreateCompiledGeometry() = 0;
 	virtual void DeleteCompiledGeometry( RageCompiledGeometry* p ) = 0;

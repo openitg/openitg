@@ -763,7 +763,10 @@ void RageCompiledGeometry::Set( const vector<msMesh> &vMeshes, bool bNeedsNormal
 
 		for( unsigned j = 0; j < Vertices.size(); ++j )
 			if( Vertices[j].TextureMatrixScale.x != 1.0f || Vertices[j].TextureMatrixScale.y != 1.0f )
+			{
+				meshInfo.bNeedsTextureMatrixScale = true;
 				m_bNeedsTextureMatrixScale = true;
+			}
 	}
 
 	this->Allocate( vMeshes );
@@ -771,6 +774,32 @@ void RageCompiledGeometry::Set( const vector<msMesh> &vMeshes, bool bNeedsNormal
 	Change( vMeshes );
 }
 
+RageMatrix RageDisplay::GetCenteringMatrix( float fTranslateX, float fTranslateY, float fAddWidth, float fAddHeight ) const
+{
+	// in screen space, left edge = -1, right edge = 1, bottom edge = -1. top edge = 1
+	float fWidth = (float) GetVideoModeParams().width;
+	float fHeight = (float) GetVideoModeParams().height;
+	float fPercentShiftX = SCALE( fTranslateX, 0, fWidth, 0, +2.0f );
+	float fPercentShiftY = SCALE( fTranslateY, 0, fHeight, 0, -2.0f );
+	float fPercentScaleX = SCALE( fAddWidth, 0, fWidth, 1.0f, 2.0f );
+	float fPercentScaleY = SCALE( fAddHeight, 0, fHeight, 1.0f, 2.0f );
+
+	RageMatrix m1;
+	RageMatrix m2;
+	RageMatrixTranslation( 
+		&m1, 
+		fPercentShiftX, 
+		fPercentShiftY, 
+		0 );
+	RageMatrixScaling( 
+		&m2, 
+		fPercentScaleX, 
+		fPercentScaleY, 
+		1 );
+	RageMatrix mOut;
+	RageMatrixMultiply( &mOut, &m1, &m2 );
+	return mOut;
+}
 /*
  * Copyright (c) 2001-2004 Chris Danford, Glenn Maynard
  * All rights reserved.

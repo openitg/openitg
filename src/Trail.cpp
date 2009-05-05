@@ -46,17 +46,18 @@ void Trail::SetRadarValues( const RadarValues &rv )
 	m_bRadarValuesCached = true;
 }
 
-RadarValues Trail::GetRadarValues() const
+const RadarValues &Trail::GetRadarValues() const
 {
-	if( IsSecret() )
+	if( m_bRadarValuesCached )
 	{
-		// Don't calculate RadarValues for a non-fixed Course.  They values are 
+		return m_CachedRadarValues;
+	}
+	else if( IsSecret() )
+	{
+		// Don't calculate RadarValues for a non-fixed Course.  The values are
 		// worthless because they'll change every time this Trail is 
 		// regenerated.
-		return RadarValues();
-	}
-	else if( m_bRadarValuesCached )
-	{
+		m_CachedRadarValues = RadarValues();
 		return m_CachedRadarValues;
 	}
 	else

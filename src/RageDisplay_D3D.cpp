@@ -757,7 +757,7 @@ void RageDisplay_D3D::SendCurrentMatrices()
 	for( unsigned tu = 0; tu < 2; tu++ )
 	{
 		// Optimization opportunity: Turn off texture transform if not using texture coords.
-		//g_pd3dDevice->SetTextureStageState( tu, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+		g_pd3dDevice->SetTextureStageState( tu, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
 		
 		// If no texture is set for this texture unit, don't bother setting it up.
 		IDirect3DBaseTexture8* pTexture = NULL;

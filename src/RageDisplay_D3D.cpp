@@ -757,7 +757,7 @@ void RageDisplay_D3D::SendCurrentMatrices()
 	for( unsigned tu = 0; tu < 2; tu++ )
 	{
 		// Optimization opportunity: Turn off texture transform if not using texture coords.
-		g_pd3dDevice->SetTextureStageState( tu, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
+		//g_pd3dDevice->SetTextureStageState( tu, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2 );
 		
 		// If no texture is set for this texture unit, don't bother setting it up.
 		IDirect3DBaseTexture8* pTexture = NULL;
@@ -834,13 +834,9 @@ public:
 	{
 		const MeshInfo& meshInfo = m_vMeshInfo[iMeshIndex];
 
-		/*
-		OpenITG: iMeshIndex > 0 is a noteskin hack
-		
-		The first noteskin mesh should always be the inside coloring, which NEVER
-		needs texture matrix scaling.
-		*/
-		if( meshInfo.bNeedsTextureMatrixScale && iMeshIndex > 0 )
+		//LOG->Trace("iMeshIndex %d: bNeedsTextureMatrixScale = %d", iMeshIndex, (int)meshInfo.bNeedsTextureMatrixScale);
+
+		if( meshInfo.bNeedsTextureMatrixScale )
 		{
 			// Kill the texture translation.
 			// XXX: Change me to scale the translation by the TextureTranslationScale of the first vertex.

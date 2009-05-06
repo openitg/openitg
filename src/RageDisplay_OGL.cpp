@@ -400,7 +400,8 @@ void InitScalingScript()
 		!GLExt.m_bGL_ARB_shading_language_100 )
 		return;
 
-	GLhandleARB VertexShader = CompileShader( GL_VERTEX_SHADER_ARB, g_TextureMatrixScaleShader );
+	//GLhandleARB VertexShader = CompileShader( GL_VERTEX_SHADER_ARB, g_TextureMatrixScaleShader );
+	GLhandleARB VertexShader = 0;
 	if( VertexShader == 0 )
 		return;
 
@@ -1144,22 +1145,50 @@ void RageCompiledGeometryHWOGL::Draw( int iMeshIndex ) const
 		AssertNoGLError();
 	}
 
-	if( m_bNeedsTextureMatrixScale && g_bTextureMatrixShader != 0 )
+	if( meshInfo.bNeedsTextureMatrixScale )
 	{
-		/* If we're using texture matrix scales, set up that buffer, too, and enable the
-		 * vertex shader.  This shader doesn't support all OpenGL state, so only enable it
-		 * if we're using it. */
-		GLExt.glEnableVertexAttribArrayARB( ATTRIB_TEXTURE_MATRIX_SCALE );
-		AssertNoGLError();
-		GLExt.glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_nTextureMatrixScale );
-		AssertNoGLError();
-		GLExt.glVertexAttribPointerARB( ATTRIB_TEXTURE_MATRIX_SCALE, 2, GL_FLOAT, false, 0, NULL );
-		AssertNoGLError();
+		if ( g_bTextureMatrixShader != 0 ) 
+		{
+			/* If we're using texture matrix scales, set up that buffer, too, and enable the
+			* vertex shader.  This shader doesn't support all OpenGL state, so only enable it
+			* if we're using it. */
+			GLExt.glEnableVertexAttribArrayARB( ATTRIB_TEXTURE_MATRIX_SCALE );
+			AssertNoGLError();
+			GLExt.glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_nTextureMatrixScale );
+			AssertNoGLError();
+			GLExt.glVertexAttribPointerARB( ATTRIB_TEXTURE_MATRIX_SCALE, 2, GL_FLOAT, false, 0, NULL );
+			AssertNoGLError();
 
-		GLExt.glUseProgramObjectARB( g_bTextureMatrixShader );
-		// XXX: This causes the scrolling brackets problem, but avoids a crash.
-//		AssertNoGLError();
-		FlushGLErrors();
+			GLExt.glUseProgramObjectARB( g_bTextureMatrixShader );
+			// XXX: This causes the scrolling brackets problem, but avoids a crash.
+			//AssertNoGLError();
+			FlushGLErrors();
+		}
+		else
+		{
+			// Kill the texture translation.
+			// XXX: Change me to scale the translation by the TextureTranslationScale of the first vertex.
+			RageMatrix mat;
+			glGetFloatv( GL_TEXTURE_MATRIX , (float*)mat );
+
+			/*
+			for( int i=0; i<4; i++ )
+			{
+				RString s;
+				for( int j=0; j<4; j++ )
+					s += ssprintf( "%f ", mat.m[i][j] );
+				LOG->Trace( s );
+			}
+			*/
+
+			mat.m[3][0] = 0;
+			mat.m[3][1] = 0;
+			mat.m[3][2] = 0;
+
+			glMatrixMode( GL_TEXTURE );
+			glLoadMatrixf( (const float*)mat );
+			AssertNoGLError();
+		}
 	}
 
 	GLExt.glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, m_nTriangles );

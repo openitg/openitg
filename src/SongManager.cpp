@@ -108,7 +108,13 @@ void SongManager::Reload( LoadingWindow *ld )
 void SongManager::InitSongsFromDisk( LoadingWindow *ld )
 {
 	RageTimer tm;
+	
+	/* this loads the songs into m_pMachineSongs */
 	LoadStepManiaSongDir( SONGS_DIR, ld );
+
+	/* now, copy them into m_pSongs */
+	m_pSongs.insert( m_pSongs.begin(), m_pMachineSongs.begin(), m_pMachineSongs.end() );
+
 	LOG->Trace( "Found %d songs in %f seconds.", (int)m_pSongs.size(), tm.GetDeltaTime() );
 }
 
@@ -213,7 +219,6 @@ void SongManager::LoadStepManiaSongDir( CString sDir, LoadingWindow *ld )
 			}
 			
 			m_pMachineSongs.push_back( pNewSong );
-			m_pSongs.push_back( pNewSong );
 			loaded++;
 		}
 
@@ -371,16 +376,10 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 
 	SortCStringArray( arraySongSubDirs ); // organise what we just loaded
 
-	/* We want subdirectories loaded first. Since the for() operator just	*
-	 * goes through the vector, create a final vector and append both. I've	*
-	 * heard this is faster than the vector insert() function. It's kind of *
-	 * ugly, but we'll go with it.							*/
-
+	/* Load subdirectories before we load the base directory. */
 	CStringArray arraySongDirs;
-	for( unsigned m=0; m < arraySongSubDirs.size(); m++ )
-		arraySongDirs.push_back( arraySongSubDirs[m] );
-	for( unsigned n=0; n < arraySongRootDirs.size(); n++ )
-		arraySongDirs.push_back( arraySongRootDirs[n] );
+	arraySongDirs.insert( arraySongDirs.begin(), arraySongSubDirs.begin(), arraySongSubDirs.end() );
+	arraySongDirs.insert( arraySongDirs.end(), arraySongRootDirs.begin(), arraySongRootDirs.end() );
 
 	LOG->Trace("Attempting to load %i songs and %i subdirectory songs from \"%s\"",
 		arraySongRootDirs.size(), arraySongSubDirs.size(), sDir.c_str() );
@@ -420,7 +419,7 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 		}
 		
 		LOG->Trace( "Loading custom song '%s'...", pNewSong->m_sMainTitle.c_str() );
-		m_pSongs.push_back( pNewSong );
+		m_pCustomSongs.push_back( pNewSong );
 		iSongsLoaded++;
 	}
 
@@ -461,7 +460,7 @@ void SongManager::LoadGroupSymLinks(CString sDir, CString sGroupFolder)
 
 			pNewSong->m_bIsSymLink = true;	// Very important so we don't double-parse later
 			pNewSong->m_sGroupName = sGroupFolder;
-			m_pSongs.push_back( pNewSong );
+			m_pMachineSongs.push_back( pNewSong );
 		}
 	}
 }
@@ -501,8 +500,12 @@ void SongManager::FreeSongs()
 	m_sSongGroupNames.clear();
 	m_sSongGroupBannerPaths.clear();
 
+	for( unsigned i=0; i<m_pCustomSongs.size(); i++ )
+		SAFE_DELETE( m_pCustomSongs[i] );
+
 	for( unsigned i=0; i<m_pSongs.size(); i++ )
 		SAFE_DELETE( m_pSongs[i] );
+
 	m_pSongs.clear();
 
 	// m_pMachineSongs is simply cleared because all its pointers
@@ -1491,11 +1494,20 @@ void SongManager::FreeAllLoadedPlayerCourses()
  */
 void SongManager::FreeAllLoadedPlayerSongs()
 {
+	// if we don't have any songs to free, don't bother
+	if( m_pCustomSongs.empty() )
+		return;
+
 	LOG->Trace( "SongManager::FreeAllLoadedPlayerSongs()" );
 
+	/* free the previously loaded song data */
+	for( unsigned i = 0; i < m_pCustomSongs.size(); i++ )
+		SAFE_DELETE( m_pCustomSongs[i] );
+	m_pCustomSongs.clear();
+
+	/* Now, we just need to rebuild m_pSongs from m_pMachineSongs. */
 	m_pSongs.clear();
-	for( unsigned i=0; i < m_pMachineSongs.size(); i++ )
-		m_pSongs.push_back( m_pMachineSongs[i] );
+	m_pSongs.insert( m_pSongs.begin(), m_pMachineSongs.begin(), m_pMachineSongs.end() );
 }
 
 void SongManager::FreeAllLoadedFromProfile( ProfileSlot slot )

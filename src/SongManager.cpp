@@ -419,7 +419,11 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 		}
 		
 		LOG->Trace( "Loading custom song '%s'...", pNewSong->m_sMainTitle.c_str() );
+		
+		// TODO: load everything into m_pCustomSongs, then insert() into m_pSongs,
+		// instead of manually inserting the song into both arrays.
 		m_pCustomSongs.push_back( pNewSong );
+		m_pSongs.push_back( pNewSong );
 		iSongsLoaded++;
 	}
 
@@ -502,15 +506,15 @@ void SongManager::FreeSongs()
 
 	for( unsigned i=0; i<m_pCustomSongs.size(); i++ )
 		SAFE_DELETE( m_pCustomSongs[i] );
+	m_pCustomSongs.clear();
 
-	for( unsigned i=0; i<m_pSongs.size(); i++ )
-		SAFE_DELETE( m_pSongs[i] );
-
-	m_pSongs.clear();
-
-	// m_pMachineSongs is simply cleared because all its pointers
-	// were part of m_pSongs and were already deleted above.
+	for( unsigned i=0; i<m_pMachineSongs.size(); i++ )
+		SAFE_DELETE( m_pMachineSongs[i] );
 	m_pMachineSongs.clear();
+
+	// m_pSongs is simply cleared because all its pointers
+	// were already freed in the two previous vectors
+	m_pSongs.clear();
 
 	m_sSongGroupBannerPaths.clear();
 
@@ -1484,14 +1488,6 @@ void SongManager::FreeAllLoadedPlayerCourses()
 		m_pCourses.push_back( m_pSavedCourses[i] );
 }
 
-/* MAJOR OPTIMIZATION OPPORTUNITIES (self-note):
- * Keep custom songs in a separate array, use vector::insert()
- * to merge them and m_pMachineSongs into m_pSongs on load.
- * In FreeAllLoadedPlayerSongs(), simply clear m_pSongs, insert()
- * m_pMachineSongs, then iterate over the custom array and
- * free each song and clear that array. Then, if this is called
- * when m_pCustomSongs has no members, we can simply return.
- */
 void SongManager::FreeAllLoadedPlayerSongs()
 {
 	// if we don't have any songs to free, don't bother

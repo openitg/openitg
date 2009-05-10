@@ -989,7 +989,22 @@ void RageDisplay_D3D::DrawCompiledGeometryInternal( const RageCompiledGeometry *
 {
 	SendCurrentMatrices();
 
+	DWORD bLighting;
+	g_pd3dDevice->GetRenderState( D3DRS_LIGHTING, &bLighting );
+
+	if( !bLighting )
+	{
+		g_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_TFACTOR );
+		g_pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR );
+	}
+
 	p->Draw( iMeshIndex );
+
+	if( !bLighting )
+	{
+		g_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_CURRENT );
+		g_pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_CURRENT );
+	}
 }
 
 /* Use the default poly-based implementation.  D3D lines apparently don't support
@@ -1180,13 +1195,35 @@ void RageDisplay_D3D::SetMaterial(
 	float shininess
 	)
 {
-	D3DMATERIAL8 mat;
-	memcpy( &mat.Diffuse, diffuse, sizeof(float)*4 );
-	memcpy( &mat.Ambient, ambient, sizeof(float)*4 );
-	memcpy( &mat.Specular, specular, sizeof(float)*4 );
-	memcpy( &mat.Emissive, emissive, sizeof(float)*4 );
-	mat.Power = shininess;
-	g_pd3dDevice->SetMaterial( &mat );
+	/* If lighting is off, then the current material will have no effect.
+	 * We want to still be able to color models with lighting off,
+	 * so shove the material color in texture factor and modify the 
+	 * texture stage to use it instead of the vertex color (our models
+	 * don't have vertex coloring anyway). 
+	 */
+	DWORD bLighting;
+	g_pd3dDevice->GetRenderState( D3DRS_LIGHTING, &bLighting );
+
+	if( bLighting )
+	{
+		D3DMATERIAL8 mat;
+		memcpy( &mat.Diffuse, diffuse, sizeof(float)*4 );
+		memcpy( &mat.Ambient, ambient, sizeof(float)*4 );
+		memcpy( &mat.Specular, specular, sizeof(float)*4 );
+		memcpy( &mat.Emissive, emissive, sizeof(float)*4 );
+		mat.Power = shininess;
+		g_pd3dDevice->SetMaterial( &mat );
+	}
+	else
+	{
+		RageColor c = diffuse;
+		c.r += emissive.r + ambient.r;
+		c.g += emissive.g + ambient.g;
+		c.b += emissive.b + ambient.b;
+		RageVColor c2 = c;
+		DWORD c3 = *(DWORD*)&c2;
+		g_pd3dDevice->SetRenderState( D3DRS_TEXTUREFACTOR, c3 );
+	}
 }
 
 // need this?
@@ -1395,6 +1432,8 @@ void RageDisplay_D3D::SetSphereEnvironmentMapping( bool b )
 {
 	if( g_iCurrentTextureIndex >= (int) g_DeviceCaps.MaxSimultaneousTextures )	// not supported
 		return;
+
+	g_bSphereMapping[g_iCurrentTextureIndex] = b;
 
 	// http://www.gamasutra.com/features/20000811/wyatt_03.htm
 

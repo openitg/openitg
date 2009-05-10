@@ -2,13 +2,12 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-#include "ActorFrame.h"
 #include "ThemeManager.h"
 #include "ScreenManager.h"
 #include "LightsManager.h"
 #include "ScreenArcadeStart.h"
 
-/* Serial number functions */
+/* diagnostics functions */
 #include "DiagnosticsUtil.h"
 
 /* USBDevice tests */
@@ -28,7 +27,7 @@
 #define NEXT_SCREEN	THEME->GetMetric( m_sName, "NextScreen" )
 
 /* automatic warning dismissal */
-const float TIMEOUT = 10.0f;
+const float TIMEOUT = 15.0f;
 
 REGISTER_SCREEN_CLASS( ScreenArcadeStart );
 
@@ -41,7 +40,7 @@ void ScreenArcadeStart::Init()
 {
 	ScreenWithMenuElements::Init();
 
-	/* HACK: use LIGHTSMODE_JOINING to force all lights off. */
+	/* Use LIGHTSMODE_JOINING to force all lights off except selection buttons. */
 	LIGHTSMAN->SetLightsMode( LIGHTSMODE_JOINING );
 
 	m_Error.LoadFromFont( THEME->GetPathF( "ScreenArcadeStart", "error" ) );
@@ -51,11 +50,15 @@ void ScreenArcadeStart::Init()
 
 	this->SortByDrawOrder();
 
-	/* are there any errors with loading the I/O board? */
-	m_bBoardError = !LoadHandler();
+	/* Initialize the timeout, skew by the tween time */
+	m_fTimeout = TIMEOUT + this->GetTweenTimeLeft();
 
-	if( !m_bBoardError )
-		m_bUSBError = !Refresh();
+	/* are there any errors with loading the I/O board? */
+	m_bHandlerLoaded = LoadHandler();
+
+	/* if not, is the USB hub connected? */
+	if( m_bHandlerLoaded )
+		m_bHubConnected = CheckForHub();
 }
 
 ScreenArcadeStart::~ScreenArcadeStart()
@@ -65,22 +68,19 @@ ScreenArcadeStart::~ScreenArcadeStart()
 
 void ScreenArcadeStart::Update( float fDeltaTime )
 {
+	m_fTimeout -= fDeltaTime;
+
 	Screen::Update( fDeltaTime );
 
-	if( m_bFirstUpdate )
-		m_Timer.Touch();
-
-	if( m_bBoardError == false )
+	// problem was fixed, or we timed out
+	if( m_fTimeout < 0 || (m_bHandlerLoaded && m_bHubConnected) )
 	{
-		m_bUSBError = (Refresh() == false);
-
-		// problem was fixed, or we timed out
-		if( m_bUSBError == false || m_Timer.Ago() > TIMEOUT )
-		{
-			this->PlayCommand( "Off" );
-			StartTransitioning( SM_GoToNextScreen );
-		}
+		this->PlayCommand( "Off" );
+		StartTransitioning( SM_GoToNextScreen );
 	}
+
+	if( m_bHandlerLoaded && !m_bHubConnected )
+		CheckForHub();
 
 	m_Error.SetText( m_sMessage );
 }
@@ -122,22 +122,17 @@ void ScreenArcadeStart::DrawPrimitives()
 	Screen::DrawPrimitives();
 }
 
-bool ScreenArcadeStart::Refresh()
+bool ScreenArcadeStart::CheckForHub()
 {
-	float fTimer = (TIMEOUT - m_Timer.Ago());
-
-	// skew this by the tween time, so we stay at 10 until
-	// the screen has fully loaded
-	if( m_Timer.Ago() < 0.1 )
-		fTimer += this->GetTweenTimeLeft();
-
+	/* make sure we never add the tween time into the timeout text. */
+	float fTimer = m_fTimeout;
 	CLAMP( fTimer, 0.0f, TIMEOUT);
 
 	if( !DiagnosticsUtil::HubIsConnected() )
 	{
 		m_sMessage = ssprintf(
 			"The memory card hub is not connected.\nPlease consult the service manual for details.\n\n"
-			"Connect the USB hub to continue,\nor wait %.0f seconds for this warning to automatically dismiss.",
+			"Connect the USB hub or press START to continue,\nor wait %.0f seconds for this warning to automatically dismiss.",
 			fTimer );
 		return false;
 	}
@@ -155,8 +150,6 @@ bool ScreenArcadeStart::LoadHandler()
 		vector<USBDevice> vDevices;
 		GetUSBDeviceList( vDevices );
 
-		/* g_sInputType is set by the I/O
-		 * drivers - no need to do it here */
 		for( unsigned i = 0; i < vDevices.size(); i++ )
 		{
 			if( vDevices[i].IsITGIO() )
@@ -193,7 +186,7 @@ bool ScreenArcadeStart::LoadHandler()
 
 	/* Attempt a connection */
 	if( !pDriver->Open() )
-	{	
+	{
 		m_sMessage = "The input/lights controller could not be initialized.\n\nPlease consult the service manual.";
 
 		SAFE_DELETE( pDriver );

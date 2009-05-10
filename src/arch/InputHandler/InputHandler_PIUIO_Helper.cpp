@@ -11,7 +11,7 @@ uint32_t g_iSensors[4];
 uint32_t g_iLights;
 
 bool g_bReportSensors[32];
-bool g_bSensorInitted = false;
+bool g_bSensorMapInitialized = false;
 
 /* determine which inputs are used for gameplay and
  * cache them, so we have a quick reference later. */
@@ -34,6 +34,7 @@ bool MK6Helper::InitDeviceMap()
 	for( int i = 0; i < 32; i++ )
 	{
 		g_bReportSensors[i] = false;
+		DeviceI.button = (DeviceButton)(JOY_1+i);
 
 		INPUTMAPPER->DeviceToGame( DeviceI, GameI );
 		if( !GameI.IsValid() )
@@ -71,31 +72,28 @@ void MK6Helper::Import( const uint32_t iSensorsIn[], const uint32_t iLightsIn )
 	g_iLights = iLightsIn;
 }
 
+static CString SensorNames[] = { "right", "left", "bottom", "top" };
+
 /* Optimization opportunity: remove vector! :< */
 CString MK6Helper::GetSensorDescription( const uint32_t iSensors[4], short iBit )
 {
-	static CString SensorNames[] = { "right", "left", "bottom", "top" };
+	if( !g_bReportSensors[iBit] )
+		return "";
 
-	// TODO: cache the results of INPUTMAPPER->IsMapped(StyleInput)
-	// to intelligently decide which inputs to report sensors for.
 	CStringArray sensors;
 
 	for( int i = 0; i < 4; i++ )
 		if( IsBitSet(iSensors[i], iBit) )
 			sensors.push_back( SensorNames[i] );
 
-	/* HACK: if all sensors are reporting, then don't return anything.
-	 * On PIUIO, all buttons always return all sensors except pads. */
-	if( sensors.size() == 4 )
-		return "";
-
 	return join(", ", sensors);
 }
 
 void MK6Helper::DebugOutput( const DebugTimer &timer )
 {
-	if( !SCREENMAN )
-		return;		// no point
+	// no use in processing this if we can't output it
+	if( SCREENMAN == NULL )
+		return;
 
 	CString sDebugLine = "Input:\n";
 

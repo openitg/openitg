@@ -5,7 +5,6 @@
 #define SCREEN_ARCADE_START_H
 
 #include "ScreenWithMenuElements.h"
-#include "RageTimer.h"
 #include "BitmapText.h"
 
 class ScreenArcadeStart : public ScreenWithMenuElements
@@ -22,14 +21,14 @@ public:
 
 	virtual void Init();
 private:
-	bool Refresh();
+	bool CheckForHub();
 	bool LoadHandler();
 
-	RageTimer m_Timer;
 	BitmapText m_Error;
 
-	bool m_bBoardError;
-	bool m_bUSBError;
+	bool m_bHandlerLoaded;
+	bool m_bHubConnected;
+
 	float m_fTimeout;
 	CString m_sMessage;
 };

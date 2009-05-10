@@ -1,11 +1,7 @@
 #include "global.h"
-
-/* helper functions */
 #include "RageLog.h"
 #include "InputFilter.h"
 #include "DiagnosticsUtil.h"
-
-/* core I/O handling */
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
 #include "InputHandler_PIUIO.h"
@@ -121,17 +117,17 @@ void InputHandler_PIUIO::InputThreadMain()
 	{
 		m_DebugTimer.StartUpdate();
 
-		/* Figure out the lights and write them */
+		/* core I/O cycle - translate lights state to an output value,
+		 * read the per-sensor inputs and dispatch input messages. */
 		UpdateLights();
-
-		/* Find our sensors, report to RageInput */
 		HandleInput();
 
 		m_DebugTimer.EndUpdate();
 
-		// export the data to PIUIO_Helper to use, export to LUA, etc.
+		/* export the I/O values to the helper, for LUA exporting */
 		MK6Helper::Import( m_iInputData, m_iLightData );
 
+		/* dispatch debug messages if we're debugging */
 		if( g_bDebugInputDrivers && m_DebugTimer.TimeToReport() )
 		{
 			MK6Helper::DebugOutput( m_DebugTimer );
@@ -201,16 +197,13 @@ void InputHandler_PIUIO::HandleInput()
 	for( short iButton = 0; iButton < 32; iButton++ )
 	{
 		di.button = JOY_1+iButton;
-
-		/* If we're in a thread, our timestamp is accurate */
-		if( InputThread.IsCreated() )
-			di.ts.Touch();
+		di.ts.Touch();
 
 		/* Set a description of detected sensors to the arrows */
 		INPUTFILTER->SetButtonComment( di, MK6Helper::GetSensorDescription(m_iInputData, iButton) );
 
 		/* Is the button we're looking for flagged in the input data? */
-		ButtonPressed( di, m_iInputField & (1 << (31-iButton)) );
+		ButtonPressed( di, IsBitSet(m_iInputField,iButton) );
 	}
 }
 

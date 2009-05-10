@@ -96,3 +96,4 @@ inline void DebugTimer::EndUpdate()
 }
 
 #endif // DEBUG_TIMER_H
+

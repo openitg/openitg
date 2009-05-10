@@ -839,7 +839,9 @@ void NoteDisplay::DrawHoldTail( const TapNote& tn, int iCol, int iRow, bool bIsB
 	const float fYOffset		= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
 	if( fYOffset < fYStartOffset || fYOffset > fYEndOffset )
 			return;
-	const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset );
+
+	// TRICKY: skew the rotation by a few pixels so this lines up with the start of the twirly hold.
+	const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset+16 );
 	const float fX				= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
 	const float fZ				= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
 	const float	fAlpha			= ArrowEffects::GetAlpha( m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );
@@ -896,7 +898,9 @@ void NoteDisplay::DrawHoldHead( const TapNote& tn, int iCol, int iRow, bool bIsB
 	const float fYOffset		= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
 	if( fYOffset < fYStartOffset || fYOffset > fYEndOffset )
 			return;
-	const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset );
+
+	// TRICKY: skew the rotation by a few pixels so this lines up with the start of the twirly hold.
+	const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset+16 );
 	const float fX				= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
 	const float fZ				= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
 	const float	fAlpha			= ArrowEffects::GetAlpha( m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );

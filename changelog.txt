@@ -56,6 +56,8 @@ OpenITG, beta 1 (almost done, really)
      64-bit crash on RageCryptInterface_ITG2 (thanks, dawnwolf)
      Screensaver disable code didn't work for X11
 -Fixed minor cross-platform bugs:
+     Custom song data not deallocated after the end of a round
+     Impressively inefficient method of re-creating the songs vector
      "Disqualification" display showed for unjoined players on music rate
      M-mod code didn't adjust to songs or courses with hidden BPMs
      Slowdown on ScreenArcadeDiagnostics due to heavy device polling

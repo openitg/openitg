@@ -400,8 +400,7 @@ void InitScalingScript()
 		!GLExt.m_bGL_ARB_shading_language_100 )
 		return;
 
-	//GLhandleARB VertexShader = CompileShader( GL_VERTEX_SHADER_ARB, g_TextureMatrixScaleShader );
-	GLhandleARB VertexShader = 0;
+	GLhandleARB VertexShader = CompileShader( GL_VERTEX_SHADER_ARB, g_TextureMatrixScaleShader );
 	if( VertexShader == 0 )
 		return;
 

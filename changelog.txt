@@ -51,6 +51,7 @@ OpenITG, beta 1 (almost done, really)
      Crashlogs saving in Program (were supposed to save in Data)
      "View crash dump" working incorrectly on the crash dialog
      Inaccurate crashlog count in System Diagnostics
+     RageDisplay_D3D: fixed texture materializing and translation issues and noteskin rendering
 -Fixed Linux bugs:
      Tentative fix for memory card mounting issues (thanks, Matt1360)
      64-bit crash on RageCryptInterface_ITG2 (thanks, dawnwolf)

@@ -834,8 +834,6 @@ public:
 	{
 		const MeshInfo& meshInfo = m_vMeshInfo[iMeshIndex];
 
-		//LOG->Trace("iMeshIndex %d: bNeedsTextureMatrixScale = %d", iMeshIndex, (int)meshInfo.bNeedsTextureMatrixScale);
-
 		if( meshInfo.bNeedsTextureMatrixScale )
 		{
 			// Kill the texture translation.
@@ -1069,10 +1067,10 @@ void RageDisplay_D3D::SetTextureModeModulate()
 		return;
 
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_COLORARG2, D3DTA_CURRENT );
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_COLOROP,   D3DTOP_MODULATE );
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAARG2, D3DTA_CURRENT );
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
 }
 
@@ -1082,10 +1080,10 @@ void RageDisplay_D3D::SetTextureModeGlow()
 		return;
 
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_COLORARG2, D3DTA_CURRENT );
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_COLOROP,   D3DTOP_SELECTARG2 );
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAARG2, D3DTA_CURRENT );
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
 }
 
@@ -1099,7 +1097,7 @@ void RageDisplay_D3D::SetTextureModeAdd()
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_COLOROP,   D3DTOP_ADD );
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
 	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAARG2, D3DTA_CURRENT );
-	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAOP,   D3DTOP_ADD );
+	g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_ALPHAOP,   D3DTOP_MODULATE );
 }
 
 void RageDisplay_D3D::SetTextureFiltering( bool b )
@@ -1142,7 +1140,12 @@ bool RageDisplay_D3D::IsZWriteEnabled() const
 
 void RageDisplay_D3D::SetZBias( float f )
 {
-	g_pd3dDevice->SetRenderState( D3DRS_ZBIAS, (int) SCALE( f, 0.0f, 1.0f, 0, 30 ) );
+	//g_pd3dDevice->SetRenderState( D3DRS_ZBIAS, (int) SCALE( f, 0.0f, 1.0f, 0, 30 ) );
+	D3DVIEWPORT8 viewData;
+	g_pd3dDevice->GetViewport( &viewData );
+	viewData.MinZ = SCALE( f, 0.0f, 1.0f, 0.05f, 0.0f );
+	viewData.MaxZ = SCALE( f, 0.0f, 1.0f, 1.0f, 0.95f );
+	g_pd3dDevice->SetViewport( &viewData );
 }
 
 
@@ -1437,6 +1440,7 @@ void RageDisplay_D3D::SetSphereEnvironmentMapping( bool b )
 
 	// http://www.gamasutra.com/features/20000811/wyatt_03.htm
 
+/*
 	if( b )
 	{
 		RageMatrix tex = RageMatrix
@@ -1454,6 +1458,7 @@ void RageDisplay_D3D::SetSphereEnvironmentMapping( bool b )
     // tell D3D that only the first two coordinates of the output are valid.
     g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_TEXTURETRANSFORMFLAGS, b ? D3DTTFF_COUNT2 : D3DTTFF_DISABLE );    
     g_pd3dDevice->SetTextureStageState( g_iCurrentTextureIndex, D3DTSS_TEXCOORDINDEX, b ? D3DTSS_TCI_CAMERASPACEREFLECTIONVECTOR : D3DTSS_TCI_PASSTHRU );    
+*/
 }
 /*
  * Copyright (c) 2001-2004 Chris Danford, Glenn Maynard

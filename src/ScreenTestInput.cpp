@@ -74,6 +74,9 @@ void ScreenTestInput::Update( float fDeltaTime )
 
 	DeviceInput di;
 
+	// XXX: is this needed?
+	MESSAGEMAN->Broadcast( "ResetButtons" );
+
 	FOREACH_InputDevice( d )
 	{
 		for( int b=0; b<GetNumDeviceButtons(d); b++ )
@@ -92,6 +95,9 @@ void ScreenTestInput::Update( float fDeltaTime )
 			{
 				CString sName = GAMESTATE->GetCurrentGame()->m_szButtonNames[gi.button];
 				sTemp += ssprintf(" - Controller %d %s", gi.controller+1, sName.c_str() );
+
+				// broadcast a theme notice - "P1Left", etc.
+				MESSAGEMAN->Broadcast( ssprintf("P%d%s", gi.controller+1, sName.c_str()) );
 
 				if( !PREFSMAN->m_bOnlyDedicatedMenuButtons )
 				{

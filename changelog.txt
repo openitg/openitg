@@ -32,6 +32,8 @@ OpenITG, beta 1 (almost done, really)
 -New metrics:
      "MissComboCommand" metric for Combo display
 -New features:
+     Added "NoteWillCrossIn1Beat", "NoteWillCrossIn2Beats", etc. for beginner helper
+     ScreenTestInput and ScreenTestLights broadcast Messages to actors
      Re-backported input debounce, except it works this time. :)
      CodeDetector ties for opening the OptionsList on ScreenSelectMusic
      Record service credits separately in MachineProfile and Coins.xml

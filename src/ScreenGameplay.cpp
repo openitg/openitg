@@ -1859,7 +1859,6 @@ void ScreenGameplay::SendCrossedMessages()
 {
 	{
 		static int iRowLastCrossed = 0;
-
 		float fPositionSeconds = GAMESTATE->m_fMusicSeconds;
 		float fSongBeat = GAMESTATE->m_pCurSong->GetBeatFromElapsedTime( fPositionSeconds );
 
@@ -1893,7 +1892,9 @@ void ScreenGameplay::SendCrossedMessages()
 
 		NoteData &nd = m_Player[pn].m_NoteData;
 
+		/* send ITG2's old Beginner messages */
 		static int iRowLastCrossedAll[NUM_MESSAGES_TO_SEND] = { 0, 0, 0, 0 };
+
 		for( int i=0; i<NUM_MESSAGES_TO_SEND; i++ )
 		{
 			float fOffsetFromCurrentSeconds = MESSAGE_SPACING_SECONDS * i;
@@ -1937,6 +1938,30 @@ void ScreenGameplay::SendCrossedMessages()
 
 			iRowLastCrossed = iRowNow;
 		}
+
+
+		/* XXX: redundant. How can we use the last crossed ints above? */
+		static int iRowLastBeatCrossed = 0;
+		int iBeatRow = BeatToNoteRow( int(GAMESTATE->m_fSongBeat) );
+		int iRowNow = BeatToNoteRowNotRounded( GAMESTATE->m_fSongBeat );
+		iRowNow = max( 0, iRowNow );
+
+		/* send our beat-based messages - the above takes care of NoteCrossed. */
+		if( iBeatRow >= iRowLastBeatCrossed+1 && iBeatRow <= iRowNow+1 )
+		{
+			for( int i = 1; i < NUM_MESSAGES_TO_SEND; i++ )
+			{
+				int iRowToCheck = BeatToNoteRow( (int)(GAMESTATE->m_fSongBeat+i) );
+
+				if( nd.IsThereATapOrHoldHeadAtRow(iRowToCheck) )
+				{
+					Message msg = (Message)(MESSAGE_NOTE_WILL_CROSS_IN_1_BEAT+(i-1));
+					MESSAGEMAN->Broadcast( msg );
+				}
+			}
+		}
+
+		iRowLastBeatCrossed = iRowNow;
 	}
 }
 

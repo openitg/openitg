@@ -32,7 +32,6 @@ static const CString MessageNames[] = {
 	"NoteWillCrossIn1Beat",
 	"NoteWillCrossIn2Beats",
 	"NoteWillCrossIn3Beats",
-	"NoteWillCrossIn4Beats",
 	"CardReadyP1",
 	"CardReadyP2",
 	"CardRemovedP1",

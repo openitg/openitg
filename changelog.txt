@@ -7,8 +7,9 @@ OpenITG, beta 1 (almost done, really)
 -New Preferences:
      "DebugInputDrivers" - additional debugging info for various I/O drivers
      "EasterEggs2" - OpenITG-specific easter eggs (hint: play from a DDR group folder)
--New LUA calls + bindings:
+-New LUA singleton bindings:
      GameState: "DelayedGameCommand" (required for "theme" GameCommands)
+     NoteSkin: "GetNoteSkinNames"
      ThemeManager: "GetCurLanguage", "GetCurThemeName", "GetThemeNames"
 -New LUA bindings:
      Course: "GetCourseDir"
@@ -63,7 +64,8 @@ OpenITG, beta 1 (almost done, really)
      M-mod code didn't adjust to songs or courses with hidden BPMs
      Slowdown on ScreenArcadeDiagnostics due to heavy device polling
      No-timeout warning flood on custom song loading
-     Sensor reading problems with PIUIO
+     Sensor reading problems with PIUIO on Test Input
+     Round text on ScreenSelectMusic not updating for non-song entries
 -Fixed major cross-platform bugs:
      Crash when changing from Intense to Normal-only courses or vice versa
      Patched OGG songs circumvented Long/Marathon song limits

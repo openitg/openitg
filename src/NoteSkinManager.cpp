@@ -300,11 +300,19 @@ class LunaNoteSkinManager : public Luna<T>
 public:
 	LunaNoteSkinManager() { LUA->Register( Register ); }
 
-	static int GetPath( T* p, lua_State *L )		{ lua_pushstring(L, p->GetPath(SArg(1),SArg(2)) ); return 1; }
+	static int GetPath( T* p, lua_State *L )			{ lua_pushstring(L, p->GetPath(SArg(1),SArg(2)) ); return 1; }
+	static int GetNoteSkinNames( T* p, lua_State *L )
+	{
+		vector<CString> names;
+		p->GetNoteSkinNames( names );
+		LuaHelpers::CreateTableFromArray<CString>( names, L );
+		return 1;
+	}
 
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( GetPath )
+		ADD_METHOD( GetNoteSkinNames )
 		Luna<T>::Register( L );
 
 		// Add global singleton if constructed already.  If it's not constructed yet,

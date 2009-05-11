@@ -1851,6 +1851,9 @@ void ScreenSelectMusic::AfterMusicChange()
 		s_lastSortOrder = GAMESTATE->m_SortOrder;
 	}
 
+	// do this here, so it'll properly update if there's no song
+	UpdateStage();
+
 	switch( m_MusicWheel.GetSelectedType() )
 	{
 	case TYPE_SECTION:
@@ -1988,7 +1991,6 @@ void ScreenSelectMusic::AfterMusicChange()
 
 			if ( !GAMESTATE->IsFinalStage() )
 				GAMESTATE->m_iCurrentStageIndex = m_iSavedRoundIndex;
-			UpdateStage();
 
 			COMMAND( m_sprCourseHasMods, "Hide" );
 

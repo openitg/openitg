@@ -203,7 +203,8 @@ void InputHandler_PIUIO::HandleInput()
 		INPUTFILTER->SetButtonComment( di, MK6Helper::GetSensorDescription(m_iInputData, iButton) );
 
 		/* Is the button we're looking for flagged in the input data? */
-		ButtonPressed( di, IsBitSet(m_iInputField,iButton) );
+		/* Incremented by one, since IsBitSet uses 1-32 and this uses 0-31. */
+		ButtonPressed( di, IsBitSet(m_iInputField,iButton+1) );
 	}
 }
 

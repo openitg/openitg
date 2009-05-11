@@ -178,43 +178,27 @@ void Combo::SetCombo( int iCombo, int iMisses, float fLastStepsSeconds )
 		}
 	}
 
+	// I don't know if this is any faster, but I prefer this code layout.
+	// XXX: use a less stupid name.
+	const ThemeMetric<apActorCommands> *pToRun = bMisses ? &MISS_COMBO_COMMAND : &FULL_COMBO_BROKEN_COMMAND;
+
 	// don't show a colored combo until 1/4 of the way through the song
 	bool bPastMidpoint = GAMESTATE->GetCourseSongIndex()>0 ||
 		GAMESTATE->m_fMusicSeconds > GAMESTATE->m_pCurSong->MusicLengthSeconds()/4;
 
-	if( bMisses )
-	{
-		sprLabel->RunCommands( MISS_COMBO_COMMAND );
-		m_textNumber.RunCommands( MISS_COMBO_COMMAND );
-	}
-	else if( bPastMidpoint )
+	if( bPastMidpoint )
 	{
 		if( m_pPlayerStageStats->FullComboOfScore(TNS_MARVELOUS) )
-		{
-			sprLabel->RunCommands( FULL_COMBO_MARVELOUSES_COMMAND );
-			m_textNumber.RunCommands( FULL_COMBO_MARVELOUSES_COMMAND );
-		}
-		else if( bPastMidpoint && m_pPlayerStageStats->FullComboOfScore(TNS_PERFECT) )
-		{
-			sprLabel->RunCommands( FULL_COMBO_PERFECTS_COMMAND );
-			m_textNumber.RunCommands( FULL_COMBO_PERFECTS_COMMAND );
-		}
-		else if( bPastMidpoint && m_pPlayerStageStats->FullComboOfScore(TNS_GREAT) )
-		{
-			sprLabel->RunCommands( FULL_COMBO_GREATS_COMMAND );
-			m_textNumber.RunCommands( FULL_COMBO_GREATS_COMMAND );
-		}
-		else
-		{
-			sprLabel->RunCommands( FULL_COMBO_BROKEN_COMMAND );
-			m_textNumber.RunCommands( FULL_COMBO_BROKEN_COMMAND );
-		}
+			pToRun = &FULL_COMBO_MARVELOUSES_COMMAND;
+		else if( m_pPlayerStageStats->FullComboOfScore(TNS_PERFECT) )
+			pToRun = &FULL_COMBO_PERFECTS_COMMAND;
+		else if( m_pPlayerStageStats->FullComboOfScore(TNS_GREAT) )
+			pToRun = &FULL_COMBO_GREATS_COMMAND;
 	}
-	else
-	{
-		sprLabel->RunCommands( FULL_COMBO_BROKEN_COMMAND );
-		m_textNumber.RunCommands( FULL_COMBO_BROKEN_COMMAND );
-	}
+
+	// dispatch the commands we're running from earlier
+	sprLabel->RunCommands( *pToRun );
+	m_textNumber.RunCommands( *pToRun );
 }
 
 /*

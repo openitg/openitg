@@ -69,6 +69,7 @@ OpenITG, beta 1 (almost done, really)
      Sensor reading problems with PIUIO on Test Input
      Round text on ScreenSelectMusic not updating for non-song entries
 -Fixed major cross-platform bugs:
+     Infinite loop and crash on changing coin modes on ScreenTitleJoin
      Crash when changing from Intense to Normal-only courses or vice versa
      Patched OGG songs circumvented Long/Marathon song limits
      Crash on machine Edit-only songs (not a bug, but...)

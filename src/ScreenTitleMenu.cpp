@@ -110,7 +110,10 @@ ScreenTitleMenu::~ScreenTitleMenu()
 
 void ScreenTitleMenu::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
-	LOG->Trace( "ScreenTitleMenu::Input( %d-%d )", DeviceI.device, DeviceI.button );	// debugging gameport joystick problem
+//	LOG->Trace( "ScreenTitleMenu::Input( %d-%d )", DeviceI.device, DeviceI.button );	// debugging gameport joystick problem
+
+	// if we got input, we know we aren't infinitely looping.
+	m_bIgnoreCoinChange = false;
 
 	if( type == IET_FIRST_PRESS )
 	{
@@ -171,10 +174,15 @@ void ScreenTitleMenu::HandleMessage( const CString& sMessage )
 {
 	if( sMessage == PREFSMAN->m_CoinMode.GetName()+"Changed" )
 	{
+		// ignore this message - we already got one
+		if( m_bIgnoreCoinChange )
+			return;
+
 		/* If the CoinMode was changed, we need to reload this screen
 		 * so that the right m_aGameCommands will show */
 		LOG->Trace( "Checkpoint 3: handled message %sChanged", PREFSMAN->m_CoinMode.GetName().c_str() );
 		SCREENMAN->SetNewScreen( COIN_MODE_CHANGE_SCREEN );
+		m_bIgnoreCoinChange = true;
 	}
 }
 

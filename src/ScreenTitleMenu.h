@@ -23,6 +23,9 @@ public:
 	virtual void HandleMessage( const CString& sMessage );
 
 private:
+	/* this is a workaround for a rather nasty bug... */
+	bool			m_bIgnoreCoinChange;
+
 	AutoActor		m_sprLogo;
 	BitmapText		m_textVersion;
 	BitmapText		m_textSongs;

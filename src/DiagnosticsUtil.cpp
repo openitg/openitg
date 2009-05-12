@@ -15,6 +15,9 @@
 
 #include "ibutton/ibutton.h"
 
+#define PATCH_XML_PATH "Data/patch/patch.xml"
+#define STATS_XML_PATH "Data/MachineProfile/Stats.xml"
+
 // these should be defined in verstub.cpp across all platforms
 extern const bool VersionSVN;
 extern const char *const VersionDate;
@@ -48,52 +51,37 @@ CString DiagnosticsUtil::GetIP()
 
 int DiagnosticsUtil::GetRevision()
 {
-	CString sPath = "Data/patch/patch.xml";
+	// default value if a patch value can't be found/loaded
+	int iRevision = 1;
 
 	// Create the XML Handler, and clear it, for practice.
 	XNode *xml = new XNode;
 	xml->Clear();
 	xml->m_sName = "patch";
-	
-	// Check for the file existing
-	if( !IsAFile(sPath) )
-	{
-		LOG->Warn( "There is no patch file (patch.xml)" );
-		SAFE_DELETE( xml ); 
-		return 1;
-	}
-	
-	// Make sure you can read it
-	if( !xml->LoadFromFile(sPath) )
-	{
-		LOG->Warn( "patch.xml unloadable" );
-		SAFE_DELETE( xml ); 
-		return 1;
-	}
-	
-	// Check the node <Revision>x</Revision>
-	if( !xml->GetChild( "Revision" ) )
-	{
-		LOG->Warn( "Revision node missing! (patch.xml)" );
-		SAFE_DELETE( xml ); 
-		return 1;
-	}
-	
-	int iRevision = atoi( xml->GetChild("Revision")->m_sValue );
+
+	// if the file is readable and has the proper node, save its value
+	if( !IsAFile(PATCH_XML_PATH) )
+		LOG->Warn( "GetRevision(): There is no patch file (patch.xml)" );
+	else if( !xml->LoadFromFile(PATCH_XML_PATH) )
+		LOG->Warn( "GetRevision(): Could not load from patch.xml" );
+	else if( !xml->GetChild("Revision") )
+		LOG->Warn( "GetRevision(): Revision node missing! (patch.xml)" );
+	else
+		iRevision = atoi( xml->GetChild("Revision")->m_sValue );
+
+	SAFE_DELETE( xml );
 
 	return iRevision;
 }
 
 int DiagnosticsUtil::GetNumMachineScores()
 {
-	CString sXMLPath = "Data/MachineProfile/Stats.xml";
-
 	// Create the XML Handler and clear it, for practice
 	XNode *xml = new XNode;
 	xml->Clear();
 	
 	// Check for the file existing
-	if( !IsAFile(sXMLPath) )
+	if( !IsAFile(STATS_XML_PATH) )
 	{
 		LOG->Warn( "There is no Stats.xml file!" );
 		SAFE_DELETE( xml ); 
@@ -101,7 +89,7 @@ int DiagnosticsUtil::GetNumMachineScores()
 	}
 	
 	// Make sure you can read it
-	if( !xml->LoadFromFile(sXMLPath) )
+	if( !xml->LoadFromFile(STATS_XML_PATH) )
 	{
 		LOG->Trace( "Stats.xml unloadable!" );
 		SAFE_DELETE( xml ); 

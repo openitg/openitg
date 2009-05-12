@@ -111,14 +111,14 @@ ScreenTitleMenu::~ScreenTitleMenu()
 void ScreenTitleMenu::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
 //	LOG->Trace( "ScreenTitleMenu::Input( %d-%d )", DeviceI.device, DeviceI.button );	// debugging gameport joystick problem
-
-	// if we got input, we know we aren't infinitely looping.
-	m_bIgnoreCoinChange = false;
-
 	if( type == IET_FIRST_PRESS )
 	{
+		// if we got input, we know we aren't infinitely looping.
+		m_bIgnoreCoinChange = false;
+
 		if( m_In.IsTransitioning() || m_Cancel.IsTransitioning() ) /* not m_Out */
 			return;
+
 		
 		//
 		// detect codes

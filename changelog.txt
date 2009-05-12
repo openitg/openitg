@@ -8,7 +8,7 @@ OpenITG, beta 1 (almost done, really)
      "DebugInputDrivers" - additional debugging info for various I/O drivers
      "EasterEggs2" - OpenITG-specific easter eggs (hint: play from a DDR group folder)
 -New LUA singleton bindings:
-     GameState: "DelayedGameCommand" (required for "theme" GameCommands)
+     GameState: "GetCurBPS", "DelayedGameCommand" (required for "theme" GameCommands)
      NoteSkin: "GetNoteSkinNames"
      ThemeManager: "GetCurLanguage", "GetCurThemeName", "GetThemeNames"
 -New LUA bindings:

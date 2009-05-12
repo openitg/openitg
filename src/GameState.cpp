@@ -2116,6 +2116,7 @@ public:
 	static int GetNumPlayersEnabled( T* p, lua_State *L )	{ lua_pushnumber(L, p->GetNumPlayersEnabled() ); return 1; }
 	static int GetSongBeat( T* p, lua_State *L )			{ lua_pushnumber(L, p->m_fSongBeat ); return 1; }
 	static int GetSongBeatVisible( T* p, lua_State *L )		{ lua_pushnumber(L, p->m_fSongBeatVisible ); return 1; }
+	static int GetCurBPS( T* p, lua_State *L )			{ lua_pushnumber(L, p->m_fCurBPS ); return 1; }
 	static int PlayerUsingBothSides( T* p, lua_State *L )	{ lua_pushboolean(L, p->PlayerUsingBothSides() ); return 1; }
 	static int GetCoins( T* p, lua_State *L )				{ lua_pushnumber(L, p->m_iCoins ); return 1; }
 	static int IsSideJoined( T* p, lua_State *L )			{ lua_pushboolean(L, p->m_bSideIsJoined[(PlayerNumber)IArg(1)] ); return 1; }
@@ -2170,6 +2171,7 @@ public:
 		ADD_METHOD( GetNumPlayersEnabled )
 		ADD_METHOD( GetSongBeat )
 		ADD_METHOD( GetSongBeatVisible )
+		ADD_METHOD( GetCurBPS )
 		ADD_METHOD( PlayerUsingBothSides )
 		ADD_METHOD( GetCoins )
 		ADD_METHOD( IsSideJoined )

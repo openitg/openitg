@@ -72,12 +72,10 @@ void ScreenArcadeStart::Update( float fDeltaTime )
 
 	Screen::Update( fDeltaTime );
 
-	// problem was fixed, or we timed out
+	// problem was fixed, or we timed out - pretend we hit Start,
+	// so we can keep all our code properly in one place.
 	if( m_fTimeout < 0 || (m_bHandlerLoaded && m_bHubConnected) )
-	{
-		this->PlayCommand( "Off" );
-		StartTransitioning( SM_GoToNextScreen );
-	}
+		MenuStart( PLAYER_INVALID );
 
 	if( m_bHandlerLoaded && !m_bHubConnected )
 		CheckForHub();
@@ -108,7 +106,7 @@ void ScreenArcadeStart::MenuStart( PlayerNumber pn )
 {
 	if( !IsTransitioning() )
 	{
-		// nothing set by SAStart, so set it now
+		// nothing set by any I/O handlers, so set one now
 		if( DiagnosticsUtil::GetInputType() == "" )
 			DiagnosticsUtil::SetInputType( "Home" );
 
@@ -179,7 +177,6 @@ bool ScreenArcadeStart::LoadHandler()
 	{
 		/* Return true if PC, even though it doesn't load. */
 		LOG->Warn( "ScreenArcadeStart: I/O board not found. Continuing anyway..." );
-		DiagnosticsUtil::SetInputType( "Home" );
 		return true;
 	}
 #endif

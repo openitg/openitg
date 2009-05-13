@@ -85,6 +85,7 @@ public:
 	bool m_bClearCredits;
 	bool m_bResetToFactoryDefaults;
 	bool m_bStopMusic;
+	bool m_bReloadTheme;
 	bool m_bApplyDefaultOptions;
 };
 

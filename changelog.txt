@@ -29,6 +29,8 @@ OpenITG, beta 1 (almost done, really)
      "MK3" - controls the Andamiro MK3 and MK5 ISA boards, for the heck of it
 -New LightsDriver:
      "G15" - controls LCD on the G15 gaming keyboard, also for the heck of it
+-New GameCommands:
+     "ReloadTheme" - forces a complete reload of metrics and graphics
 -New metrics:
      "MissComboCommand" metric for Combo display
 -New features:

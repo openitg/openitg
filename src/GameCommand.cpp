@@ -22,6 +22,7 @@
 #include "Bookkeeper.h"
 #include "UnlockManager.h"
 #include "GameSoundManager.h"
+#include "RageTextureManager.h"
 #include "ThemeManager.h"
 #include "PlayerState.h"
 #include "Course.h"
@@ -68,6 +69,7 @@ void GameCommand::Init()
 	m_bClearCredits = false;
 	m_bResetToFactoryDefaults = false;
 	m_bStopMusic = false;
+	m_bReloadTheme = false;
 	m_bApplyDefaultOptions = false;
 }
 
@@ -363,6 +365,10 @@ void GameCommand::LoadOne( const Command& cmd )
 		m_bDeletePreparedScreens = true;
 	}
 	
+	else if( sName == "reloadtheme" )
+	{
+		m_bReloadTheme = true;
+	}
 	else if( sName == "clearbookkeepingdata" )
 	{
 		m_bClearBookkeepingData = true;
@@ -736,12 +742,19 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 		FOREACH_CONST( PlayerNumber, vpns, pn )
 			GAMESTATE->ApplyModifiers( *pn, m_sModifiers );
 
-	/* do this here, so we load new metrics before attempting screen loads.
-	 * IMPORTANT: re-cache SONGMAN metrics so we don't encounter an ugly crash. */
+	// do this here, so we load new metrics before attempting screen loads.
 	if( m_sTheme != "" && m_sTheme != THEME->GetCurThemeName() )
 	{
 		THEME->SwitchThemeAndLanguage( m_sTheme, THEME->GetCurLanguage() );
 		SONGMAN->LoadGroupColors();	// XXX: is this necessary with ApplyGraphicOptions() set?
+		ApplyGraphicOptions();
+	}
+
+	// do this here, same reason as above.
+	if( m_bReloadTheme )
+	{
+		THEME->ReloadMetrics();
+		SCREENMAN->ThemeChanged();
 		ApplyGraphicOptions();
 	}
 

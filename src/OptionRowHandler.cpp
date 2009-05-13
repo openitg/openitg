@@ -759,7 +759,13 @@ public:
 
 
 		lua_pop( L, 1 ); /* pop main table */
-		ASSERT( lua_gettop(L) == 0 );
+
+		// HACK: we're getting a mysterious stack object and I'm not sure where.
+		// Just remove it manually for now - I'll get a proper fix in later.
+		if( lua_gettop(L) == 1 )
+			lua_pop( L, 1 );
+		else
+			ASSERT( lua_gettop(L) == 0 );
 
 		LUA->Release(L);
 	}

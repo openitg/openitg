@@ -89,7 +89,7 @@ CString MK6Helper::GetSensorDescription( const uint32_t iSensors[4], short iBit 
 	// HACK: if all sensors are reporting, return nothing
 	// (since all buttons show all sensors)
 	if( sensors.size() == 4 )
-		return ""
+		return "";
 
 	return join(", ", sensors);
 }

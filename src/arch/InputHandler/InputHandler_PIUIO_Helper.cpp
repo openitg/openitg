@@ -77,14 +77,19 @@ static CString SensorNames[] = { "right", "left", "bottom", "top" };
 /* Optimization opportunity: remove vector! :< */
 CString MK6Helper::GetSensorDescription( const uint32_t iSensors[4], short iBit )
 {
-	if( !g_bReportSensors[iBit] )
-		return "";
+//	if( !g_bReportSensors[iBit] )
+//		return "";
 
 	CStringArray sensors;
 
 	for( int i = 0; i < 4; i++ )
 		if( IsBitSet(iSensors[i], iBit) )
 			sensors.push_back( SensorNames[i] );
+
+	// HACK: if all sensors are reporting, return nothing
+	// (since all buttons show all sensors)
+	if( sensors.size() == 4 )
+		return ""
 
 	return join(", ", sensors);
 }

@@ -8,14 +8,14 @@
 #include "config.h" // for ITG_ARCADE
 #endif
 
-#define OFFICIAL_RELEASE 1
+#undef OFFICIAL_RELEASE
 
 /* (x?)xyy - x is release type, y is release version */
 #define PRODUCT_TOKEN 101
 
 /* The name of the build and its current version */
 #define PRODUCT_NAME "OpenITG"
-#define PRODUCT_VER "beta 1"
+#define PRODUCT_VER "beta 2"
 
 #if defined(ITG_ARCADE)
 #define PRODUCT_PLATFORM "AC"

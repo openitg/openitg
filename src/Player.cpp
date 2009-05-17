@@ -1645,7 +1645,7 @@ void Player::HandleTapRowScore( unsigned row, float fStepsSeconds )
 	}
 	if( life != -1 )
 		if( m_pPlayerStageStats )
-			m_pPlayerStageStats->SetLifeRecordAt( life, STATSMAN->m_CurStageStats.fStepsSeconds );
+			m_pPlayerStageStats->SetLifeRecordAt( life, STATSMAN->m_CurStageStats.fStepsSeconds, scoreOfLastTap );
 
 	if( m_pScoreDisplay )
 	{

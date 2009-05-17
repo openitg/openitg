@@ -496,7 +496,8 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				ExcludedFromBuild="FALSE"/>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="archutils\Win32\verinc
+				CommandLine="archutils\Win32\verinc-svn
+archutils\Win32\verinc
 cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 "/>
 			<Tool

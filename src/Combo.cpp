@@ -126,6 +126,7 @@ void Combo::SetCombo( int iCombo, int iMisses, float fLastStepsSeconds )
 
 	//SCREENMAN->SystemMessageNoAnimate( ssprintf("m_ComboStatus: %d", m_pPlayerStageStats->m_ComboStatus) );
 
+#if 0
 	if ( fLastStepsSeconds != -1.0f )
 	{
 		if( m_pPlayerStageStats->m_ComboStatus == COMBSTAT_FFC && !m_pPlayerStageStats->FullComboOfScore(TNS_MARVELOUS) )
@@ -177,6 +178,7 @@ void Combo::SetCombo( int iCombo, int iMisses, float fLastStepsSeconds )
 			m_pPlayerStageStats->m_ComboStatus = COMBSTAT_NONE;
 		}
 	}
+#endif
 
 	// I don't know if this is any faster, but I prefer this code layout.
 	// XXX: use a less stupid name.

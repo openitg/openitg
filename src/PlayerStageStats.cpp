@@ -247,7 +247,7 @@ float PlayerStageStats::GetCurMaxPercentDancePoints() const
 	return fCurMaxPercentDancePoints;
 }
 
-void PlayerStageStats::SetLifeRecordAt( float fLife, float fStepsSecond )
+void PlayerStageStats::SetLifeRecordAt( float fLife, float fStepsSecond, TapNoteScore note )
 {
 	// Don't save life stats in endless courses, or could run OOM in a few hours.
 	if( GAMESTATE->m_pCurCourse && GAMESTATE->m_pCurCourse->IsEndless() )
@@ -262,6 +262,37 @@ void PlayerStageStats::SetLifeRecordAt( float fLife, float fStepsSecond )
 
 	// fSecond will always be greater than any value already in the map.
 	fLifeRecord[fStepsSecond] = fLife;
+
+	// ColorizedLifeGraph: moved 5/16/09
+	switch( note )
+	{
+	case TNS_PERFECT:
+		if ( m_ComboStatus == COMBSTAT_FFC )
+		{
+			fFullExcellentComboBegin = fStepsSecond;
+			bFlag_FEC = true;
+			m_ComboStatus = COMBSTAT_FEC;
+		}
+		break;
+	case TNS_GREAT:
+		if ( m_ComboStatus < COMBSTAT_FGC )
+		{
+			fFullGreatComboBegin = fStepsSecond;
+			bFlag_FGC = true;
+			m_ComboStatus = COMBSTAT_FGC;
+		}
+		break;
+	case TNS_GOOD:
+	case TNS_BOO:
+	case TNS_MISS:
+		if ( m_ComboStatus < COMBSTAT_NONE )
+		{
+			bFlag_PulsateEnd = true;
+			fPulsatingComboEnd = fStepsSecond;
+			m_ComboStatus = COMBSTAT_NONE;
+		}
+		break;
+	}
 
 	//
 	// Memory optimization:

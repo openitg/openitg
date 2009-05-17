@@ -14,7 +14,7 @@ enum ComboStatus {
         COMBSTAT_FFC = 0, // Full Fantastic Combo
         COMBSTAT_FEC, // Full Excellent Combo
         COMBSTAT_FGC, // Full Great Combo (if implemented in theme)
-	COMBSTAT_NONE,
+		COMBSTAT_NONE,
         NUM_COMBSTAT,
         COMBSTAT_INVALID
 };
@@ -78,7 +78,7 @@ struct PlayerStageStats
 	float	fCaloriesBurned;
 
 	map<float,float>	fLifeRecord;
-	void	SetLifeRecordAt( float fLife, float fStepsSecond );
+	void	SetLifeRecordAt( float fLife, float fStepsSecond, TapNoteScore note = TNS_NONE );
 	void	GetLifeRecord( float *fLifeOut, int iNumSamples, float fStepsEndSecond ) const;
 	float	GetLifeRecordAt( float fStepsSecond ) const;
 	float	GetLifeRecordLerpAt( float fStepsSecond ) const;

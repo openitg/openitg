@@ -1,0 +1,73 @@
+<ActorFrame><children>
+	<!-- OpenITG: why doesn't this work unless we have a personal? That's stupid. -->
+	<Layer
+		File="978_JumpBack"
+		OnCommand="rate,2;diffusealpha,0.7;stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM"
+	/>
+
+	<Layer
+		File="roxor"
+		OnCommand="x,SCREEN_LEFT+90;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+	/>
+
+	<Layer
+		File="_otherred"
+		InitCommand="horizalign,left;zoomy,.3;X,SCREEN_CENTER_X-120;y,SCREEN_CENTER_Y+30;ZoomToWidth,430;faderight,1"
+		OnCommand="addx,-430;cropleft,1;sleep,.6;decelerate,.3;cropleft,0;addx,430;"
+		
+	/>
+
+	<Layer
+		File="arrow"
+		InitCommand="zoom,.8;X,SCREEN_CENTER_X-190;y,SCREEN_CENTER_Y-25;"
+		OnCommand="glow,1,1,1,1;addx,SCREEN_WIDTH/2;addy,SCREEN_HEIGHT/1.2;sleep,.2;decelerate,.5;addx,-SCREEN_WIDTH/2;addy,-SCREEN_HEIGHT/1.2;glow,1,1,1,0;"
+	/>
+
+	<Layer
+		File="oitg"
+		InitCommand="zoom,.8;X,SCREEN_CENTER_X+90;y,SCREEN_CENTER_Y+30;"
+		OnCommand="cropright,1;faderight,1;sleep,.7;linear,.3;cropright,0;faderight,.1;linear,.03;faderight,0;"
+	/>
+		
+		
+	<Layer
+		File="oitgglow"
+		InitCommand="zoom,.8;X,SCREEN_CENTER_X+90;y,SCREEN_CENTER_Y+30;"
+		OnCommand="diffusealpha,.8;cropright,1;faderight,1;sleep,.7;linear,.3;cropright,0;faderight,.1;linear,.03;faderight,0;linear,.5;diffusealpha,0;"
+	/>
+
+	<Layer
+		Type="BitmapText"
+		Font="ScreenOptions serial number"
+		Condition="Platform() == 'arcade'"
+		Text="@GetSerialNumber()"
+		InitCommand="x,SCREEN_CENTER_X+282;y,SCREEN_CENTER_Y-213;shadowlength,2;horizalign,right;wrapwidthpixels,1000;zoom,0.5"
+		OnCommand="diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+	/>
+
+	<Layer
+		Class="BitmapText"
+		Font="_eurostile normal"
+		Text="@'&xa9; 2008-2009 BoXoRroXoRs, r' .. GetRevision()"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-17;zoom,0.5;shadowlength,2;diffusealpha,0.8"
+	/>
+
+	<Layer
+		Type="ActorFrame"
+		Condition="PREFSMAN:GetPreference('SongEdits')"
+		xOnCommand="addx,-150;sleep,1;accelerate,0.3;addx,150"
+	><children>
+		<Layer
+			Type="BitmapText"
+			Font="_eurostile normal"
+			Text="Custom Songs Enabled"	
+			OnCommand="stoptweening;x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-17-17;zoom,0.5;shadowlength,2;diffusealpha,0.0;zoomy,0;sleep,1;decelerate,0.3;zoomy,.5;diffusealpha,0.8"			
+		/>
+	</children></Layer>
+
+	<Layer
+		Class="Quad"
+		OnCommand="stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffuse,#FFFFFF;diffusealpha,1;sleep,0.1;accelerate,0.5;diffusealpha,0"
+	/>
+
+</children></ActorFrame>

@@ -136,7 +136,6 @@ CString DiagnosticsUtil::GetSerialNumber()
 
 /* Try to grab a serial number from a dongle;
  * otherwise generate a fake one. */
-
 	g_SerialNum = iButton::GetSerialNumber();
 
 	if( g_SerialNum.empty() )
@@ -173,12 +172,12 @@ CString DiagnosticsUtil::GenerateDebugSerial()
 	type = 'P';
 #endif
 
-	// if SVN, display it regularly: "OITG-W-20090409-600-P"
-	// if no SVN, display the build in hex: "OITG-W-20090409-08A-P"
+	// if SVN, display the version regularly: "OITG-W-20090409-600-P"
+	// if no SVN, display the version in hex: "OITG-W-20090409-08A-P"
 	if( VersionSVN )
 		return ssprintf( "OITG-%c-%s-%03lu-%c", system, VersionDate, VersionNumber, type );
 	else
-		return ssprintf( "OITG-%c-%s-%03X-%c", system, VersionDate, VersionNumber, type );
+		return ssprintf( "OITG-%c-%s-%03lX-%c", system, VersionDate, VersionNumber, type );
 }
 
 bool DiagnosticsUtil::HubIsConnected()
@@ -229,11 +228,11 @@ LuaFunction_NoArgs( GetProductName,		DiagnosticsUtil::GetProductName() );
 LuaFunction_NoArgs( GetNumCrashLogs,		DiagnosticsUtil::GetNumCrashLogs() );
 LuaFunction_NoArgs( GetNumMachineScores,	DiagnosticsUtil::GetNumMachineScores() );
 LuaFunction_NoArgs( GetNumMachineEdits, 	DiagnosticsUtil::GetNumMachineEdits() );
-LuaFunction_NoArgs( GetRevision,			DiagnosticsUtil::GetRevision() );
+LuaFunction_NoArgs( GetRevision,		DiagnosticsUtil::GetRevision() );
 
 // arcade diagnostics
-LuaFunction_NoArgs( GetIP,				DiagnosticsUtil::GetIP() );
-LuaFunction_NoArgs( GetSerialNumber,	DiagnosticsUtil::GetSerialNumber() );
+LuaFunction_NoArgs( GetIP,			DiagnosticsUtil::GetIP() );
+LuaFunction_NoArgs( GetSerialNumber,		DiagnosticsUtil::GetSerialNumber() );
 LuaFunction_NoArgs( HubIsConnected,		DiagnosticsUtil::HubIsConnected() );
 LuaFunction_NoArgs( GetInputType,		DiagnosticsUtil::GetInputType() );
 

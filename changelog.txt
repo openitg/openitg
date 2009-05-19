@@ -1,5 +1,9 @@
-OpenITG, beta 1 (almost done, really)
------------------------------
+OpenITG, beta 2 (in development)
+--------------------------------
+-Improved Colorized Graph logic
+
+OpenITG, beta 1 (May 15th, 2009)
+--------------------------------
 -Obligatory code cleanup
 -Windows additions:
      OpenITG icon (thanks, Lightning)

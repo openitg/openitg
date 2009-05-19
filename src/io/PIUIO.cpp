@@ -37,13 +37,13 @@ bool PIUIO::Read( uint32_t *pData )
 	return true;
 }
 
-bool PIUIO::Write( uint32_t iData )
+bool PIUIO::Write( const uint32_t &iData )
 {
 	int iResult;
 
 	while( 1 )
 	{
-		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)&iData, 8, 10000 );
+		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)iData, 8, 10000 );
 		
 		if( iResult == 8 )
 			break;
@@ -58,7 +58,7 @@ bool PIUIO::Write( uint32_t iData )
 	return true;
 }
 
-bool PIUIO::BulkReadWrite( uint32_t *pData )
+bool PIUIO::BulkReadWrite( uint32_t pData[8] )
 {
 	int iResult;
 
@@ -66,7 +66,7 @@ bool PIUIO::BulkReadWrite( uint32_t *pData )
 	{
 		// this is caught by the r16 kernel hack, using '10011' as
 		// a sentinel. the rest of the USB parameters aren't used.
-		iResult = usb_control_msg(m_pHandle, 0, 0, 0, 0, (char*)(pData), 32, 10011);
+		iResult = usb_control_msg(m_pHandle, 0, 0, 0, 0, (char*)pData, 32, 10011);
 
 		if ( iResult == 32 )
 			break;

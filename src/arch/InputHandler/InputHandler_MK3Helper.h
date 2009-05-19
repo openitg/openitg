@@ -8,19 +8,42 @@ const short MK3_INPUT_PORT_2 = 0x2A6;
 const short MK3_OUTPUT_PORT_1 = 0x2A0;
 const short MK3_OUTPUT_PORT_2 = 0x2A2;
 
+#ifdef LINUX
+#include <sys/io.h>
 namespace MK3
 {
+	inline void Write( uint32_t iData )
+	{
+		outw_p( (uint16_t)(iData>>16),	MK3_OUTPUT_PORT_1 );
+		outw_p( (uint16_t)(iData),	MK3_OUTPUT_PORT_2 );
+	}
+
+	inline void Read( uint32_t *pData )
+	{
+		*pData = inw_p(MK3_INPUT_PORT_1) << 16 | inw_p(MK3_INPUT_PORT_2);
+	}
+};
+#endif
+
+/* Assembler written for the sake of speed here, since it's easy and
+ * I'm too lazy to look for a good Windows MMIO API. Please note that
+ * this requires another program to grant I/O permissions until we
+ * implement InpOut32 or something into the game binary, or the game
+ * will crash with an "Illegal Instruction" error. -- Vyhd
+ */
 #ifdef WINDOWS
+namespace MK3
+{
 	inline void __fastcall Write( uint32_t iData )
 	{
 		__asm
 		{
-			mov eax,ecx					; load 'data' into eax
+			mov eax,ecx			; load 'data' into eax
 			mov dx,MK3_OUTPUT_PORT_2	; set the second port
-			out	dx,ax					; write the lower word first
-			shr eax,16					; move the high word over
+			out dx,ax			; write the lower word first
+			shr eax,16			; move the high word over
 			mov dx,MK3_OUTPUT_PORT_1	; set the first port
-			out dx,ax					; write the high word
+			out dx,ax			; write the high word
 		}
 	}
 
@@ -29,28 +52,14 @@ namespace MK3
 		__asm
 		{
 			mov dx,MK3_INPUT_PORT_1		; set the first port
-			in ax, dx					; read in one 16-bit port
-			shl eax,16					; shift eax left 16 to clear ax
+			in ax, dx			; read in one 16-bit port
+			shl eax,16			; shift eax left 16 to clear ax
 			mov dx,MK3_INPUT_PORT_2		; set the second port
-			in ax, dx					; read the second 16-bit port
+			in ax, dx			; read the second 16-bit port
 			mov dword ptr [ecx], eax	; assign our value
 		}
 	}
-#else
-	#include <sys/io.h>
-
-	inline void Write( uint32_t iData )
-	{
-		outw_p( (uint16_t)(iData>>16),	MK3_OUTPUT_PORT_1 );
-		outw_p( (uint16_t)(iData),		MK3_OUTPUT_PORT_2 );
-	}
-
-	inline void Read( uint32_t *pData )
-	{
-		*pData = inw_p(MK3_INPUT_PORT_1) << 16 | inw_p(MK3_INPUT_PORT_2);
-	}
 #endif
-};
 
 #endif // INPUT_HANDLER_MK3HELPER_H
 /*

@@ -18,14 +18,14 @@ bool PacDrive::Matches( int idVendor, int idProduct ) const
  * where LightsDriver::Set() is being called constantly and none of the calls
  * actually terminate. If this write fails, assume it's lost and don't reconnect.
  */
-bool PacDrive::Write( uint16_t iData )
+bool PacDrive::Write( const uint16_t &iData )
 {
 	// output is within the first 16 bits - accept a
 	// 16-bit arg and cast it, for simplicity's sake.
 	uint32_t data = (iData << 16);
 
 	int iReturn = usb_control_msg( m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-		HID_SET_REPORT, HID_IFACE_OUT, 0, (char *)&data, 4, 10000 );
+		HID_SET_REPORT, HID_IFACE_OUT, 0, (char *)data, 4, 10000 );
 
 	if( iReturn == 4 )
 		return true;

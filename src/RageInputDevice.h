@@ -301,18 +301,18 @@ typedef int DeviceButton;
 
 // workaround for GCC 3.3's (deficient) handling of jump tables
 #if defined(__GNUC__) && ( __GNUC__ == 3 ) && (__GNUC_MINOR__ < 4)
-int GetNumDeviceButtons( InputDevice device )
+inline int GetNumDeviceButtons( InputDevice device )
 {
 	if( device == DEVICE_KEYBOARD )
 		return NUM_KEYS;
+	if( device >= DEVICE_JOY1 && device <= DEVICE_JOY16 )
+		return NUM_JOYSTICK_BUTTONS;
 	if( device == DEVICE_PUMP1 || device == DEVICE_PUMP2 )
 		return NUM_PUMP_PAD_BUTTONS;
 	if( device == DEVICE_MIDI )
 		return NUM_MIDI_CHANNELS;
 	if( device == DEVICE_PARA1 )
 		return NUM_PARA_PAD_BUTTONS;
-	if( device >= DEVICE_JOY1 && device <= DEVICE_JOY16 )
-		return NUM_JOYSTICK_BUTTONS;
 
 	ASSERT( 0 );
 	return 0;

@@ -3,7 +3,7 @@
 
 #include <usb.h>
 
-// These need to be #define'd so they're properly used
+// These need to be #define'd so they're properly used in derivative CPPs.
 #define HID_GET_REPORT	0x01
 #define HID_SET_REPORT	0x09
 
@@ -29,7 +29,7 @@ protected:
 #endif
 
 /*
- * Copyright (c) 2008 BoXoRRoXoRs
+ * Copyright (c) 2008-2009 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

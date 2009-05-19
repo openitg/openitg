@@ -92,6 +92,8 @@ bool ArchHooks_Unix::OpenMemoryRange( unsigned short start_port, unsigned short 
 {
 	LOG->Trace( "ArchHooks_Unix::OpenMemoryRange( %#x, %d )", start_port, bytes );
 
+/* XXX: this does not work at all for the MK3 driver. Why not? */
+#if 0
 	if( (start_port+bytes) <= 0x3FF )
 	{
 		int ret = ioperm( start_port, bytes, 1 );
@@ -103,6 +105,7 @@ bool ArchHooks_Unix::OpenMemoryRange( unsigned short start_port, unsigned short 
 	}
 
 	LOG->Warn( "ArchHooks_Unix::OpenMemoryRange(): address range extends past ioperm, using iopl." );
+#endif
 
 	int ret = iopl(3);
 

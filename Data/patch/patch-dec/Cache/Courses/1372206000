@@ -1,0 +1,50 @@
+#COURSE:Universal;
+#METER:Regular:9;
+#METER:Difficult:10;
+// cache tags:
+#RADAR:0:1:1.175,0.000,0.562,0.446,0.009,787.000,61.000,47.000,0.000,0.000,0.000;
+#RADAR:0:2:1.661,0.000,0.977,0.884,0.203,1070.000,106.000,96.000,52.000,1.000,0.000;
+#RADAR:0:3:2.394,0.000,1.258,1.550,1.458,1528.000,139.000,171.000,91.000,18.000,0.000;
+#RADAR:1:1:1.252,0.000,0.548,0.316,0.201,867.000,59.000,34.000,3.000,0.000,0.000;
+#RADAR:1:2:1.782,0.000,1.621,0.306,0.606,1163.000,175.000,34.000,47.000,6.000,0.000;
+#RADAR:1:3:2.398,0.000,2.068,0.746,1.138,1532.000,228.000,79.000,97.000,12.000,0.000;
+// end cache tags
+#MODS:
+  TIME=0.00:LEN=108.64:MODS=Incoming:
+  TIME=14.55:LEN=23.63:MODS=30% Drunk:
+  TIME=38.18:LEN=29.09:MODS=30% Beat:
+  TIME=67.27:LEN=16.37:MODS=50% Expand:
+  TIME=83.64:LEN=21.81:MODS=30% Beat, flat, no roll, no twirl;
+#SONG:In The Groove 2/Sweet World:Medium:;
+#MODS:
+  TIME=0.00:LEN=99.85:MODS=Space:
+  TIME=14.01:LEN=14.02:MODS=50% Mini:
+  TIME=28.03:LEN=14.01:MODS=60% Tipsy:
+  TIME=42.04:LEN=14.02:MODS=40% Expand, 30% Beat:
+  TIME=56.06:LEN=14.01:MODS=80% Mini, Beat:
+  TIME=70.07:LEN=14.02:MODS=50% Stealth:
+  TIME=84.09:LEN=7.00:MODS=Planted:
+  TIME=91.09:LEN=8.76:MODS=flat, no roll, no twirl;
+#SONG:In The Groove 2/Spaceman:Hard:;
+#MODS:
+  TIME=0.00:LEN=103.09:MODS=Hallway, Dark:
+  TIME=15.97:LEN=14.23:MODS=50% Stealth:
+  TIME=23.09:LEN=7.11:MODS=30% Beat:
+  TIME=30.20:LEN=14.22:MODS=Dizzy:
+  TIME=44.42:LEN=21.33:MODS=Mini, 30% Beat:
+  TIME=58.64:LEN=7.11:MODS=50% Stealth:
+  TIME=65.75:LEN=14.22:MODS=40% Drunk:
+  TIME=72.86:LEN=7.11:MODS=40% Tipsy:
+  TIME=79.97:LEN=7.12:MODS=Mini, 30% Beat, 50% Boost:
+  TIME=87.09:LEN=16.00:MODS=Dizzy, 30% Drunk, 30% Tipsy, 40% Mini;
+#SONG:In The Groove 2/Spacy Crazy Girl:Hard:;
+#MODS:
+  TIME=0.00:LEN=112.14:MODS=20% Beat, Distant, Dark, Blind:
+  TIME=4.48:LEN=17.94:MODS=50% Wave, 20% Drunk, 20% Dizzy:
+  TIME=22.42:LEN=17.95:MODS=50% Tipsy, 50% Wave:
+  TIME=40.37:LEN=17.94:MODS=50% Expand, 50% Stealth:
+  TIME=58.31:LEN=8.97:MODS=30% Brake, 20% Tornado:
+  TIME=67.28:LEN=8.98:MODS=50% Expand, 50% Stealth:
+  TIME=76.26:LEN=17.94:MODS=20% Drunk, 20% Tipsy, Blink:
+  TIME=94.20:LEN=17.94:MODS=50% Wave, 20% Drunk, 20% Dizzy;
+#SONG:In The Groove/Zodiac:Hard:;

@@ -14,7 +14,7 @@ class G15: public USBDriver
 {
 public:
 	bool Read( uint32_t *pData ) { return false; }
-	bool Write( const uint32_t &iData, G15DisplayState throwaway );
+	bool Write( const uint32_t iData, G15DisplayState throwaway );
 
 protected:
 	bool Matches( int idVendor, int idProduct ) const;

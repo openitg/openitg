@@ -106,7 +106,7 @@ void LCDFill( unsigned char *pData, int rStart, int cStart, int width, int lengt
 
 }
 
-bool G15::Write( const uint32_t &iData, G15DisplayState throwaway )
+bool G15::Write( const uint32_t iData, G15DisplayState throwaway )
 {
 	unsigned char data[160*43];
 	memcpy(data, OpenITGLCD, 160*43);

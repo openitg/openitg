@@ -27,7 +27,7 @@ bool PIUIO::Read( uint32_t *pData )
 			break;
 
 		// all data not read
-		LOG->Warn( "PIUIO device error: %s", usb_strerror() );
+		LOG->Warn( "PIUIO input error: %s", usb_strerror() );
 		Close();
 	
 		while( !Open() )
@@ -37,18 +37,18 @@ bool PIUIO::Read( uint32_t *pData )
 	return true;
 }
 
-bool PIUIO::Write( const uint32_t &iData )
+bool PIUIO::Write( const uint32_t iData )
 {
 	int iResult;
 
 	while( 1 )
 	{
-		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)iData, 8, 10000 );
+		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)&iData, 8, 10000 );
 		
 		if( iResult == 8 )
 			break;
 		
-		LOG->Warn( "PIUIO device error: %s", usb_strerror() );
+		LOG->Warn( "PIUIO output error: %s", usb_strerror() );
 		Close();
 
 		while( !Open() )

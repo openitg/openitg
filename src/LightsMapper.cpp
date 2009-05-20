@@ -16,7 +16,7 @@
 #include "PlayerNumber.h"
 #include "LightsMapper.h"
 
-#define LIGHTS_INI_PATH CString("Data/LightsMaps.ini")
+#define LIGHTS_INI_PATH "Data/LightsMaps.ini"
 
 /* It is important to note that ToMapping writes to the
  * input; FromMapping does not. This is because we never

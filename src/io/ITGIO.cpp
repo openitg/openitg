@@ -42,14 +42,14 @@ bool ITGIO::Read( uint32_t *pData )
 	return true;
 }
 
-bool ITGIO::Write( const uint32_t &iData )
+bool ITGIO::Write( const uint32_t iData )
 {
 	int iResult;
 
 	while( 1 )
 	{
 		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-			HID_SET_REPORT, HID_IFACE_OUT, 0, (char *)iData, 4, 1000 );
+			HID_SET_REPORT, HID_IFACE_OUT, 0, (char *)&iData, 4, 1000 );
 	
 		if( iResult == 4 ) // all data read
 			break;

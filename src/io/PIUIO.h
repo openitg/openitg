@@ -9,7 +9,7 @@ public:
 	static bool DeviceMatches( int idVendor, int idProduct );
 
 	bool Read( uint32_t *pData );
-	bool Write( const uint32_t &iData );
+	bool Write( const uint32_t iData );
 	bool BulkReadWrite( uint32_t pData[8] );
 
 protected:

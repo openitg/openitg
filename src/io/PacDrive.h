@@ -6,7 +6,7 @@
 class PacDrive: public USBDriver
 {
 public:
-	bool Write( const uint16_t &iData );
+	bool Write( const uint16_t iData );
 
 protected:
 	bool Matches( int idVendor, int idProduct ) const;

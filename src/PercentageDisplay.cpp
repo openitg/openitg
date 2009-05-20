@@ -111,7 +111,8 @@ void PercentageDisplay::Refresh()
 		}
 
 		// clamp percentage - feedback is that negative numbers look weird here.
-		CLAMP( fPercentDancePoints, 0.f, 1.f );
+		if( m_Last <= m_LastMax )
+			CLAMP( fPercentDancePoints, 0.f, 1.0f );
 
 		if( PERCENT_USE_REMAINDER )
 		{

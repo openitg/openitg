@@ -1,5 +1,5 @@
 --[[
-OpenITG resolution switcher, version 0.9
+OpenITG resolution switcher, version 1.0
 Licensed under Creative Commons Attribution-Share Alike 3.0 Unported
 (http://creativecommons.org/licenses/by-sa/3.0/)
 
@@ -9,19 +9,12 @@ Written by Mark Cannon ("Vyhd") for OpenITG (http://www.boxorroxors.net/)
 All I ask is that you keep this notice intact and don't redistribute in bytecode.
 --]]
 
--- forces a complete metric rehash
-function ForceThemeReload()
-	local theme = THEME:GetCurThemeName()
-	GAMESTATE:DelayedGameCommand( "theme,"..theme )	
-end
-
 -- used in a few places, so we keep it here.
 -- checks to see if two floats are equal, within error
 local function fequ( f1, f2, error )
 	if not f1 or not f2 then return nil end
 	local error = error or 0.01
 	local absolute_diff = math.abs(f1 - f2)
-	Debug( "fequ( " .. f1 .. ", " .. f2 .. ", " .. error .. "): " .. absolute_diff )
 	return absolute_diff < error
 end
 
@@ -33,19 +26,19 @@ local Resolutions =
 	["4:3"] = 
 	{
 		Ratio = 1.333333,
-		Res = { "640x480", "800x600", "1024x768", "1280x1024" },
+		Res = { "512x384", "640x480", "800x600", "1024x768", "1152x864", "1280x1024", "1400x1050", "1600x1200" },
 	},
 
 	["16:10"] =
 	{
 		Ratio = 1.6,
-		Res = { "720x480", "960x600", "1440x900" },
+		Res = { "720x480", "1000x600", "1280x800", "1440x900", "1600x1024" },
 	},
 
 	["16:9"] =	
 	{
 		Ratio = 1.777777,
-		Res = { " 960x540", "1280x720", "1600x900", "1920x1080" },
+		Res = { "960x540", "1280x720", "1600x900", "1920x1080" },
 	},
 }
 
@@ -55,15 +48,11 @@ local function SplitResolution( res )
 	local delim_pos = string.find( res, "x" )
 	local width = tonumber( string.sub(res,1,delim_pos-1) )
 	local height = tonumber( string.sub(res,delim_pos+1) )
-
-	Debug( res .. " -> " .. width .. "x" .. height .. ", ratio " .. width/height )
-
 	return width, height
 end
 
 -- returns the float value associated with the given ratio
 local function RatioToFloat( ratio )
-	Debug( "RatioToFloat: " .. ratio )
 	return tonumber(Resolutions[ratio].Ratio)
 end
 
@@ -88,7 +77,6 @@ function LuaSetAspectRatio()
 	
 	local function Load(self, list, pn)
 		for i=1,table.getn(Names) do
-			Debug( "LuaSetAspectRatio, Names[" .. i .. "], " .. Names[i] )
 			if fequ(temp_float, RatioToFloat(Names[i])) then list[i] = true return end
 		end
 	
@@ -101,7 +89,6 @@ function LuaSetAspectRatio()
 				if not fequ(ratio,temp_float) then
 					temp_ratio = Names[i]
 					temp_float = RatioToFloat( temp_ratio )
-					Debug( "New ratio: " .. temp_ratio .. ", float " .. temp_float )
 					MESSAGEMAN:Broadcast( "AspectRatioChanged" )
 					return
 				end
@@ -144,7 +131,6 @@ function LuaSetResolution( ratio )
 			if list[i] then
 				-- make sure we're the right one being selected
 				if ratio ~= temp_ratio then return end
-				Debug( "Setting for ratio " .. ratio .. " (temp: " .. temp_ratio .. ")" )
 
 				local width, height = SplitResolution( Names[i] )
 
@@ -166,7 +152,6 @@ function LuaSetResolution( ratio )
 
 		-- disable this line if it isn't used for the current ratio
 		EnabledForPlayers = fequ(RatioToFloat(ratio),temp_float) and {PLAYER_1,PLAYER_2} or {},
-
 		ReloadRowMessages = { "AspectRatioChanged" },
 	};
 

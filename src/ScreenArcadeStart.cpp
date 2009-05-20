@@ -68,18 +68,25 @@ ScreenArcadeStart::~ScreenArcadeStart()
 
 void ScreenArcadeStart::Update( float fDeltaTime )
 {
-	m_fTimeout -= fDeltaTime;
-
 	Screen::Update( fDeltaTime );
 
-	// problem was fixed, or we timed out - pretend we hit Start,
-	// so we can keep all our code properly in one place.
+	/* If everything checks out, fake a START press,
+	 * so we can keep our logic in one place. */
 	if( m_fTimeout < 0 || (m_bHandlerLoaded && m_bHubConnected) )
+	{
 		MenuStart( PLAYER_INVALID );
+		return;
+	}
 
-	if( m_bHandlerLoaded && !m_bHubConnected )
-		CheckForHub();
+	/* If we have no handler, we can't play. If we can play, and
+	 * don't know it, the user can hit START. So, stop here. */
+	if( !m_bHandlerLoaded )
+		return;
 
+	m_fTimeout -= fDeltaTime;
+
+	/* Check for the USB hub. Has it been connected? */
+	m_bHubConnected = CheckForHub();
 	m_Error.SetText( m_sMessage );
 }
 

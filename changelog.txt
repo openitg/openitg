@@ -1,6 +1,10 @@
 OpenITG, beta 2 (in development)
 --------------------------------
 -Improved Colorized Graph logic
+-Fixed cross-platform bugs:
+     ScreenArcadeStart times out, even with missing I/O handler
+-Miscellaneous changes:
+     De-clamped PercentageDisplay (Getting Started displays properly now)
 
 OpenITG, beta 1 (May 15th, 2009)
 --------------------------------

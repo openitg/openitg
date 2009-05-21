@@ -59,6 +59,7 @@ namespace MK3
 			mov dword ptr [ecx], eax	; assign our value
 		}
 	}
+};
 #endif
 
 #endif // INPUT_HANDLER_MK3HELPER_H

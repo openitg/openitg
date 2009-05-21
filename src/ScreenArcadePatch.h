@@ -1,71 +1,67 @@
 #ifndef SCREEN_ARCADE_PATCH_H
 #define SCREEN_ARCADE_PATCH_H
 
-#include "RageThreads.h"
-#include "RageFile.h"
 #include "ScreenWithMenuElements.h"
-#include "PlayerNumber.h"
 #include "BitmapText.h"
+#include "RageThreads.h"
 
-class ScreenArcadePatch : public ScreenWithMenuElements
+enum PatchState
+{
+	PATCH_NONE,
+	PATCH_CHECKING,
+	PATCH_INSTALLED,
+	PATCH_ERROR,
+	NUM_PATCH_STATES
+};
+
+class RageFileDriverZip;
+
+class ScreenArcadePatch: public ScreenWithMenuElements
 {
 public:
 	ScreenArcadePatch( CString sName );
 	~ScreenArcadePatch();
 
 	virtual void Init();
-
-	virtual void Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI );
-	virtual void Update(float f);
-	virtual void DrawPrimitives();
-	
+	virtual void Update( float fDeltaTime );
 	virtual void HandleScreenMessage( const ScreenMessage SM );
+
 	virtual void MenuStart( PlayerNumber pn );
-	virtual void MenuBack( PlayerNumber pn );
+	virtual void MenuBack( PlayerNumber pn )	{ MenuStart(pn); }
 private:
-	/* starts the patch loading thread when called */
-	static int PatchThread_Start( void *p ) { ((ScreenArcadePatch *) p)->CheckForPatches(); return 0; }
+	/* current state of the patch being checked */
+	PatchState m_State, m_LastUpdatedState;
 
+	/* thread that does the checking */
+	RageThread m_Thread;
+	static int PatchThread_Start( void *p )
+	{
+		((ScreenArcadePatch *)p)->PatchMain();
+		return 0;
+	}
 
-	/* Main patch-checking function */
-	void CheckForPatches();
+	/* main function for patch checking */
+	void PatchMain();
 
+	/* secondary functions, more encapsulated than the last ones... */
+	bool HasPatch( PlayerNumber pn, const CStringArray &vsPatterns );
+	bool VerifyPatch( const CString &sPath, const CStringArray &vsKeyPaths );
+	bool GetXMLData( RageFileDriverZip *pZip, CString &sGame, CString &sMessage, int &iRevision );
 
-	/* find a card that can be used, load from it */
-	void FindCard();
-	bool LoadFromCard();	
-
-	/* add patches to the member vector to check */
-	bool AddPatches( CString sPattern );
-
-	/* load and verify the patch passed to LoadPatch */
-	bool LoadPatch( CString sPath, bool bOnCard );
-	bool FinalizePatch();
-
-	bool m_bReboot;
-	bool m_bExit;
-
-	/* All found patches */
 	CStringArray m_vsPatches;
-	
-	PlayerNumber m_Player;
-	CString m_sCardDir;
-	CString m_sPatchPath;
-	CString m_sSuccessMessage;
 
-	BitmapText m_Status;
-	BitmapText m_Patch;
+	CString m_sProfileDir;
 
-	/* The thread that handles the loading/verification, and its shutdown */
-	RageThread m_PatchThread;
+	BitmapText m_StateText;
+	BitmapText m_PatchText;
 };
 
-#endif
+#endif // SCREEN_ARCADE_PATCH_H
 
 /*
- * Copyright (c) 2008 BoXoRRoXoRs
+ * (c) 2008-2009 BoXoRRoXoRs
  * All rights reserved.
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -75,7 +71,7 @@ private:
  * copyright notice(s) and this permission notice appear in all copies of
  * the Software and that both the above copyright notice(s) and this
  * permission notice appear in supporting documentation.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
  * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF

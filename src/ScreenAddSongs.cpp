@@ -10,6 +10,7 @@
 #include "MemoryCardManager.h"
 #include "ScreenDimensions.h"
 #include "RageFileManager.h"
+#include "arch/Dialog/DialogDriver.h"
 #include "RageFileDriverZip.h"
 #include "CryptManager.h"
 #include "RageUtil.h"
@@ -19,12 +20,17 @@
 #include "RageFileDriverDirect.h" /* defines DirectFilenameDB */
 #include "arch/ArchHooks/ArchHooks.h"
 
+#define NEXT_SCREEN					THEME->GetMetric (m_sName,"NextScreen")
+#define PREV_SCREEN					THEME->GetMetric (m_sName,"PrevScreen")
+
 static RageMutex MountMutex("ITGDataMount");
 
 REGISTER_SCREEN_CLASS( ScreenAddSongs );
 
-AutoScreenMessage( SM_ConfirmAddZips );
-AutoScreenMessage( SM_AnswerConfirmAddZips );
+AutoScreenMessage( SM_ConfirmAddZip );
+AutoScreenMessage( SM_AnswerConfirmAddZip );
+AutoScreenMessage( SM_ConfirmDeleteZip );
+AutoScreenMessage( SM_AnswerConfirmDeleteZip );
 
 PlayerNumber g_CurrentPlayer;
 
@@ -32,6 +38,7 @@ ScreenAddSongs::ScreenAddSongs( CString sName ) : ScreenWithMenuElements( sName 
 {
 	m_bRestart = false;
 	m_bPrompt = false;
+	m_CurPlayer = PLAYER_INVALID;
 	MEMCARDMAN->UnlockCards();
 }
 
@@ -44,9 +51,6 @@ ScreenAddSongs::~ScreenAddSongs()
 
 	FOREACH_PlayerNumber( pn )
 		MEMCARDMAN->UnmountCard( pn );
-
-	OFF_COMMAND( m_AddedZipList );
-	OFF_COMMAND( m_AddableZipSelection );
 
 	if ( m_bRestart )
 		HOOKS->SystemReboot();
@@ -68,27 +72,31 @@ void ScreenAddSongs::Init()
 	map<CString,CString>::iterator iter;
 
 	/////// XXX Temporarily disabled until I code in an OptionsList for each package list /////
-	SCREENMAN->SystemMessage("Adding songs screen is still in its alpha stage, so it is disabled for now.");
-	SCREENMAN->SetNewScreen( "ScreenOptionsMenu" );
-	return;
+	//SCREENMAN->SystemMessage("Adding songs screen is still in its alpha stage, so it is disabled for now.");
+	//SCREENMAN->SetNewScreen( "ScreenOptionsMenu" );
+	//return;
 	///////////////////////////////////////////////////////////////////////////////////
 
 	ScreenWithMenuElements::Init();
 
-
 	LoadAddedZips();
 
-	m_AddedZipList.SetName( "LoadedSongList" );
-	m_AddedZipList.LoadFromFont( THEME->GetPathF( "ScreenAddSongs", "text" ) );
-	SET_XY_AND_ON_COMMAND( m_AddedZipList );
-	m_AddedZipList.SetText( join("\n", m_asAddedZips) );
-	this->AddChild( &m_AddedZipList );
+	m_AddedZips.SetName( "LinkedOptionsMenuAddedZips" );
+	m_USBZips.SetName( "LinkedOptionsMenuUSBZips" );
+	m_Exit.SetName( "LinkedOptionsMenuSASExit" );
 
-	m_AddableZipSelection.SetName( "AddableSongList" );
-	m_AddableZipSelection.LoadFromFont( THEME->GetPathF( "ScreenAddSongs", "text" ) );
-	m_AddableZipSelection.SetText( THEME->GetMetric(m_sName,"AddableSongListHelpText") );
-	SET_XY_AND_ON_COMMAND( m_AddableZipSelection );
-	this->AddChild( &m_AddableZipSelection );
+	m_USBZips.Load( NULL, &m_AddedZips );
+	m_AddedZips.Load( &m_USBZips, &m_Exit );
+	m_Exit.Load( &m_AddedZips, NULL );
+
+
+	this->AddChild( &m_AddedZips );
+	this->AddChild( &m_USBZips );
+	this->AddChild( &m_Exit );
+
+	SET_XY_AND_ON_COMMAND( m_AddedZips );
+	SET_XY_AND_ON_COMMAND( m_USBZips );
+	SET_XY_AND_ON_COMMAND( m_Exit );
 
 	m_Disclaimer.SetName( "Disclaimer" );
 	m_Disclaimer.LoadFromFont( THEME->GetPathF( "ScreenAddSongs", "text" ) );
@@ -98,6 +106,28 @@ void ScreenAddSongs::Init()
 
 	this->SortByDrawOrder();
 
+	m_AddedZips.SetChoices( m_asAddedZips );
+
+	/*
+	CStringArray sDummyChoices;
+	sDummyChoices.push_back( "blah1" );
+	sDummyChoices.push_back( "blah2" );
+	sDummyChoices.push_back( "blah3" );
+	sDummyChoices.push_back( "blah4" );
+	sDummyChoices.push_back( "blah5" );
+	sDummyChoices.push_back( "blah6" );
+	sDummyChoices.push_back( "blah7" );
+	m_USBZips.SetChoices( sDummyChoices );*/
+
+	{
+		CStringArray asExit;
+		asExit.push_back( "Exit" );
+		m_Exit.SetChoices( asExit );
+	}
+
+	m_Exit.Focus();
+	m_pCurLOM = &m_Exit;
+	
 	m_bStopThread = false;
 	m_PlayerSongLoadThread.SetName( "Song Add Thread" );
 	m_PlayerSongLoadThread.Create( InitSASSongThread, this );
@@ -114,91 +144,73 @@ void ScreenAddSongs::StartSongThread()
 			continue;
 		}
 
+		if ( m_CurPlayer != PLAYER_INVALID && MEMCARDMAN->GetCardState(m_CurPlayer) != MEMORY_CARD_STATE_READY )
+		{
+			m_USBZips.ClearChoices();
+			m_CurPlayer = PLAYER_INVALID;
+			continue;
+		}
+
 		FOREACH_PlayerNumber( pn )
 		{
-			MemoryCardState PCardState = MEMCARDMAN->GetCardState(pn);
-			map<CString,CString>::iterator iter;
-			if (PCardState == MEMORY_CARD_STATE_READY && !m_bCardMounted[pn])
+			if ( m_CurPlayer != PLAYER_INVALID ) break;
+			if ( MEMCARDMAN->GetCardState(pn) == MEMORY_CARD_STATE_READY )
 			{
-				if( !PROFILEMAN->LoadProfileFromMemoryCard(pn) || !PROFILEMAN->IsPersistentProfile(pn) ) continue;
-				m_AddableZipSelection.SetText( ssprintf("Loading Player %d songs...\n", pn+1) );
-				m_asAddableZips[pn].clear();
-				MEMCARDMAN->LockCards();
-				MEMCARDMAN->MountCard(pn, 999);
-				
-				CStringArray asZips;
-				CString sDir = PROFILEMAN->GetProfileDir(pn) + "/AdditionalSongs";
-				GetDirListing( sDir+"/*.zip", asZips ); /**/
-				for (unsigned i = 0; i < asZips.size(); i++)
+				bool bSuccessfulMount = MEMCARDMAN->MountCard(pn);
+				if (!bSuccessfulMount) continue;
+				CString sProfileDir = MEM_CARD_MOUNT_POINT[pn];
+				if (sProfileDir.empty())
 				{
-					bool bAdd = true;
-
-					// don't add duplicate zips
-					FOREACH_CONST( CString, m_asAddedZips, iter )
-					{
-#if defined(WIN32)
-						// Windows: no case sensitivity, don't take chances
-						if ( iter->CompareNoCase(asZips[i]) == 0 ) bAdd = false;
-#else
-						if ( *iter == asZips[i] ) bAdd = false; // same file names?
-#endif
-					}
-					
-					if (!bAdd) continue;
-					m_asAddableZips[pn].push_back( asZips[i] );
+					MEMCARDMAN->UnmountCard(pn);
+					continue;
 				}
-				
+				CString sPlayerAdditionalSongsDir = sProfileDir + "/AdditionalSongs";
+				CStringArray sUSBZips;
+				GetDirListing( sPlayerAdditionalSongsDir+"/*.zip", sUSBZips, false, false );
 				MEMCARDMAN->UnmountCard(pn);
-				MEMCARDMAN->UnlockCards();
-				m_bCardMounted[pn] = true;
-				g_CurrentPlayer = pn;
-				bLaunchPrompt = true;
-			}
-			if (PCardState == MEMORY_CARD_STATE_NO_CARD && m_bCardMounted[pn])
-			{
-				LOG->Debug("Unmounting memory card for player %d", pn+1);
-				m_asAddableZips[pn].clear();
-				m_bCardMounted[pn] = false;
+				m_USBZips.SetChoices( sUSBZips );
+				m_CurPlayer = pn;
 			}
 		}
-	
-		if ( m_asAddableZips[PLAYER_1].size() + m_asAddableZips[PLAYER_2].size() > 0 )
-		{
-			CStringArray asAddableZips;
 
-			FOREACH( CString, m_asAddableZips[PLAYER_1], iter )
-			{
-				asAddableZips.push_back( *iter );
-			}
-			FOREACH( CString, m_asAddableZips[PLAYER_2], iter )
-			{
-				asAddableZips.push_back( *iter );
-			}
-
-			m_AddableZipSelection.SetText( join("\n", asAddableZips ) );
-
-			if (bLaunchPrompt)
-			{
-				this->PostScreenMessage( SM_ConfirmAddZips, 0.0f );
-				m_bPrompt = true;
-			}
-		}
-		else
-			m_AddableZipSelection.SetText( "Please insert memory card with additional songs for transfer" );
 		usleep( 1000 );
 	}
 }
 
 void ScreenAddSongs::Update( float fDeltaTime )
 {
-	Screen::Update( fDeltaTime );
+	ScreenWithMenuElements::Update( fDeltaTime );
 }
 
 void ScreenAddSongs::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
 	if( type != IET_FIRST_PRESS && type != IET_SLOW_REPEAT )
 		return;	// ignore
-	Screen::Input( DeviceI, type, GameI, MenuI, StyleI );
+	switch( MenuI.button )
+	{
+	case MENU_BUTTON_SELECT:
+	case MENU_BUTTON_LEFT:
+	case MENU_BUTTON_RIGHT:
+		m_pCurLOM->Input(DeviceI, type, GameI, MenuI, StyleI, m_pCurLOM);
+	}
+
+	if ( MenuI.button == MENU_BUTTON_START )
+	{
+		//Dialog::OK( "MENU_BUTTON_START -- m_pCurLOM: " + m_pCurLOM->GetName() );
+		if ( m_pCurLOM->GetName() == "LinkedOptionsMenuSASExit" )
+		{
+			this->PostScreenMessage( SM_GoToNextScreen, 0.0f);
+		}
+		else if ( m_pCurLOM->GetName() == "LinkedOptionsMenuUSBZips" )
+		{
+			this->PostScreenMessage( SM_ConfirmAddZip, 0.0f );
+		}
+		else if ( m_pCurLOM->GetName() == "LinkedOptionsMenuAddedZips" )
+		{
+			this->PostScreenMessage( SM_ConfirmDeleteZip, 0.0f );
+		}
+	}
+	ScreenWithMenuElements::Input( DeviceI, type, GameI, MenuI, StyleI );
 }
 
 CString g_CurXferFile;
@@ -218,23 +230,47 @@ static CString g_asBlacklistedFolders[] = { "Data", "Program" };
 
 void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 {
-	if ( SM == SM_ConfirmAddZips )
+	if ( SM == SM_ConfirmDeleteZip )
 	{
-		SCREENMAN->Prompt( SM_AnswerConfirmAddZips, 
-			m_AddableZipSelection.GetText() + "\n\nProceed to add song packs to machine?",
-		PROMPT_YES_NO, ANSWER_NO );
+		SCREENMAN->Prompt( SM_AnswerConfirmDeleteZip, 
+			"Proceed to delete pack from machine?",
+			PROMPT_YES_NO, ANSWER_NO );
 	}
-	if ( SM == SM_AnswerConfirmAddZips )
+	if ( SM == SM_AnswerConfirmDeleteZip )
+	{
+		CString sSelection = m_AddedZips.GetCurrentSelection();
+		CString sToDelete = "/AdditionalSongs/" + sSelection;
+		FILEMAN->Unmount("zip", sToDelete, "/Songs");
+		FILEMAN->Unmount("zip", sToDelete, "/");
+		bool bSuccess = FILEMAN->Remove( sToDelete );
+		if (bSuccess)
+		{
+			m_bRestart = true;
+			m_asAddedZips.clear();
+			LoadAddedZips();
+			m_AddedZips.SetChoices( m_asAddedZips );
+		}
+		else
+		{
+			SCREENMAN->SystemMessage( "Failed to delete zip file from machine.\n"
+								"The harddrive may be corrupt or have wrong permissions set for the destination folder.");
+		}
+	}
+	if ( SM == SM_ConfirmAddZip )
+	{
+		SCREENMAN->Prompt( SM_AnswerConfirmAddZip, 
+			"Proceed to add pack to machine?",
+			PROMPT_YES_NO, ANSWER_NO );
+	}
+	if ( SM == SM_AnswerConfirmAddZip )
 	{
 		bool bSuccess = false, bBreakEarly = false, bSkip = false;
 		CString sError;
 
 		m_bPrompt = false;
 		if (ScreenPrompt::s_LastAnswer == ANSWER_NO)
-		{
-			LOG->Debug("SM_AnswerConfirmAddZips: returning...");
 			return;
-		}
+
 		m_bStopThread = true;
 		m_PlayerSongLoadThread.Wait();
 
@@ -244,7 +280,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 #endif
 		MEMCARDMAN->LockCards();
 		MEMCARDMAN->MountCard(g_CurrentPlayer, 99999);
-		for( unsigned i = 0; i < m_asAddableZips[g_CurrentPlayer].size(); i++ )
+		CString sSelection = m_USBZips.GetCurrentSelection();
 		{
 			CStringArray asRootFiles;
 			RageFileDriverZip *pZip = new RageFileDriverZip;
@@ -252,18 +288,31 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 			bBreakEarly = false;
 			bSkip = false;
 
-			g_CurXferFile = PROFILEMAN->GetProfileDir(g_CurrentPlayer) + "/AdditionalSongs/" + m_asAddableZips[g_CurrentPlayer][i];
+			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/AdditionalSongs/" + sSelection;
 			if ( !pZip->Load( g_CurXferFile ) )
 			{
-				SCREENMAN->SystemMessage( ssprintf("Skipping %s (corrupt zip file)", m_asAddableZips[g_CurrentPlayer][i].c_str()) );
+				SCREENMAN->SystemMessage( ssprintf("Skipping %s (corrupt zip file)", sSelection.c_str()) );
 				SAFE_DELETE(pZip);
-				continue;
+				m_bStopThread = false;
+				m_PlayerSongLoadThread.Create( InitSASSongThread, this );
+				return;
 			}
 
 			/* Sanity checks */
+			for( unsigned m = 0; m < m_asAddedZips.size(); m++ )
+			{
+				if ( sSelection == m_asAddedZips[m] ) // zip is already on hard drive
+				{
+					SCREENMAN->SystemMessage(sSelection + " is already on the machine.");
+					m_bStopThread = false;
+					m_PlayerSongLoadThread.Create( InitSASSongThread, this );
+					return;
+				}
+			}
+
 			pZip->GetDirListing( "*", asRootFiles, false, false );
 
-			LOG->Debug("%s: root entries: %s", g_CurXferFile.c_str(), join( ", ", asRootFiles ).c_str()); // XXX
+			LOG->Trace("%s: root entries: %s", g_CurXferFile.c_str(), join( ", ", asRootFiles ).c_str()); // XXX
 
 			FOREACH( CString, asRootFiles, sRootFile )
 			{
@@ -271,7 +320,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 				// do not allow actual files in the root of the zip, too sploity
 				if ( pZip->GetFileType(*sRootFile) == RageFileManager::TYPE_FILE )
 				{
-					SCREENMAN->SystemMessage( ssprintf("Skipping %s (loose file %s not allowed in root of zip)", m_asAddableZips[g_CurrentPlayer][i].c_str(), sRootFile->c_str()) );
+					SCREENMAN->SystemMessage( ssprintf("Skipping %s (loose file %s not allowed in root of zip)", sSelection.c_str(), sRootFile->c_str()) );
 					SAFE_DELETE(pZip);
 					bSkip = true;
 					break;
@@ -284,7 +333,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 				{
 					if ( !sRootFile->CompareNoCase(g_asBlacklistedFolders[f]) )
 					{
-						SCREENMAN->SystemMessage( ssprintf("Skipping %s (directory %s is not allowed in root of zip)", m_asAddableZips[g_CurrentPlayer][i].c_str(), sRootFile->c_str()) );
+						SCREENMAN->SystemMessage( ssprintf("Skipping %s (directory %s is not allowed in root of zip)", sSelection.c_str(), sRootFile->c_str()) );
 						SAFE_DELETE(pZip);
 						bSkip = true;
 						bpBreak = true;
@@ -293,19 +342,21 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 					if (bpBreak) break;
 				}
 			}
-			if (bSkip) continue;
+			if (bSkip) 
+			{
+				m_bStopThread = false;
+				m_PlayerSongLoadThread.Create( InitSASSongThread, this );
+				return;
+			}
 
 			// sanity checks completed, proceeding...
 			SAFE_DELETE(pZip);
 
-			if (!CopyWithProgress(g_CurXferFile, "/AdditionalSongs/" + m_asAddableZips[g_CurrentPlayer][i], UpdateXferProgress, sError) )
+			if (!CopyWithProgress(g_CurXferFile, "/AdditionalSongs/" + sSelection, UpdateXferProgress, sError) )
 			{
 				SCREENMAN->SystemMessage( "Transfer error: " + sError );
 				bBreakEarly = true;
-				// TODO: delete remnant transfer contents
-				break;
 			}
-			if (bBreakEarly) break;
 		}
 		MEMCARDMAN->UnmountCard(g_CurrentPlayer);
 		MEMCARDMAN->UnlockCards();
@@ -318,14 +369,16 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		if (!bBreakEarly) bSuccess = true;
 		SCREENMAN->HideOverlayMessage();
 		SCREENMAN->ZeroNextUpdate();
+		FILEMAN->FlushDirCache("/AdditionalSongs");
 		// hmm...
 		if (bSuccess)
 		{
-			m_AddableZipSelection.SetText(
-				"The song folders have been successfully added to the machine\n"
-				"Press enter to restart..." );
 			m_bRestart = true;
-			return;
+
+			m_asAddedZips.clear();
+			LoadAddedZips();
+			Dialog::OK( join(", ", m_asAddedZips) );
+			m_AddedZips.SetChoices( m_asAddedZips );
 		}
 
 		// recreate the song accept thread if xfer failed or user declined to add songs
@@ -336,8 +389,10 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 	switch( SM )
 	{
 	case SM_GoToNextScreen:
+		SCREENMAN->SetNewScreen( NEXT_SCREEN );
+		break;
 	case SM_GoToPrevScreen:
-		SCREENMAN->SetNewScreen( "ScreenOptionsMenu" );
+		SCREENMAN->SetNewScreen( PREV_SCREEN );
 		break;
 	}
 }
@@ -351,10 +406,12 @@ void ScreenAddSongs::MenuBack( PlayerNumber pn )
 	}
 }
 
+/*
 void ScreenAddSongs::MenuStart( PlayerNumber pn )
 {
 	MenuBack(pn);
 }
+*/
 
 void ScreenAddSongs::DrawPrimitives()
 {

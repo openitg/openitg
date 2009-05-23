@@ -7,6 +7,8 @@
 #include "PlayerNumber.h"
 #include "song.h"
 #include "RageThreads.h"
+#include "ScreenMiniMenu.h"
+#include "LinkedOptionsMenu.h"
 
 class ScreenAddSongs : public ScreenWithMenuElements
 {
@@ -21,7 +23,7 @@ public:
 	virtual void DrawPrimitives();
 	
 	virtual void HandleScreenMessage( const ScreenMessage SM );
-	virtual void MenuStart( PlayerNumber pn );
+	//virtual void MenuStart( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn );
 
 	void StartSongThread();
@@ -31,20 +33,21 @@ private:
 	void LoadAddedZips();
 
 	CStringArray m_asAddedZips;
-	BitmapText m_AddedZipList;
-
 	CStringArray m_asAddableZips[NUM_PLAYERS];
-	BitmapText m_AddableZipSelection;
 
 	BitmapText m_Disclaimer;
 
-	bool m_bRestart;
+	LinkedOptionsMenu m_AddedZips;
+	LinkedOptionsMenu m_USBZips;
+	LinkedOptionsMenu m_Exit;
+	LinkedOptionsMenu *m_pCurLOM;
+
+	RageThread m_PlayerSongLoadThread;
 
 	bool m_bCardMounted[NUM_PLAYERS];
-	RageThread m_PlayerSongLoadThread;
-	PlayerNumber m_CurrentPlayer;
+	PlayerNumber m_CurPlayer;
+	bool m_bRestart;
 	bool m_bPrompt;
-
 };
 
 #endif

@@ -115,7 +115,7 @@ void LinkedOptionsMenu::SetChoices( const CStringArray &asChoices )
 
 	if ( m_Rows.size() > 0 )
 	{
-		if ( m_bFocus && iPrevNumChoices == 0 ) m_Cursor.PlayCommand( "TweenOn" );
+		if ( m_bFocus ) m_Cursor.PlayCommand( "TweenOn" );
 		m_Cursor.SetXY( CURSOR_OFFSET_X + m_Rows[0]->GetX(), m_Rows[0]->GetY() );
 		m_Cursor.SetBarWidth( floor(m_Rows[0]->GetZoomedWidth()) );
 		m_iCurrentSelection = 0;

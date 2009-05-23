@@ -238,6 +238,8 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 	}
 	if ( SM == SM_AnswerConfirmDeleteZip )
 	{
+		if (ScreenPrompt::s_LastAnswer == ANSWER_NO)
+			return;
 		CString sSelection = m_AddedZips.GetCurrentSelection();
 		CString sToDelete = "/AdditionalSongs/" + sSelection;
 		FILEMAN->Unmount("zip", sToDelete, "/Songs");
@@ -246,6 +248,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		if (bSuccess)
 		{
 			m_bRestart = true;
+			FILEMAN->FlushDirCache( "/AdditionalSongs" );
 			m_asAddedZips.clear();
 			LoadAddedZips();
 			m_AddedZips.SetChoices( m_asAddedZips );
@@ -377,7 +380,6 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 
 			m_asAddedZips.clear();
 			LoadAddedZips();
-			Dialog::OK( join(", ", m_asAddedZips) );
 			m_AddedZips.SetChoices( m_asAddedZips );
 		}
 

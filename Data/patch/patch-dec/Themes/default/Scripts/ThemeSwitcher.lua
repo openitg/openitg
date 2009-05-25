@@ -1,5 +1,5 @@
 --[[
-Lua Theme Switcher, OpenITG beta 1, version 1.2
+Lua Theme Switcher, OpenITG beta 1, version 1.3
 Licensed under Creative Commons Attribution-Share Alike 3.0 Unported
 (http://creativecommons.org/licenses/by-sa/3.0/)
 
@@ -37,7 +37,11 @@ local function GetThemesFiltered()
 	return ret
 end
 
-function ThemeSwitcher()
+-- changed to use an argument for the next screen to go to
+function ThemeSwitcher( next_screen )
+	-- default to options menu unless otherwise set
+	next_screen = next_screen or "ScreenOptionsMenu"
+
 	local Names = GetThemesFiltered()
 	local amt = table.getn(Names)
 
@@ -57,8 +61,10 @@ function ThemeSwitcher()
 	end
 
 	local function Save(self, list, pn)
-		for i=1,amt do
-			if list[i] then GAMESTATE:DelayedGameCommand( "theme," .. Names[i] .. ";screen,ScreenOptionsMenu" ) end
+		for i=1,amt do if list[i] then
+			local command = "theme," .. Names[i]
+			command = command .. ";screen," .. next_screen
+			GAMESTATE:DelayedGameCommand( command ) end
 		end
 	end
 

@@ -44,7 +44,7 @@ void BPMDisplay::Load()
 
 float BPMDisplay::GetActiveBPM() const
 {
-	return m_fBPMTo + (m_fBPMFrom-m_fBPMTo)*m_fPercentInState;
+	return (m_fBPMTo + (m_fBPMFrom-m_fBPMTo)*m_fPercentInState) * GAMESTATE->m_SongOptions.m_fMusicRate;
 }
 
 void BPMDisplay::Update( float fDeltaTime ) 

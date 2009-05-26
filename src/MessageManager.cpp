@@ -76,7 +76,8 @@ static const CString MessageNames[] = {
 	"OptionsListOpenedP1",
 	"OptionsListOpenedP2",
 	"OptionsListClosedP1",
-	"OptionsListClosedP2"
+	"OptionsListClosedP2",
+	"LinkedMenuChange"
 };
 XToString( Message, NUM_MESSAGES );
 

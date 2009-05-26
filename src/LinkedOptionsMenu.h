@@ -12,6 +12,7 @@
 #include "MenuInput.h"
 #include "BitmapText.h"
 #include "ThemeMetric.h"
+#include "ScreenMessage.h"
 
 enum LinkedInputResponseType
 {
@@ -33,6 +34,7 @@ public:
 	LinkedInputResponseType Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI, LinkedOptionsMenu *&pFocusedMenu );
 	void SetChoices( const CStringArray &asChoices );
 	void SetChoiceIndex( int iChoice );
+	void SetMenuChangeScreenMessage( const ScreenMessage SM ) { m_smChangeMenu = SM; }
 	void ClearChoices();
 	void ControlCursor( int iRowStart );
 	void Focus();
@@ -43,6 +45,8 @@ public:
 	void SetPage(int iPage);
 	LinkedOptionsMenu *GetNextMenu();
 	LinkedOptionsMenu *GetPrevMenu();
+	LinkedOptionsMenu *SwitchToNextMenu();
+	LinkedOptionsMenu *SwitchToPrevMenu();
 
 private:
 	vector<BitmapText*>				m_Rows;
@@ -59,6 +63,8 @@ private:
 
 	int								m_iCurrentSelection;
 	int								m_iCurPage;
+
+	ScreenMessage					m_smChangeMenu;
 
 	ThemeMetric<float>				ROW_SPACING_Y;
 	ThemeMetric<float>				ROW_OFFSET_Y;

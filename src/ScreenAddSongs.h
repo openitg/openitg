@@ -25,6 +25,7 @@ public:
 	virtual void HandleScreenMessage( const ScreenMessage SM );
 	//virtual void MenuStart( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn );
+	virtual void HandleMessage( const CString &sMessage );
 
 	void StartSongThread();
 	bool m_bStopThread;

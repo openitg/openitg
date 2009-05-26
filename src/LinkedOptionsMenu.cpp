@@ -6,6 +6,7 @@
 #include "ThemeMetric.h"
 #include "arch/Dialog/DialogDriver.h"
 #include "ScreenManager.h"
+#include "CodeDetector.h"
 
 void LinkedOptionsMenu::Load( LinkedOptionsMenu *prev, LinkedOptionsMenu *next )
 {
@@ -124,6 +125,8 @@ void LinkedOptionsMenu::SetChoices( const CStringArray &asChoices )
 	{
 		m_iCurrentSelection = -1;
 		m_Cursor.PlayCommand( "TweenOff" );
+		if ( m_bFocus )
+			SCREENMAN->PostMessageToTopScreen( m_smChangeMenu, 0.0f );
 	}
 }
 
@@ -287,6 +290,22 @@ LinkedOptionsMenu* LinkedOptionsMenu::GetPrevMenu()
 	return this;
 }
 
+LinkedOptionsMenu* LinkedOptionsMenu::SwitchToNextMenu()
+{
+	LinkedOptionsMenu *pRet = GetNextMenu();
+	Unfocus();
+	pRet->Focus();
+	return pRet;
+}
+
+LinkedOptionsMenu* LinkedOptionsMenu::SwitchToPrevMenu()
+{
+	LinkedOptionsMenu *pRet = GetPrevMenu();
+	Unfocus();
+	pRet->Focus();
+	return pRet;
+}
+
 // TODO: cleanup
 LinkedInputResponseType LinkedOptionsMenu::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI, LinkedOptionsMenu *&pFocusedMenu )
 {
@@ -331,4 +350,5 @@ LinkedInputResponseType LinkedOptionsMenu::Input( const DeviceInput& DeviceI, co
 		else
 			return LIRT_FORWARDED_NEXT;
 	}
+	return LIRT_INVALID;
 }

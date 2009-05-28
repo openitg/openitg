@@ -99,11 +99,19 @@ void RageDisplay::ResetStats()
 
 CString RageDisplay::GetStats() const
 {
+	CString s;
+
 	/* If FPS == 0, we don't have stats yet. */
 	if( !GetFPS() )
-		return "-- FPS\n-- av FPS\n-- VPF";
+		s = "-- FPS\n-- av FPS\n-- VPF";
+	else
+		s = ssprintf( "%i FPS\n%i av FPS\n%i VPF", GetFPS(), GetCumFPS(), GetVPF() );
 
-	return ssprintf( "%i FPS\n%i av FPS\n%i VPF", GetFPS(), GetCumFPS(), GetVPF() );
+#ifdef _WINDOWS
+	s += "\n" + this->GetApiDescription();
+#endif
+
+	return s;
 }
 
 void RageDisplay::StatsAddVerts( int iNumVertsRendered ) { g_iVertsRenderedSinceLastCheck += iNumVertsRendered; }

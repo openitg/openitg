@@ -139,6 +139,7 @@ public:
 
 	virtual bool BeginFrame() = 0;	
 	virtual void EndFrame() = 0;
+	virtual CString GetApiDescription() const = 0;
 	virtual VideoModeParams GetVideoModeParams() const = 0;
 	bool IsWindowed() const { return this->GetVideoModeParams().windowed; }
 	

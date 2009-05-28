@@ -3,6 +3,7 @@ OpenITG, beta 2 (in development)
 -Fixed cross-platform bugs:
      ScreenArcadeStart times out, even with missing I/O handler
 -Miscellaneous changes:
+     Backported Win32 renderer identification for display stats
      De-clamped PercentageDisplay (Getting Started displays properly now)
      Improved Colorized Graph logic
      RageFileManager optimizations, Move functionality added

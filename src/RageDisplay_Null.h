@@ -9,6 +9,8 @@ public:
 	RageDisplay_Null( VideoModeParams p );
 	void Update( float fDeltaTime ) { }
 
+	virtual CString GetApiDescription() const { return "Null"; }
+
 	void ResolutionChanged() { }
 	const PixelFormatDesc *GetPixelFormatDesc(PixelFormat pf) const;
 

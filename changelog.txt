@@ -1,10 +1,11 @@
 OpenITG, beta 2 (in development)
 --------------------------------
--Improved Colorized Graph logic
 -Fixed cross-platform bugs:
      ScreenArcadeStart times out, even with missing I/O handler
 -Miscellaneous changes:
      De-clamped PercentageDisplay (Getting Started displays properly now)
+     Improved Colorized Graph logic
+     RageFileManager optimizations, Move functionality added
 -Fixed ScreenAddSongs:
      Menu system redone to be a lot more interactive
      Song transfer code cleanup

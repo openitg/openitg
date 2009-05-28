@@ -26,6 +26,7 @@ public:
 	virtual int GetFileHash( const CString &sPath );
 	virtual int GetPathValue( const CString &path );
 	virtual void FlushDirCache( const CString &sPath );
+	virtual bool Move( const CString &sOldPath, const CString &sNewPath ) { return false; }
 	virtual bool Remove( const CString &sPath ) { return false; }
 
 	/* Optional: Move to a different place, as if reconstructed with a different path. */

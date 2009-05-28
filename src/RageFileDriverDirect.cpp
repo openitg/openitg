@@ -67,6 +67,32 @@ RageFileBasic *RageFileDriverDirect::Open( const CString &sPath_, int iMode, int
 	return NULL;
 }
 
+bool RageFileDriverDirect::Move( const CString &sOldPath_, const CString &sNewPath_ )
+{
+	CString sOldPath = sOldPath_;
+	CString sNewPath = sNewPath_;
+	FDB->ResolvePath( sOldPath );
+	FDB->ResolvePath( sNewPath );
+
+	if( this->GetFileType(sOldPath) == RageFileManager::TYPE_NONE )
+		return false;
+
+	{
+		const CString sDir = Dirname(sNewPath);
+		CreateDirectories( m_sRoot + sDir );
+	}
+
+	LOG->Trace( ssprintf("rename \"%s\" -> \"%s\"", (m_sRoot + sOldPath).c_str(), (m_sRoot + sNewPath).c_str()) );
+
+	if( DoRename(m_sRoot + sOldPath, m_sRoot + sNewPath) == -1 )
+	{
+		LOG->Warn( ssprintf("rename(%s,%s) failed: %s", (m_sRoot + sOldPath).c_str(), (m_sRoot + sNewPath).c_str(), strerror(errno)) );
+		return false;
+	}
+
+	return true;
+}
+
 bool RageFileDriverDirect::Remove( const CString &sPath_ )
 {
 	CString sPath = sPath_;

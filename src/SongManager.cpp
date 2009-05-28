@@ -284,7 +284,7 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 	sGroupName = sDisplayName + "\'s Courses";
 
 	unsigned i = 0;
-	for (i; i < arrayProfileCourses.size(); i++)
+	for ( i; i < arrayProfileCourses.size(); i++ )
 	{
 		Course *crs = new Course;
 		crs->LoadFromCRSFile( arrayProfileCourses[i], true );
@@ -324,7 +324,10 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 		LOG->Trace( "SongManager::LoadPlayerCourses(): Adding custom course \"%s\"", crs->GetDisplayFullTitle().c_str() );
 		m_pCourses.push_back( crs );
 	}
-	if (i > 0) m_sCourseGroupNames.push_back( sGroupName );
+
+	// if there are any courses, add the group
+	if (i > 0)
+		m_sCourseGroupNames.push_back( sGroupName );
 }
 
 void SongManager::LoadPlayerSongs( PlayerNumber pn )

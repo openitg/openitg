@@ -52,6 +52,7 @@ public:
 	RageFileDriverDirect( const CString &sRoot );
 	virtual RageFileBasic *Open( const CString &sPath, int iMode, int &iError );
 
+	bool Move( const CString &sOldPath, const CString &sNewPath );
 	bool Remove( const CString &sPath );
 	bool Remount( const CString &sPath );
 

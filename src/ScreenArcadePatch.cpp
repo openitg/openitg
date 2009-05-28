@@ -31,14 +31,15 @@
 /* store the patch in memory, since the hard drive space is limited */
 const CString ITG_TEMP_PATH	= "/@mem/patch.itg";
 
-const CString TEMP_PATCH_DIR	= "Data/new-patch-unchecked/";
-
-/* if on a Win32 system, then copy the data directly into Data/patch/. */
-#ifdef WIN32
+/* if a PC build, directly move to Data/patch/. They're not likely
+ * to have boot scripts or make changes to the patch data. */
+#ifndef ITG_ARCADE
 const CString FINAL_PATCH_DIR	= "Data/patch/";
 #else
 const CString FINAL_PATCH_DIR	= "Data/new-patch/";
 #endif
+
+const CString TEMP_PATCH_DIR	= "Data/new-patch-unchecked/";
 
 AutoScreenMessage( SM_Reboot )
 
@@ -328,12 +329,21 @@ bool ScreenArcadePatch::GetXMLData( RageFileDriverZip *fZip, CString &sGame, CSt
 	return true;
 }
 
-void UpdateProgress( float fPercent )
+static void UpdateProgress( float fPercent )
 {
 	CString sProgress = ssprintf( "Copying patch (%.0f%%)\n\n"
 		"Please do not remove the USB Card.", fPercent );
 
 	g_PatchText = sProgress;	
+}
+
+static void DeleteDir( const CString &sPath )
+{
+	if( IsADirectory(sPath) )
+	{
+		FILEMAN->Remove( sPath + "*" );
+		FILEMAN->Remove( sPath );
+	}
 }
 
 void ScreenArcadePatch::PatchMain()
@@ -451,14 +461,12 @@ void ScreenArcadePatch::PatchMain()
 		return;
 	}
 
-	/* wipe any data from a previous, unsuccessful patch */
-	if( IsADirectory(TEMP_PATCH_DIR) )
-	{
-		FILEMAN->Remove( TEMP_PATCH_DIR + "*" );
-		FILEMAN->Remove( TEMP_PATCH_DIR );
-	}
+	/* wipe any unsucessful or unused patch data */
+	DeleteDir( TEMP_PATCH_DIR );
+	DeleteDir( FINAL_PATCH_DIR );
 
 	FILEMAN->CreateDir( TEMP_PATCH_DIR );
+
 
 	CStringArray vsDirs, vsFiles;
 	vsFiles.push_back( "" );	// this makes more sense than you think.
@@ -518,7 +526,7 @@ void ScreenArcadePatch::PatchMain()
 	}
 
 	/* we've successfully copied everything. now, move the directory and we're done. */
-	rename( TEMP_PATCH_DIR.c_str(), FINAL_PATCH_DIR.c_str() );
+	FILEMAN->Move( TEMP_PATCH_DIR, FINAL_PATCH_DIR );
 }
 
 /*

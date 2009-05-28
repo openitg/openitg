@@ -1606,6 +1606,7 @@ bool Song::CheckCustomSong( CString &sError )
 		return false;
 	}
 
+#if 0
 	// music too big?
 	if( PREFSMAN->m_iCustomMaxSizeMB > 0 && FILEMAN->GetFileSizeInMB(GetMusicPath()) > PREFSMAN->m_iCustomMaxSizeMB )
 	{
@@ -1621,6 +1622,7 @@ bool Song::CheckCustomSong( CString &sError )
 			(int)PREFSMAN->m_iCustomMaxStepsSizeKB );
 		return false;
 	}
+#endif
 
 	// while we could refer to m_fMusicLengthSeconds for song length,
 	// this method is preferred because we need to test the USB device.

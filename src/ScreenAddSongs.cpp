@@ -316,7 +316,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 			{
 				SCREENMAN->SystemMessage( ssprintf("Skipping %s (corrupt zip file)", sSelection.c_str()) );
 				SAFE_DELETE(pZip);
-				MEMCARDMAN->UnmountCard(g_CurrentPlayer);
+				MEMCARDMAN->UnmountCard(m_CurPlayer);
 				MEMCARDMAN->UnlockCards();
 				MountMutex.Unlock();
 				m_bStopThread = false;
@@ -330,7 +330,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 				if ( sSelection == m_asAddedZips[m] ) // zip is already on hard drive
 				{
 					SCREENMAN->SystemMessage(sSelection + " is already on the machine.");
-					MEMCARDMAN->UnmountCard(g_CurrentPlayer);
+					MEMCARDMAN->UnmountCard(m_CurPlayer);
 					MEMCARDMAN->UnlockCards();
 					MountMutex.Unlock();
 					m_bStopThread = false;
@@ -369,7 +369,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 			}
 			if (bSkip) 
 			{
-				MEMCARDMAN->UnmountCard(g_CurrentPlayer);
+				MEMCARDMAN->UnmountCard(m_CurPlayer);
 				MEMCARDMAN->UnlockCards();
 				MountMutex.Unlock();
 				m_bStopThread = false;

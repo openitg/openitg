@@ -16,6 +16,7 @@
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "ProfileManager.h"
+#include "UserPackManager.h"
 #include "RageUtil_FileDB.h" /* defines FileSet */
 #include "RageFileDriverDirect.h" /* defines DirectFilenameDB */
 #include "arch/ArchHooks/ArchHooks.h"
@@ -58,7 +59,7 @@ ScreenAddSongs::~ScreenAddSongs()
 
 void ScreenAddSongs::LoadAddedZips()
 {
-	GetDirListing( "/UserPacks/*.zip", m_asAddedZips ); /**/
+	UPACKMAN->GetCurrentUserPacks( m_asAddedZips );
 }
 
 int InitSASSongThread( void *pSAS )
@@ -94,7 +95,7 @@ void ScreenAddSongs::Init()
 	SET_XY_AND_ON_COMMAND( m_Exit );
 
 	m_Disclaimer.SetName( "Disclaimer" );
-	m_Disclaimer.LoadFromFont( THEME->GetPathF( "ScreenAddSongs", "text" ) );
+	m_Disclaimer.LoadFromFont( THEME->GetPathF( m_sName, "text" ) );
 	m_Disclaimer.SetText( THEME->GetMetric(m_sName, "DisclaimerText") );
 	SET_XY_AND_ON_COMMAND( m_Disclaimer );
 	this->AddChild( &m_Disclaimer );
@@ -154,13 +155,13 @@ void ScreenAddSongs::StartSongThread()
 			{
 				bool bSuccessfulMount = MEMCARDMAN->MountCard(pn);
 				if (!bSuccessfulMount) continue;
-				CString sProfileDir = MEM_CARD_MOUNT_POINT[pn];
-				if (sProfileDir.empty())
+				CString sDriveDir = MEM_CARD_MOUNT_POINT[pn];
+				if (sDriveDir.empty())
 				{
 					MEMCARDMAN->UnmountCard(pn);
 					continue;
 				}
-				CString sPlayerUserPacksDir = sProfileDir + "/UserPacks";
+				CString sPlayerUserPacksDir = sDriveDir + "/" + UPACKMAN->GetUserTransferPath();
 				CStringArray sUSBZips;
 				GetDirListing( sPlayerUserPacksDir+"/*.zip", sUSBZips, false, false );
 				MEMCARDMAN->UnmountCard(pn);
@@ -231,16 +232,10 @@ CString g_CurXferFile;
 // shamelessly copied from vyhd's function in ScreenSelectMusic
 void UpdateXferProgress( float fPercent )
 {
-	LOG->Trace( "UpdateXferProgress( %f )", fPercent );
 	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n%s\n", (int)fPercent, g_CurXferFile.c_str() );
 	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();
 }
-
-/* Folders not allowed in zip file root */
-#define NUM_BLACKLIST_FOLDERS 4
-static CString g_asBlacklistedFolders[] = { "Data", "Program", "Themes/default", "Themes/home" };
-
 
 void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 {
@@ -261,14 +256,10 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		if (ScreenPrompt::s_LastAnswer == ANSWER_NO)
 			return;
 		CString sSelection = m_AddedZips.GetCurrentSelection();
-		CString sToDelete = "/UserPacks/" + sSelection;
-		FILEMAN->Unmount("zip", sToDelete, "/Songs");
-		FILEMAN->Unmount("zip", sToDelete, "/");
-		bool bSuccess = FILEMAN->Remove( sToDelete );
+		bool bSuccess = UPACKMAN->UnlinkAndRemovePack( UPACKMAN->GetSavePath() + "/" + sSelection );
 		if (bSuccess)
 		{
 			m_bRestart = true;
-			FILEMAN->FlushDirCache( "/UserPacks" );
 			m_asAddedZips.clear();
 			LoadAddedZips();
 			m_AddedZips.SetChoices( m_asAddedZips );
@@ -305,113 +296,50 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		MEMCARDMAN->MountCard(m_CurPlayer, 99999);
 		CString sSelection = m_USBZips.GetCurrentSelection();
 		{
-			CStringArray asRootFiles;
-			RageFileDriverZip *pZip = new RageFileDriverZip;
+
+////////////////////////
+#define XFER_CLEANUP MEMCARDMAN->UnmountCard(m_CurPlayer); \
+MEMCARDMAN->UnlockCards(); \
+MountMutex.Unlock(); \
+m_bStopThread = false; \
+m_PlayerSongLoadThread.Create( InitSASSongThread, this )
+////////////////////////
 
 			bBreakEarly = false;
 			bSkip = false;
 
-			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/UserPacks/" + sSelection;
-			if ( !pZip->Load( g_CurXferFile ) )
+			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/" + UPACKMAN->GetUserTransferPath() + sSelection;
+			if ( !UPACKMAN->IsPackTransferable( sSelection, sError ) || !UPACKMAN->IsPackAddable( g_CurXferFile, sError ) )
 			{
-				SCREENMAN->SystemMessage( ssprintf("Skipping %s (corrupt zip file)", sSelection.c_str()) );
-				SAFE_DELETE(pZip);
-				MEMCARDMAN->UnmountCard(m_CurPlayer);
-				MEMCARDMAN->UnlockCards();
-				MountMutex.Unlock();
-				m_bStopThread = false;
-				m_PlayerSongLoadThread.Create( InitSASSongThread, this );
+				SCREENMAN->SystemMessage( "Could not add pack to machine: " + sError );
+				XFER_CLEANUP;
 				return;
 			}
 
-			/* Sanity checks */
-			for( unsigned m = 0; m < m_asAddedZips.size(); m++ )
-			{
-				if ( sSelection == m_asAddedZips[m] ) // zip is already on hard drive
-				{
-					SCREENMAN->SystemMessage(sSelection + " is already on the machine.");
-					MEMCARDMAN->UnmountCard(m_CurPlayer);
-					MEMCARDMAN->UnlockCards();
-					MountMutex.Unlock();
-					m_bStopThread = false;
-					m_PlayerSongLoadThread.Create( InitSASSongThread, this );
-					return;
-				}
-			}
-
-			pZip->GetDirListing( "*", asRootFiles, false, false );
-
-			LOG->Trace("%s: root entries: %s", g_CurXferFile.c_str(), join( ", ", asRootFiles ).c_str()); // XXX
-
-			FOREACH( CString, asRootFiles, sRootFile )
-			{
-				bool bpBreak = false;
-				// do not allow actual files in the root of the zip, too sploity
-				if ( pZip->GetFileType(*sRootFile) == RageFileManager::TYPE_FILE )
-				{
-					SCREENMAN->SystemMessage( ssprintf("Skipping %s (loose file %s not allowed in root of zip)", sSelection.c_str(), sRootFile->c_str()) );
-					SAFE_DELETE(pZip);
-					bSkip = true;
-					break;
-				}
-			}
-
-			// do not allow zips that have protected folders to be added --infamouspat
-			for( unsigned f = 0; f < NUM_BLACKLIST_FOLDERS; f++ )
-			{
-				if ( pZip->GetFileInfo(g_asBlacklistedFolders[f]) != NULL )
-				{
-					SCREENMAN->SystemMessage( ssprintf("Skipping %s (directory %s is not allowed in root of zip)", sSelection.c_str(), g_asBlacklistedFolders[f].c_str()) );
-					SAFE_DELETE(pZip);
-					bSkip = true;
-					break;
-				}
-			}
-			if (bSkip) 
-			{
-				MEMCARDMAN->UnmountCard(m_CurPlayer);
-				MEMCARDMAN->UnlockCards();
-				MountMutex.Unlock();
-				m_bStopThread = false;
-				m_PlayerSongLoadThread.Create( InitSASSongThread, this );
-				return;
-			}
-
-			// sanity checks completed, proceeding...
-			SAFE_DELETE(pZip);
-
-			if (!CopyWithProgress(g_CurXferFile, "/UserPacks/" + sSelection, UpdateXferProgress, sError) )
+			sError = ""; //  ??
+			if (!UPACKMAN->TransferPack( g_CurXferFile, sSelection, UpdateXferProgress, sError ) )
 			{
 				SCREENMAN->SystemMessage( "Transfer error: " + sError );
-				bBreakEarly = true;
+				XFER_CLEANUP;
+				return;
 			}
 		}
-		MEMCARDMAN->UnmountCard(m_CurPlayer);
-		MEMCARDMAN->UnlockCards();
 #if defined(LINUX) && defined(ITG_ARCADE)
 		sync();
 		system( "mount -o remount,ro /itgdata" );
 #endif
-		MountMutex.Unlock();
-
-		if (!bBreakEarly) bSuccess = true;
 		SCREENMAN->HideOverlayMessage();
 		SCREENMAN->ZeroNextUpdate();
-		FILEMAN->FlushDirCache("/UserPacks");
-		// hmm...
-		if (bSuccess)
-		{
-			m_bRestart = true;
+		FILEMAN->FlushDirCache(UPACKMAN->GetSavePath());
 
-			m_asAddedZips.clear();
-			LoadAddedZips();
-			m_AddedZips.SetChoices( m_asAddedZips );
-		}
+		m_bRestart = true;
 
-		// recreate the song accept thread if xfer failed or user declined to add songs
-		m_bStopThread = false;
-		m_PlayerSongLoadThread.Create( InitSASSongThread, this );
-		
+		m_asAddedZips.clear();
+		LoadAddedZips();
+		m_AddedZips.SetChoices( m_asAddedZips );
+
+		XFER_CLEANUP;
+#undef XFER_CLEANUP
 	}
 	switch( SM )
 	{
@@ -445,3 +373,27 @@ void ScreenAddSongs::DrawPrimitives()
 	Screen::DrawPrimitives();
 }
 
+/*
+ * (c) 2009 "infamouspat"
+ * All rights reserved.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, and/or sell copies of the Software, and to permit persons to
+ * whom the Software is furnished to do so, provided that the above
+ * copyright notice(s) and this permission notice appear in all copies of
+ * the Software and that both the above copyright notice(s) and this
+ * permission notice appear in supporting documentation.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF
+ * THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS
+ * INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT
+ * OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+ * OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+ * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ * PERFORMANCE OF THIS SOFTWARE.
+ */

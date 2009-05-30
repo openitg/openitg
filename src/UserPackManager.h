@@ -1,57 +1,35 @@
-#ifndef SCREEN_ADD_SONGS_H
-#define SCREEN_ADD_SONGS_H
+#ifndef USER_PACK_MANAGER_H
+#define USER_PACK_MANAGER_H
+#include "global.h"
 
-#include "RageFile.h"
-#include "Screen.h"
-#include "ScreenWithMenuElements.h"
-#include "PlayerNumber.h"
-#include "song.h"
-#include "RageThreads.h"
-#include "ScreenMiniMenu.h"
-#include "LinkedOptionsMenu.h"
-
-class ScreenAddSongs : public ScreenWithMenuElements
+class UserPackManager
 {
 public:
-	ScreenAddSongs( CString sName );
-	~ScreenAddSongs();
+	UserPackManager( const CString sTransferPath, const CString sSavePath );
 
-	virtual void Init();
+	void			GetCurrentUserPacks( CStringArray &sAddTo );
+	void			MergePacksToVFS();
+	void			AddBlacklistedFolder( const CString sBlacklistedFolder );
 
-	virtual void Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI );
-	virtual void Update(float f);
-	virtual void DrawPrimitives();
-	
-	virtual void HandleScreenMessage( const ScreenMessage SM );
-	//virtual void MenuStart( PlayerNumber pn );
-	virtual void MenuBack( PlayerNumber pn );
-	virtual void HandleMessage( const CString &sMessage );
+	CString			GetUserTransferPath() { return m_sTransferPath; } /* /UserPacks part of /@mc1/UserPacks */
+	CString			GetSavePath() { return m_sSavePath; } /* /UserPacks */
 
-	void StartSongThread();
-	bool m_bStopThread;
+	bool			UnlinkAndRemovePack( const CString sPack );
 
-private:
-	void LoadAddedZips();
+	bool			IsPackAddable( const CString sPack, CString &sError );
+	bool			IsPackTransferable( const CString sPack, CString &sError );
+	bool			TransferPack( const CString sPack, const CString sDestZip, void(*OnUpdate)(float), CString &sError );
 
-	CStringArray m_asAddedZips;
-	CStringArray m_asAddableZips[NUM_PLAYERS];
+protected:
+	CString			m_sTransferPath;
+	CString			m_sSavePath;
+	CStringArray	m_asBlacklistedFolders;
 
-	BitmapText m_Disclaimer;
-
-	LinkedOptionsMenu m_AddedZips;
-	LinkedOptionsMenu m_USBZips;
-	LinkedOptionsMenu m_Exit;
-	LinkedOptionsMenu *m_pCurLOM;
-
-	RageThread m_PlayerSongLoadThread;
-
-	bool m_bCardMounted[NUM_PLAYERS];
-	PlayerNumber m_CurPlayer;
-	bool m_bRestart;
-	bool m_bPrompt;
+	CString			GetPackMountPoint( const CString sPack );
 };
 
-#endif /* SCREEN_ADD_SONGS_H */
+extern UserPackManager* UPACKMAN;
+#endif /* USER_PACK_MANAGER_H */
 
 /*
  * (c) 2009 "infamouspat"

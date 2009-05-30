@@ -68,6 +68,7 @@
 #include "NetworkSyncManager.h"
 #include "MessageManager.h"
 #include "StatsManager.h"
+#include "UserPackManager.h"
 
 // XXX: for I/O error reports
 #include "io/ITGIO.h"
@@ -95,7 +96,8 @@
 #endif
 
 #define ZIPS_DIR "Packages/"
-#define ADDITIONAL_SONGS_DIR "UserPacks/"
+#define USERPACKS_TRANSFER_DIR "UserPacks/"
+#define USERPACKS_SAVE_DIR "UserPacks/"
 
 int g_argc = 0;
 char **g_argv = NULL;
@@ -271,6 +273,7 @@ void ShutdownGame()
 	Dialog::Shutdown();
 	SAFE_DELETE( LOG );
 	SAFE_DELETE( FILEMAN );
+	SAFE_DELETE( UPACKMAN );
 	SAFE_DELETE( HOOKS );
 }
 
@@ -850,7 +853,7 @@ void SaveGamePrefsToDisk()
 	ini.WriteFile( GAMEPREFS_INI_PATH );
 }
 
-static void MountTreeOfZips( const CString &dir, const CString &type, bool bAddonPackages = false )
+static void MountTreeOfZips( const CString &dir )
 {
 	vector<CString> dirs;
 	dirs.push_back( dir );
@@ -875,55 +878,8 @@ static void MountTreeOfZips( const CString &dir, const CString &type, bool bAddo
 			if( !IsAFile(zips[i]) )
 				continue;
 
-			LOG->Trace( "VFS: found %s (%s)", zips[i].c_str(), type.c_str() );
-
-			// for each zip, determine if it should be mounted as just a song pack or a full blown package
-			//
-			// I'm assuming that there will be at least one person that accidentally makes a songs-only package
-			// without putting it in the Songs/ directory, so this is all just code to detect if he/she did it
-			// right.  It will still successfully mount the package if it's just a song group, but will warn the
-			// user right away.
-			// --infamouspat
-			if ( bAddonPackages )
-			{
-				#define NUM_DETECTABLE_FOLDERS 8
-				static CString asDetectableFolders[] = { "Songs", "BGAnimations", "BackgroundTransitions", "BackgroundEffects", "Courses", 
-					"NoteSkins", "RandomMovies", "Themes" };
-				RageFileDriverZip *pZip = new RageFileDriverZip;
-				bool bMountAsSongs = true;
-
-				if ( pZip->Load(zips[i]) )
-				{
-					CStringArray asRootEntries;
-					pZip->GetDirListing( "*", asRootEntries, false, false );
-					FOREACH_CONST( CString, asRootEntries, sEntry )
-					{
-						for( unsigned x = 0; x < NUM_DETECTABLE_FOLDERS; x++ )
-						{
-							if ( !sEntry->CompareNoCase(asDetectableFolders[x]) )
-								bMountAsSongs = false;
-						}
-					}
-
-					// warn the user
-					if ( bMountAsSongs )
-					{
-						LOG->Warn( "OpenITG: %s: For future reference, when making a songs-only package, place the song group(s) in a Songs/ directory within the root of the zip file.", zips[i].c_str());
-					}
-					FILEMAN->Mount( "zip", zips[i], bMountAsSongs ? "/Songs" : "/" );
-				}
-				else
-				{
-					LOG->Warn("OpenITG: %s: could not load user add-on package %s", __FUNCTION__, zips[i].c_str());
-				}
-
-				SAFE_DELETE(pZip);
-				#undef NUM_DETECTABLE_FOLDERS
-			}
-			else
-			{
-				FILEMAN->Mount( "zip", zips[i], "/" );
-			}
+			LOG->Trace( "VFS: found %s", zips[i].c_str() );
+			FILEMAN->Mount( "zip", zips[i], "/" );
 		}
 
 		GetDirListing( path + "/*", dirs, true, true ); /**/
@@ -1089,8 +1045,15 @@ int main(int argc, char* argv[])
 			FILEMAN->Mount( "dir", dirs[i], "/Songs" );
 	}
 
-	MountTreeOfZips( "Packages/", "normal" );
-	MountTreeOfZips( ADDITIONAL_SONGS_DIR, "user addon", true );
+	MountTreeOfZips( "Packages/" );
+
+	UPACKMAN = new UserPackManager( USERPACKS_TRANSFER_DIR, USERPACKS_SAVE_DIR );
+	UPACKMAN->AddBlacklistedFolder( "Data" );
+	UPACKMAN->AddBlacklistedFolder( "Program" );
+	UPACKMAN->AddBlacklistedFolder( "Themes/default" );
+	UPACKMAN->AddBlacklistedFolder( "Themes/home" );
+
+	UPACKMAN->MergePacksToVFS();
 
 	/* Mount patch data, if any. */
 	if ( IsAFile( PATCH_FILE ) )
@@ -1105,7 +1068,7 @@ int main(int argc, char* argv[])
 		LOG->Trace("VFS: No patch file found");
 	}
 
-#if 0
+#if 1
 	LOG->Info("======= MOUNTPOINTS =========");
 	vector<RageFileManager::DriverLocation> mymounts;
 	FILEMAN->GetLoadedDrivers(mymounts);

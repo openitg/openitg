@@ -8,6 +8,8 @@ OpenITG, beta 2 (in development)
      De-clamped PercentageDisplay (Getting Started displays properly now)
      Improved Colorized Graph logic
      RageFileManager optimizations, Move functionality added
+-Code Structure Additions:
+     UserPackManager: singleton for managing user given addon packs for the machine
 -Fixed ScreenAddSongs:
      Menu system redone to be a lot more interactive
      Song transfer code cleanup

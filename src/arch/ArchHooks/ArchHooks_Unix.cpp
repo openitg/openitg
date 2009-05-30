@@ -76,14 +76,13 @@ struct stat st;
 	FILEMAN->Mount( "dir", "/stats", "/Data" );
 
 	/* OpenITG-specific arcade paths */
-	FILEMAN->Mount( "dir", "/itgdata/AdditionalSongs", "/AdditionalSongs" );
+	FILEMAN->Mount( "dir", "/itgdata/UserPacks", "/UserPacks" );
 	FILEMAN->Mount( "dir", "/itgdata/cache-sink", "/Cache" );
 #else
 	/* OpenITG-specific paths */
 	FILEMAN->Mount( "kry", Root + "/CryptPackages", "/Packages" );
-	FILEMAN->Mount( "dir", Root + "/AdditionalSongs", "/AdditionalSongs" );
 
-	/* This mounts everything else, including Data, etc. */
+	/* This mounts everything else, including Cache, Data, UserPacks, etc. */
 	FILEMAN->Mount( "dir", Root, "/" );
 #endif // ITG_ARCADE
 }

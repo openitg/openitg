@@ -95,7 +95,7 @@
 #endif
 
 #define ZIPS_DIR "Packages/"
-#define ADDITIONAL_SONGS_DIR "AdditionalSongs/"
+#define ADDITIONAL_SONGS_DIR "UserPacks/"
 
 int g_argc = 0;
 char **g_argv = NULL;

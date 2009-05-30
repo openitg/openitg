@@ -58,7 +58,7 @@ ScreenAddSongs::~ScreenAddSongs()
 
 void ScreenAddSongs::LoadAddedZips()
 {
-	GetDirListing( "/AdditionalSongs/*.zip", m_asAddedZips ); /**/
+	GetDirListing( "/UserPacks/*.zip", m_asAddedZips ); /**/
 }
 
 int InitSASSongThread( void *pSAS )
@@ -160,9 +160,9 @@ void ScreenAddSongs::StartSongThread()
 					MEMCARDMAN->UnmountCard(pn);
 					continue;
 				}
-				CString sPlayerAdditionalSongsDir = sProfileDir + "/AdditionalSongs";
+				CString sPlayerUserPacksDir = sProfileDir + "/UserPacks";
 				CStringArray sUSBZips;
-				GetDirListing( sPlayerAdditionalSongsDir+"/*.zip", sUSBZips, false, false );
+				GetDirListing( sPlayerUserPacksDir+"/*.zip", sUSBZips, false, false );
 				MEMCARDMAN->UnmountCard(pn);
 				m_USBZips.SetChoices( sUSBZips );
 				m_CurPlayer = pn;
@@ -261,14 +261,14 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		if (ScreenPrompt::s_LastAnswer == ANSWER_NO)
 			return;
 		CString sSelection = m_AddedZips.GetCurrentSelection();
-		CString sToDelete = "/AdditionalSongs/" + sSelection;
+		CString sToDelete = "/UserPacks/" + sSelection;
 		FILEMAN->Unmount("zip", sToDelete, "/Songs");
 		FILEMAN->Unmount("zip", sToDelete, "/");
 		bool bSuccess = FILEMAN->Remove( sToDelete );
 		if (bSuccess)
 		{
 			m_bRestart = true;
-			FILEMAN->FlushDirCache( "/AdditionalSongs" );
+			FILEMAN->FlushDirCache( "/UserPacks" );
 			m_asAddedZips.clear();
 			LoadAddedZips();
 			m_AddedZips.SetChoices( m_asAddedZips );
@@ -311,7 +311,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 			bBreakEarly = false;
 			bSkip = false;
 
-			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/AdditionalSongs/" + sSelection;
+			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/UserPacks/" + sSelection;
 			if ( !pZip->Load( g_CurXferFile ) )
 			{
 				SCREENMAN->SystemMessage( ssprintf("Skipping %s (corrupt zip file)", sSelection.c_str()) );
@@ -380,7 +380,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 			// sanity checks completed, proceeding...
 			SAFE_DELETE(pZip);
 
-			if (!CopyWithProgress(g_CurXferFile, "/AdditionalSongs/" + sSelection, UpdateXferProgress, sError) )
+			if (!CopyWithProgress(g_CurXferFile, "/UserPacks/" + sSelection, UpdateXferProgress, sError) )
 			{
 				SCREENMAN->SystemMessage( "Transfer error: " + sError );
 				bBreakEarly = true;
@@ -397,7 +397,7 @@ void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
 		if (!bBreakEarly) bSuccess = true;
 		SCREENMAN->HideOverlayMessage();
 		SCREENMAN->ZeroNextUpdate();
-		FILEMAN->FlushDirCache("/AdditionalSongs");
+		FILEMAN->FlushDirCache("/UserPacks");
 		// hmm...
 		if (bSuccess)
 		{

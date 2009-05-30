@@ -191,7 +191,6 @@ void ArchHooks_Win32::MountInitialFilesystems( const CString &sDirOfExecutable )
 
 	// OpenITG-specific file paths
 	FILEMAN->Mount( "kry", Dir + "/CryptPackages", "/Packages" );
-	FILEMAN->Mount( "dir", Dir + "/AdditionalSongs", "/Songs" );
 
 	/* This mounts everything else, including Data, etc. */
 	FILEMAN->Mount( "dir", Dir, "/" );

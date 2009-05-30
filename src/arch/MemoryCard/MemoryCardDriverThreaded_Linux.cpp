@@ -229,9 +229,12 @@ bool MemoryCardDriverThreaded_Linux::DoOneUpdate( bool bMount, vector<UsbStorage
 
 			/* it's possible that the block device will appear in /sys/ before it
 			 * appears in /dev/. Don't mount until we know the dev file exists. */
-			struct stat data;
-			if( stat(d.sDevice, &data) == -1 )
-				continue;
+			if( USB_STORAGE_MODULE )
+			{
+				struct stat data;
+				if( stat(d.sDevice, &data) == -1 )
+					continue;
+			}
 
 			if( !ExecuteCommand("mount " + d.sDevice) )
 			{

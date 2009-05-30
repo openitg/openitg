@@ -527,6 +527,7 @@ void ScreenArcadePatch::PatchMain()
 
 	/* we've successfully copied everything. now, move the directory and we're done. */
 	FILEMAN->Move( TEMP_PATCH_DIR, FINAL_PATCH_DIR );
+	m_State = PATCH_INSTALLED;
 }
 
 /*

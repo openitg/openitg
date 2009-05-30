@@ -7,6 +7,7 @@
 
 extern CString InitialWorkingDirectory;
 extern CString DirOfExecutable;
+
 class RageFileDriver;
 
 class RageFileManager
@@ -20,7 +21,7 @@ public:
 	bool Move( const CString &sOldPath, const CString &sNewPath );
 	bool Remove( const CString &sPath );
 	void CreateDir( const CString &sDir );
-	
+
 	enum FileType { TYPE_FILE, TYPE_DIR, TYPE_NONE };
 	FileType GetFileType( const CString &sPath );
 
@@ -31,7 +32,7 @@ public:
 	int GetFileSizeInBytes( const CString &sPath );
 	int GetFileHash( const CString &sPath );
 
-	void Mount( const CString &Type, const CString &RealPath, const CString &MountPoint, bool bAddToEnd = true );
+	bool Mount( const CString &Type, const CString &RealPath, const CString &MountPoint, bool bAddToEnd = true );
 	void Unmount( const CString &Type, const CString &Root, const CString &MountPoint );
 
 	/* Change the root of a filesystem.  Only a couple drivers support this; it's
@@ -49,8 +50,6 @@ public:
 
 	/* Used only by RageFile: */
 	RageFileBasic *Open( const CString &sPath, int mode, int &err );
-	void Close( RageFileBasic *obj );
-	RageFileBasic *CopyFileObj( const RageFileBasic *cpy );
 
 	/* Retrieve or release a reference to the low-level driver for a mountpoint. */
 	RageFileDriver *GetFileDriver( const CString &sMountpoint );

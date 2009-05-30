@@ -396,6 +396,7 @@ typedef basic_string<char,char_traits_char_nocase> istring;
  * declared here since they're used in many places. */
 void GetDirListing( const CString &sPath, CStringArray &AddTo, bool bOnlyDirs=false, bool bReturnPathToo=false );
 void GetDirListingRecursive( const CString &sDir, const CString &sMatch, CStringArray &AddTo );	/* returns path too */
+bool DeleteRecursive( const CString &sDir );	/* recursively remove a directory and its contents */
 bool DoesFileExist( const CString &sPath );
 bool IsAFile( const CString &sPath );
 bool IsADirectory( const CString &sPath );
@@ -444,19 +445,16 @@ bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float
 // a few bitwise operators that may come in handy.
 // all operations are 1-32, i.e. one-indexed.
 template<class T>
-inline bool IsBitSet( T data, short bit )
+inline bool IsBitSet( const T &data, int bit )
 {
 	int iBits = sizeof(T) * 8;
-	ASSERT_M( iBits >= bit, ssprintf("bit out of range: %i/%i", bit,iBits) );
-
 	return data & ((T)1 << (iBits-bit));
 }
 
 template<class T>
-inline void SetBit( T &data, short bit, bool on = true )
+inline void SetBit( T &data, int bit, bool on = true )
 {
 	int iBits = sizeof(T) * 8;
-	ASSERT_M( iBits >= bit, ssprintf("bit out of range: %i/%i", bit,iBits) );
 	int bitval = ((T)1 << (iBits-bit));
 
 	if( on )
@@ -466,7 +464,7 @@ inline void SetBit( T &data, short bit, bool on = true )
 }
 
 template<class T>
-CString BitsToString( T data )
+CString BitsToString( const T &data )
 {
 	int iBits = sizeof(T) * 8;
 	CString ret;

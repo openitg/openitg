@@ -267,24 +267,15 @@ CString NoteSkinManager::GetPathFromDirAndFile( const CString &sDir, const CStri
 {
 	CStringArray matches;		// fill this with the possible files
 
-	GetDirListing( sDir+sFileName+".redir",		matches, false, true );
-	GetDirListing( sDir+sFileName+"*.xml",		matches, false, true );
-	GetDirListing( sDir+sFileName+"*.actor",	matches, false, true );
-	GetDirListing( sDir+sFileName+"*.model",	matches, false, true );
-	GetDirListing( sDir+sFileName+"*.txt",		matches, false, true );
-	GetDirListing( sDir+sFileName+"*.sprite",	matches, false, true );
-	GetDirListing( sDir+sFileName+"*.png",		matches, false, true );
-	GetDirListing( sDir+sFileName+"*.jpg",		matches, false, true );
-	GetDirListing( sDir+sFileName+"*.bmp",		matches, false, true );
-	GetDirListing( sDir+sFileName+"*.gif",		matches, false, true );
-	GetDirListing( sDir+sFileName+"",			matches, false, true );
+	GetDirListing( sDir + sFileName + "*",	matches, false, true );
 
 	if( matches.empty() )
 		return "";
 
 	if( matches.size() > 1 )
 	{
-		CString sError = "Multiple files match '"+sDir+sFileName+"'.  Please remove all but one of these files.";
+		CString sError = "Multiple files match '"+sDir+sFileName+"'.  Please remove all but one of these files:\n";
+		sError += join( "\n", matches );
 		Dialog::OK( sError );
 	}
 	

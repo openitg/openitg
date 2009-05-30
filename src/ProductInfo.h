@@ -11,7 +11,7 @@
 #undef OFFICIAL_RELEASE
 
 /* (x?)xyy - x is release type, y is release version */
-#define PRODUCT_TOKEN 101
+#define PRODUCT_TOKEN 102
 
 /* The name of the build and its current version */
 #define PRODUCT_NAME "OpenITG"

@@ -22,8 +22,8 @@ RageFileManager *FILEMAN = NULL;
 /* Lock this before touching any of these globals (except FILEMAN itself). */
 static RageEvent *g_Mutex;
 
-CString sInitialWorkingDirectory;
-CString sDirOfExecutable;
+CString InitialWorkingDirectory;
+CString DirOfExecutable;
 
 struct LoadedDriver
 {
@@ -245,19 +245,19 @@ static CString GetDirOfExecutable( CString argv0 )
 
 static void ChangeToDirOfExecutable( const CString &argv0 )
 {
-	sInitialWorkingDirectory = GetCwd();
-	sDirOfExecutable = GetDirOfExecutable( argv0 );
+	InitialWorkingDirectory = GetCwd();
+	DirOfExecutable = GetDirOfExecutable( argv0 );
 
 	/* Set the CWD.  Any effects of this is platform-specific; most files are read and
 	 * written through RageFile.  See also RageFileManager::RageFileManager. */
 #if defined(_WINDOWS)
-	chdir( sDirOfExecutable + "/.." );
+	chdir( DirOfExecutable + "/.." );
 #elif defined(MACOSX)
 	/* If the basename is not MacOS, then we've likely been launched via the command line
 	 * through a symlink. Assume this is the case and change to the dir of the symlink. */
-	if( Basename(sDirOfExecutable) == "MacOS" )
-		CollapsePath( sDirOfExecutable += "/../../../" );
-	chdir( sDirOfExecutable );
+	if( Basename(DirOfExecutable) == "MacOS" )
+		CollapsePath( DirOfExecutable += "/../../../" );
+	chdir( DirOfExecutable );
 #endif
 }
 
@@ -281,7 +281,7 @@ RageFileManager::RageFileManager( const CString &argv0 )
 
 void RageFileManager::MountInitialFilesystems()
 {
-	HOOKS->MountInitialFilesystems( sDirOfExecutable );
+	HOOKS->MountInitialFilesystems( DirOfExecutable );
 }
 
 RageFileManager::~RageFileManager()

@@ -233,7 +233,10 @@ bool MemoryCardDriverThreaded_Linux::DoOneUpdate( bool bMount, vector<UsbStorage
 			{
 				struct stat data;
 				if( stat(d.sDevice, &data) == -1 )
+				{
+					LOG->Trace( "Skipping %s: not in /dev/ yet.", d.sDevice.c_str() );
 					continue;
+				}
 			}
 
 			if( !ExecuteCommand("mount " + d.sDevice) )

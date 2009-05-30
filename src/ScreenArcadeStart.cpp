@@ -1,6 +1,7 @@
 /* Basic screen functions */
 #include "global.h"
 #include "RageLog.h"
+#include "RageTimer.h"
 #include "RageUtil.h"
 #include "ThemeManager.h"
 #include "ScreenManager.h"
@@ -29,6 +30,9 @@
 /* automatic warning dismissal */
 const float TIMEOUT = 15.0f;
 
+/* time between validation attempts, which can be expensive */
+const float UPDATE_TIME = 1.0f;
+
 REGISTER_SCREEN_CLASS( ScreenArcadeStart );
 
 ScreenArcadeStart::ScreenArcadeStart( CString sClassName ) : ScreenWithMenuElements( sClassName )
@@ -54,11 +58,8 @@ void ScreenArcadeStart::Init()
 	m_fTimeout = TIMEOUT + this->GetTweenTimeLeft();
 
 	/* are there any errors with loading the I/O board? */
-	m_bHandlerLoaded = LoadHandler();
-
-	/* if not, is the USB hub connected? */
-	if( m_bHandlerLoaded )
-		m_bHubConnected = CheckForHub();
+//	m_bHandlerLoaded = LoadHandler();
+	m_bHandlerLoaded = true;
 }
 
 ScreenArcadeStart::~ScreenArcadeStart()
@@ -70,16 +71,16 @@ void ScreenArcadeStart::Update( float fDeltaTime )
 {
 	Screen::Update( fDeltaTime );
 
-	/* If everything checks out, fake a START press,
-	 * so we can keep our logic in one place. */
+	/* update the error text as needed */
+	m_Error.SetText( m_sMessage );
+
+	/* if everything's good, fake a Start press. It's a bit
+	 * hacky, but we can keep all our logic in one place. */
 	if( m_fTimeout < 0 || (m_bHandlerLoaded && m_bHubConnected) )
-	{
 		MenuStart( PLAYER_INVALID );
-		return;
-	}
 
 	/* If we have no handler, we can't play. If we can play, and
-	 * don't know it, the user can hit START. So, stop here. */
+	 * don't know it, the user can hit START. Don't time out. */
 	if( !m_bHandlerLoaded )
 		return;
 
@@ -87,7 +88,6 @@ void ScreenArcadeStart::Update( float fDeltaTime )
 
 	/* Check for the USB hub. Has it been connected? */
 	m_bHubConnected = CheckForHub();
-	m_Error.SetText( m_sMessage );
 }
 
 void ScreenArcadeStart::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
@@ -118,7 +118,7 @@ void ScreenArcadeStart::MenuStart( PlayerNumber pn )
 			DiagnosticsUtil::SetInputType( "Home" );
 
 		this->PlayCommand( "Off" );
-		StartTransitioning( SM_GoToNextScreen );		
+		StartTransitioning( SM_GoToNextScreen );
 	}
 }
 
@@ -136,9 +136,12 @@ bool ScreenArcadeStart::CheckForHub()
 	if( !DiagnosticsUtil::HubIsConnected() )
 	{
 		m_sMessage = ssprintf(
-			"The memory card hub is not connected.\nPlease consult the service manual for details.\n\n"
-			"Connect the USB hub or press START to continue,\nor wait %.0f seconds for this warning to automatically dismiss.",
+			"The memory card hub is not connected.\n"
+			"Please consult the service manual for details.\n\n"
+			"Connect the USB hub or press START to continue,\n"
+			"or wait %.0f seconds for this warning to automatically dismiss.",
 			fTimer );
+
 		return false;
 	}
 

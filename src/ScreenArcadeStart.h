@@ -21,8 +21,9 @@ public:
 
 	virtual void Init();
 private:
-	bool CheckForHub();
+	/* returns true on success, false on failure */
 	bool LoadHandler();
+	bool CheckForHub();
 
 	BitmapText m_Error;
 

@@ -47,27 +47,26 @@ RageFileObjInflate::RageFileObjInflate( const RageFileObjInflate &cpy ):
 	/* XXX completely untested */
 	/* Copy the entire decode state. */
 	/* inflateInit2 isn't widespread yet */
-	ASSERT( 0 );
-/*
+	//ASSERT( 0 );
+
 	m_pFile = cpy.m_pFile->Copy();
 	m_bFileOwned = true;
 	m_pInflate = new z_stream;
 	inflateCopy( m_pInflate, const_cast<z_stream*>(cpy.m_pInflate) );
+	m_iUncompressedSize = cpy.m_iUncompressedSize;
 
-	// memcpy decomp_buf?
 	decomp_buf_ptr = decomp_buf + (cpy.decomp_buf_ptr - cpy.decomp_buf);
 	decomp_buf_avail = cpy.decomp_buf_avail;
+	memcpy( decomp_buf, cpy.decomp_buf, decomp_buf_avail );
 	m_iFilePos = cpy.m_iFilePos;
-	*/
 }
 
 RageFileBasic *RageFileObjInflate::Copy() const
 {
-	RageException::Throw( "Loading ZIPs from deflated ZIPs is currently disabled; see RageFileObjInflate" );
+	//RageException::Throw( "Loading ZIPs from deflated ZIPs is currently disabled; see RageFileObjInflate" );
 
-	// return new RageFileObjInflate( *this, p );
+	return new RageFileObjInflate( *this );
 }
-	
 
 RageFileObjInflate::~RageFileObjInflate()
 {

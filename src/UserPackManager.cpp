@@ -99,7 +99,7 @@ bool UserPackManager::IsPackTransferable( const CString sPack, CString &sError )
 
 bool UserPackManager::TransferPack( const CString sPack, const CString sDestPack, void(*OnUpdate)(float), CString &sError )
 {
-	return CopyWithProgress( sPack, m_sSavePath + "/" + sDestPack, OnUpdate, sError );
+	return FileCopy( sPack, m_sSavePath + "/" + sDestPack, sError, OnUpdate );
 }
 
 #define ROOT_DIRS_SIZE 8

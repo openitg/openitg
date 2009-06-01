@@ -1394,8 +1394,8 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 	{
 		// we can copy the music. destination is determined with
 		// "m_sGameplayMusic" so we can change that from one place
-		bCopied = CopyWithProgress( GAMESTATE->m_pCurSong->GetMusicPath(), 
-		GAMESTATE->m_pCurSong->m_sGameplayMusic, &UpdateLoadProgress, sError );
+		bCopied = FileCopy( GAMESTATE->m_pCurSong->GetMusicPath(), 
+		GAMESTATE->m_pCurSong->m_sGameplayMusic, sError, &UpdateLoadProgress );
 
 		// failed, most likely a permissions error
 		if( !bCopied && !sError.empty() )
@@ -1520,7 +1520,7 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 
 						bError = !pSong->CheckCustomSong( sError );
 						// TODO: give custom song for course xfer its own progress function
-						if (!bError) bError = !CopyWithProgress( pSong->GetMusicPath(), sNewPath, &UpdateLoadProgress, sError );
+						if (!bError) bError = !FileCopy( pSong->GetMusicPath(), sNewPath, &UpdateLoadProgress );
 #ifndef WIN32
 						MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
 #endif

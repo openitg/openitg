@@ -1505,10 +1505,21 @@ void InterruptCopy()
 	g_bInterruptCopy = true;
 }
 
-bool FileCopy( CString sSrcFile, CString sDstFile )
+/* workarounds for some pre-existing calls... */
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, void(*OnUpdate)(float) )
 {
-	g_bInterruptCopy = false;
+	CString sError;
+	return FileCopy( sSrcFile, sDstFile, sError, OnUpdate );
+}
 
+bool FileCopy( RageFileBasic &in, RageFileBasic &out, void (*OnUpdate)(float), bool *bReadError )
+{
+	CString sError;
+	return FileCopy( in, out, sError, OnUpdate, bReadError );
+}
+
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError, void(*OnUpdate)(float) )
+{
 	if( !sSrcFile.CompareNoCase(sDstFile) )
 	{
 		LOG->Warn( "Tried to copy \"%s\" over itself", sSrcFile.c_str() );
@@ -1523,8 +1534,7 @@ bool FileCopy( CString sSrcFile, CString sDstFile )
 	if( !out.Open(sDstFile, RageFile::WRITE) )
 		return false;
 
-	CString sError;
-	if( !FileCopy(in, out, sError) )
+	if( !FileCopy(in, out, sError, OnUpdate) )
 	{
 		LOG->Warn( "FileCopy(%s,%s): %s",
 				sSrcFile.c_str(), sDstFile.c_str(), sError.c_str() );
@@ -1534,83 +1544,13 @@ bool FileCopy( CString sSrcFile, CString sDstFile )
 	return true;
 }
 
-bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float), CString &sError )
+bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnUpdate)(float), bool *bReadError )
 {
 	g_bInterruptCopy = false;
 
-	if( !sSrcFile.CompareNoCase(sDstFile) )
-	{
-		sError = ssprintf( "Tried to copy \"%s\" over itself", sSrcFile.c_str() );
-		return false;
-	}
-
-	RageFile in;
-	if( !in.Open(sSrcFile, RageFile::READ) )
-	{
-		sError = ssprintf( "Could not open \"%s\" for reading", sSrcFile.c_str() );
-		return false;
-	}
-
-	// it's where you want to be!
-	unsigned long iTarget = in.GetFileSize();
-
-	RageFile out;
-	if( !out.Open(sDstFile, RageFile::WRITE) )
-	{
-		sError = ssprintf( "Could not open \"%s\" for writing", sDstFile.c_str() );
-		return false;
-	}
-
-	// how much data has been read so far
-	unsigned long iCurrent = 0;
-
-	// fPercent = 100 means 100% complete
-	float fPercent; 
-
-	while( !g_bInterruptCopy )
-	{
-		CString data;
-		if( in.Read(data, 1024*32) == -1 )
-		{
-			sError = ssprintf( "read error (%s)", in.GetError().c_str() );
-			return false;
-		}
-		if( data.empty() )
-			break;
-
-		int i = out.Write(data);
-		if( i == -1 )
-		{
-			sError = ssprintf( "write error (%s)", out.GetError().c_str() );
-			return false;
-		}
-
-		iCurrent += data.size();
-
-		// figure out the percentage and pass it back
-		fPercent = ((float)iCurrent / (float)iTarget)*100;
-		OnUpdate( fPercent );
-	}
-
-	if( out.Flush() == -1 )
-	{
-		sError = ssprintf( "write error during flush (%s)", out.GetError().c_str() );
-		return false;
-	}
-
-	if( g_bInterruptCopy )
-	{
-		g_bInterruptCopy = false;
-		sError = "";
-		return false;
-	}
-
-	return true;
-}
-
-bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bReadError )
-{
-	g_bInterruptCopy = false;
+	/* for reporting file progress */
+	unsigned long read = 0;
+	unsigned long total = in.GetFileSize();
 
 	while( !g_bInterruptCopy )
 	{
@@ -1632,6 +1572,14 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bRe
 				*bReadError = false;
 			return false;
 		}
+
+		/* if we have a function pointer, calculate percentage. */
+		if( OnUpdate != NULL )
+		{
+			read += data.size();
+			float fPercent = (read*100.0f/(float)total);
+			OnUpdate( fPercent );
+		}
 	}
 
 	if( out.Flush() == -1 )
@@ -1642,6 +1590,7 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bRe
 		return false;
 	}
 
+	/* handle any interrupts if they occurred. */
 	if( g_bInterruptCopy )
 	{
 		LOG->Warn( "Copying interrupted." );

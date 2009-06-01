@@ -13,8 +13,10 @@ OpenITG, beta 2 (in development)
 -Fixed ScreenAddSongs:
      Menu system redone to be a lot more interactive
      Song transfer code cleanup
+-New metrics:
+     ScreenTestInput - X, Y, On, and Off commands for text ("Inputs", "Devices")
 -New menu structures:
-     LinkedOptionsMenu - set of intertwined menus to work as one, example metrics in home folder
+     LinkedOptionsMenu - set of intertwined menus, example metrics in home folder
 
 OpenITG, beta 1 (May 15th, 2009)
 --------------------------------

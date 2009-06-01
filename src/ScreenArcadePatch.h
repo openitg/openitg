@@ -45,7 +45,7 @@ private:
 
 	/* secondary functions, more encapsulated than the last ones... */
 	bool HasPatch( PlayerNumber pn, const CStringArray &vsPatterns );
-	bool VerifyPatch( const CString &sPath, const CStringArray &vsKeyPaths );
+	bool VerifyPatch( RageFileBasic *fPatch, const CStringArray &vsKeyPaths );
 	bool GetXMLData( RageFileDriverZip *pZip, CString &sGame, CString &sMessage, int &iRevision );
 
 	CStringArray m_vsPatches;

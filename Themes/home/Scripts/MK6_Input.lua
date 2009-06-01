@@ -1,5 +1,5 @@
 --[[
-OpenITG broadcaster for MK6 input, version 0.1 (untested)
+OpenITG broadcaster for MK6 input, version 0.7
 Licensed under Creative Commons Attribution-Share Alike 3.0 Unported
 (http://creativecommons.org/licenses/by-sa/3.0/)
 
@@ -39,14 +39,16 @@ local function BroadcastMessagesForSensors( input )
 			-- the index of the bit that matches this arrow
 			local sensor = arrow_maps[pn][i]
 
-			-- the state of this sensor in sensor array 'i'
-			local state = input[i][sensor] and "On" or "Off"
+			for set=1,4 do
+				-- the state of this sensor in sensor array 'i'
+				local state = input[set][sensor] and "On" or "Off"
 
-			-- message to send, e.g. "LeftP1BottomOn"
-			local message = arrow_maps.Names[i] .. "P" .. pn .. sensor_names[i] .. state
+				-- message to send, e.g. "LeftP1BottomOn"
+				local message = arrow_maps.Names[i] .. "P" .. pn .. sensor_names[set] .. state
 
-			-- broadcast it!
-			MESSAGEMAN:Broadcast( message )
+				-- broadcast it!
+				MESSAGEMAN:Broadcast( message )
+			end
 		end
 	end
 end

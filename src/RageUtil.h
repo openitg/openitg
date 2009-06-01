@@ -437,9 +437,13 @@ void FileWrite(RageFileBasic& f, float fWrite);
 // stops a currently-running copy operation
 void InterruptCopy();
 
-bool FileCopy( CString sSrcFile, CString sDstFile );
-bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bReadError = NULL );
-bool CopyWithProgress( CString sSrcFile, CString sDstFile, void(*OnUpdate)(float), CString &sError );
+/* if OnUpdate() is defined, that function is called after each out.Write(). */
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError, void(*OnUpdate)(float) = NULL );
+bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnUpdate)(float) = NULL, bool *bReadError = NULL );
+
+/* versions without an error message argument, for compatibility */
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, void(*OnUpdate)(float) = NULL );
+bool FileCopy( RageFileBasic &in, RageFileBasic &out, void(*OnUpdate)(float) = NULL, bool *bReadError = NULL );
 
 
 // a few bitwise operators that may come in handy.

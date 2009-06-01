@@ -1,3 +1,5 @@
+/* Does not completely work, rewriting today.  -- Vyhd */
+
 #include "global.h"
 #include "RageLog.h"
 #include "MemoryCardManager.h"		// for HasPatch
@@ -12,11 +14,12 @@
 #include "CryptHelpers.h"	// to verify signature
 #include "XmlFile.h"		// for XML data handling
 
-// file handling
+// manual file handling
 #include "RageFileManager.h"
+#include "RageFile.h"
 #include "RageFileDriverZip.h"
 #include "RageFileDriverSlice.h"
-#include "RageFile.h"
+#include "RageFileDriverMemory.h"
 
 #include "arch/ArchHooks/ArchHooks.h"
 
@@ -28,8 +31,9 @@
 #define ERROR_HELP_TEXT			THEME->GetMetric(m_sName, "HelpTextError")
 #define FINISHED_HELP_TEXT		THEME->GetMetric(m_sName, "HelpTextFinished")
 
-/* store the patch in memory, since the hard drive space is limited */
-const CString ITG_TEMP_PATH	= "/@mem/patch.itg";
+/* name of the patch file in memory - hard drive space is limited.
+ * added directory name so we run a lesser chance of collisions. */
+const CString ITG_TEMP_PATH	= "/temp/tmp-patch.itg";
 
 /* if a PC build, directly move to Data/patch/. They're not likely
  * to have boot scripts or make changes to the patch data. */
@@ -77,7 +81,7 @@ void ScreenArcadePatch::Init()
 
 	/* this will be picked up on the first update */
 	g_StateText = THEME->GetMetric("ScreenArcadePatch", "IntroText");
-	g_PatchText = "Please insert a USB card containing an update.";
+	g_PatchText = "Please wait...";
 	m_textHelp->SetText( WAITING_HELP_TEXT );
 
 	this->AddChild( &m_StateText );
@@ -88,6 +92,7 @@ void ScreenArcadePatch::Init()
 	m_Thread.SetName( "Patch thread" );
 	m_Thread.Create( PatchThread_Start, this );
 }
+
 
 void ScreenArcadePatch::HandleScreenMessage( const ScreenMessage SM )
 {
@@ -112,6 +117,7 @@ void ScreenArcadePatch::Update( float fDeltaTime )
 	m_StateText.SetText( g_StateText );
 	m_PatchText.SetText( g_PatchText );
 
+	// nothing to do.
 	if( m_State == m_LastUpdatedState )
 		return;
 
@@ -121,6 +127,7 @@ void ScreenArcadePatch::Update( float fDeltaTime )
 	switch( m_State )
 	{
 	case PATCH_NONE:
+	g_PatchText = "Please insert a USB card containing an update.";
 	case PATCH_CHECKING:
 		m_textHelp->SetText( WAITING_HELP_TEXT );
 		break;
@@ -204,19 +211,19 @@ bool ScreenArcadePatch::HasPatch( PlayerNumber pn, const CStringArray &vsPattern
 	return true;
 }
 
-bool ScreenArcadePatch::VerifyPatch( const CString &sPath, const CStringArray &vsKeyPaths )
+bool ScreenArcadePatch::VerifyPatch( RageFileBasic *fPatch, const CStringArray &vsKeyPaths )
 {
+#if 0
 	if( !IsAFile(sPath) )
 	{
 		LOG->Warn( "VerifyPatch(): sPath doesn't exist! (%s)", sPath.c_str() );
 		g_StateText = ssprintf( "Error: could not access patch file!\n" "(%s)", sPath.c_str() );
 		return false;
 	}
-
-	/* for that special someone */
-	g_PatchText = "Please do not remove the USB card.";
+#endif
 
 	/* get the 128-byte patch signature from the end of the file */
+#if 0
 	int iError = 0;
 	RageFileBasic *fRoot = FILEMAN->Open( sPath, RageFile::READ, iError );
 
@@ -225,12 +232,15 @@ bool ScreenArcadePatch::VerifyPatch( const CString &sPath, const CStringArray &v
 		g_StateText = ssprintf( "Error verifying patch file:\n%s (%d)", strerror(iError), iError);
 		return false;
 	}
-
 	unsigned iFileSize = GetFileSizeInBytes( sPath ) - 128;
+#endif
+
+	/* get the 128-byte patch signature from the end of the file */
+	unsigned iFileSize = fPatch->GetFileSize() - 128;
 
 	/* fZip contains the ZIP data, fSig contains the RSA signature */
-	RageFileBasic *fZip = new RageFileDriverSlice( fRoot, 0, iFileSize );
-	RageFileBasic *fSig = new RageFileDriverSlice( fRoot, iFileSize, 128 );
+	RageFileBasic *fZip = new RageFileDriverSlice( fPatch, 0, iFileSize );
+	RageFileBasic *fSig = new RageFileDriverSlice( fPatch, iFileSize, 128 );
 
 	CString sPatchSig;
 	if( fSig->Read(sPatchSig, 128) < 128 )
@@ -238,7 +248,7 @@ bool ScreenArcadePatch::VerifyPatch( const CString &sPath, const CStringArray &v
 		g_StateText = "Patch signature verification failed:\nunexpected end of file.";
 		SAFE_DELETE( fSig );
 		SAFE_DELETE( fZip );
-		SAFE_DELETE( fRoot );
+//		SAFE_DELETE( fRoot );
 		return false;
 	}
 
@@ -256,7 +266,7 @@ bool ScreenArcadePatch::VerifyPatch( const CString &sPath, const CStringArray &v
 
 		CString sRSAData;
 		GetFileContents( vsKeyPaths[i], sRSAData );
-		LOG->Debug( "Attempting to verify %s with %s.", sPath.c_str(), vsKeyPaths[i].c_str() );
+		LOG->Debug( "Attempting to verify %s with %s.", fPatch->GetDisplayPath().c_str(), vsKeyPaths[i].c_str() );
 
 		CString s;
 		for( unsigned i=0; i<sRSAData.size(); i++ )
@@ -289,7 +299,7 @@ bool ScreenArcadePatch::VerifyPatch( const CString &sPath, const CStringArray &v
 
 	SAFE_DELETE( fSig );
 	SAFE_DELETE( fZip );
-	SAFE_DELETE( fRoot );
+//	SAFE_DELETE( fRoot );
 	
 	return bVerified;
 }
@@ -337,17 +347,11 @@ static void UpdateProgress( float fPercent )
 	g_PatchText = sProgress;	
 }
 
-static void DeleteDir( const CString &sPath )
-{
-	if( IsADirectory(sPath) )
-	{
-		FILEMAN->Remove( sPath + "*" );
-		FILEMAN->Remove( sPath );
-	}
-}
-
 void ScreenArcadePatch::PatchMain()
 {
+	/* HACK: sleep for a bit so we don't interfere with screen loading */
+	usleep( 1000000 );
+
 	m_State = PATCH_CHECKING;
 
 	/* set up patterns to match, in order of priority. */
@@ -383,23 +387,31 @@ void ScreenArcadePatch::PatchMain()
 	/* create the path for the patch file */
 	CString sPatchFile = m_sProfileDir + m_vsPatches[0];
 
+	// copy it into memory
+	// TODO: see if we can FILEMAN->GetFileDriver( "/@mem/" ).
+	RageFileDriverMem *fMem = new RageFileDriverMem;
+
+	int iError = 0;
+	RageFileBasic *fTempFile = fMem->Open( ITG_TEMP_PATH, RageFile::WRITE, iError );
+	
+	if( iError != 0 )
+	{
+		g_StateText = ssprintf( "Failed to open temporary file:\n%s", strerror(iError) );
+		m_State = PATCH_ERROR;
+	}
+
+	RageFile patch;
+	if( !patch.Open(sPatchFile) )
+	{
+		g_StateText = "Failed to open patch file.";
+		m_State = PATCH_ERROR;
+	}
+
 	/* give up to an hour for the data to verify and copy */
 	MEMCARDMAN->MountCard( pn, 3600 );
 
-	if( !VerifyPatch(sPatchFile, vsRSAPaths) )
-	{
-		m_State = PATCH_ERROR;
-		g_PatchText.clear();
-		MEMCARDMAN->UnmountCard( pn );
-		return;
-	}
-
-	/* now that it's verified, copy it into memory */
-	if( IsAFile(ITG_TEMP_PATH) )
-		FILEMAN->Remove( ITG_TEMP_PATH );
-
 	CString sError;
-	if( CopyWithProgress( sPatchFile, ITG_TEMP_PATH, &UpdateProgress, sError) )
+	if( FileCopy( patch, *fTempFile, sError, &UpdateProgress) )
 	{
 		g_StateText = "Patch copied! Checking...";
 		g_PatchText.clear();
@@ -410,24 +422,45 @@ void ScreenArcadePatch::PatchMain()
 		m_State = PATCH_ERROR;
 	}
 
+
 	MEMCARDMAN->UnmountCard( pn );
+
+	if( m_State == PATCH_ERROR )
+	{
+		SAFE_DELETE( fTempFile );
+		SAFE_DELETE( fMem );
+		return;
+	}
+
+	/* check the signature on the patch file */
+	if( !VerifyPatch(fTempFile, vsRSAPaths) )
+	{
+		m_State = PATCH_ERROR;
+		g_PatchText.clear();
+	}
+
+	SAFE_DELETE( fTempFile );
+	SAFE_DELETE( fMem );
 
 	if( m_State == PATCH_ERROR )
 		return;
 
-	int iError = 0;
+	iError = 0;
 
 	/* this should never fail, so we won't worry about error handling... */
 	unsigned int filesize = GetFileSizeInBytes( ITG_TEMP_PATH ) - 128;
 
-	/* open our new copy and read from it */
-	RageFileBasic *fRoot = FILEMAN->Open( ITG_TEMP_PATH, RageFile::READ, iError );
-	RageFileDriverSlice *fPatch = new RageFileDriverSlice( fRoot, 0, filesize );
-	RageFileDriverZip *fZip = new RageFileDriverZip( fPatch );
+	m_State = PATCH_ERROR;
 
 	/* check the XML data */
 	CString sGame, sMessage;
 	int iPatchRevision;
+
+#if 0
+	/* open our new copy and read from it */
+	RageFileBasic *fRoot = new RageFileDriverMem
+	RageFileDriverSlice *fPatch = new RageFileDriverSlice( fRoot, 0, filesize );
+	RageFileDriverZip *fZip = new RageFileDriverZip( fPatch );
 
 	// we'll catch this in a bit, after we've freed our memory
 	if( !this->GetXMLData(fZip, sGame, sMessage, iPatchRevision) )
@@ -436,6 +469,7 @@ void ScreenArcadePatch::PatchMain()
 	SAFE_DELETE( fZip );
 	SAFE_DELETE( fPatch );
 	SAFE_DELETE( fRoot );
+#endif
 
 	// if the XML get earlier failed, return now.
 	if( m_State == PATCH_ERROR )
@@ -462,8 +496,8 @@ void ScreenArcadePatch::PatchMain()
 	}
 
 	/* wipe any unsucessful or unused patch data */
-	DeleteDir( TEMP_PATCH_DIR );
-	DeleteDir( FINAL_PATCH_DIR );
+	DeleteRecursive( TEMP_PATCH_DIR );
+	DeleteRecursive( FINAL_PATCH_DIR );
 
 	FILEMAN->CreateDir( TEMP_PATCH_DIR );
 
@@ -472,7 +506,7 @@ void ScreenArcadePatch::PatchMain()
 	vsFiles.push_back( "" );	// this makes more sense than you think.
 
 	/* re-open the ZIP file now */
-	fZip = new RageFileDriverZip;
+	RageFileDriverZip *fZip = new RageFileDriverZip;
 	fZip->Load( ITG_TEMP_PATH );
 
 	/* find all the files we're going to write with a recursive check */
@@ -504,7 +538,8 @@ void ScreenArcadePatch::PatchMain()
 		RageFile fCopyTo;
 		fCopyTo.Open( TEMP_PATCH_DIR + sCleanPath, RageFile::WRITE );
 
-		if( !FileCopy(*fCopyFrom, fCopyTo, sError) )
+		CString sError = "(temporarily disabled)";
+		if( !FileCopy(*fCopyFrom, fCopyTo) )
 		{
 			g_PatchText = ssprintf("Could not copy \"%s\":\n" "%s",
 				sCleanPath.c_str(), sError.c_str() );

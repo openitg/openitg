@@ -1606,23 +1606,31 @@ bool Song::CheckCustomSong( CString &sError )
 		return false;
 	}
 
-#if 0
 	// music too big?
-	if( PREFSMAN->m_iCustomMaxSizeMB > 0 && FILEMAN->GetFileSizeInMB(GetMusicPath()) > PREFSMAN->m_iCustomMaxSizeMB )
+	if( PREFSMAN->m_iCustomMaxSizeMB > 0 )
 	{
-		sError = ssprintf( "This song is too big.\nThe maximum size is %u MB.", 
-			(int)PREFSMAN->m_iCustomMaxSizeMB );
-		return false;
+		int iLimit = 1024*1024*PREFSMAN->m_iCustomMaxSizeMB;
+
+		if( FILEMAN->GetFileSizeInBytes(GetMusicPath()) > iLimit )
+		{
+			sError = ssprintf( "This song is too big.\nThe maximum size is %u MB.", 
+				(int)PREFSMAN->m_iCustomMaxSizeMB );
+			return false;
+		}
 	}
 	
 	// SM file too big?
-	if( PREFSMAN->m_iCustomMaxStepsSizeKB > 0 && FILEMAN->GetFileSizeInKB(GetSongFilePath()) > PREFSMAN->m_iCustomMaxStepsSizeKB )
+	if( PREFSMAN->m_iCustomMaxStepsSizeKB > 0 )
 	{
-		sError = ssprintf( "The .SM file is too big.\nMaximum size is %u KB.",
-			(int)PREFSMAN->m_iCustomMaxStepsSizeKB );
-		return false;
+		int iLimit = 1024*PREFSMAN->m_iCustomMaxStepsSizeKB;
+		
+		if( FILEMAN->GetFileSizeInBytes(GetSongFilePath()) > iLimit )
+		{
+			sError = ssprintf( "The .SM file is too big.\nMaximum size is %u KB.",
+				(int)PREFSMAN->m_iCustomMaxStepsSizeKB );
+			return false;
+		}
 	}
-#endif
 
 	// while we could refer to m_fMusicLengthSeconds for song length,
 	// this method is preferred because we need to test the USB device.

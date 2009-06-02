@@ -234,7 +234,7 @@ bool MemoryCardDriverThreaded_Linux::DoOneUpdate( bool bMount, vector<UsbStorage
 				struct stat data;
 				if( stat(d.sDevice, &data) == -1 )
 				{
-					LOG->Trace( "Skipping %s: not in /dev/ yet.", d.sDevice.c_str() );
+					LOG->Warn( "Waiting for %s: not in /dev/ yet.", d.sDevice.c_str() );
 					continue;
 				}
 			}
@@ -397,10 +397,16 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 			if( atoi(sBuf) != 1 )
 				continue;
 
-			usbd.sDevice = "/dev/" + sDevice + "1";
+			usbd.sDevice = "/dev/" + sDevice;
+
+			/* check for "/sys/block/sdc/sdc1" */
+			CString sSubdir = sDevice + "/" + sDevice + "1/";
+			if( IsADirectory("/rootfs"+sBlockDevicePath+sSubdir) )
+				usbd.sDevice += "1";
+			else
+				LOG->Trace( "Device doesn't use numeric suffix. Using %s", sDevice.c_str() );
 
 			SetDeviceInfo( usbd, sPath );
-
 			vDevicesOut.push_back( usbd );
 		}
 	}

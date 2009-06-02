@@ -1,5 +1,7 @@
 OpenITG, beta 2 (in development)
 --------------------------------
+-Fixed Linux bugs:
+     USB devices that only reported as "sda" would stay checking forever
 -Fixed cross-platform bugs:
      ScreenArcadeStart times out, even with missing I/O handler
 -Miscellaneous changes:

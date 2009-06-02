@@ -1,9 +1,13 @@
+/* Screen used to apply machine updates from a USB drive. */
+
 #ifndef SCREEN_ARCADE_PATCH_H
 #define SCREEN_ARCADE_PATCH_H
 
 #include "ScreenWithMenuElements.h"
-#include "BitmapText.h"
 #include "RageThreads.h"
+
+class RageFileBasic;
+class RageFileDriverZip;
 
 enum PatchState
 {
@@ -14,9 +18,7 @@ enum PatchState
 	NUM_PATCH_STATES
 };
 
-class RageFileDriverZip;
-
-class ScreenArcadePatch: public ScreenWithMenuElements
+class ScreenArcadePatch : public ScreenWithMenuElements
 {
 public:
 	ScreenArcadePatch( CString sName );
@@ -29,28 +31,25 @@ public:
 	virtual void MenuStart( PlayerNumber pn );
 	virtual void MenuBack( PlayerNumber pn )	{ MenuStart(pn); }
 private:
-	/* current state of the patch being checked */
 	PatchState m_State, m_LastUpdatedState;
 
-	/* thread that does the checking */
+	/* the thread that handles the patch system */
 	RageThread m_Thread;
-	static int PatchThread_Start( void *p )
-	{
-		((ScreenArcadePatch *)p)->PatchMain();
-		return 0;
-	}
+	static int PatchThread_Start( void *p ) { ((ScreenArcadePatch *)p)->PatchMain(); return 0; }
 
 	/* main function for patch checking */
 	void PatchMain();
 
 	/* secondary functions, more encapsulated than the last ones... */
 	bool HasPatch( PlayerNumber pn, const CStringArray &vsPatterns );
-	bool VerifyPatch( RageFileBasic *fPatch, const CStringArray &vsKeyPaths );
+	bool VerifyPatch( RageFileBasic *pFile, const CStringArray &vsKeyPaths );
 	bool GetXMLData( RageFileDriverZip *pZip, CString &sGame, CString &sMessage, int &iRevision );
 
 	CStringArray m_vsPatches;
-
 	CString m_sProfileDir;
+
+	/* the patch file that resides in memory */
+	RageFileBasic *m_PatchFile;
 
 	BitmapText m_StateText;
 	BitmapText m_PatchText;

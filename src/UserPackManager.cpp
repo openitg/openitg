@@ -79,13 +79,18 @@ bool UserPackManager::IsPackAddable( const CString sPack, CString &sError )
 	}
 
 	// do not add if it's just folders of individual songs without a group folder
-	CStringArray asSMFiles;
-	pZip->GetDirListing( "*/*.sm", asSMFiles, false, false ); /**/
-	if ( asSMFiles.size() > 0 )
+	CStringArray asRootFolders;
+	pZip->GetDirListing( "/*", asRootFolders, true, false ); /**/
+	for( unsigned i = 0; i < asRootFolders.size(); i++ )
 	{
-		sError = "Package is not a group folder.\nPlease add songs to a single group folder.\n(i.e. {Group Name}/{Song Folder}/Song.sm)";
-		SAFE_DELETE( pZip );
-		return false;
+		CStringArray asFiles;
+		pZip->GetDirListing( "/" + asRootFolders[i] + "/*.sm", asFiles, false, false ); /**/
+		if ( asFiles.size() > 0 )
+		{
+			sError = "Package is not a group folder package.\r\nPlease add songs to a single group folder.\r\n(i.e. {Group Name}/{Song Folder}/Song.sm)";
+			SAFE_DELETE( pZip );
+			return false;
+		}
 	}
 
 	SAFE_DELETE( pZip );

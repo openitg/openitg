@@ -18,7 +18,6 @@ void LinkedOptionsMenu::Load( LinkedOptionsMenu *prev, LinkedOptionsMenu *next )
 
 	m_SoundMoveRow.Load( THEME->GetPathS( m_sName, "move row" ) );
 	m_SoundSwitchMenu.Load( THEME->GetPathS( m_sName, "switch menu" ) );
-	LOG->Debug("m_SoundSwitchMenu: %s", THEME->GetPathS( m_sName, "switch menu" ).c_str() );
 
 	m_FramePage.Load( THEME->GetPathG( m_sName, "page" ) );
 	m_Frame.AddChild( m_FramePage );

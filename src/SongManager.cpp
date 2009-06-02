@@ -87,7 +87,7 @@ void SongManager::Reload( LoadingWindow *ld )
 	if( ld )
 		ld->SetText( "Reloading ..." );
 
-	// save scores before unloading songs, of the scores will be lost
+	// save scores before unloading songs, or the scores will be lost
 	PROFILEMAN->SaveMachineProfile();
 
 	FreeSongs();

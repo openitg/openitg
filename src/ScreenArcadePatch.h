@@ -7,6 +7,7 @@
 #include "RageThreads.h"
 
 class RageFileBasic;
+class RageFileDriverMem;
 class RageFileDriverZip;
 
 enum PatchState
@@ -48,7 +49,8 @@ private:
 	CStringArray m_vsPatches;
 	CString m_sProfileDir;
 
-	/* the patch file that resides in memory */
+	/* the local memory file driver and patch file */
+	RageFileDriverMem *m_MemDriver;
 	RageFileBasic *m_PatchFile;
 
 	BitmapText m_StateText;
@@ -81,3 +83,4 @@ private:
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+

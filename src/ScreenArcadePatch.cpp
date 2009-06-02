@@ -58,6 +58,9 @@ ScreenArcadePatch::ScreenArcadePatch( CString sClassName ) : ScreenWithMenuEleme
 {
 	LOG->Trace( "ScreenArcadePatch::ScreenArcadePatch()" );
 	RageFileDriverTimeout::SetTimeout( 3600 );
+
+	m_MemDriver = NULL;
+	m_PatchFile = NULL;
 }
 
 ScreenArcadePatch::~ScreenArcadePatch()
@@ -65,16 +68,20 @@ ScreenArcadePatch::~ScreenArcadePatch()
 	LOG->Trace( "ScreenArcadePatch::~ScreenArcadePatch()" );
 	RageFileDriverTimeout::ResetTimeout();
 
-	if( m_PatchFile )
-		SAFE_DELETE( m_PatchFile );
+	if( m_MemDriver && m_PatchFile )
+		m_MemDriver->Remove( ITG_TEMP_FILE );
+
+	SAFE_DELETE( m_PatchFile );
+	SAFE_DELETE( m_MemDriver );
 }
 
 void ScreenArcadePatch::Init()
 {
 	ScreenWithMenuElements::Init();
 
+	// HACK: set last updated differently to force an update
 	m_State = PATCH_NONE;
-	m_LastUpdatedState = PATCH_NONE;
+	m_LastUpdatedState = PATCH_ERROR;
 
 	/* initialize BitmapText actors */
 	m_StateText.LoadFromFont( THEME->GetPathF("ScreenArcadePatch", "text") );
@@ -87,8 +94,7 @@ void ScreenArcadePatch::Init()
 	SET_XY_AND_ON_COMMAND( m_PatchText );
 
 	/* this will be picked up on the first update */
-	STATE_TEXT( THEME->GetMetric("ScreenArcadePatch","IntroText") );
-	PATCH_TEXT( "Please wait..." );
+	STATE_TEXT( "Please wait..." );
 	m_textHelp->SetText( WAITING_HELP_TEXT );
 
 	this->AddChild( &m_StateText );
@@ -115,7 +121,6 @@ void ScreenArcadePatch::HandleScreenMessage( const ScreenMessage SM )
 	}
 }
 
-
 void ScreenArcadePatch::Update( float fDeltaTime )
 {
 	/* start the thread once the opening transition has finished. */
@@ -137,7 +142,8 @@ void ScreenArcadePatch::Update( float fDeltaTime )
 	switch( m_State )
 	{
 	case PATCH_NONE:
-		PATCH_TEXT( "Please insert a USB card containing an update." );
+		STATE_TEXT( "Please insert a USB card containing an update." );
+		PATCH_TEXT( THEME->GetMetric("ScreenArcadePatch","IntroText") );
 	case PATCH_CHECKING:
 		m_textHelp->SetText( WAITING_HELP_TEXT );
 		break;
@@ -365,10 +371,10 @@ void ScreenArcadePatch::PatchMain()
 
 	// copy the patch file into memory
 	// TODO: see if we can FILEMAN->GetFileDriver( "/@mem/" ).
-	RageFileDriverMem *fMem = new RageFileDriverMem;
+	m_MemDriver = new RageFileDriverMem;
 
 	int iError = 0;
-	m_PatchFile = fMem->Open( ITG_TEMP_FILE, RageFile::WRITE, iError );
+	m_PatchFile = m_MemDriver->Open( ITG_TEMP_FILE, RageFile::WRITE, iError );
 	
 	if( iError != 0 )
 	{
@@ -409,19 +415,15 @@ void ScreenArcadePatch::PatchMain()
 	MEMCARDMAN->UnmountCard( pn );
 
 	if( m_State == PATCH_ERROR )
-	{
-		SAFE_DELETE( fMem );
 		return;
-	}
 
 	/* re-open the patch file read-open. this should not fail. */
-	m_PatchFile = fMem->Open( ITG_TEMP_FILE, RageFile::READ, iError );
+	m_PatchFile = m_MemDriver->Open( ITG_TEMP_FILE, RageFile::READ, iError );
 
 	if( !this->VerifyPatch(m_PatchFile, vsRSAPaths) )
 	{
 		PATCH_TEXT( "" );
 		m_State = PATCH_ERROR;
-		SAFE_DELETE( fMem );
 		return;
 	}
 
@@ -578,3 +580,4 @@ void ScreenArcadePatch::PatchMain()
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+

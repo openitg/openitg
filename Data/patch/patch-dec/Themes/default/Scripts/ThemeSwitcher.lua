@@ -1,5 +1,5 @@
 --[[
-Lua Theme Switcher, OpenITG beta 1, version 1.3
+Lua Theme Switcher, OpenITG beta 1, version 1.5
 Licensed under Creative Commons Attribution-Share Alike 3.0 Unported
 (http://creativecommons.org/licenses/by-sa/3.0/)
 
@@ -8,11 +8,14 @@ All I ask is that you keep this notice intact and don't redistribute in bytecode
 --]]
 
 local function IsBlacklisted( name )
-	local BlacklistedThemes = { "ps2", "ps2onpc" }
-
-	-- never display the above themes, or any fallbacks.
+	-- never display fallback folders
 	if string.find( name, "fallback" ) then return true end
 
+	-- never display dot directories (e.g. ".svn", ".nano")
+	if string.sub( name, 1, 1 ) == "." then return true end
+
+	-- never display the themes in this list
+	local BlacklistedThemes = { "ps2", "ps2onpc" }
 	for i=1,table.getn(BlacklistedThemes) do
 		if name == BlacklistedThemes[i] then return true end
 	end

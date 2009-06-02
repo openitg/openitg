@@ -1,4 +1,4 @@
-/* LinkedOptionsMenu - dirt simple single-column options menu for ScreenAddSongs */
+/* LinkedOptionsMenu - dirt simple single-column options menu for ScreenUserPacks */
 #ifndef LINKED_OPTIONS_MENU_H
 #define LINKED_OPTIONS_MENU_H
 #include "global.h"

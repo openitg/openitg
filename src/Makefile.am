@@ -43,7 +43,6 @@ Screen.cpp Screen.h \
 ScreenArcadeDiagnostics.cpp ScreenArcadeDiagnostics.h ScreenArcadePatch.cpp ScreenArcadePatch.h \
 ScreenArcadeStart.cpp ScreenArcadeStart.h \
 ScreenAttract.cpp ScreenAttract.h \
-ScreenAddSongs.cpp ScreenAddSongs.h \
 ScreenBookkeeping.cpp ScreenBookkeeping.h ScreenBranch.cpp ScreenBranch.h \
 ScreenCenterImage.cpp ScreenCenterImage.h ScreenCredits.cpp ScreenCredits.h \
 ScreenDebugOverlay.cpp ScreenDebugOverlay.h \
@@ -77,7 +76,8 @@ ScreenSplash.cpp ScreenSplash.h \
 ScreenStage.cpp ScreenStage.h \
 ScreenTest.cpp ScreenTest.h ScreenTestFonts.cpp ScreenTestFonts.h ScreenTestInput.cpp ScreenTestInput.h \
 ScreenTestLights.cpp ScreenTestLights.h ScreenTestSound.cpp ScreenTestSound.h ScreenTextEntry.cpp ScreenTextEntry.h \
-ScreenTitleMenu.cpp ScreenTitleMenu.h ScreenUnlock.cpp ScreenUnlock.h ScreenWithMenuElements.cpp ScreenWithMenuElements.h
+ScreenTitleMenu.cpp ScreenTitleMenu.h ScreenUnlock.cpp ScreenUnlock.h \
+ScreenUserPacks.cpp ScreenUserPacks.h ScreenWithMenuElements.cpp ScreenWithMenuElements.h
 
 if !WITHOUT_NETWORKING
 Screens += ScreenGameplayMultiplayer.cpp ScreenGameplayMultiplayer.h ScreenSMOnlineLogin.cpp ScreenSMOnlineLogin.h

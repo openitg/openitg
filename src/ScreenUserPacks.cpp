@@ -1,6 +1,6 @@
 #include "global.h"
 #include "HelpDisplay.h"
-#include "ScreenAddSongs.h"
+#include "ScreenUserPacks.h"
 #include "Screen.h"
 #include "ScreenPrompt.h"
 #include "ScreenWithMenuElements.h"
@@ -27,7 +27,7 @@
 
 static RageMutex MountMutex("ITGDataMount");
 
-REGISTER_SCREEN_CLASS( ScreenAddSongs );
+REGISTER_SCREEN_CLASS( ScreenUserPacks );
 
 AutoScreenMessage( SM_ConfirmAddZip );
 AutoScreenMessage( SM_AnswerConfirmAddZip );
@@ -35,7 +35,7 @@ AutoScreenMessage( SM_ConfirmDeleteZip );
 AutoScreenMessage( SM_AnswerConfirmDeleteZip );
 AutoScreenMessage( SM_LinkedMenuChange );
 
-ScreenAddSongs::ScreenAddSongs( CString sName ) : ScreenWithMenuElements( sName )
+ScreenUserPacks::ScreenUserPacks( CString sName ) : ScreenWithMenuElements( sName )
 {
 	m_bRestart = false;
 	m_bPrompt = false;
@@ -43,9 +43,9 @@ ScreenAddSongs::ScreenAddSongs( CString sName ) : ScreenWithMenuElements( sName 
 	MEMCARDMAN->UnlockCards();
 }
 
-ScreenAddSongs::~ScreenAddSongs()
+ScreenUserPacks::~ScreenUserPacks()
 {
-	LOG->Trace( "ScreenAddSongs::~ScreenAddSongs()" );
+	LOG->Trace( "ScreenUserPacks::~ScreenUserPacks()" );
 	m_bStopThread = true;
 	if (m_PlayerSongLoadThread.IsCreated())
 		m_PlayerSongLoadThread.Wait();
@@ -57,18 +57,18 @@ ScreenAddSongs::~ScreenAddSongs()
 		HOOKS->SystemReboot();
 }
 
-void ScreenAddSongs::LoadAddedZips()
+void ScreenUserPacks::LoadAddedZips()
 {
 	UPACKMAN->GetCurrentUserPacks( m_asAddedZips );
 }
 
 int InitSASSongThread( void *pSAS )
 {
-	((ScreenAddSongs*)pSAS)->StartSongThread();
+	((ScreenUserPacks*)pSAS)->StartSongThread();
 	return 1;
 }
 
-void ScreenAddSongs::Init()
+void ScreenUserPacks::Init()
 {
 	ScreenWithMenuElements::Init();
 
@@ -129,7 +129,7 @@ void ScreenAddSongs::Init()
 	m_PlayerSongLoadThread.Create( InitSASSongThread, this );
 }
 
-void ScreenAddSongs::StartSongThread()
+void ScreenUserPacks::StartSongThread()
 {
 	while ( !m_bStopThread )
 	{
@@ -174,12 +174,12 @@ void ScreenAddSongs::StartSongThread()
 	}
 }
 
-void ScreenAddSongs::Update( float fDeltaTime )
+void ScreenUserPacks::Update( float fDeltaTime )
 {
 	ScreenWithMenuElements::Update( fDeltaTime );
 }
 
-void ScreenAddSongs::HandleMessage( const CString &sMessage )
+void ScreenUserPacks::HandleMessage( const CString &sMessage )
 {
 	if ( sMessage == "LinkedMenuChange" )
 	{
@@ -189,7 +189,7 @@ void ScreenAddSongs::HandleMessage( const CString &sMessage )
 	ScreenWithMenuElements::HandleMessage( sMessage );
 }
 
-void ScreenAddSongs::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
+void ScreenUserPacks::Input( const DeviceInput& DeviceI, const InputEventType type, const GameInput &GameI, const MenuInput &MenuI, const StyleInput &StyleI )
 {
 	if( type != IET_FIRST_PRESS && type != IET_SLOW_REPEAT )
 		return;	// ignore
@@ -237,7 +237,7 @@ void UpdateXferProgress( float fPercent )
 	SCREENMAN->Draw();
 }
 
-void ScreenAddSongs::HandleScreenMessage( const ScreenMessage SM )
+void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 {
 	if ( SM == SM_LinkedMenuChange )
 	{
@@ -352,7 +352,7 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 	}
 }
 
-void ScreenAddSongs::MenuBack( PlayerNumber pn )
+void ScreenUserPacks::MenuBack( PlayerNumber pn )
 {
 	if(!IsTransitioning())
 	{
@@ -362,13 +362,13 @@ void ScreenAddSongs::MenuBack( PlayerNumber pn )
 }
 
 /*
-void ScreenAddSongs::MenuStart( PlayerNumber pn )
+void ScreenUserPacks::MenuStart( PlayerNumber pn )
 {
 	MenuBack(pn);
 }
 */
 
-void ScreenAddSongs::DrawPrimitives()
+void ScreenUserPacks::DrawPrimitives()
 {
 	Screen::DrawPrimitives();
 }

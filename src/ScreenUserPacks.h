@@ -10,11 +10,11 @@
 #include "ScreenMiniMenu.h"
 #include "LinkedOptionsMenu.h"
 
-class ScreenAddSongs : public ScreenWithMenuElements
+class ScreenUserPacks : public ScreenWithMenuElements
 {
 public:
-	ScreenAddSongs( CString sName );
-	~ScreenAddSongs();
+	ScreenUserPacks( CString sName );
+	~ScreenUserPacks();
 
 	virtual void Init();
 

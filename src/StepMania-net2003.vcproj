@@ -531,12 +531,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				RelativePath="Screen.h">
 			</File>
 			<File
-				RelativePath=".\ScreenAddSongs.cpp">
-			</File>
-			<File
-				RelativePath=".\ScreenAddSongs.h">
-			</File>
-			<File
 				RelativePath="ScreenArcadeDiagnostics.cpp">
 			</File>
 			<File
@@ -973,6 +967,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			</File>
 			<File
 				RelativePath="ScreenUnlock.h">
+			</File>
+			<File
+				RelativePath=".\ScreenUserPacks.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenUserPacks.h">
 			</File>
 			<File
 				RelativePath="ScreenWithMenuElements.cpp">

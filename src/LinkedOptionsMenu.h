@@ -6,6 +6,7 @@
 #include "ActorFrame.h"
 #include "OptionsCursor.h"
 #include "RageInputDevice.h"
+#include "RageSound.h"
 #include "GameInput.h"
 #include "InputFilter.h"
 #include "StyleInput.h"
@@ -65,6 +66,9 @@ private:
 	int								m_iCurPage;
 
 	ScreenMessage					m_smChangeMenu;
+
+	RageSound					m_SoundMoveRow;
+	RageSound					m_SoundSwitchMenu;
 
 	ThemeMetric<float>				ROW_SPACING_Y;
 	ThemeMetric<float>				ROW_OFFSET_Y;

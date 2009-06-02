@@ -32,7 +32,7 @@ extern UserPackManager* UPACKMAN;
 #endif /* USER_PACK_MANAGER_H */
 
 /*
- * (c) 2009 "infamouspat"
+ * (c) 2009 Pat Mac ("infamouspat")
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -55,3 +55,4 @@ extern UserPackManager* UPACKMAN;
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+

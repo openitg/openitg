@@ -74,6 +74,9 @@ void ScreenUserPacks::Init()
 
 	LoadAddedZips();
 
+	m_SoundDelete.Load( THEME->GetPathS( m_sName, "delete" ) );
+	m_SoundTransferDone.Load( THEME->GetPathS( m_sName, "transfer done" ) );
+
 	m_AddedZips.SetName( "LinkedOptionsMenuAddedZips" );
 	m_USBZips.SetName( "LinkedOptionsMenuUSBZips" );
 	m_Exit.SetName( "LinkedOptionsMenuSASExit" );
@@ -163,7 +166,7 @@ void ScreenUserPacks::StartSongThread()
 				}
 				CString sPlayerUserPacksDir = sDriveDir + "/" + UPACKMAN->GetUserTransferPath();
 				CStringArray sUSBZips;
-				GetDirListing( sPlayerUserPacksDir+"/*.zip", sUSBZips, false, false );
+				GetDirListing( sPlayerUserPacksDir+"/*.zip", sUSBZips, false, false ); /**/
 				MEMCARDMAN->UnmountCard(pn);
 				m_USBZips.SetChoices( sUSBZips );
 				m_CurPlayer = pn;
@@ -213,7 +216,7 @@ void ScreenUserPacks::Input( const DeviceInput& DeviceI, const InputEventType ty
 	{
 		if ( m_pCurLOM->GetName() == "LinkedOptionsMenuSASExit" )
 		{
-			this->PostScreenMessage( SM_GoToNextScreen, 0.0f);
+			MenuBack( MenuI.player );
 		}
 		else if ( m_pCurLOM->GetName() == "LinkedOptionsMenuUSBZips" )
 		{
@@ -228,11 +231,12 @@ void ScreenUserPacks::Input( const DeviceInput& DeviceI, const InputEventType ty
 }
 
 CString g_CurXferFile;
+CString g_CurSelection;
 
 // shamelessly copied from vyhd's function in ScreenSelectMusic
 void UpdateXferProgress( float fPercent )
 {
-	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n%s\n", (int)fPercent, g_CurXferFile.c_str() );
+	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n%s\n", (int)fPercent, g_CurSelection.c_str() );
 	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();
 }
@@ -256,9 +260,11 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 		if (ScreenPrompt::s_LastAnswer == ANSWER_NO)
 			return;
 		CString sSelection = m_AddedZips.GetCurrentSelection();
+		g_CurSelection = sSelection;
 		bool bSuccess = UPACKMAN->UnlinkAndRemovePack( UPACKMAN->GetSavePath() + "/" + sSelection );
 		if (bSuccess)
 		{
+			m_SoundDelete.Play();
 			m_bRestart = true;
 			m_asAddedZips.clear();
 			LoadAddedZips();
@@ -334,6 +340,7 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 
 		m_bRestart = true;
 
+		m_SoundTransferDone.Play();
 		m_asAddedZips.clear();
 		LoadAddedZips();
 		m_AddedZips.SetChoices( m_asAddedZips );
@@ -344,8 +351,6 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 	switch( SM )
 	{
 	case SM_GoToNextScreen:
-		SCREENMAN->SetNewScreen( NEXT_SCREEN );
-		break;
 	case SM_GoToPrevScreen:
 		SCREENMAN->SetNewScreen( PREV_SCREEN );
 		break;

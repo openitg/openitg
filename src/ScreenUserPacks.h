@@ -45,6 +45,9 @@ private:
 
 	RageThread m_PlayerSongLoadThread;
 
+	RageSound m_SoundDelete;
+	RageSound m_SoundTransferDone;
+
 	bool m_bCardMounted[NUM_PLAYERS];
 	PlayerNumber m_CurPlayer;
 	bool m_bRestart;

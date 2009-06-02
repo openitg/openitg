@@ -16,7 +16,7 @@ UserPackManager::UserPackManager( const CString sTransferPath, const CString sSa
 
 void UserPackManager::GetCurrentUserPacks( CStringArray &sAddTo )
 {
-	GetDirListing( m_sSavePath+"/*.zip", sAddTo, false, false );
+	GetDirListing( m_sSavePath+"/*.zip", sAddTo, false, false ); /**/
 }
 
 void UserPackManager::MergePacksToVFS()
@@ -76,6 +76,16 @@ bool UserPackManager::IsPackAddable( const CString sPack, CString &sError )
 			SAFE_DELETE( pZip );
 			return false;
 		}
+	}
+
+	// do not add if it's just folders of individual songs without a group folder
+	CStringArray asSMFiles;
+	pZip->GetDirListing( "*/*.sm", asSMFiles, false, false ); /**/
+	if ( asSMFiles.size() > 0 )
+	{
+		sError = "Package is not a group folder.\nPlease add songs to a single group folder.\n(i.e. {Group Name}/{Song Folder}/Song.sm)";
+		SAFE_DELETE( pZip );
+		return false;
 	}
 
 	SAFE_DELETE( pZip );

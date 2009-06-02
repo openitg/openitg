@@ -2,6 +2,7 @@
 #include "LinkedOptionsMenu.h"
 #include "BitmapText.h"
 #include "ThemeManager.h"
+#include "RageLog.h"
 #include "ActorUtil.h"
 #include "ThemeMetric.h"
 #include "arch/Dialog/DialogDriver.h"
@@ -14,6 +15,10 @@ void LinkedOptionsMenu::Load( LinkedOptionsMenu *prev, LinkedOptionsMenu *next )
 
 	m_Frame.SetName( "Frame" );
 	this->AddChild( &m_Frame );
+
+	m_SoundMoveRow.Load( THEME->GetPathS( m_sName, "move row" ) );
+	m_SoundSwitchMenu.Load( THEME->GetPathS( m_sName, "switch menu" ) );
+	LOG->Debug("m_SoundSwitchMenu: %s", THEME->GetPathS( m_sName, "switch menu" ).c_str() );
 
 	m_FramePage.Load( THEME->GetPathG( m_sName, "page" ) );
 	m_Frame.AddChild( m_FramePage );
@@ -146,20 +151,27 @@ LinkedInputResponseType LinkedOptionsMenu::MoveRow(int iDirection)
 	if (iNewSelection >= m_Rows.size() && iNewSelection > 0) // user chose beyond last option
 	{
 		if ( GetNextMenu() != this && MENU_WRAPPING )
+		{
+			m_SoundSwitchMenu.Play();
 			return LIRT_FORWARDED_NEXT;
+		}
 		else
 			return LIRT_STOP;
 	}
 	else if (iNewSelection < 0) // user chose before first option
 	{
 		if ( GetPrevMenu() != this && MENU_WRAPPING )
+		{
+			m_SoundSwitchMenu.Play();
 			return LIRT_FORWARDED_PREV;
+		}
 		else
 			return LIRT_STOP;
 	}
 	else // user chose somewhere in the middle
 	{
 		SetChoiceIndex( iNewSelection );
+		m_SoundMoveRow.Play();
 		return LIRT_ACCEPTED;
 	}
 }
@@ -295,6 +307,7 @@ LinkedOptionsMenu* LinkedOptionsMenu::SwitchToNextMenu()
 	LinkedOptionsMenu *pRet = GetNextMenu();
 	Unfocus();
 	pRet->Focus();
+	m_SoundSwitchMenu.Play();
 	return pRet;
 }
 
@@ -303,6 +316,7 @@ LinkedOptionsMenu* LinkedOptionsMenu::SwitchToPrevMenu()
 	LinkedOptionsMenu *pRet = GetPrevMenu();
 	Unfocus();
 	pRet->Focus();
+	m_SoundSwitchMenu.Play();
 	return pRet;
 }
 
@@ -348,7 +362,10 @@ LinkedInputResponseType LinkedOptionsMenu::Input( const DeviceInput& DeviceI, co
 		if ( pMenu == this )
 			return LIRT_STOP;
 		else
+		{
+			m_SoundSwitchMenu.Play();
 			return LIRT_FORWARDED_NEXT;
+		}
 	}
 	return LIRT_INVALID;
 }

@@ -49,10 +49,16 @@ void UserPackManager::AddBlacklistedFolder( const CString sBlacklistedFolder )
 
 bool UserPackManager::UnlinkAndRemovePack( const CString sPack )
 {
+#if defined(LINUX) && defined(ITG_ARCADE)
+	system( "mount -o remount,rw /itgdata" );
+#endif
 	FILEMAN->Unmount("zip", sPack, "/Songs");
 	FILEMAN->Unmount("zip", sPack, "/");
 	bool bRet = FILEMAN->Remove( sPack );
 	FILEMAN->FlushDirCache( m_sSavePath );
+#if defined(LINUX) && defined(ITG_ARCADE)
+	system( "mount -o remount,ro /itgdata" );
+#endif
 	return bRet;
 }
 
@@ -85,9 +91,10 @@ bool UserPackManager::IsPackAddable( const CString sPack, CString &sError )
 	{
 		CStringArray asFiles;
 		pZip->GetDirListing( "/" + asRootFolders[i] + "/*.sm", asFiles, false, false ); /**/
+		pZip->GetDirListing( "/" + asRootFolders[i] + "/*.dwi", asFiles, false, false ); /**/
 		if ( asFiles.size() > 0 )
 		{
-			sError = "Package is not a group folder package.\r\nPlease add songs to a single group folder.\r\n(i.e. {Group Name}/{Song Folder}/Song.sm)";
+			sError = "Package is not a group folder package.\nPlease add songs to a single group folder.\n(i.e. {Group Name}/{Song Folder}/Song.sm)";
 			SAFE_DELETE( pZip );
 			return false;
 		}
@@ -136,16 +143,11 @@ CString UserPackManager::GetPackMountPoint( const CString sPack )
 	pZip->GetDirListing( "/", asRootEntries, true, false );
 	SAFE_DELETE( pZip );
 
+	// if we find a StepMania root folder, mount it as one
 	for( unsigned i = 0; i < ROOT_DIRS_SIZE; i++ )
-	{
 		for( unsigned j = 0; j < asRootEntries.size(); j++ )
-		{
 			if ( asRootEntries[j].CompareNoCase( asRootDirs[i] ) == 0 )
-			{ // found a StepMania root folder, mount it as one
 				return "/";
-			}
-		}
-	}
 
 	/* for now, assume a Songs-only pack if the root dirs aren't there */
 	return "/Songs";
@@ -175,3 +177,4 @@ CString UserPackManager::GetPackMountPoint( const CString sPack )
  * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
  * PERFORMANCE OF THIS SOFTWARE.
  */
+

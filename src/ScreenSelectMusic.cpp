@@ -70,7 +70,6 @@ static CString g_sBannerPath;
 static bool g_bBannerWaiting = false;
 static bool g_bSampleMusicWaiting = false;
 static RageTimer g_StartedLoadingAt(RageZeroTimer);
-static bool g_bGoToOptions = false;
 
 REGISTER_SCREEN_CLASS( ScreenSelectMusic );
 ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuElements( sClassName ),
@@ -824,7 +823,7 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 	// Check for "Press START again for options" button press
 	if( m_bMadeChoice  && (MenuI.IsValid() && MenuI.button == MENU_BUTTON_START
 		&& type != IET_RELEASE  && type != IET_LEVEL_CHANGED &&
-		OPTIONS_MENU_AVAILABLE.GetValue()) || g_bGoToOptions )
+		OPTIONS_MENU_AVAILABLE.GetValue()) )
 	{
 		if(m_bGoToOptions) return; /* got it already */
 		if(!m_bAllowOptionsMenu) return; /* not allowed */
@@ -1323,15 +1322,8 @@ void UpdateLoadProgress( float fPercent )
 
 	sMessage += sCancelText;
 
-	// Simulate buffered-read functionality PIUIO has spoiled people to...
-	if( !g_bGoToOptions )
-	{
-		// UGLY: send a manual update to INPUTFILTER to check state
-		INPUTFILTER->Update( 0 );
-
-		FOREACH_EnabledPlayer( pn )
-			g_bGoToOptions |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_START) );
-	}
+	// UGLY: send a manual update to INPUTFILTER to force input buffering
+	INPUTFILTER->Update( 0 );
 
 	bool bInterrupt = false;
 
@@ -1345,6 +1337,11 @@ void UpdateLoadProgress( float fPercent )
 	{
 		InterruptCopy();
 		LOG->Warn( "Custom song load interrupted." );
+
+		// TRICKY DISCO: discard all input events recorded since update.
+		// otherwise, we'll get all the pressed buttons at once.
+		InputEventArray throwaway;
+		INPUTFILTER->GetInputEvents( throwaway );
 	}
 
 	SCREENMAN->OverlayMessage( sMessage );
@@ -1452,7 +1449,6 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 					m_bMadeChoice = ValidateCustomSong( m_MusicWheel.GetSelectedSong() );
 
 				if(m_bMadeChoice) m_bGoToOptions = false;
-				g_bGoToOptions = false;
 			}
 			else
 				m_bMadeChoice = true;
@@ -1529,7 +1525,6 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 						pSong->m_sBackgroundFile = THEME->GetPathG( "Common", "fallback background" );
 					}
 				}
-				g_bGoToOptions = false;
 				SCREENMAN->HideOverlayMessage();
 				SCREENMAN->ZeroNextUpdate();
 			}

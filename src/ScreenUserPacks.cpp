@@ -236,7 +236,7 @@ CString g_CurSelection;
 // shamelessly copied from vyhd's function in ScreenSelectMusic
 void UpdateXferProgress( float fPercent )
 {
-	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n%s\n", (int)fPercent, g_CurSelection.c_str() );
+	CString sMessage = ssprintf( "Please wait ...\n%.2f%%\n\n%s\n", fPercent, g_CurSelection.c_str() );
 	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();
 }
@@ -272,8 +272,7 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 		}
 		else
 		{
-			SCREENMAN->SystemMessage( "Failed to delete zip file from machine.\n"
-								"The harddrive may be corrupt or have wrong permissions set for the destination folder.");
+			SCREENMAN->SystemMessage( "Failed to delete zip file from machine. Check your file permissions" );
 		}
 	}
 	if ( SM == SM_ConfirmAddZip )
@@ -317,7 +316,7 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/" + UPACKMAN->GetUserTransferPath() + sSelection;
 			if ( !UPACKMAN->IsPackTransferable( sSelection, sError ) || !UPACKMAN->IsPackAddable( g_CurXferFile, sError ) )
 			{
-				SCREENMAN->SystemMessage( "Could not add pack to machine: " + sError );
+				SCREENMAN->SystemMessage( "Could not add pack to machine:\n" + sError );
 				XFER_CLEANUP;
 				return;
 			}
@@ -325,7 +324,7 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 			sError = ""; //  ??
 			if (!UPACKMAN->TransferPack( g_CurXferFile, sSelection, UpdateXferProgress, sError ) )
 			{
-				SCREENMAN->SystemMessage( "Transfer error: " + sError );
+				SCREENMAN->SystemMessage( "Transfer error:\n" + sError );
 				XFER_CLEANUP;
 				return;
 			}

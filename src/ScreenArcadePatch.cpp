@@ -221,7 +221,7 @@ bool ScreenArcadePatch::HasPatch( PlayerNumber pn, const CStringArray &vsPattern
 
 	CString sDebugMsg = ssprintf( "%i match%s found: ", m_vsPatches.size(), (m_vsPatches.size() != 1) ? "es" : "" );
 	sDebugMsg += join( ", ", m_vsPatches );
-	LOG->Debug( sDebugMsg.c_str() );
+	LOG->Trace( sDebugMsg.c_str() );
 
 	return true;
 }
@@ -260,7 +260,7 @@ bool ScreenArcadePatch::VerifyPatch( RageFileBasic *pFile, const CStringArray &v
 
 		CString sRSAData;
 		GetFileContents( vsKeyPaths[i], sRSAData );
-		LOG->Debug( "Attempting to verify %s with %s.", pFile->GetDisplayPath().c_str(), vsKeyPaths[i].c_str() );
+		LOG->Trace( "Attempting to verify with %s.", vsKeyPaths[i].c_str() );
 
 		// attempt to verify, early abort if we have a match.
 		if( CryptHelpers::VerifyFile(*fZip, sPatchSig, sRSAData, sError) )
@@ -281,6 +281,7 @@ bool ScreenArcadePatch::VerifyPatch( RageFileBasic *pFile, const CStringArray &v
 		sMessage = ssprintf( "Patch signature verification failed:\n"
 			"%s\n\n" "The patch file may be corrupt.", sError.c_str() );
 
+	LOG->Trace( sMessage );
 	STATE_TEXT( sMessage );
 
 	SAFE_DELETE( fSig );
@@ -331,6 +332,64 @@ static void UpdateProgress( float fPercent )
 
 	PATCH_TEXT( sProgress );
 }
+
+/* helper functions to get the actual file paths for CHMODing. */
+
+#ifdef LINUX
+static CString GetDataMountPath()
+{
+#ifdef ITG_ARCADE
+// XXX: not currently used
+	return "/stats/";
+#endif // ITG_ARCADE
+
+	static CString sMountPath;
+
+	// optimization
+	if( !sMountPath.empty() )
+		return sMountPath;
+
+	/* We need to get the fully qualified path. This is not pleasant... */
+	vector<RageFileManager::DriverLocation> mountpoints;
+	FILEMAN->GetLoadedDrivers( mountpoints );
+
+	// the first direct driver mounted to / should be our root.
+	for( unsigned i = 0; i < mountpoints.size(); i++ )
+	{
+		RageFileManager::DriverLocation *l = &mountpoints[i];
+
+		if( l->Type != "dir" )
+			continue;
+
+		if( l->MountPoint != "/" )
+			continue;
+
+		sMountPath = l->Root;
+		break;
+	}
+
+	CollapsePath( sMountPath );
+	LOG->Trace( "DataMountPath resolved to \"%s\".", sMountPath.c_str() );
+
+	return sMountPath;
+}
+
+// needed in order to get the actual path for chmod.
+static CString ResolveTempFilePath( const CString &sFile )
+{
+	CString ret;
+#ifdef ITG_ARCADE
+	ret = TEMP_PATCH_DIR;
+	ret.Replace( "Data/", "/stats/" );
+	ret += sFile;
+#else
+	ret = GetDataMountPath() + "/" + TEMP_PATCH_DIR + sFile;
+#endif // ITG_ARCADE
+
+	return ret;
+}
+
+#endif // LINUX
 
 void ScreenArcadePatch::PatchMain()
 {
@@ -495,33 +554,35 @@ void ScreenArcadePatch::PatchMain()
 		fZip->GetDirListing( sDir + "/*", vsDirs, true, true );
 	}
 
-	for( unsigned i = 0; i < vsFiles.size(); i++ )
-		LOG->Debug( "vsFiles[%i]: %s", i, vsFiles[i].c_str() );
-
 	PATCH_TEXT( "Extracting files..." );
 
 	/* write them now */
 	for( unsigned i = 0; i < vsFiles.size(); i++ )
 	{
-		CString sPath = vsFiles[i];
+		const CString &sPath = vsFiles[i];
+		CString sCleanPath = sPath;
+		TrimLeft( sCleanPath, "/" );
 
 		if( fZip->GetFileType(sPath) != RageFileManager::TYPE_FILE )
 			continue;
 
-		CString sCleanPath = sPath;
-		TrimLeft( sCleanPath, "/" );
-
+CHECKPOINT;
 		LOG->Trace( "ScreenArcadePatch: copying file \"%s\"", sCleanPath.c_str() );
+CHECKPOINT;
 		PATCH_TEXT( ssprintf("Extracting files...\n" "%s", sCleanPath.c_str()) );
 
+CHECKPOINT;
 		RageFileBasic *fCopyFrom = fZip->Open( sPath, RageFile::READ, iError );
+CHECKPOINT;
 
 		RageFile fCopyTo;
+CHECKPOINT;
 		fCopyTo.Open( TEMP_PATCH_DIR + sCleanPath, RageFile::WRITE );
+CHECKPOINT;
 
-		CString sError = "(temporarily disabled)";
 		if( !FileCopy(*fCopyFrom, fCopyTo) )
 		{
+CHECKPOINT;
 			PATCH_TEXT( ssprintf("Could not copy \"%s\":\n" "%s", sCleanPath.c_str(),sError.c_str()) );
 
 			m_State = PATCH_ERROR;
@@ -530,15 +591,25 @@ void ScreenArcadePatch::PatchMain()
 			return;
 		}
 
+CHECKPOINT;
+		SAFE_DELETE( fCopyFrom );
+CHECKPOINT;
 		fCopyTo.Close();
+CHECKPOINT;
 
-/* set CHMOD info if applicable */
+/* set CHMOD info */
 #ifdef LINUX
+		/* get the actual path to the files */
+		CString sRealPath = ResolveTempFilePath( sCleanPath );
+
 		const RageFileDriverZip::FileInfo *fi = fZip->GetFileInfo( sPath );
-		sPath = TEMP_PATCH_DIR + sPath;
-		chmod( sPath.c_str(), fi->m_iFilePermissions );
-#endif
+		int ret = chmod( sRealPath.c_str(), fi->m_iFilePermissions );
+
+		LOG->Trace( "chmod( %s, %#o ) returned %i", sRealPath.c_str(), fi->m_iFilePermissions, ret );
+#endif // LINUX
 	}
+
+	SAFE_DELETE( fZip );
 
 	/* clear the previous copying text */
 	PATCH_TEXT( "" );

@@ -1,10 +1,12 @@
 OpenITG, beta 2 (in development)
 --------------------------------
 -Fixed Linux bugs:
-     USB devices that only reported as "sda" would stay checking forever
+     USB devices that only reported as "sda" would stay in checking forever
 -Fixed cross-platform bugs:
+     Custom song loading cancellation causes delayed input events
      ScreenArcadeStart times out, even with missing I/O handler
 -Miscellaneous changes:
+     Moved "ScreenAddSongs" to "ScreenUserPacks", heavily updated interface
      Backported StepMania 4's RageFileManager, for better load handling
      Backported Win32 renderer identification for display stats
      De-clamped PercentageDisplay (Getting Started displays properly now)
@@ -12,13 +14,12 @@ OpenITG, beta 2 (in development)
      RageFileManager optimizations, Move functionality added
 -Code Structure Additions:
      UserPackManager: singleton for managing user given addon packs for the machine
--Fixed ScreenAddSongs:
-     Menu system redone to be a lot more interactive
-     Song transfer code cleanup
 -New metrics:
      ScreenTestInput - X, Y, On, and Off commands for text ("Inputs", "Devices")
 -New menu structures:
      LinkedOptionsMenu - set of intertwined menus, example metrics in home folder
+-New screen:
+     "ScreenUserPacks" - formerly ScreenAddSongs, manages USB-transferred game data.
 
 OpenITG, beta 1 (May 15th, 2009)
 --------------------------------

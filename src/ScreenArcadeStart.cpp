@@ -58,8 +58,7 @@ void ScreenArcadeStart::Init()
 	m_fTimeout = TIMEOUT + this->GetTweenTimeLeft();
 
 	/* are there any errors with loading the I/O board? */
-//	m_bHandlerLoaded = LoadHandler();
-	m_bHandlerLoaded = true;
+	m_bHandlerLoaded = LoadHandler();
 }
 
 ScreenArcadeStart::~ScreenArcadeStart()

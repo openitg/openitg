@@ -1068,7 +1068,7 @@ int main(int argc, char* argv[])
 		LOG->Trace("VFS: No patch file found");
 	}
 
-#if 1
+#if 0
 	LOG->Info("======= MOUNTPOINTS =========");
 	vector<RageFileManager::DriverLocation> mymounts;
 	FILEMAN->GetLoadedDrivers(mymounts);

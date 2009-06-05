@@ -1,5 +1,5 @@
 --[[
-OpenITG broadcaster for MK6 input, version 0.7
+OpenITG broadcaster for MK6 input, version 1.0
 Licensed under Creative Commons Attribution-Share Alike 3.0 Unported
 (http://creativecommons.org/licenses/by-sa/3.0/)
 
@@ -8,9 +8,21 @@ Written by Mark Cannon ("Vyhd") for OpenITG (http://www.boxorroxors.net/)
 All I ask is that you keep this notice intact and don't redistribute in bytecode.
 --]]
 
+--[[
+Available calls: 
+ - BroadcastMK6Buttons() - broadcasts messages for MK6 buttons
+ - BroadcastMK6Sensors() - broadcasts messages for floor sensors
+ - BroadcastMK6Messages() - broadcasts messages for all inputs
 
---To use this, just call "BroadcastMK6Messages()". Seriously, that's it. :V
+Button command syntax: <button><pn>MessageCommand
+  - Button names: "MenuLeft", "MenuRight", "Start", "Select"
+Examples: "MenuLeftP1MessageCommand", "StartP2MessageCommand"
 
+Sensor command syntax: <direction><pn><sensor>MessageCommand
+  - Sensor names: "Left", "Right", "Top", "Bottom"
+  - Arrow names: "Left", "Right", "Up", "Down"
+Examples: "LeftP1TopMessageCommand", "UpP2LeftMessageCommand"
+--]]
 
 --[[
 
@@ -29,7 +41,7 @@ local arrow_maps =
 	[2] = { 14, 13, 16, 15 },
 
 	-- names for each button type
-	["Names"] = { "Left", "Up", "Right", "Down" }
+	["Names"] = { "Left", "Right", "Up", "Down" }
 }
 
 -- Broadcasts messages for individual sensors, e.g. "LeftP1BottomOn"
@@ -92,6 +104,16 @@ local function BroadcastMessagesForButtons( input )
 			MESSAGEMAN:Broadcast( button_maps[i] .. state )
 		end
 	end
+end
+
+function BroadcastMK6Buttons()
+	local sensor_table = MK6_GetSensors()
+	BroadcastMessagesForButtons( sensor_table )
+end
+
+function BroadcastMK6Sensors()
+	local sensor_table = MK6_GetSensors()
+	BroadcastMessagesForSensors( sensor_table )
 end
 
 function BroadcastMK6Messages()

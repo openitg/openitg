@@ -6,12 +6,12 @@ OpenITG, beta 2 (in development)
      Custom song loading cancellation causes delayed input events
      ScreenArcadeStart times out, even with missing I/O handler
 -Miscellaneous changes:
-     Moved "ScreenAddSongs" to "ScreenUserPacks", heavily updated interface
      Backported StepMania 4's RageFileManager, for better load handling
      Backported Win32 renderer identification for display stats
      De-clamped PercentageDisplay (Getting Started displays properly now)
+     Moved "ScreenAddSongs" to "ScreenUserPacks", heavily updated interface
      Improved Colorized Graph logic
-     RageFileManager optimizations, Move functionality added
+     Changed to StepMania 4 method of scaling screenshots
 -Code Structure Additions:
      UserPackManager: singleton for managing user given addon packs for the machine
 -New metrics:

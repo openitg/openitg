@@ -625,9 +625,10 @@ bool RageDisplay::SaveScreenshot( CString sPath, GraphicsFileFormat format )
 	if( format != SAVE_LOSSLESS )
 	{
 		/* Maintain the DAR. */
-		int iWidth = lrintf( 640 / GetVideoModeParams().fDisplayAspectRatio );
-		LOG->Trace( "%ix%i -> %ix%i (%.3f)", surface->w, surface->h, 640, iWidth, GetVideoModeParams().fDisplayAspectRatio );
-		RageSurfaceUtils::Zoom( surface, 640, iWidth );
+		int iHeight = 640;
+		int iWidth = lrintf( iHeight * GetVideoModeParams().fDisplayAspectRatio );
+		LOG->Trace( "%ix%i -> %ix%i (%.3f)", surface->w, surface->h, iWidth, iHeight, GetVideoModeParams().fDisplayAspectRatio );
+		RageSurfaceUtils::Zoom( surface, iWidth, iHeight );
 	}
 
 	RageFile out;

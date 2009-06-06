@@ -30,18 +30,21 @@ void ScreenTestInput::Init()
 	m_textDevices.LoadFromFont( THEME->GetPathF("Common","normal") );
 	m_textDevices.SetName( "Devices" );
 
-	SET_XY_AND_ON_COMMAND( m_textDevices );
+	/* load metrics for the Devices text */
+	ActorUtil::SetXY( m_textDevices, m_sName );
+	ActorUtil::LoadAllCommands( m_textDevices, m_sName );
 
-	/* HACK: we're missing metrics. use defaults. */
+	/* HACK: if we're missing metrics, use defaults. */
 	if( m_textDevices.GetX() == 0 || m_textDevices.GetY() == 0 )
 		m_textDevices.SetXY( SCREEN_LEFT+20, SCREEN_TOP+80 );
 
 	if( !m_textDevices.HasCommand("On") )
-	{
-		m_textDevices.SetDiffuse( RageColor(1,1,1,1) );
-		m_textDevices.SetZoom( 0.7f );
-		m_textDevices.SetHorizAlign( Actor::align_left );
+	{	
+		CString sCommand = "diffuse,1,1,1,1;zoom,0.7;horizalign,left";
+		m_textDevices.AddCommand( "On", apActorCommands(new ActorCommands(sCommand)) );
 	}
+
+	m_textDevices.PlayCommand( "On" );
 
 	/* set the devices text */
 	{
@@ -62,18 +65,21 @@ void ScreenTestInput::Init()
 	m_textInputs.LoadFromFont( THEME->GetPathF("Common","normal") );
 	m_textInputs.SetName( "Inputs" );
 
-	SET_XY_AND_ON_COMMAND( m_textInputs );
+	/* load metrics for the Inputs text */
+	ActorUtil::SetXY( m_textInputs, m_sName );
+	ActorUtil::LoadAllCommands( m_textInputs, m_sName );
 
-	/* HACK: we're missing metrics. use defaults. */
+	/* HACK: if we're missing metrics, use defaults. */
 	if( m_textInputs.GetX() == 0 || m_textInputs.GetY() == 0 )
 		m_textInputs.SetXY( SCREEN_CENTER_X-250, SCREEN_CENTER_Y );
 
 	if( !m_textInputs.HasCommand("On") )
 	{
-		m_textInputs.SetDiffuse( RageColor(1,1,1,1) );
-		m_textInputs.SetZoom( 0.7f );
-		m_textInputs.SetHorizAlign( Actor::align_left );
+		CString sCommand = "diffuse,1,1,1,1;zoom,0.7;horizalign,left";
+		m_textInputs.AddCommand( "On", apActorCommands(new ActorCommands(sCommand)) );
 	}
+
+	m_textInputs.PlayCommand( "On" );
 
 	this->AddChild( &m_textDevices );
 	this->AddChild( &m_textInputs );

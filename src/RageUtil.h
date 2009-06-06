@@ -473,7 +473,7 @@ CString BitsToString( const T &data )
 	int iBits = sizeof(T) * 8;
 	CString ret;
 
-	for( short i = 0; i < iBits; i++ )
+	for( int i = 1; i <= iBits; i++ )
 		ret.append( IsBitSet( data, i ) ? "1" : "0" );
 
 	return ret;

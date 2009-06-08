@@ -631,17 +631,9 @@ bool PlayerOptions::IsEasierForSongAndSteps( Song* pSong, Steps* pSteps )
 			return true;
 	
 		DisplayBpms bpms;
-		if( GAMESTATE->IsCourseMode() )
-		{
-			Trail *pTrail = GAMESTATE->m_pCurCourse->GetTrail( GAMESTATE->GetCurrentStyle()->m_StepsType );
-			pTrail->GetDisplayBpms( bpms );
-		}
-		else
-		{
-			GAMESTATE->m_pCurSong->GetDisplayBpms( bpms );
-		}
+		pSong->GetDisplayBpms( bpms );
 
-		// maximum BPM is obfuscated, so M-mods will set a playable speed.
+		// maximum BPM is obfuscated
 		if( bpms.GetMax() <= 0 )
 			return true;
 	}
@@ -719,6 +711,7 @@ CString PlayerOptions::GetSavedPrefsString() const
 	SAVE( m_fMaxScrollBPM );
 	SAVE( m_fScrolls[SCROLL_REVERSE] );
 	SAVE( m_fPerspectiveTilt );
+	SAVE( m_fSkew );
 	SAVE( m_bTransforms[TRANSFORM_NOHOLDS] );
 	SAVE( m_bTransforms[TRANSFORM_HOLDSTOROLLS] );
 	SAVE( m_bTransforms[TRANSFORM_NOROLLS] );
@@ -743,6 +736,7 @@ void PlayerOptions::ResetSavedPrefs()
 	CPY( m_fMaxScrollBPM );
 	CPY( m_fScrolls[SCROLL_REVERSE] );
 	CPY( m_fPerspectiveTilt );
+	CPY( m_fSkew );
 	CPY( m_bTransforms[TRANSFORM_NOHOLDS] );
 	CPY( m_bTransforms[TRANSFORM_HOLDSTOROLLS] );
 	CPY( m_bTransforms[TRANSFORM_NOROLLS] );

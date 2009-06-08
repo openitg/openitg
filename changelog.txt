@@ -4,6 +4,7 @@ OpenITG, beta 2 (in development)
      USB devices that only reported as "sda" would stay in checking forever
 -Fixed cross-platform bugs:
      Custom song loading cancellation causes delayed input events
+     Perspective modifier not properly saved on USB profiles
      ScreenArcadeStart times out, even with missing I/O handler
 -Miscellaneous changes:
      Backported StepMania 4's RageFileManager, for better load handling

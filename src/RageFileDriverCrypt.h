@@ -31,7 +31,7 @@ public:
 
 protected:
 	// attempts to open and return a file of a derivative type
-	virtual RageFileObjDirect *CreateInternal() { return NULL; }
+	virtual RageFileObjDirect *CreateInternal( const CString &sPath ) { return NULL; }
 };
 
 #endif

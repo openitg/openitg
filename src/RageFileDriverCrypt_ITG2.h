@@ -15,6 +15,17 @@ static struct FileDriverEntry_##name: public FileDriverEntry \
 	} \
 } const g_RegisterDriver_##name;
 
+/* This is the additional key used for ITG2's patch files */
+#define ITG2_PATCH_KEY "58691958710496814910943867304986071324198643072"
+
+/* If no key is given, the driver will use the dongle for file keys.
+ * Provide a default key for PC builds, and use the dongle for AC. */
+#ifndef ITG_ARCADE
+#define CRYPT_KEY "65487573252940086457044055343188392138734144585"
+#else
+#define CRYPT_KEY ""
+#endif
+
 typedef std::map<const char *, unsigned char*> tKeyMap;
 
 class RageFileObjCrypt_ITG2: public RageFileObjCrypt
@@ -44,7 +55,7 @@ class RageFileDriverCrypt_ITG2: public RageFileDriverCrypt
 public:
 	RageFileDriverCrypt_ITG2( const CString &sRoot, const CString &secret = "" );
 private:
-	RageFileObjDirect *CreateInternal() { return new RageFileObjCrypt_ITG2(m_sSecret); }
+	RageFileObjDirect *CreateInternal( const CString &sPath ) { return new RageFileObjCrypt_ITG2(m_sSecret); }
 
 	CString m_sSecret;
 };

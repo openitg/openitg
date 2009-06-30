@@ -72,7 +72,7 @@ struct stat st;
 
 #ifdef ITG_ARCADE
 	/* ITG-specific arcade paths */
-	FILEMAN->Mount( "kry", "/itgdata", "/Packages" );
+	FILEMAN->Mount( "prb", "/itgdata", "/Packages" );
 	FILEMAN->Mount( "dir", "/stats", "/Data" );
 
 	/* OpenITG-specific arcade paths */

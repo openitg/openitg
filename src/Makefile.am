@@ -320,7 +320,8 @@ RageFileDriverDeflate.cpp RageFileDriverDeflate.h \
 RageFileDriverSlice.cpp RageFileDriverSlice.h \
 RageFileDriverTimeout.cpp RageFileDriverTimeout.h \
 RageFileDriverCrypt.cpp RageFileDriverCrypt.h \
-RageFileDriverCrypt_ITG2.cpp RageFileDriverCrypt_ITG2.h
+RageFileDriverCrypt_ITG2.cpp RageFileDriverCrypt_ITG2.h \
+RageFileDriverProbe.cpp RageFileDriverProbe.h
 
 Rage = $(PCRE) $(RageFile) $(RageSoundFileReaders) \
 RageBitmapTexture.cpp RageBitmapTexture.h RageDisplay.cpp RageDisplay.h RageDisplay_OGL.cpp RageDisplay_OGL.h \

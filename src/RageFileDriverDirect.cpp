@@ -58,7 +58,7 @@ RageFileBasic *RageFileDriverDirect::Open( const CString &sPath_, int iMode, int
 			CreateDirectories( m_sRoot + dir );
 	}
 
-	RageFileObjDirect *ret = this->CreateInternal();
+	RageFileObjDirect *ret = this->CreateInternal( m_sRoot + sPath );
 
 	if( ret->OpenInternal( m_sRoot + sPath, iMode, iError) )
 		return ret;

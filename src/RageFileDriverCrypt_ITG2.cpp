@@ -10,16 +10,6 @@
 #include "ibutton/ibutton.h"
 #include "crypto/CryptSH512.h"
 
-/* This is the additional key used for ITG2's patch files */
-#define ITG2_PATCH_KEY "58691958710496814910943867304986071324198643072"
-
-/* If no key is given, the driver will use the dongle for file keys.
- * Provide a default key for PC builds, and use the dongle for AC. */
-#ifndef ITG_ARCADE
-#define CRYPT_KEY "65487573252940086457044055343188392138734144585"
-#else
-#define CRYPT_KEY ""
-#endif
 
 /* Register all the file drivers we're going to be using */
 REGISTER_ITG2_FILE_DRIVER( ITG2, "kry", CRYPT_KEY );
@@ -219,7 +209,7 @@ int RageFileObjCrypt_ITG2::ReadInternal( void *buffer, size_t bytes )
 	this->SeekInternal( m_iHeaderSize + startpos );
 	this->ReadDirect( crbuf, bufsize );
 
-	// TODO: understand this.
+	// TODO (for Mark at least :P): understand this.
 	for (unsigned i = 0; i < bufsize/16; i++)
 	{
 		// decrypt into the pre-XOR buffer

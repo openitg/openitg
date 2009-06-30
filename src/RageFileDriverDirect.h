@@ -58,7 +58,7 @@ public:
 
 protected:
 	/* creates a new internal object type */
-	virtual RageFileObjDirect *CreateInternal() { return new RageFileObjDirect; }
+	virtual RageFileObjDirect *CreateInternal( const CString &sPath ) { return new RageFileObjDirect; }
 
 	CString m_sRoot;
 };

@@ -21,6 +21,9 @@ OpenITG, beta 2 (in development)
      LinkedOptionsMenu - set of intertwined menus, example metrics in home folder
 -New screen:
      "ScreenUserPacks" - formerly ScreenAddSongs, manages USB-transferred game data.
+-New file driver:
+     RageFileDriverProbe - RageFileDriverCrypt_ITG2 hack that detects that detects the 
+                           type of file (encrypted, plain) and treats it accordingly
 
 OpenITG, beta 1 (May 15th, 2009)
 --------------------------------

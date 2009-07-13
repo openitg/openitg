@@ -438,12 +438,12 @@ void FileWrite(RageFileBasic& f, float fWrite);
 void InterruptCopy();
 
 /* if OnUpdate() is defined, that function is called after each out.Write(). */
-bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError, void(*OnUpdate)(float) = NULL );
-bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnUpdate)(float) = NULL, bool *bReadError = NULL );
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError, void(*OnUpdate)(unsigned long, unsigned long) = NULL );
+bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnUpdate)(unsigned long, unsigned long) = NULL, bool *bReadError = NULL );
 
 /* versions without an error message argument, for compatibility */
-bool FileCopy( const CString &sSrcFile, const CString &sDstFile, void(*OnUpdate)(float) = NULL );
-bool FileCopy( RageFileBasic &in, RageFileBasic &out, void(*OnUpdate)(float) = NULL, bool *bReadError = NULL );
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, void(*OnUpdate)(unsigned long, unsigned long) = NULL );
+bool FileCopy( RageFileBasic &in, RageFileBasic &out, void(*OnUpdate)(unsigned long, unsigned long) = NULL, bool *bReadError = NULL );
 
 
 // a few bitwise operators that may come in handy.

@@ -1,42 +1,41 @@
 #include "global.h"
-#include "GameState.h"
-#include "IniFile.h"
-#include "GameManager.h"
-#include "PrefsManager.h"
-#include "InputMapper.h"
-#include "song.h"
-#include "Course.h"
+#include "RageFile.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-#include "SongManager.h"
-#include "Steps.h"
-#include "NoteSkinManager.h"
-#include "GameCommand.h"
-#include "NoteFieldPositioning.h"
-#include "Character.h"
-#include "UnlockManager.h"
-#include "AnnouncerManager.h"
-#include "ProfileManager.h"
-#include "ThemeManager.h"
-#include "LightsManager.h"
-#include "RageFile.h"
-#include "Bookkeeper.h"
-#include "MemoryCardManager.h"
-#include "StatsManager.h"
-#include "GameConstantsAndTypes.h"
-#include "StepMania.h"
-#include "CommonMetrics.h"
-#include "Actor.h"
-#include "PlayerState.h"
-#include "Style.h"
-#include "MessageManager.h"
-#include "CommonMetrics.h"
 #include "Foreach.h"
-#include "LuaReference.h"
-#include "CommonMetrics.h"
+#include "IniFile.h"
+#include "AnnouncerManager.h"
+#include "Bookkeeper.h"
+#include "GameState.h"
+#include "GameManager.h"
+#include "InputMapper.h"
+#include "LightsManager.h"
+#include "MemoryCardManager.h"
+#include "MessageManager.h"
+#include "NoteSkinManager.h"
+#include "PrefsManager.h"
+#include "ProfileManager.h"
 #include "ScreenManager.h"
+#include "SongManager.h"
+#include "StatsManager.h"
+#include "ThemeManager.h"
+#include "UnlockManager.h"
+#include "CommonMetrics.h"
+#include "CommonMetrics.h"
+#include "GameConstantsAndTypes.h"
+#include "NoteFieldPositioning.h"
+#include "PlayerState.h"
+#include "Character.h"
+#include "GameCommand.h"
+#include "Actor.h"
+#include "Game.h"
+#include "Style.h"
 #include "Screen.h"
-#include "ProductInfo.h"
+#include "song.h"
+#include "Steps.h"
+#include "Course.h"
+#include "LuaReference.h"
+#include "StepMania.h"
 
 #include <ctime>
 #include <set>
@@ -2098,6 +2097,7 @@ public:
 		else		 { lua_pushnil(L); }
 		return 1;
 	}
+	static int GetCurrentGame( T* p, lua_State *L )			{ const_cast<Game*>(p->GetCurrentGame())->PushSelf( L ); return 1; }
 	static int DelayedGameCommand( T* p, lua_State *L )		{ p->m_sDelayedGameCommand = SArg(1); return 1; }
 	static int GetPreferredDifficulty( T* p, lua_State *L )	{ lua_pushnumber(L, p->m_PreferredDifficulty[IArg(1)] ); return 1; }
 	static int AnyPlayerHasRankingFeats( T* p, lua_State *L )	{ lua_pushboolean(L, p->AnyPlayerHasRankingFeats() ); return 1; }
@@ -2131,7 +2131,6 @@ public:
 		PlayerNumber pn = (PlayerNumber)IArg(1);
 		lua_pushboolean(L, p->GetStageResult(pn)==RESULT_WIN); return 1;
 	}
-
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( IsPlayerEnabled )
@@ -2139,6 +2138,8 @@ public:
 		ADD_METHOD( GetPlayerDisplayName )
 		ADD_METHOD( GetMasterPlayerNumber )
 		ADD_METHOD( ApplyGameCommand )
+		ADD_METHOD( DelayedGameCommand )
+		ADD_METHOD( GetCurrentGame )
 		ADD_METHOD( GetCurrentSong )
 		ADD_METHOD( SetCurrentSong )
 		ADD_METHOD( GetCurrentSteps )
@@ -2153,7 +2154,6 @@ public:
 		ADD_METHOD( SetEnv )
 		ADD_METHOD( GetEnv )
 		ADD_METHOD( GetEditSourceSteps )
-		ADD_METHOD( DelayedGameCommand )
 		ADD_METHOD( GetPreferredDifficulty )
 		ADD_METHOD( AnyPlayerHasRankingFeats )
 		ADD_METHOD( IsCourseMode )

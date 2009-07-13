@@ -2,9 +2,19 @@ OpenITG, beta 2 (in development)
 --------------------------------
 -Fixed Linux bugs:
      USB devices that only reported as "sda" would stay in checking forever
+-New LUA bindings:
+     HighScore: "GetName", "GetScore", "GetPercentDP", "GetDate",
+          "GetSurvivalSeconds", "IsFillInMarker"
+     HighScoreList: "GetHighScores"
+-New LUA member bindings:
+     Actor: "addcommand"
+     Game: "GetName"
+     PlayerStageStats: too much stuff to list here
+-New LUA singleton bindings:
+     GameState: "GetCurrentGame"
 -Fixed cross-platform bugs:
+     Perspective setting is not properly saved on USB profiles
      Custom song loading cancellation causes delayed input events
-     Perspective modifier not properly saved on USB profiles
      ScreenArcadeStart times out, even with missing I/O handler
 -Miscellaneous changes:
      Backported StepMania 4's RageFileManager, for better load handling

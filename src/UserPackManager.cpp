@@ -119,7 +119,7 @@ bool UserPackManager::IsPackTransferable( const CString sPack, CString &sError )
 	return true;
 }
 
-bool UserPackManager::TransferPack( const CString sPack, const CString sDestPack, void(*OnUpdate)(float), CString &sError )
+bool UserPackManager::TransferPack( const CString sPack, const CString sDestPack, void(*OnUpdate)(unsigned long, unsigned long), CString &sError )
 {
 	return FileCopy( sPack, m_sSavePath + "/" + sDestPack, sError, OnUpdate );
 }

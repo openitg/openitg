@@ -115,6 +115,26 @@ TapNoteScore Game::MapTapNoteScore( TapNoteScore tns ) const
 	}
 }
 
+// lua start
+#include "LuaBinding.h"
+
+template<class T>
+class LunaGame: public Luna<T>
+{
+public:
+	LunaGame() { LUA->Register( Register ); }
+
+	static int GetName( T *p, lua_State *L )	{ lua_pushstring( L, p->m_szName ); return 1; }
+
+	static void Register( lua_State *L )
+	{
+		ADD_METHOD( GetName )
+		Luna<T>::Register( L );
+	}
+};
+
+LUA_REGISTER_CLASS( Game )
+
 /*
  * (c) 2001-2002 Chris Danford
  * All rights reserved.

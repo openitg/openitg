@@ -1506,19 +1506,19 @@ void InterruptCopy()
 }
 
 /* workarounds for some pre-existing calls... */
-bool FileCopy( const CString &sSrcFile, const CString &sDstFile, void(*OnUpdate)(float) )
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, void(*OnUpdate)(unsigned long, unsigned long) )
 {
 	CString sError;
 	return FileCopy( sSrcFile, sDstFile, sError, OnUpdate );
 }
 
-bool FileCopy( RageFileBasic &in, RageFileBasic &out, void (*OnUpdate)(float), bool *bReadError )
+bool FileCopy( RageFileBasic &in, RageFileBasic &out, void (*OnUpdate)(unsigned long, unsigned long), bool *bReadError )
 {
 	CString sError;
 	return FileCopy( in, out, sError, OnUpdate, bReadError );
 }
 
-bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError, void(*OnUpdate)(float) )
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError, void(*OnUpdate)(unsigned long, unsigned long) )
 {
 	if( !sSrcFile.CompareNoCase(sDstFile) )
 	{
@@ -1544,7 +1544,7 @@ bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError
 	return true;
 }
 
-bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnUpdate)(float), bool *bReadError )
+bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnUpdate)(unsigned long, unsigned long), bool *bReadError )
 {
 	g_bInterruptCopy = false;
 
@@ -1575,11 +1575,7 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnU
 
 		/* if we have a function pointer, calculate percentage. */
 		if( OnUpdate != NULL )
-		{
-			read += data.size();
-			float fPercent = (read*100.0f/(float)total);
-			OnUpdate( fPercent );
-		}
+			OnUpdate( read, total );
 	}
 
 	if( out.Flush() == -1 )
@@ -1593,7 +1589,7 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnU
 	/* handle any interrupts if they occurred. */
 	if( g_bInterruptCopy )
 	{
-		LOG->Warn( "Copying interrupted." );
+		LOG->Warn( "Copying interrupted (%d/%d).", read, total );
 		g_bInterruptCopy = false;
 
 		return false;

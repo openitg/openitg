@@ -18,7 +18,7 @@ public:
 
 	bool			IsPackAddable( const CString sPack, CString &sError );
 	bool			IsPackTransferable( const CString sPack, CString &sError );
-	bool			TransferPack( const CString sPack, const CString sDestZip, void(*OnUpdate)(float), CString &sError );
+	bool			TransferPack( const CString sPack, const CString sDestZip, void(*OnUpdate)(unsigned long, unsigned long), CString &sError );
 
 protected:
 	CString			m_sTransferPath;

@@ -631,9 +631,18 @@ bool PlayerOptions::IsEasierForSongAndSteps( Song* pSong, Steps* pSteps )
 			return true;
 	
 		DisplayBpms bpms;
+		if( GAMESTATE->IsCourseMode() )
+		{
+			Trail *pTrail = GAMESTATE->m_pCurCourse->GetTrail( GAMESTATE->GetCurrentStyle()->m_StepsType );
+			pTrail->GetDisplayBpms( bpms );
+		}
+		else
+		{
+			GAMESTATE->m_pCurSong->GetDisplayBpms( bpms );
+		}
 		pSong->GetDisplayBpms( bpms );
 
-		// maximum BPM is obfuscated
+		// maximum BPM is obfuscated, so M-mods will set a playable speed.
 		if( bpms.GetMax() <= 0 )
 			return true;
 	}

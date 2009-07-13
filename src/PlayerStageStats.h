@@ -82,6 +82,7 @@ struct PlayerStageStats
 	void	GetLifeRecord( float *fLifeOut, int iNumSamples, float fStepsEndSecond ) const;
 	float	GetLifeRecordAt( float fStepsSecond ) const;
 	float	GetLifeRecordLerpAt( float fStepsSecond ) const;
+	float	GetCurrentLife() const;
 
 	struct Combo_t
 	{

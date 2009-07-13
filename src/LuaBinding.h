@@ -152,11 +152,10 @@ private:
 	}
 };
 
-
 #define LUA_REGISTER_CLASS( T ) \
 	template<> const char Luna<T>::s_className[] = #T; \
 	template<> Luna<T>::RegTypeVector* Luna<T>::s_pvMethods = NULL; \
-	static Luna##T<T> registera; \
+	static Luna##T<T> registera##T; \
 void T::PushSelf( lua_State *L ) { Luna##T<T>::Push( L, this ); } \
 /* Call PushSelf, so we always call the derived Luna<T>::Push. */ \
 namespace LuaHelpers { template<> void Push( T *pObject, lua_State *L ) { pObject->PushSelf( L ); } }

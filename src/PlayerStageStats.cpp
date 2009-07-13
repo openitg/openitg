@@ -367,6 +367,15 @@ void PlayerStageStats::GetLifeRecord( float *fLifeOut, int iNumSamples, float fS
 	}
 }
 
+float PlayerStageStats::GetCurrentLife() const
+{
+	if( fLifeRecord.empty() )
+		return 0;
+	map<float,float>::const_iterator iter = fLifeRecord.end();
+	--iter; 
+	return iter->second;
+}
+
 /* If "rollover" is true, we're being called before gameplay begins, so we can record
  * the amount of the first combo that comes from the previous song. */
 void PlayerStageStats::UpdateComboList( float fSecond, bool rollover )
@@ -506,11 +515,10 @@ float PlayerStageStats::GetPercentageOfTaps( TapNoteScore tns ) const
 LuaFunction( GetGradeFromPercent,	PlayerStageStats::GetGradeFromPercent( FArg(1) ) )
 
 
-// lua start
 #include "LuaBinding.h"
 
 template<class T>
-class LunaPlayerStageStats : public Luna<T>
+class LunaPlayerStageStats: public Luna<T>
 {
 public:
 	LunaPlayerStageStats() { LUA->Register( Register ); }
@@ -520,22 +528,60 @@ public:
 	static int GetSurvivalSeconds( T* p, lua_State *L )			{ lua_pushnumber(L, p->GetSurvivalSeconds()); return 1; }
 	static int FullCombo( T* p, lua_State *L )					{ lua_pushnumber(L, p->FullCombo()); return 1; }
 	static int MaxCombo( T* p, lua_State *L )					{ lua_pushnumber(L, p->GetMaxCombo().cnt); return 1; }
+	static int GetCurrentCombo( T* p, lua_State *L )			{ lua_pushnumber(L, p->iCurCombo); return 1; }
 	static int GetGrade( T* p, lua_State *L )					{ lua_pushnumber(L, p->GetGrade()); return 1; }
+	static int GetScore( T* p, lua_State *L )					{ lua_pushnumber(L, p->iScore); return 1; }
+	static int GetTapNoteScores( T* p, lua_State *L )			{ lua_pushnumber(L, p->iTapNoteScores[(TapNoteScore)IArg(1)]); return 1; }
+	static int GetHoldNoteScores( T* p, lua_State *L )			{ lua_pushnumber(L, p->iHoldNoteScores[(HoldNoteScore)IArg(1)]); return 1; }
+	static int GetCurrentLife( T* p, lua_State *L )				{ lua_pushnumber(L, p->GetCurrentLife()); return 1; }
+	static int GetActualDancePoints( T* p, lua_State *L )		{ lua_pushnumber(L, p->iActualDancePoints); return 1; }
+	static int GetPossibleDancePoints( T* p, lua_State *L )		{ lua_pushnumber(L, p->iPossibleDancePoints); return 1; }
+	static int GetPercentDancePoints( T* p, lua_State *L )		{ lua_pushnumber(L, p->GetPercentDancePoints()); return 1; }
 
-	static void Register(lua_State *L)
+	static int GetPlayedSteps( T* p, lua_State *L )
+	{
+		lua_newtable(L);
+		for( int i = 0; i < (int) p->vpPlayedSteps.size(); ++i )
+		{
+			p->vpPlayedSteps[i]->PushSelf(L);
+			lua_rawseti( L, -2, i+1 );
+		}
+		return 1;
+	}
+	static int GetPossibleSteps( T* p, lua_State *L )
+	{
+		lua_newtable(L);
+		for( int i = 0; i < (int) p->vpPossibleSteps.size(); ++i )
+		{
+			p->vpPossibleSteps[i]->PushSelf(L);
+			lua_rawseti( L, -2, i+1 );
+		}
+		return 1;
+	}
+
+	static void Register( lua_State *L )
 	{
 		ADD_METHOD( GetCaloriesBurned )
 		ADD_METHOD( GetLifeRemainingSeconds )
 		ADD_METHOD( GetSurvivalSeconds )
 		ADD_METHOD( FullCombo )
 		ADD_METHOD( MaxCombo )
+		ADD_METHOD( GetCurrentCombo )
 		ADD_METHOD( GetGrade )
+		ADD_METHOD( GetScore )
+		ADD_METHOD( GetTapNoteScores )
+		ADD_METHOD( GetHoldNoteScores )
+		ADD_METHOD( GetCurrentLife )
+		ADD_METHOD( GetActualDancePoints )
+		ADD_METHOD( GetPossibleDancePoints )
+		ADD_METHOD( GetPercentDancePoints )
+		ADD_METHOD( GetPlayedSteps )
+		ADD_METHOD( GetPossibleSteps )
 		Luna<T>::Register( L );
 	}
 };
 
 LUA_REGISTER_CLASS( PlayerStageStats )
-// lua end
 
 
 /*

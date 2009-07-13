@@ -76,6 +76,9 @@ struct HighScore
 	void LoadFromNode( const XNode* pNode );
 
 	CString GetDisplayName() const;
+
+	// Lua
+	void PushSelf( lua_State *L );
 };
 
 struct HighScoreList
@@ -107,6 +110,9 @@ public:
 	void LoadFromNode( const XNode* pNode );
 
 	vector<HighScore> vHighScores;
+
+	// Lua
+	void PushSelf( lua_State *L );
 private:
 	int iNumTimesPlayed;
 	DateTime dtLastPlayed;	// meaningless if iNumTimesPlayed == 0

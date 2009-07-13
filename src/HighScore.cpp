@@ -1,3 +1,5 @@
+/* TODO: backport SM4 handling (with HighScoreImpl and const functions, etc. */
+
 #include "global.h"
 #include "HighScore.h"
 #include "PrefsManager.h"
@@ -251,6 +253,71 @@ void Screenshot::LoadFromNode( const XNode* pNode )
 	if( pHighScore )
 		highScore.LoadFromNode( pHighScore );
 }
+
+// lua start
+#include "LuaBinding.h"
+
+template<class T>
+class LunaHighScore: public Luna<T>
+{
+public:
+	LunaHighScore()	{ LUA->Register( Register ); }
+
+	static int GetName( T* p, lua_State *L )			{ lua_pushstring(L, p->sName ); return 1; }
+	static int GetScore( T* p, lua_State *L )			{ lua_pushnumber(L, p->iScore ); return 1; }
+	static int GetPercentDP( T* p, lua_State *L )			{ lua_pushnumber(L, p->fPercentDP ); return 1; }
+	static int GetDate( T* p, lua_State *L )			{ lua_pushstring(L, p->dateTime.GetString() ); return 1; }
+	static int GetSurvivalSeconds( T* p, lua_State *L )			{ lua_pushnumber(L, p->fSurviveSeconds ); return 1; }
+	static int IsFillInMarker( T* p, lua_State *L )
+	{
+		bool bIsFillInMarker = false;
+		FOREACH_PlayerNumber( pn )
+			bIsFillInMarker |= p->sName == RANKING_TO_FILL_IN_MARKER[pn];
+		lua_pushboolean( L, bIsFillInMarker );
+		return 1;
+	}
+
+	static void Register(lua_State *L)
+	{
+		ADD_METHOD( GetName );
+		ADD_METHOD( GetScore );
+		ADD_METHOD( GetPercentDP );
+		ADD_METHOD( GetDate );
+		ADD_METHOD( GetSurvivalSeconds );
+		ADD_METHOD( IsFillInMarker );
+		Luna<T>::Register( L );
+	}
+};
+
+LUA_REGISTER_CLASS( HighScore )
+
+
+template<class T>
+class LunaHighScoreList: public Luna<T>
+{
+public:
+	LunaHighScoreList() { LUA->Register( Register ); }
+
+	static int GetHighScores( T* p, lua_State *L )
+	{
+		lua_newtable(L);
+		for( int i = 0; i < (int) p->vHighScores.size(); ++i )
+		{
+			p->vHighScores[i].PushSelf(L);
+			lua_rawseti( L, -2, i+1 );
+		}
+
+		return 1;
+	}
+
+	static void Register(lua_State *L)
+	{
+		ADD_METHOD( GetHighScores );
+		Luna<T>::Register( L );
+	}
+};
+
+LUA_REGISTER_CLASS( HighScoreList )
 
 /*
  * (c) 2004 Chris Danford

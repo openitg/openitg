@@ -325,8 +325,9 @@ bool ScreenArcadePatch::GetXMLData( RageFileDriverZip *fZip, CString &sGame, CSt
 	return true;
 }
 
-static void UpdateProgress( float fPercent )
+static void UpdateProgress( unsigned long iCurrent, unsigned long iTotal )
 {
+	float fPercent = iCurrent / (iTotal/100);
 	CString sProgress = ssprintf( "Copying patch (%.0f%%)\n\n"
 		"Please do not remove the USB Card.", fPercent );
 

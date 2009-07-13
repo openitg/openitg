@@ -186,82 +186,6 @@ void StatsManager::CommitStatsToProfiles()
 	}
 }
 
-
-// lua start
-#include "LuaBinding.h"
-
-template<class T>
-class LunaStatsManager : public Luna<T>
-{
-public:
-	LunaStatsManager() { LUA->Register( Register ); }
-
-	static int GetCurStageStats( T* p, lua_State *L )	{ p->m_CurStageStats.PushSelf(L); return 1; }
-	static int GetAccumStageStats( T* p, lua_State *L )	{ p->GetAccumStageStats().PushSelf(L); return 1; }
-	static int Reset( T* p, lua_State *L )				{ p->Reset(); return 0; }
-	static int GetFinalGrade( T* p, lua_State *L )
-	{
-		PlayerNumber pn = (PlayerNumber)IArg(1);
-
-		if( !GAMESTATE->IsHumanPlayer(pn) )
-			lua_pushnumber( L, GRADE_NO_DATA );
-		else
-		{
-			StageStats stats;
-			p->GetFinalEvalStageStats( stats );
-			lua_pushnumber( L, stats.m_player[pn].GetGrade() );
-		}
-		return 1;
-	}
-	static int GetStagesPlayed( T* p, lua_State *L )				{ lua_pushnumber( L, p->m_vPlayedStageStats.size() ); return 1; }
-
-	static int GetBestGrade( T* p, lua_State *L )
-	{
-		Grade g = NUM_GRADES;
-		FOREACH_EnabledPlayer( pn )
-			g = min( g, STATSMAN->m_CurStageStats.m_player[pn].GetGrade() );
-		lua_pushnumber( L, g );
-		return 1;
-	}
-
-	static int GetWorstGrade( T* p, lua_State *L )
-	{
-		Grade g = GRADE_TIER01;
-		FOREACH_EnabledPlayer( pn )
-			g = max( g, STATSMAN->m_CurStageStats.m_player[pn].GetGrade() );
-		lua_pushnumber( L, g );
-		return 1;
-	}
-
-
-	static void Register(lua_State *L)
-	{
-		ADD_METHOD( GetCurStageStats )
-		ADD_METHOD( GetAccumStageStats )
-		ADD_METHOD( Reset )
-		ADD_METHOD( GetFinalGrade )
-		ADD_METHOD( GetStagesPlayed )
-		ADD_METHOD( GetBestGrade )
-		ADD_METHOD( GetWorstGrade )
-
-		Luna<T>::Register( L );
-
-		// Add global singleton if constructed already.  If it's not constructed yet,
-		// then we'll register it later when we reinit Lua just before 
-		// initializing the display.
-		if( STATSMAN )
-		{
-			lua_pushstring(L, "STATSMAN");
-			STATSMAN->PushSelf( L );
-			lua_settable(L, LUA_GLOBALSINDEX);
-		}
-	}
-};
-
-LUA_REGISTER_CLASS( StatsManager )
-// lua end
-
-
 //
 // Old Lua
 //
@@ -307,6 +231,89 @@ Grade GetBestFinalGrade()
 }
 LuaFunction_NoArgs( GetBestFinalGrade, GetBestFinalGrade() );
 
+// lua start
+#include "LuaBinding.h"
+
+template<class T>
+class LunaStatsManager : public Luna<T>
+{
+public:
+	LunaStatsManager() { LUA->Register( Register ); }
+
+	static int GetCurStageStats( T* p, lua_State *L )	{ p->m_CurStageStats.PushSelf(L); return 1; }
+	static int GetPlayedStageStats( T* p, lua_State *L )
+	{
+		int iAgo = IArg(1);
+		int iIndex = p->m_vPlayedStageStats.size() - iAgo;
+		if( iIndex < 0 || iIndex >= (int) p->m_vPlayedStageStats.size() )
+			return 0;
+
+		p->m_vPlayedStageStats[iIndex].PushSelf(L);
+		return 1;
+	}
+	static int GetAccumStageStats( T* p, lua_State *L )	{ p->GetAccumStageStats().PushSelf(L); return 1; }
+	static int Reset( T* p, lua_State *L )				{ p->Reset(); return 0; }
+	static int GetFinalGrade( T* p, lua_State *L )
+	{
+		PlayerNumber pn = (PlayerNumber)IArg(1);
+
+		if( !GAMESTATE->IsHumanPlayer(pn) )
+			lua_pushnumber( L, GRADE_NO_DATA );
+		else
+		{
+			StageStats stats;
+			p->GetFinalEvalStageStats( stats );
+			lua_pushnumber( L, stats.m_player[pn].GetGrade() );
+		}
+		return 1;
+	}
+	static int GetStagesPlayed( T* p, lua_State *L )		{ lua_pushnumber( L, p->m_vPlayedStageStats.size() ); return 1; }
+
+	static int GetBestGrade( T* p, lua_State *L )
+	{
+		Grade g = NUM_GRADES;
+		FOREACH_EnabledPlayer( pn )
+			g = min( g, STATSMAN->m_CurStageStats.m_player[pn].GetGrade() );
+		lua_pushnumber( L, g );
+		return 1;
+	}
+
+	static int GetWorstGrade( T* p, lua_State *L )
+	{
+		Grade g = GRADE_TIER01;
+		FOREACH_EnabledPlayer( pn )
+			g = max( g, STATSMAN->m_CurStageStats.m_player[pn].GetGrade() );
+		lua_pushnumber( L, g );
+		return 1;
+	}
+
+	static void Register(lua_State *L)
+	{
+		ADD_METHOD( GetCurStageStats )
+		ADD_METHOD( GetPlayedStageStats )
+		ADD_METHOD( GetAccumStageStats )
+		ADD_METHOD( Reset )
+		ADD_METHOD( GetFinalGrade )
+		ADD_METHOD( GetStagesPlayed )
+		ADD_METHOD( GetBestGrade )
+		ADD_METHOD( GetWorstGrade )
+
+		Luna<T>::Register( L );
+
+		// Add global singleton if constructed already.  If it's not constructed yet,
+		// then we'll register it later when we reinit Lua just before 
+		// initializing the display.
+		if( STATSMAN )
+		{
+			lua_pushstring(L, "STATSMAN");
+			STATSMAN->PushSelf( L );
+			lua_settable(L, LUA_GLOBALSINDEX);
+		}
+	}
+};
+
+LUA_REGISTER_CLASS( StatsManager )
+// lua end
 
 /*
  * (c) 2001-2004 Chris Danford

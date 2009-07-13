@@ -1307,12 +1307,12 @@ void ScreenSelectMusic::HandleScreenMessage( const ScreenMessage SM )
 }
 
 // XXX: lots of ctors/dtors and redundant calls. How can we best fix this?
-void UpdateLoadProgress( float fPercent )
+void UpdateLoadProgress( unsigned long iCurrent, unsigned long iTotal )
 {
 //	CString sMessage = ssprintf( "%s\n%i%%\n%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
 //		(int)fPercent, CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
 
-	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n\n", (int)fPercent );
+	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n\n", (int)(iCurrent/(iTotal/100))*100 );
 
 	// this might be themeable soon, ideally. for now, assume Select is available unless ITGIO is loaded
 	static CString sCancelText = ssprintf( "Pressing %s will cancel this selection.\n\n",

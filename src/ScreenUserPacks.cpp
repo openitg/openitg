@@ -234,8 +234,9 @@ CString g_CurXferFile;
 CString g_CurSelection;
 
 // shamelessly copied from vyhd's function in ScreenSelectMusic
-void UpdateXferProgress( float fPercent )
+void UpdateXferProgress( unsigned long iCurrent, unsigned long iTotal )
 {
+	float fPercent = iCurrent / (iTotal/100);
 	CString sMessage = ssprintf( "Please wait ...\n%.2f%%\n\n%s\n", fPercent, g_CurSelection.c_str() );
 	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();

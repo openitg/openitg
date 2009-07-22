@@ -853,7 +853,7 @@ void SaveGamePrefsToDisk()
 	ini.WriteFile( GAMEPREFS_INI_PATH );
 }
 
-static void MountTreeOfZips( const CString &dir )
+static void MountTreeOfZips( const CString &dir, bool recurse = true )
 {
 	vector<CString> dirs;
 	dirs.push_back( dir );
@@ -882,7 +882,7 @@ static void MountTreeOfZips( const CString &dir )
 			FILEMAN->Mount( "zip", zips[i], "/" );
 		}
 
-		GetDirListing( path + "/*", dirs, true, true ); /**/
+		if (recurse) GetDirListing( path + "/*", dirs, true, true ); /**/
 	}
 }
 
@@ -1045,7 +1045,7 @@ int main(int argc, char* argv[])
 			FILEMAN->Mount( "dir", dirs[i], "/Songs" );
 	}
 
-	MountTreeOfZips( "Packages/" );
+	MountTreeOfZips( "Packages/", false );
 
 	UPACKMAN = new UserPackManager( USERPACKS_TRANSFER_DIR, USERPACKS_SAVE_DIR );
 	UPACKMAN->AddBlacklistedFolder( "Data" );

@@ -59,7 +59,7 @@ ScreenUserPacks::~ScreenUserPacks()
 
 void ScreenUserPacks::LoadAddedZips()
 {
-	UPACKMAN->GetCurrentUserPacks( m_asAddedZips );
+	UPACKMAN->GetUserPacks( m_asAddedZips );
 }
 
 int InitSASSongThread( void *pSAS )
@@ -164,7 +164,7 @@ void ScreenUserPacks::StartSongThread()
 					MEMCARDMAN->UnmountCard(pn);
 					continue;
 				}
-				CString sPlayerUserPacksDir = sDriveDir + "/" + UPACKMAN->GetUserTransferPath();
+				CString sPlayerUserPacksDir = sDriveDir + "/" + USER_PACK_TRANSFER_PATH;
 				CStringArray sUSBZips;
 				GetDirListing( sPlayerUserPacksDir+"/*.zip", sUSBZips, false, false ); /**/
 				MEMCARDMAN->UnmountCard(pn);
@@ -262,7 +262,7 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 			return;
 		CString sSelection = m_AddedZips.GetCurrentSelection();
 		g_CurSelection = sSelection;
-		bool bSuccess = UPACKMAN->UnlinkAndRemovePack( UPACKMAN->GetSavePath() + "/" + sSelection );
+		bool bSuccess = UPACKMAN->Remove( USER_PACK_SAVE_PATH + "/" + sSelection );
 		if (bSuccess)
 		{
 			m_SoundDelete.Play();
@@ -314,7 +314,7 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 			bBreakEarly = false;
 			bSkip = false;
 
-			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/" + UPACKMAN->GetUserTransferPath() + sSelection;
+			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/" + USER_PACK_TRANSFER_PATH + sSelection;
 			if ( !UPACKMAN->IsPackTransferable( sSelection, sError ) || !UPACKMAN->IsPackAddable( g_CurXferFile, sError ) )
 			{
 				SCREENMAN->SystemMessage( "Could not add pack to machine:\n" + sError );
@@ -336,7 +336,7 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 #endif
 		SCREENMAN->HideOverlayMessage();
 		SCREENMAN->ZeroNextUpdate();
-		FILEMAN->FlushDirCache(UPACKMAN->GetSavePath());
+		FILEMAN->FlushDirCache(USER_PACK_SAVE_PATH);
 
 		m_bRestart = true;
 

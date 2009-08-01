@@ -10,6 +10,7 @@ OpenITG, beta 2 (in development)
      Actor: "addcommand"
      Game: "GetName"
      PlayerStageStats: too much stuff to list here
+     Song: "StepsLengthSeconds"
 -New LUA singleton bindings:
      GameState: "GetCurrentGame"
 -Fixed cross-platform bugs:
@@ -17,6 +18,7 @@ OpenITG, beta 2 (in development)
      Custom song loading cancellation causes delayed input events
      ScreenArcadeStart times out, even with missing I/O handler
 -Miscellaneous changes:
+     Long/Marathon calculated with steps length instead of music length
      Backported StepMania 4's RageFileManager, for better load handling
      Backported Win32 renderer identification for display stats
      De-clamped PercentageDisplay (Getting Started displays properly now)

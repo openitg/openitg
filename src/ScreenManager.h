@@ -78,7 +78,7 @@ public:
 	void HideSystemMessage();
 	
 	// overlay message
-	void OverlayMessage( CString &sMessage );
+	void OverlayMessage( const CString &sMessage );
 	void HideOverlayMessage();
 
 	void PostMessageToTopScreen( ScreenMessage SM, float fDelay );

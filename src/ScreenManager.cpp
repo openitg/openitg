@@ -587,7 +587,7 @@ void ScreenManager::HideSystemMessage()
 	MESSAGEMAN->Broadcast( "HideSystemMessage" );
 }
 
-void ScreenManager::OverlayMessage( CString &sMessage )
+void ScreenManager::OverlayMessage( const CString &sMessage )
 {
 	m_sOverlayMessage = sMessage;
 	MESSAGEMAN->Broadcast( "OverlayMessage" );

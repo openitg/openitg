@@ -2,33 +2,31 @@
 #define USER_PACK_MANAGER_H
 #include "global.h"
 
+/* path on the memory card where packs are checked for */
+static const CString USER_PACK_TRANSFER_PATH = "UserPacks/";
+
+/* path on the VFS where transferred packs end up */
+static const CString USER_PACK_SAVE_PATH = "UserPacks/";
+
 class UserPackManager
 {
 public:
-	UserPackManager( const CString sTransferPath, const CString sSavePath );
+	void GetUserPacks( CStringArray &sAddTo );
 
-	void			GetCurrentUserPacks( CStringArray &sAddTo );
-	void			MergePacksToVFS();
-	void			AddBlacklistedFolder( const CString sBlacklistedFolder );
+	void MountAll();
+	bool IsPackAddable( const CString &sPack, CString &sError );
+	bool Remove( const CString &sPack );
 
-	CString			GetUserTransferPath() { return m_sTransferPath; } /* /UserPacks part of /@mc1/UserPacks */
-	CString			GetSavePath() { return m_sSavePath; } /* /UserPacks */
-
-	bool			UnlinkAndRemovePack( const CString sPack );
-
-	bool			IsPackAddable( const CString sPack, CString &sError );
-	bool			IsPackTransferable( const CString sPack, CString &sError );
-	bool			TransferPack( const CString sPack, const CString sDestZip, void(*OnUpdate)(unsigned long, unsigned long), CString &sError );
+	bool IsPackTransferable( const CString sPack, CString &sError );
+	bool TransferPack( const CString sPack, const CString sDestZip, void(*OnUpdate)(unsigned long, unsigned long), CString &sError );
 
 protected:
-	CString			m_sTransferPath;
-	CString			m_sSavePath;
-	CStringArray	m_asBlacklistedFolders;
 
 	CString			GetPackMountPoint( const CString sPack );
 };
 
-extern UserPackManager* UPACKMAN;
+extern UserPackManager*	UPACKMAN;	// global and, uh, "accessable" from anywhere in our program
+
 #endif /* USER_PACK_MANAGER_H */
 
 /*

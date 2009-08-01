@@ -1564,6 +1564,9 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnU
 		}
 		if( data.empty() )
 			break;
+
+		read += data.size();
+
 		int i = out.Write(data);
 		if( i == -1 )
 		{
@@ -1589,7 +1592,7 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnU
 	/* handle any interrupts if they occurred. */
 	if( g_bInterruptCopy )
 	{
-		LOG->Warn( "Copying interrupted (%d/%d).", read, total );
+		LOG->Warn( "Copying interrupted (%lu/%lu).", read, total );
 		g_bInterruptCopy = false;
 
 		return false;

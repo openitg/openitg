@@ -37,8 +37,6 @@
 
 // XXX: custom song loading. remove these if we can.
 #include "RageFileDriverTimeout.h"
-#include "FontCharAliases.h"
-#include "DiagnosticsUtil.h"
 
 const int NUM_SCORE_DIGITS	=	9;
 
@@ -51,11 +49,9 @@ const int NUM_SCORE_DIGITS	=	9;
 #define SHOW_OPTIONS_MESSAGE_SECONDS		THEME->GetMetricF(m_sName,"ShowOptionsMessageSeconds")
 #define TWEEN_OFF_OPTIONS_MESSAGE_IMMEDIATELY	THEME->GetMetricB(m_sName,"TweenOptionsMessageOffImmediately")
 
-// XXX: we can't declare these in the class because of UpdateLoadProgress.
-// ...If nothing else, this is better than declaring static metrics.
-// - Vyhd
-//ThemeMetric<CString>	CUSTOM_SONG_WAIT_TEXT;
-//ThemeMetric<CString>	CUSTOM_SONG_CANCEL_TEXT;
+// TODO: fix these up so they can use m_sName
+ThemeMetric<CString>	CUSTOM_SONG_WAIT_TEXT	("ScreenSelectMusic", "CustomSongWaitText");
+ThemeMetric<CString>	CUSTOM_SONG_CANCEL_TEXT	("ScreenSelectMusic", "CustomSongCancelText");
 
 AutoScreenMessage( SM_AllowOptionsMenuRepeat )
 AutoScreenMessage( SM_SongChanged )
@@ -96,6 +92,7 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 {
 //	CUSTOM_SONG_WAIT_TEXT.Load( m_sName, "CustomSongWaitText" );
 //	CUSTOM_SONG_CANCEL_TEXT.Load( m_sName, "CustomSongCancelText" );
+
 	LOG->Trace( "ScreenSelectMusic::ScreenSelectMusic()" );
 
 	LIGHTSMAN->SetLightsMode( LIGHTSMODE_MENU );
@@ -397,7 +394,6 @@ void ScreenSelectMusic::Init()
 			MEMCARDMAN->UnmountCard( pn );
 			MEMCARDMAN->MountCard( pn, 600 );
 		}
-		MEMCARDMAN->PauseMountingThread( 600 );
 	}
 #endif
 }
@@ -409,7 +405,6 @@ ScreenSelectMusic::~ScreenSelectMusic()
 	BANNERCACHE->Undemand();
 	
 #ifndef WIN32
-	MEMCARDMAN->PauseMountingThread( 600 );
 	if( PREFSMAN->m_bCustomSongPreviews )
 		FOREACH_EnabledPlayer( pn )
 			MEMCARDMAN->UnmountCard( pn );
@@ -1309,18 +1304,10 @@ void ScreenSelectMusic::HandleScreenMessage( const ScreenMessage SM )
 // XXX: lots of ctors/dtors and redundant calls. How can we best fix this?
 void UpdateLoadProgress( unsigned long iCurrent, unsigned long iTotal )
 {
-//	CString sMessage = ssprintf( "%s\n%i%%\n%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
-//		(int)fPercent, CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
+	float fPercent = iCurrent / (iTotal/100);
 
-	CString sMessage = ssprintf( "Please wait ...\n%u%%\n\n\n", (int)(iCurrent/(iTotal/100))*100 );
-
-	// this might be themeable soon, ideally. for now, assume Select is available unless ITGIO is loaded
-	static CString sCancelText = ssprintf( "Pressing %s will cancel this selection.\n\n",
-		DiagnosticsUtil::GetInputType() == "ITGIO" ? "&MENULEFT; + &MENURIGHT;" : "&SELECT;" );
-
-	FontCharAliases::ReplaceMarkers( sCancelText );
-
-	sMessage += sCancelText;
+	CString sMessage = ssprintf( "%s\n%i%%\n%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
+		(int)fPercent, CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
 
 	// UGLY: send a manual update to INPUTFILTER to force input buffering
 	INPUTFILTER->Update( 0 );
@@ -1354,22 +1341,20 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 {
 	LOG->Trace( "ScreenSelectMusic::ValidateCustomSong()" );
 
-	// Interesting hack: I can't get this to work properly except through a new CString.
-	// XXX: make this themeable
-	//	CString sMessage = ssprintf( "%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str() );
-	CString sMessage = ssprintf( "Please wait ..." );
-	SCREENMAN->OverlayMessage( sMessage );
+	// playing the preview while attempting to copy the song from USB = bad
+	SOUND->StopMusic();
+
+	//CString sMessage = ssprintf( "%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str() );
+	SCREENMAN->OverlayMessage( "Please wait..." );
 	SCREENMAN->Draw();
 
 	// set a timeout for USB access, so we don't get flooded with messages.
-	RageFileDriverTimeout::SetTimeout( 30 );
+	RageFileDriverTimeout::SetTimeout( 6000 );
 
 	// whoever owns the song we're reading, mount their card.
 #ifndef WIN32
 	if( !PREFSMAN->m_bCustomSongPreviews )
-		MEMCARDMAN->MountCard( pSong->m_SongOwner, 20 );
-	else
-		MEMCARDMAN->PauseMountingThread( 600 );
+		MEMCARDMAN->MountCard( pSong->m_SongOwner, 6000 );
 #endif
 	
 	// now, verify the song internally since we can read the data now
@@ -1418,6 +1403,12 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 
 void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 {
+	/* if any options lists are opened and the timer
+	 * is still going, ignore any music selections. */
+	FOREACH_EnabledPlayer( pn )
+		if( this->m_OptionsList[pn].IsOpened() && (int)m_MenuTimer->GetSeconds() != 0 )
+			return;
+
 	// this needs to check whether valid Steps are selected!
 	bool bResult = m_MusicWheel.Select();
 
@@ -1435,10 +1426,6 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 
 			if( m_MusicWheel.GetSelectedSong()->IsCustomSong() ) // a song we need to test
 			{
-				// playing the preview while attempting to copy the song from USB = bad
-				//    --infamouspat
-				SOUND->StopMusic();
-
 				// if false and no time, set a random song that isn't a custom - those could fail.
 				if( (int)m_MenuTimer->GetSeconds() == 0 )
 				{

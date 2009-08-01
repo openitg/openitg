@@ -96,8 +96,6 @@
 #endif
 
 #define ZIPS_DIR "Packages/"
-#define USERPACKS_TRANSFER_DIR "UserPacks/"
-#define USERPACKS_SAVE_DIR "UserPacks/"
 
 int g_argc = 0;
 char **g_argv = NULL;
@@ -1047,14 +1045,6 @@ int main(int argc, char* argv[])
 
 	MountTreeOfZips( "Packages/", false );
 
-	UPACKMAN = new UserPackManager( USERPACKS_TRANSFER_DIR, USERPACKS_SAVE_DIR );
-	UPACKMAN->AddBlacklistedFolder( "Data" );
-	UPACKMAN->AddBlacklistedFolder( "Program" );
-	UPACKMAN->AddBlacklistedFolder( "Themes/default" );
-	UPACKMAN->AddBlacklistedFolder( "Themes/home" );
-
-	UPACKMAN->MergePacksToVFS();
-
 	/* Mount patch data, if any. */
 	if ( IsAFile( PATCH_FILE ) )
 	{
@@ -1085,6 +1075,11 @@ int main(int argc, char* argv[])
 #if defined(HAVE_SDL)
 	SetupSDL();
 #endif
+
+	/* initialize the pack manager and mount all data after prefs loading.
+	 * this helps to make sure that packages can't mess with core data. */
+	UPACKMAN = new UserPackManager();
+	UPACKMAN->MountAll();
 
 	/* This needs PREFSMAN. */
 	Dialog::Init();

@@ -8,29 +8,23 @@
 
 UserPackManager* UPACKMAN = NULL; // global and accessable from anywhere in our program
 
-UserPackManager::UserPackManager( const CString sTransferPath, const CString sSavePath )
+void UserPackManager::GetUserPacks( CStringArray &sAddTo )
 {
-	m_sTransferPath = sTransferPath;
-	m_sSavePath = sSavePath;
+	GetDirListing( USER_PACK_SAVE_PATH+"/*.zip", sAddTo, false, false );
 }
 
-void UserPackManager::GetCurrentUserPacks( CStringArray &sAddTo )
-{
-	GetDirListing( m_sSavePath+"/*.zip", sAddTo, false, false ); /**/
-}
-
-void UserPackManager::MergePacksToVFS()
+void UserPackManager::MountAll()
 {
 	CStringArray asPacks;
 	CString sError;
 
-	GetCurrentUserPacks( asPacks );
+	/* get a listing of all packs in the directory to mount */
+	GetUserPacks( asPacks );
 
 	for( unsigned i = 0; i < asPacks.size(); i++ )
 	{
-		const CString sPackPath = m_sSavePath + asPacks[i];
-
-		LOG->Info( "Loading User Pack: %s", sPackPath.c_str() );
+		const CString sPackPath = USER_PACK_SAVE_PATH + asPacks[i];
+		LOG->Info( "Loading user pack: %s", sPackPath.c_str() );
 
 		if ( !IsPackAddable( sPackPath, sError ) ) // if it can't load it, forget it
 		{
@@ -42,43 +36,48 @@ void UserPackManager::MergePacksToVFS()
 	}
 }
 
-void UserPackManager::AddBlacklistedFolder( const CString sBlacklistedFolder )
+bool UserPackManager::Remove( const CString &sPack )
 {
-	m_asBlacklistedFolders.push_back( sBlacklistedFolder );
-}
+	/* it's okay if either one of these fails */
+	FILEMAN->Unmount("zip", sPack, "/Songs");
+	FILEMAN->Unmount("zip", sPack, "/");
 
-bool UserPackManager::UnlinkAndRemovePack( const CString sPack )
-{
 #if defined(LINUX) && defined(ITG_ARCADE)
 	system( "mount -o remount,rw /itgdata" );
 #endif
-	FILEMAN->Unmount("zip", sPack, "/Songs");
-	FILEMAN->Unmount("zip", sPack, "/");
-	bool bRet = FILEMAN->Remove( sPack );
-	FILEMAN->FlushDirCache( m_sSavePath );
+
+	bool bDeleted = FILEMAN->Remove( sPack );
+
 #if defined(LINUX) && defined(ITG_ARCADE)
 	system( "mount -o remount,ro /itgdata" );
 #endif
-	return bRet;
+	/* refresh directory data after deletion */
+	FILEMAN->FlushDirCache( USER_PACK_SAVE_PATH );
+
+	return bDeleted;
 }
 
-bool UserPackManager::IsPackAddable( const CString sPack, CString &sError )
+/* Any packs containing these folders will be rejected from addition
+ * due to possible conflicts, problems, or stability issues, */
+static const char *BLACKLISTED_FOLDERS[] = { "Data", "Program", "Themes/default", "Themes/home" };
+
+bool UserPackManager::IsPackAddable( const CString &sPack, CString &sError )
 {
 	RageFileDriverZip *pZip = new RageFileDriverZip;
 
-	if ( ! pZip->Load( sPack ) )
+	if ( !pZip->Load(sPack) )
 	{
 		sError = "not a valid zip file";
 		SAFE_DELETE( pZip );
 		return false;
 	}
 
-	for( unsigned i = 0; i < m_asBlacklistedFolders.size(); i++ )
+	for( unsigned i = 0; BLACKLISTED_FOLDERS[i] != NULL; i++ )
 	{
-		/* XXX: might have to use GetDirListing() instead */
-		if ( pZip->GetFileInfo( m_asBlacklistedFolders[i] ) != NULL )
-		{ // blacklisted file/folder, don't add
-			sError = ssprintf("blacklisted content: %s", m_asBlacklistedFolders[i].c_str());
+		// if any blacklisted folders exist, reject the pack
+		if ( pZip->GetFileInfo( BLACKLISTED_FOLDERS[i] ) != NULL )
+		{ 
+			sError = ssprintf( "blacklisted folder: %s", BLACKLISTED_FOLDERS[i] );
 			SAFE_DELETE( pZip );
 			return false;
 		}
@@ -86,12 +85,12 @@ bool UserPackManager::IsPackAddable( const CString sPack, CString &sError )
 
 	// do not add if it's just folders of individual songs without a group folder
 	CStringArray asRootFolders;
-	pZip->GetDirListing( "/*", asRootFolders, true, false ); /**/
+	pZip->GetDirListing( "/*", asRootFolders, true, false );
 	for( unsigned i = 0; i < asRootFolders.size(); i++ )
 	{
 		CStringArray asFiles;
-		pZip->GetDirListing( "/" + asRootFolders[i] + "/*.sm", asFiles, false, false ); /**/
-		pZip->GetDirListing( "/" + asRootFolders[i] + "/*.dwi", asFiles, false, false ); /**/
+		pZip->GetDirListing( "/" + asRootFolders[i] + "/*.sm", asFiles, false, false );
+		pZip->GetDirListing( "/" + asRootFolders[i] + "/*.dwi", asFiles, false, false );
 		if ( asFiles.size() > 0 )
 		{
 			sError = "Package is not a group folder package.\nPlease add songs to a single group folder.\n(i.e. {Group Name}/{Song Folder}/Song.sm)";
@@ -107,7 +106,7 @@ bool UserPackManager::IsPackAddable( const CString sPack, CString &sError )
 bool UserPackManager::IsPackTransferable( const CString sPack, CString &sError )
 {
 	CStringArray asSavedPacks;
-	GetCurrentUserPacks( asSavedPacks );
+	GetUserPacks( asSavedPacks );
 	for ( unsigned i = 0; i < asSavedPacks.size(); i++ )
 	{
 		if ( asSavedPacks[i].CompareNoCase(sPack) == 0 )
@@ -121,7 +120,7 @@ bool UserPackManager::IsPackTransferable( const CString sPack, CString &sError )
 
 bool UserPackManager::TransferPack( const CString sPack, const CString sDestPack, void(*OnUpdate)(unsigned long, unsigned long), CString &sError )
 {
-	return FileCopy( sPack, m_sSavePath + "/" + sDestPack, sError, OnUpdate );
+	return FileCopy( sPack, USER_PACK_SAVE_PATH + "/" + sDestPack, sError, OnUpdate );
 }
 
 #define ROOT_DIRS_SIZE 8

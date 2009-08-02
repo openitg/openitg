@@ -88,6 +88,7 @@ AutoScreenMessage( SM_StartHereWeGo )
 AutoScreenMessage( SM_StopHereWeGo )
 
 static Preference<float> g_fNetStartOffset( "NetworkStartOffset",	-3.0 );
+static Preference<float> g_fGiveUpTime( "GiveUpTime", 2.5f );
 
 // define which steps type we autogen lights from
 const StepsType LIGHTS_AUTOGEN_TYPE = STEPS_TYPE_DANCE_SINGLE;
@@ -1688,7 +1689,7 @@ void ScreenGameplay::Update( float fDeltaTime )
 	//
 	// update give up
 	//
-	bool bGiveUpTimerFired = !m_GiveUpTimer.IsZero() && m_GiveUpTimer.Ago() > 2.5f;
+	bool bGiveUpTimerFired = !m_GiveUpTimer.IsZero() && m_GiveUpTimer.Ago() > g_fGiveUpTime.Get();
 	if( bGiveUpTimerFired || (FAIL_AFTER_30_MISSES && GAMESTATE->AllHumanHaveComboOf30OrMoreMisses()) )
 	{
 		// Give up

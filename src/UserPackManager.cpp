@@ -59,6 +59,7 @@ bool UserPackManager::Remove( const CString &sPack )
 
 /* Any packs containing these folders will be rejected from addition
  * due to possible conflicts, problems, or stability issues, */
+static const int NUM_BLACKLISTED_FOLDERS = 4;
 static const char *BLACKLISTED_FOLDERS[] = { "Data", "Program", "Themes/default", "Themes/home" };
 
 bool UserPackManager::IsPackAddable( const CString &sPack, CString &sError )
@@ -72,10 +73,17 @@ bool UserPackManager::IsPackAddable( const CString &sPack, CString &sError )
 		return false;
 	}
 
-	for( unsigned i = 0; BLACKLISTED_FOLDERS[i] != NULL; i++ )
+	for( unsigned i = 0; i < NUM_BLACKLISTED_FOLDERS && BLACKLISTED_FOLDERS[i] != NULL; i++ )
 	{
+		CString sDir = CString("/") + BLACKLISTED_FOLDERS[i];
+		CStringArray sDirListing;
+
+		pZip->GetDirListing( sDir, sDirListing, false, true );
+
+		int iListSize = sDirListing.size();
+
 		// if any blacklisted folders exist, reject the pack
-		if ( pZip->GetFileInfo( BLACKLISTED_FOLDERS[i] ) != NULL )
+		if ( iListSize > 0 )
 		{ 
 			sError = ssprintf( "blacklisted folder: %s", BLACKLISTED_FOLDERS[i] );
 			SAFE_DELETE( pZip );

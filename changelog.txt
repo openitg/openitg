@@ -2,6 +2,8 @@ OpenITG, beta 2 (in development)
 --------------------------------
 -Fixed Linux bugs:
      USB devices that only reported as "sda" would stay in checking forever
+-New preferences:
+     "GiveUpTime" - amount of time that Start must be held to give up songs
 -New LUA bindings:
      HighScore: "GetName", "GetScore", "GetPercentDP", "GetDate",
           "GetSurvivalSeconds", "IsFillInMarker"

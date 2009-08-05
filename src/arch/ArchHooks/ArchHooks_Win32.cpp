@@ -196,7 +196,7 @@ void ArchHooks_Win32::MountInitialFilesystems( const CString &sDirOfExecutable )
 	FILEMAN->Mount( "dir", Dir, "/" );
 }
 
-void ArchHooks_Win32::SystemReboot()
+void ArchHooks_Win32::SystemReboot( bool bForceSync )
 {
 #ifndef ITG_ARCADE
 	Win32RestartProgram();

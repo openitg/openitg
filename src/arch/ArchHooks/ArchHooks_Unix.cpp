@@ -163,17 +163,21 @@ bool ArchHooks_Unix::GetNetworkAddress( CString &sIP, CString &sNetmask, CString
 	return true;
 }
 
-void ArchHooks_Unix::SystemReboot()
+void ArchHooks_Unix::SystemReboot( bool bForceSync )
 {
 	LOG->Trace( "ArchHooks_Unix::SystemReboot()" );
 
 #ifdef ITG_ARCADE
 	if( !IsAFile("/rootfs/tmp/no-crash-reboot") )
 	{
-		LOG->Warn( "no-reboot not found. Rebooting." );
+		LOG->Warn( "no-crash-reboot not found. Rebooting." );
 
 		/* Important: flush to disk first */
-		sync(); sleep(5);
+		if( bForceSync )
+		{
+			sync();
+			sleep(5);
+		}
 
 		if( reboot(RB_AUTOBOOT) != 0 )
 			LOG->Warn( "Could not reboot: %s", strerror(errno) );

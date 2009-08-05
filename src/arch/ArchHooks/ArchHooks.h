@@ -23,7 +23,7 @@ public:
 	virtual void RestartProgram() { }
 
 	/* Restart the entire computer, in case of installation updates, etc. */
-	virtual void SystemReboot() { }
+	virtual void SystemReboot( bool bForceSync = true ) { }
 
 	/* Call this to temporarily enter a high-priority or realtime scheduling (depending
 	 * on the implementation) mode.  This is used to improve timestamp accuracy.  Do as

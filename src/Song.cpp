@@ -343,10 +343,10 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 	ld->TidyUpData( *this, false );
 	delete ld;
 
-	for( unsigned i=0; i<m_vpSteps.size(); i++ )
+	FOREACH( Steps*, m_vpSteps, s )
 	{
-		m_vpSteps[i]->SetFile( NULL ); // avoid loading from cache
-		m_vpSteps[i]->Compress();
+		(*s)->SetFile( NULL ); // avoid loading from cache
+		(*s)->Compress();
 	}
 
 	/* Get the length of the steps, so we have an accurate indicator of play length */
@@ -358,6 +358,12 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 
 	m_sExtension = "." + m_sMusicFile.Right(3);
 	m_sGameplayMusic = CUSTOM_SONG_PATH + "music" + m_sExtension;
+
+	if( !m_bHasMusic )
+	{
+		LOG->Trace( "Song \"%s\" ignored (no music)", sDir.c_str() );
+		return false;	// don't load this song
+	}
 
 	return true;
 }

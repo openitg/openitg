@@ -397,14 +397,17 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 			if( atoi(sBuf) != 1 )
 				continue;
 
-			usbd.sDevice = "/dev/" + sDevice;
-
-			/* check for "/sys/block/sdc/sdc1" */
-			CString sSubdir = sDevice + "/" + sDevice + "1/";
-			if( IsADirectory("/rootfs"+sBlockDevicePath+sSubdir) )
-				usbd.sDevice += "1";
+			/* If the first partition exists, e.g. /sys/block/uba/uba1, use it. */
+			if( access(sPath + sDevice + "1", F_OK) != -1 )
+			{
+				usbd.sDevice = "/dev/" + sDevice + "1";
+				LOG->Debug( "Access to %s okay. Using %s.", CString(sPath + sDevice + "1").c_str(), usbd.sDevice.c_str() );
+			}
 			else
-				LOG->Trace( "Device doesn't use numeric suffix. Using %s", sDevice.c_str() );
+			{
+				usbd.sDevice = "/dev/" + sDevice;
+				LOG->Debug( "Couldn't access partition 1, using %s.", usbd.sDevice.c_str() );
+			}
 
 			SetDeviceInfo( usbd, sPath );
 			vDevicesOut.push_back( usbd );

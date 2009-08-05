@@ -53,8 +53,9 @@ ScreenUserPacks::~ScreenUserPacks()
 	FOREACH_PlayerNumber( pn )
 		MEMCARDMAN->UnmountCard( pn );
 
+	// we sync on the end of each update.
 	if ( m_bRestart )
-		HOOKS->SystemReboot();
+		HOOKS->SystemReboot( false );
 }
 
 void ScreenUserPacks::LoadAddedZips()

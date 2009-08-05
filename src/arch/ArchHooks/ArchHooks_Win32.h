@@ -14,7 +14,7 @@ public:
 
 	void DumpDebugInfo();
 	void RestartProgram();
-	void SystemReboot();
+	void SystemReboot( bool bForceSync = true );
 
 	int OldThreadPriority;
 	RageMutex *TimeCritMutex;

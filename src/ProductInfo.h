@@ -9,9 +9,11 @@
 #endif
 
 #undef OFFICIAL_RELEASE
+//#define OFFICIAL_RELEASE 1
 
 /* (x?)xyy - x is release type, y is release version */
-#define PRODUCT_TOKEN 102
+/* 101 - beta 1, 102 - beta 1.1, 103 - beta 2 */
+#define PRODUCT_TOKEN 103
 
 /* The name of the build and its current version */
 #define PRODUCT_NAME "OpenITG"
@@ -37,7 +39,7 @@
 #endif
 
 /*
- * (c) 2003-2005 Chris Danford
+ * (c) 2003-2009 Chris Danford, BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

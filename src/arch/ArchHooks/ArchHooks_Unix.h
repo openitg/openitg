@@ -10,7 +10,7 @@ public:
 	void MountInitialFilesystems( const CString &sDirOfExecutable );
 
 	void DumpDebugInfo();
-	void SystemReboot();
+	void SystemReboot( bool bForceSync = true );
 
 	void SetTime( tm newtime );
 

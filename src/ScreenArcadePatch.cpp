@@ -117,7 +117,8 @@ void ScreenArcadePatch::HandleScreenMessage( const ScreenMessage SM )
 		FOREACH_PlayerNumber( pn )
 		MEMCARDMAN->UnmountCard( pn );
 
-		HOOKS->SystemReboot();
+		// we explicitly synced. don't bother now.
+		HOOKS->SystemReboot( false );
 	}
 }
 
@@ -613,7 +614,12 @@ CHECKPOINT;
 	SAFE_DELETE( fZip );
 
 	/* clear the previous copying text */
+	STATE_TEXT( "Finalizing patch data..." );
 	PATCH_TEXT( "" );
+
+#ifdef LINUX
+	sync(); sleep(5);
+#endif
 
 	/* we've successfully copied everything. now, move the directory and we're done. */
 	if( FILEMAN->Move(TEMP_PATCH_DIR, FINAL_PATCH_DIR) )

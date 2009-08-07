@@ -178,8 +178,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,1,0
- PRODUCTVERSION 1,0,1,0
+ FILEVERSION 1,0,3,0
+ PRODUCTVERSION 1,0,3,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -196,12 +196,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "BoXoRRoXoRs (http://www.boxorroxors.net)"
             VALUE "FileDescription", "OpenITG"
-            VALUE "FileVersion", "1, 0, 1, 0"
+            VALUE "FileVersion", "1, 0, 3, 0"
             VALUE "InternalName", "StepMania"
             VALUE "LegalCopyright", "Copyright © 2008-2009 BoXoRRoXoRs"
             VALUE "OriginalFilename", "StepMania.exe"
             VALUE "ProductName", "OpenITG"
-            VALUE "ProductVersion", "1, 0, 1, 0"
+            VALUE "ProductVersion", "1, 0, 3, 0"
         END
     END
     BLOCK "VarFileInfo"

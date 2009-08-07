@@ -3,13 +3,12 @@
 #ifndef PRODUCT_INFO_H
 #define PRODUCT_INFO_H
 
-// Linux builds have VersionNumber set to 
 #ifdef LINUX
 #include "config.h" // for ITG_ARCADE
 #endif
 
-#undef OFFICIAL_RELEASE
-//#define OFFICIAL_RELEASE 1
+//#undef OFFICIAL_RELEASE
+#define OFFICIAL_RELEASE 1
 
 /* (x?)xyy - x is release type, y is release version */
 /* 101 - beta 1, 102 - beta 1.1, 103 - beta 2 */

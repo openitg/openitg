@@ -1,43 +1,47 @@
 OpenITG, beta 2 (in development)
 --------------------------------
--Fixed Linux bugs:
-     USB devices that only reported as "sda" would stay in checking forever
 -New preferences:
      "GiveUpTime" - amount of time that Start must be held to give up songs
+-New metrics:
+     ScreenTestInput - X, Y, On, and Off commands for text ("Inputs", "Devices")
+-Fixed Linux bugs:
+     USB devices that only reported as "sda" would stay in checking forever
+     Misdetection of partitions on USB devices caused some mounts to fail
+-Fixed cross-platform bugs:
+     BPM display on gameplay doesn't scale with Music Rate setting
+     Several stray PauseMountingThread() calls causing cards to respond slowly
+     Perspective setting is not properly saved on USB profiles
+     Custom song loading cancellation causes delayed input events
+     ScreenArcadeStart times out, even with missing I/O handler
+-New screen:
+     "ScreenUserPacks" - formerly ScreenAddSongs, manages USB-transferred game data.
+-Code Structure Additions:
+     UserPackManager - singleton for managing users' add-on packs for the machine
+-Miscellaneous changes:
+     Backported StepMania 4's RageFileManager, for better load handling
+     Backported Win32 renderer identification for display stats
+     Changed to StepMania 4 method of scaling screenshots
+     De-clamped PercentageDisplay (Getting Started displays properly now)
+     Long/Marathon calculated with steps length instead of music length
+     Moved "ScreenAddSongs" to "ScreenUserPacks", heavily updated interface
+     Improved Colorized Graph logic
+     Split bookkeeping into separate pages for machine v. service credits
+-New menu structures:
+     LinkedOptionsMenu - set of intertwined menus, example metrics in home folder
+-New file driver:
+     RageFileDriverProbe - heuristic-based file driver that allows en/decrypted ZIPs
 -New LUA bindings:
      HighScore: "GetName", "GetScore", "GetPercentDP", "GetDate",
           "GetSurvivalSeconds", "IsFillInMarker"
      HighScoreList: "GetHighScores"
 -New LUA member bindings:
-     Actor: "addcommand"
+     ActorFrame: "SetUpdateCommand" (called on each ::Update, with fDeltaTime)
+     Actor: "addcommand", "GetName"
      Game: "GetName"
      PlayerStageStats: too much stuff to list here
      Song: "StepsLengthSeconds"
 -New LUA singleton bindings:
      GameState: "GetCurrentGame"
--Fixed cross-platform bugs:
-     Perspective setting is not properly saved on USB profiles
-     Custom song loading cancellation causes delayed input events
-     ScreenArcadeStart times out, even with missing I/O handler
--Miscellaneous changes:
-     Long/Marathon calculated with steps length instead of music length
-     Backported StepMania 4's RageFileManager, for better load handling
-     Backported Win32 renderer identification for display stats
-     De-clamped PercentageDisplay (Getting Started displays properly now)
-     Moved "ScreenAddSongs" to "ScreenUserPacks", heavily updated interface
-     Improved Colorized Graph logic
-     Changed to StepMania 4 method of scaling screenshots
--Code Structure Additions:
-     UserPackManager: singleton for managing user given addon packs for the machine
--New metrics:
-     ScreenTestInput - X, Y, On, and Off commands for text ("Inputs", "Devices")
--New menu structures:
-     LinkedOptionsMenu - set of intertwined menus, example metrics in home folder
--New screen:
-     "ScreenUserPacks" - formerly ScreenAddSongs, manages USB-transferred game data.
--New file driver:
-     RageFileDriverProbe - RageFileDriverCrypt_ITG2 hack that detects that detects the 
-                           type of file (encrypted, plain) and treats it accordingly
 
 OpenITG, beta 1 (May 15th, 2009)
 --------------------------------

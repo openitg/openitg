@@ -26,6 +26,16 @@ public:
 	}
 	static int GetNumChildren( T* p, lua_State *L )		{ lua_pushnumber( L, p->GetNumChildren() ); return 1; }
 	static int SetDrawByZPosition( T* p, lua_State *L )	{ p->SetDrawByZPosition( BArg(1) ); return 1; }
+	static int SetUpdateFunction( T* p, lua_State *L )
+	{
+		luaL_checktype( L, 1, LUA_TFUNCTION );
+
+		LuaReference ref;
+		lua_pushvalue( L, 1 );
+		ref.SetFromStack( L );
+		p->SetUpdateFunction( ref );
+		return 0;
+	}
 
 	static void Register(lua_State *L) 
 	{
@@ -36,6 +46,7 @@ public:
 		ADD_METHOD( GetChild )
 		ADD_METHOD( GetNumChildren )
 		ADD_METHOD( SetDrawByZPosition )
+		ADD_METHOD( SetUpdateFunction )
 		LunaActor<T>::Register( L );
 	}
 };
@@ -59,6 +70,8 @@ public:
 	void MoveToHead( Actor* pActor );
 	void SortByDrawOrder();
 	void SetDrawByZPosition( bool b );
+
+	void SetUpdateFunction( const LuaReference &UpdateFunction ) { m_UpdateFunction = UpdateFunction; }
 
 	void DeleteChildrenWhenDone( bool bDelete=true ) { m_bDeleteChildren = bDelete; }
 	void DeleteAllChildren();
@@ -102,6 +115,7 @@ protected:
 	bool m_bPropagateCommands;
 	bool m_bDeleteChildren;
 	bool m_bDrawByZPosition;
+	LuaReference m_UpdateFunction;
 
 	// state effects
 	float m_fUpdateRate;

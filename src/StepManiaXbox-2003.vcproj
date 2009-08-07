@@ -2,7 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="StepMania"
+	Name="OpenITG Xbox"
+	RootNamespace="OpenITG Xbox"
 	SccProjectName=""
 	SccLocalPath=""
 	Keyword="MFCProj">
@@ -244,7 +245,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough="global.h"
 				PrecompiledHeaderFile="$(IntDir)/StepMania.pch"
 				AssemblerListingLocation="./../ReleaseXbox/"
@@ -258,7 +259,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /FIXED:NO /FORCE:MULTIPLE"
-				AdditionalDependencies="$(intdir)\verstub.obj xapilib.lib d3d8.lib d3dx8.lib xgraphics.lib dsound.lib dmusic.lib xnet.lib xboxkrnl.lib libcmt.lib"
+				AdditionalDependencies="$(intdir)\verstub.obj xapilib.lib d3d8.lib d3dx8.lib xgraphics.lib dsound.lib dmusic.lib xnet.lib xboxkrnl.lib libcmt.lib $(NOINHERIT)"
 				OutputFile="../StepMania.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -279,6 +280,7 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
+				ExcludedFromBuild="TRUE"
 				Progress="TRUE"
 				ForceCopy="TRUE"/>
 			<Tool
@@ -287,9 +289,10 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 				StackSize="0x10000"
 				IncludeDebugInfo="TRUE"
 				SuppressStartupBanner="TRUE"
+				DontMountUD="TRUE"
 				TitleID=""
 				TitleInfo=""
-				TitleName="StepmaniaX"
+				TitleName="OpenITG-X"
 				TitleImage=""/>
 		</Configuration>
 	</Configurations>
@@ -528,6 +531,12 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 				RelativePath="ScreenPlayerOptions.h">
 			</File>
 			<File
+				RelativePath=".\ScreenPlayLights.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenPlayLights.h">
+			</File>
+			<File
 				RelativePath="ScreenProfileOptions.cpp">
 			</File>
 			<File
@@ -682,6 +691,12 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 			</File>
 			<File
 				RelativePath="ScreenUnlock.h">
+			</File>
+			<File
+				RelativePath=".\ScreenUserPacks.cpp">
+			</File>
+			<File
+				RelativePath=".\ScreenUserPacks.h">
 			</File>
 			<File
 				RelativePath="ScreenWithMenuElements.cpp">
@@ -1274,6 +1289,12 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 						RelativePath="arch\Lights\LightsDriver.h">
 					</File>
 					<File
+						RelativePath=".\arch\Lights\LightsDriver_External.cpp">
+					</File>
+					<File
+						RelativePath=".\arch\Lights\LightsDriver_External.h">
+					</File>
+					<File
 						RelativePath="arch\Lights\LightsDriver_Null.h">
 					</File>
 					<File
@@ -1281,6 +1302,9 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 					</File>
 					<File
 						RelativePath="arch\Lights\LightsDriver_SystemMessage.h">
+					</File>
+					<File
+						RelativePath=".\arch\Lights\Selector_LightsDriver.h">
 					</File>
 				</Filter>
 				<Filter
@@ -1519,6 +1543,12 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 				RelativePath="HelpDisplay.h">
 			</File>
 			<File
+				RelativePath=".\LinkedOptionsMenu.cpp">
+			</File>
+			<File
+				RelativePath=".\LinkedOptionsMenu.h">
+			</File>
+			<File
 				RelativePath="MemoryCardDisplay.cpp">
 			</File>
 			<File
@@ -1589,6 +1619,12 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 			</File>
 			<File
 				RelativePath="OptionsCursor.h">
+			</File>
+			<File
+				RelativePath=".\OptionsList.cpp">
+			</File>
+			<File
+				RelativePath=".\OptionsList.h">
 			</File>
 			<File
 				RelativePath="PaneDisplay.cpp">
@@ -1897,6 +1933,18 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 			</File>
 			<File
 				RelativePath="RageFileDriver.h">
+			</File>
+			<File
+				RelativePath=".\RageFileDriverCrypt.cpp">
+			</File>
+			<File
+				RelativePath=".\RageFileDriverCrypt.h">
+			</File>
+			<File
+				RelativePath=".\RageFileDriverCrypt_ITG2.cpp">
+			</File>
+			<File
+				RelativePath=".\RageFileDriverCrypt_ITG2.h">
 			</File>
 			<File
 				RelativePath=".\RageFileDriverDeflate.cpp">
@@ -2481,10 +2529,25 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 			<File
 				RelativePath=".\UnlockManager.h">
 			</File>
+			<File
+				RelativePath=".\UserPackManager.cpp">
+			</File>
+			<File
+				RelativePath=".\UserPackManager.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="Crypto"
 			Filter="">
+			<File
+				RelativePath=".\aes\aescrypt.c">
+			</File>
+			<File
+				RelativePath=".\aes\aeskey.c">
+			</File>
+			<File
+				RelativePath=".\aes\aestab.c">
+			</File>
 			<File
 				RelativePath="crypto\CryptBn.cpp">
 			</File>

@@ -38,6 +38,7 @@ Contributions:
  - cyt0plas & Spectere (LUA 5.1 patches)
  - dawnwolf (x64/GCC 4.3 compatibility patch)
  - Lightning (OpenITG logo & title screen theme stuff)
+ - xjen0vax (theme metrics, Long/Marathon notifiers)
 
 If we forgot to mention you, hit us up at one of the following places:
 	http://www.boxorroxors.net/forum/viewforum.php?f=13

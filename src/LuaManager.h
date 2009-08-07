@@ -17,9 +17,6 @@ extern "C"
 }
 #endif
 
-// Machine Update -- Matt1360
-#include "ezsockets.h"
-
 class LuaManager;
 extern LuaManager *LUA;
 
@@ -80,6 +77,12 @@ private:
 
 namespace LuaHelpers
 {
+	/* Run the function with arguments at the top of the stack, with the given
+	 * number of arguments.  The specified number of return values are left on
+	 * the Lua stack.  On error, nils are left on the stack, sError is set and
+	 * false is returned. */
+	bool RunScriptOnStack( Lua *L, CString &sError, int iArgs = 0, int iReturnValues = 0 );
+
 	/* Run a script with the given name.  Return values are left on the Lua stack.
 	 * Returns false on error, with sError set. */
 	bool RunScript( Lua *L, const CString &sScript, const CString &sName, CString &sError, int iReturnValues = 0 );

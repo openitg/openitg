@@ -6,6 +6,7 @@
 #include "RageSound.h"
 #include "RageLog.h"
 #include "StepMania.h"
+
 #ifdef WIN32
 #include <windows.h>
 #include <shellapi.h>

@@ -1,5 +1,5 @@
 --[[
-Miscellaneous scripts for OpenITG, beta 1
+Miscellaneous scripts for OpenITG
 Licensed under Creative Commons Attribution-Share Alike 3.0 Unported
 (http://creativecommons.org/licenses/by-sa/3.0/)
 
@@ -7,10 +7,13 @@ Written by Mark Cannon ("Vyhd") for OpenITG (http://www.boxorroxors.net/)
 All I ask is that you keep this notice intact and don't redistribute in bytecode.
 --]]
 
--- Currently not used. Hope to in the future.
-function GetCustomSongCancelText()
-	Debug( "GetCustomSongCancelText" )
+-- Hide the timer if "MenuTimer" is disabled
+function HideTimer()
+	local enabled = PREFSMAN:GetPreference("MenuTimer")
+	if enabled then return "0" else return "1" end
+end
 
+function GetCustomSongCancelText()
 	-- Set up two initial line spaces.
 	local ret = "\n\n"
 

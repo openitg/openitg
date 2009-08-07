@@ -4,7 +4,6 @@ Licensed under Creative Commons Attribution-Share Alike 3.0 Unported
 (http://creativecommons.org/licenses/by-sa/3.0/)
 
 These probably won't work unless they're used on the same screen. You've been warned.
-
 Written by Mark Cannon ("Vyhd") for OpenITG (http://www.boxorroxors.net/)
 All I ask is that you keep this notice intact and don't redistribute in bytecode.
 --]]
@@ -18,23 +17,23 @@ local GraphicsLevels = { "LOW", "MEDIUM", "HIGH", "MAXIMUM" }
 -- simply do k,v for pairs() and refer to v[level]
 local GraphicsSettings =
 {
-	DisplayColorDepth		= {	16,		32,		32,		32	},
-	TextureColorDepth		= {	16,		32,		32,		32	},
-	MovieColorDepth			= {	16,		16,		16,		32	},
-	MaxTextureResolution	= {	256,	512,	1024,	2048	},
+	DisplayColorDepth		= {	16,	32,	32,	32	},
+	TextureColorDepth		= {	16,	32,	32,	32	},
+	MovieColorDepth			= {	16,	16,	16,	32	},
+	MaxTextureResolution		= {	256,	512,	1024,	2048	},
 
-	DelayedTextureDelete	= {	false,	false,	false,	true	},
+	DelayedTextureDelete		= {	false,	false,	false,	true	},
 	DelayedModelDelete		= {	false,	false,	true,	true	},
 	PalettedBannerCache		= {	false,	false,	true,	true	},
 
 	TrilinearFiltering		= {	false,	false,	true,	true	},
-	AnisotropicFiltering	= {	false,	false,	true,	true	},
+	AnisotropicFiltering		= {	false,	false,	true,	true	},
 
-	BannerCache				= {	0,		0,		1,		1	},
+	BannerCache			= {	0,	0,	1,	1	},
 
 	-- XXX: this is here so we have some way of setting it...
 	ThreadedMovieDecode		= {	false,	false,	false,	true	},
-	SmoothLines				= {	false,	true,	true,	true	},
+	SmoothLines			= {	false,	true,	true,	true	},
 }
 
 function LuaGraphicOptions()

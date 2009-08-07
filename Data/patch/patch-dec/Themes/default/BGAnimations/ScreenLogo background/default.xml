@@ -1,11 +1,24 @@
+<!-- OpenITG: include both logos and use a custom preference to switch them. -->
+<!-- TODO: clean this up somewhat. -->
 <ActorFrame><children>
 	<Layer
 		File="978_JumpBack"
 		OnCommand="rate,2;diffusealpha,0.7;stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM"
 	/>
 	<Layer
+		Condition="GetCustomPref('UseOldLogo')"
 		File="roxor"
 		OnCommand="x,SCREEN_LEFT+90;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+	/>
+	<Layer
+		Condition="not GetCustomPref('UseOldLogo')"
+		File="roxor"
+		OnCommand="x,SCREEN_LEFT+200;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+	/>
+	<Layer
+		Condition="not GetCustomPref('UseOldLogo')"
+		File="br"
+		OnCommand="x,SCREEN_LEFT+65;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
 	/>
 	<Layer
 		Type="BitmapText"
@@ -18,6 +31,7 @@
 	<Layer
 		Class="ActorFrame"
 		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+10"
+		Condition="GetCustomPref('UseOldLogo')"
 	><children>
 		<AutoActor
 			File="2"
@@ -40,6 +54,34 @@
 			OnCommand="x,176;y,-24;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1;diffuse,#000000"
 		/>
 	</children></Layer>
+
+	<Layer
+		Class="ActorFrame"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y"
+		Condition="not GetCustomPref('UseOldLogo')"
+	><children>
+		<Layer
+			File="_otherred"
+			InitCommand="horizalign,left;zoomy,.3;addx,-120;addy,30;ZoomToWidth,430;faderight,1"
+			OnCommand="addx,-430;cropleft,1;sleep,.6;decelerate,.3;cropleft,0;addx,430"	
+		/>
+		<Layer
+			File="arrow"
+			InitCommand="zoom,.8;addx,-190;addy,-25"
+			OnCommand="glow,1,1,1,1;addx,SCREEN_WIDTH/2;addy,SCREEN_HEIGHT/1.2;sleep,.2;decelerate,.5;addx,-SCREEN_WIDTH/2;addy,-SCREEN_HEIGHT/1.2;glow,1,1,1,0"
+		/>
+		<Layer
+			File="oitg"
+			InitCommand="zoom,.8;addx,90;addy,30"
+			OnCommand="cropright,1;faderight,1;sleep,.7;linear,.3;cropright,0;faderight,.1;linear,.03;faderight,0"
+		/>
+		<Layer
+			File="oitgglow"
+			InitCommand="zoom,.8;addx,90;addy,30"
+			OnCommand="diffusealpha,.8;cropright,1;faderight,1;sleep,.7;linear,.3;cropright,0;faderight,.1;linear,.03;faderight,0;linear,.5;diffusealpha,0"
+		/>
+	</children></Layer>
+
 	<Layer
 		Class="BitmapText"
 		Font="_eurostile normal"
@@ -58,7 +100,13 @@
 		/>
 	</children></Layer>
 	<Layer
+		Condition="GetCustomPref('UseOldLogo')"
 		Class="Quad"
 		OnCommand="stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffuse,#FFFFFF;diffusealpha,0;sleep,0.1;accelerate,0.5;diffusealpha,1;sleep,0.2;decelerate,0.5;diffusealpha,0"
+	/>
+	<Layer
+		Condition="not GetCustomPref('UseOldLogo')"
+		Class="Quad"
+		OnCommand="stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffuse,#FFFFFF;diffusealpha,1;sleep,0.1;accelerate,0.5;diffusealpha,0"
 	/>
 </children></ActorFrame>

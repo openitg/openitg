@@ -71,7 +71,9 @@
 #include "UserPackManager.h"
 
 // XXX: for I/O error reports
+#if !defined(XBOX)
 #include "io/ITGIO.h"
+#endif
 
 #if defined(XBOX)
 #include "Archutils/Xbox/VirtualMemory.h"
@@ -1562,6 +1564,7 @@ static void GameLoop()
 		 * Update
 		 */
 
+#ifndef XBOX
 		// XXX: the Iow InputHandler acts as a singleton removed from
 		// the game loop. It needs an external error monitor because
 		// it waits until reconnecting to continue...can we improve this?
@@ -1570,6 +1573,7 @@ static void GameLoop()
 			SCREENMAN->SystemMessage( ITGIO::m_sInputError );
 			ITGIO::m_sInputError.clear();
 		}
+#endif
 
 		float fDeltaTime = timer.GetDeltaTime();
 

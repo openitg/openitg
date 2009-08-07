@@ -1,6 +1,7 @@
 #include "global.h"
 #include "ActorFrame.h"
 #include "arch/Dialog/Dialog.h"
+#include "RageLog.h"
 #include "RageUtil.h"
 #include "XmlFile.h"
 #include "ActorUtil.h"
@@ -28,6 +29,7 @@ ActorFrame::ActorFrame()
 	m_bPropagateCommands = false;
 	m_bDeleteChildren = false;
 	m_bDrawByZPosition = false;
+	m_UpdateFunction.Unset();
 	m_fUpdateRate = 1;
 	m_fFOV = -1;
 	m_fVanishX = SCREEN_CENTER_X;
@@ -60,6 +62,7 @@ void ActorFrame::LoadFromNode( const CString& sDir, const XNode* pNode )
 		LuaHelpers::PrepareExpression( s );
 		m_fVanishY = LuaHelpers::RunExpressionF( s );
 	}
+
 	m_bOverrideLighting = pNode->GetAttrValue( "Lighting", m_bLighting );
 }
 
@@ -230,6 +233,22 @@ void ActorFrame::UpdateInternal( float fDeltaTime )
 		Actor *pActor = *it;
 		pActor->Update(fDeltaTime);
 	}
+
+	// update Lua command, if any
+	if( m_UpdateFunction.IsSet() )
+	{
+		Lua *L = LUA->Get();
+		m_UpdateFunction.PushSelf( L );
+		ASSERT( !lua_isnil(L, -1) );
+		this->PushSelf( L );
+		lua_pushnumber( L, fDeltaTime );
+		CString sError;
+
+		if( !LuaHelpers::RunScriptOnStack(L, sError, 2, 0) ) // 1 arg, 0 results
+			LOG->Warn( "Error running m_UpdateFunction: %s", sError.c_str() );
+		LUA->Release( L );
+	}
+	
 }
 
 #define PropagateActorFrameCommand( cmd ) \

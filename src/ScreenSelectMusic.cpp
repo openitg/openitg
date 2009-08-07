@@ -916,6 +916,10 @@ void ScreenSelectMusic::Input( const DeviceInput& DeviceI, InputEventType type, 
 			// Reset the repeat timer when the button is released.
 			// This fixes jumping when you release Left and Right after entering the sort 
 			// code at the same if L & R aren't released at the exact same time.
+
+			/* BUG: this causes the wheel to slow down, for some reason, when one player is
+			 * is in OptionsList and the other is scrolling. However, ignoring the logic for
+			 * players in the list causes the song wheel to ignore releases. How to handle? */
 			if( type == IET_RELEASE )
 			{
 				FOREACH_HumanPlayer( p )
@@ -1403,11 +1407,18 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 
 void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 {
-	/* if any options lists are opened and the timer
-	 * is still going, ignore any music selections. */
+	/* If the timer is still going and an options list is open, ignore.
+	 * If the timer's run out, force-close all lists and continue. */
 	FOREACH_EnabledPlayer( pn )
-		if( this->m_OptionsList[pn].IsOpened() && (int)m_MenuTimer->GetSeconds() != 0 )
-			return;
+	{
+		if( this->m_OptionsList[pn].IsOpened() )
+		{
+			if( (int)m_MenuTimer->GetSeconds() != 0 )
+				return;
+			else
+				CloseOptionsList( pn );
+		}
+	}
 
 	// this needs to check whether valid Steps are selected!
 	bool bResult = m_MusicWheel.Select();

@@ -271,6 +271,20 @@ bool LuaHelpers::RunScriptFile( const CString &sFile )
 	return true;
 }
 
+bool LuaHelpers::RunScriptOnStack( Lua *L, CString &sError, int iArgs, int iReturnValues )
+{
+	int ret = lua_pcall( L, iArgs, iReturnValues, 0 );
+	if( ret )
+	{
+		LuaHelpers::PopStack( sError, L );
+		for( int i = 0; i < iReturnValues; i++ )
+			lua_pushnil( L );
+		return false;
+	}
+
+	return true;
+}
+
 bool LuaHelpers::RunScript( Lua *L, const CString &sScript, const CString &sName, CString &sError, int iReturnValues )
 {
 	// load string
@@ -287,16 +301,7 @@ bool LuaHelpers::RunScript( Lua *L, const CString &sScript, const CString &sName
 	}
 
 	// evaluate
-	{
-		int ret = lua_pcall( L, 0, iReturnValues, 0 );
-		if( ret )
-		{
-			LuaHelpers::PopStack( sError, L );
-			return false;
-		}
-	}
-
-	return true;
+	return LuaHelpers::RunScriptOnStack( L, sError, 0, iReturnValues );
 }
 
 

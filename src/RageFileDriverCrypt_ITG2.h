@@ -20,7 +20,7 @@ static struct FileDriverEntry_##name: public FileDriverEntry \
 
 /* If no key is given, the driver will use the dongle for file keys.
  * Provide a default key for PC builds, and use the dongle for AC. */
-#ifndef ITG_ARCADE
+#if !defined(ITG_ARCADE) || defined(XBOX)
 #define CRYPT_KEY "65487573252940086457044055343188392138734144585"
 #else
 #define CRYPT_KEY ""

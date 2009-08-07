@@ -1,12 +1,12 @@
-Microsoft Visual Studio Solution File, Format Version 7.00
+Microsoft Visual Studio Solution File, Format Version 8.00
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StepMania", "StepManiaXbox.vcproj", "{670745A6-106B-420D-A2A9-D4F89A23986E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
-		ConfigName.0 = Debug Xbox
-		ConfigName.1 = Release Xbox
-	EndGlobalSection
-	GlobalSection(ProjectDependencies) = postSolution
+		Debug Xbox = Debug Xbox
+		Release Xbox = Release Xbox
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{670745A6-106B-420D-A2A9-D4F89A23986E}.Debug Xbox.ActiveCfg = Debug|Xbox

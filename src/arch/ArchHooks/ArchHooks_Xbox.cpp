@@ -22,7 +22,7 @@ static void InitTimer()
 	g_iStartTime = timeGetTime();
 }
 
-void ArchHooks_Xbox::MountInitialFileSystems( const CString &sDirOfExecutable )
+void ArchHooks_Xbox::MountInitialFilesystems( const CString &sDirOfExecutable )
 {
 	FILEMAN->Mount( "dir", "D:\\", "/" );
 }

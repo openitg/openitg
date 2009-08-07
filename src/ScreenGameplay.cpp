@@ -1725,7 +1725,12 @@ void ScreenGameplay::Update( float fDeltaTime )
 	if( m_fLastBPS != GAMESTATE->m_fCurBPS && !m_BPMDisplay.GetHidden() )
 	{
 		m_fLastBPS = GAMESTATE->m_fCurBPS;
-		m_BPMDisplay.SetConstantBpm( GAMESTATE->m_fCurBPS * 60.0f );
+
+		/* change the BPM display to match the actual rate. */
+		float fNewBPM = GAMESTATE->m_fCurBPS * 60.0f;
+		fNewBPM *= GAMESTATE->m_SongOptions.m_fMusicRate;
+
+		m_BPMDisplay.SetConstantBpm( fNewBPM );
 	}
 
 	CompareScores();

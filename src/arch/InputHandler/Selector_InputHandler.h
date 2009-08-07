@@ -8,12 +8,15 @@
 #include "InputHandler_DirectInput.h"
 #endif
 
+// not supported for Xbox just yet
+#ifndef XBOX
 /* USB input drivers; cross-platform for any system with libusb */
 #include "InputHandler_Iow.h"
 #include "InputHandler_PIUIO.h"
 
 /* ISA input driver; cross-platform, with some asterisks. */
 #include "InputHandler_MK3.h"
+#endif
 
 #ifdef HAVE_LINUXKERNEL
 #include "InputHandler_Linux_Joystick.h"

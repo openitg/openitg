@@ -24,6 +24,11 @@
 
 #include <cerrno>
 
+// for chmod (which mysteriously never needed a header before...)
+#ifdef LINUX
+#include <sys/stat.h>
+#endif
+
 AutoScreenMessage( SM_Reboot )
 
 #define NEXT_SCREEN			THEME->GetMetric(m_sName, "NextScreen")
@@ -568,23 +573,16 @@ void ScreenArcadePatch::PatchMain()
 		if( fZip->GetFileType(sPath) != RageFileManager::TYPE_FILE )
 			continue;
 
-CHECKPOINT;
 		LOG->Trace( "ScreenArcadePatch: copying file \"%s\"", sCleanPath.c_str() );
-CHECKPOINT;
 		PATCH_TEXT( ssprintf("Extracting files...\n" "%s", sCleanPath.c_str()) );
 
-CHECKPOINT;
 		RageFileBasic *fCopyFrom = fZip->Open( sPath, RageFile::READ, iError );
-CHECKPOINT;
 
 		RageFile fCopyTo;
-CHECKPOINT;
 		fCopyTo.Open( TEMP_PATCH_DIR + sCleanPath, RageFile::WRITE );
-CHECKPOINT;
 
 		if( !FileCopy(*fCopyFrom, fCopyTo) )
 		{
-CHECKPOINT;
 			PATCH_TEXT( ssprintf("Could not copy \"%s\":\n" "%s", sCleanPath.c_str(),sError.c_str()) );
 
 			m_State = PATCH_ERROR;
@@ -593,11 +591,8 @@ CHECKPOINT;
 			return;
 		}
 
-CHECKPOINT;
 		SAFE_DELETE( fCopyFrom );
-CHECKPOINT;
 		fCopyTo.Close();
-CHECKPOINT;
 
 /* set CHMOD info */
 #ifdef LINUX

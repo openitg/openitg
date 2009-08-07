@@ -13,8 +13,12 @@
 #endif
 #include "LightsDriver_External.h"
 #include "LightsDriver_SystemMessage.h"
+
+#ifndef XBOX
 #include "LightsDriver_PacDrive.h"
 #include "LightsDriver_G15.h"
+#endif
+
 #include "LightsDriver_Null.h"
 
 #endif

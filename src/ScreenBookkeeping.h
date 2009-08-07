@@ -29,7 +29,11 @@ public:
 	void MenuCoin( PlayerNumber pn );
 
 private:
-	enum View { VIEW_LAST_DAYS, VIEW_LAST_WEEKS, VIEW_DAY_OF_WEEK, VIEW_HOUR_OF_DAY, NUM_VIEWS };
+	enum View {
+		VIEW_LAST_DAYS, VIEW_LAST_WEEKS, VIEW_DAY_OF_WEEK, VIEW_HOUR_OF_DAY,
+		VIEW_LAST_DAYS_SVC, VIEW_LAST_WEEKS_SVC, VIEW_DAY_OF_WEEK_SVC, VIEW_HOUR_OF_DAY_SVC,
+		NUM_VIEWS
+		};
 	
 	void ChangeView( View newView );
 

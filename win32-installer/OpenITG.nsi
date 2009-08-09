@@ -5,16 +5,17 @@ Name "OpenITG beta 2"
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
+!define SETUP_FILE_NAME "$(^Name)-setup.exe"
 
 # MUI Symbol Definitions
-!define MUI_ICON "openitg-inst.ico"
+!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install-blue-full.ico"
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT HKLM
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "OpenITG beta 2"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "$(^Name)"
 !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\Readme.txt
-!define MUI_UNICON "openitg-uninst.ico"
+!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-blue-full.ico"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
 # Included files
@@ -40,7 +41,7 @@ Var /GLOBAL AdditionalSongFolders
 
 # Custom Page Functions
 Function ASFCreate
-    !insertmacro MUI_HEADER_TEXT "Additional Song Folders" "Specify Song group directories used before"
+    !insertmacro MUI_HEADER_TEXT "Additional Song Folders" "Specify Songs/ group directories previously used for other StepMania builds"
     !insertmacro INSTALLOPTIONS_INITDIALOG "ASF.ini"
     Pop $HWND
     GetDlgItem $0 $HWND 1203
@@ -52,8 +53,7 @@ Function ASFLeave
     !insertmacro INSTALLOPTIONS_READ $0 "ASF.ini" "Settings" "State"
     !insertmacro INSTALLOPTIONS_READ $R0 "ASF.ini" "Field 1" "State"
     !insertmacro INSTALLOPTIONS_READ $R1 "ASF.ini" "Field 4" "State"
-    ;MessageBox MB_OK '$$0 = $0'
-    ;MessageBox MB_OK '$$R1 = $R1'
+
     StrCmp $0 0 GoNext
     StrCmp $0 1 AddToFoldersList
     StrCmp $0 2 AddToFoldersList
@@ -84,11 +84,9 @@ Function ASFLeave
     abort
     
     DeleteFromFoldersList:
-    ;MessageBox MB_OK '$$R1 = $R1'
     StrCmp $R1 '' End 
     GetDlgItem $1 $HWND 1204
     SendMessage $1 ${LB_FINDSTRING} 1 "STR:$R1" $0
-    ;MessageBox MB_OK '$$0 = $0'
     SendMessage $1 ${LB_DELETESTRING} $0 1
     GetDlgItem $1 $HWND 1203
     EnableWindow $1 0
@@ -124,8 +122,8 @@ Page custom ASFCreate ASFLeave
 !insertmacro MUI_LANGUAGE English
 
 # Installer attributes
-OutFile OpenITG-beta2-setup.exe
-InstallDir "$PROGRAMFILES\OpenITG beta 1"
+OutFile $SETUP_FILE_NAME
+InstallDir "$PROGRAMFILES\$(^NAME)"
 CRCCheck on
 XPStyle on
 ShowInstDetails show
@@ -136,7 +134,7 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File /r /x win32-installer /x Program /x src ..\*
+    File /r /x $SETUP_FILE_NAME /x src /x setup.nsi /x ASF.ini *
     SetOutPath $INSTDIR\Program
     File ..\Program\zlib1.dll
     File ..\Program\avcodec.dll

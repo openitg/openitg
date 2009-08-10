@@ -1,5 +1,5 @@
-#ifndef SCREEN_ADD_SONGS_H
-#define SCREEN_ADD_SONGS_H
+#ifndef SCREEN_USER_PACKS_H
+#define SCREEN_USER_PACKS_H
 
 #include "RageFile.h"
 #include "Screen.h"
@@ -54,7 +54,7 @@ private:
 	bool m_bPrompt;
 };
 
-#endif /* SCREEN_ADD_SONGS_H */
+#endif /* SCREEN_USER_PACKS_H */
 
 /*
  * (c) 2009 "infamouspat"

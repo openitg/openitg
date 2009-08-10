@@ -1,4 +1,4 @@
-OpenITG, beta 2 (in development)
+OpenITG, beta 2 (August 10th, 2009)
 --------------------------------
 -New preferences:
      "GiveUpTime" - amount of time that Start must be held to give up songs

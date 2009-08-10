@@ -316,8 +316,11 @@ Section /o -un.Main UNSEC0000
     RmDir /r /REBOOTOK "$INSTDIR\BGAnimations\yellow flash"
     RmDir /r /REBOOTOK $INSTDIR\BGAnimations
 
+    ; fuck anyone who adds BGCharacters to ITG
     RmDir /r /REBOOTOK $INSTDIR\Characters
-    RmDir /r /REBOOTOK $INSTDIR\Data
+    
+    ; Data/ dir is not getting touched
+
     RmDir /REBOOTOK $INSTDIR\RandomMovies
     RmDir /REBOOTOK $INSTDIR\Songs
 

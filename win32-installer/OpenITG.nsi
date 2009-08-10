@@ -17,7 +17,7 @@ Name "OpenITG"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "${PRODUCT_NAME}"
-!define MUI_FINISHPAGE_SHOWREADME $INSTDIR\changelog.txt
+!define MUI_FINISHPAGE_SHOWREADME $INSTDIR\Docs\release\ReleaseNotes.txt
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-blue-full.ico"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 
@@ -150,22 +150,22 @@ Section -Main SEC0000
     SetOverwrite on
     File /r /x "${SETUP_FILE_NAME}" /x src /x OpenITG.nsi /x ASF.ini *
     SetOutPath $INSTDIR\Program
-    File ..\Program\zlib1.dll
-    File ..\Program\avcodec.dll
-    File ..\Program\avformat.dll
-    File ..\Program\dbghelp.dll
-    File ..\Program\jpeg.dll
-    File ..\Program\libusb0.dll
-    File ..\Program\msvcp70.dll
-    File ..\Program\msvcp71.dll
-    File ..\Program\msvcr70.dll
-    File ..\Program\msvcr71.dll
-    File ..\Program\OpenITG-PC.exe
-    File ..\Program\OpenITG-PC.vdi
-    File ..\Program\OpenITG-PC-SSE2.exe
-    File ..\Program\OpenITG-PC-SSE2.vdi
-    File ..\Program\resample.dll
-    File ..\Program\sdl.dll
+    File Program\zlib1.dll
+    File Program\avcodec.dll
+    File Program\avformat.dll
+    File Program\dbghelp.dll
+    File Program\jpeg.dll
+    File Program\libusb0.dll
+    File Program\msvcp70.dll
+    File Program\msvcp71.dll
+    File Program\msvcr70.dll
+    File Program\msvcr71.dll
+    File Program\OpenITG-PC.exe
+    File Program\OpenITG-PC.vdi
+    File Program\OpenITG-PC-SSE2.exe
+    File Program\OpenITG-PC-SSE2.vdi
+    File Program\resample.dll
+    File Program\sdl.dll
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
 
@@ -211,6 +211,7 @@ done${UNSECTION_ID}:
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
+    ; Program/
     Delete /REBOOTOK $INSTDIR\Program\sdl.dll
     Delete /REBOOTOK $INSTDIR\Program\resample.dll
     Delete /REBOOTOK $INSTDIR\Program\OpenITG-PC-SSE2.vdi
@@ -227,7 +228,115 @@ Section /o -un.Main UNSEC0000
     Delete /REBOOTOK $INSTDIR\Program\avformat.dll
     Delete /REBOOTOK $INSTDIR\Program\avcodec.dll
     Delete /REBOOTOK $INSTDIR\Program\zlib1.dll
-    RmDir /r /REBOOTOK $INSTDIR
+    RmDir /REBOOTOK $INSTDIR\Program
+
+    ; Themes/
+    RmDir /r /REBOOTOK $INSTDIR\Themes\default
+    RmDir /r /REBOOTOK $INSTDIR\Themes\fallback
+    RmDir /r /REBOOTOK $INSTDIR\Themes\arcade
+    RmDir /r /REBOOTOK $INSTDIR\Themes\home
+    RmDir /REBOOTOK $INSTDIR\Themes
+
+    ; BackgroundEffects/
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\Centered.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\Checkerboard1Delete2x2.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\Checkerboard2Delete2x2.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\Checkerboard1File2x2.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\Checkerboard2File2x2.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\Kaleidoscope2x2.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\SongBgWithMovieViz.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\StretchNoLoop.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\StretchNormal.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\StretchPaused.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\StretchRewind.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundEffects\UpperLeft.xml
+    RmDir /REBOOTOK $INSTDIR\BackgroundEffects
+
+    ; NoteSkins/
+    RmDir /REBOOTOK /r $INSTDIR\NoteSkins\common
+    RmDir /REBOOTOK /r $INSTDIR\NoteSkins\lights
+    RmDir /REBOOTOK /r $INSTDIR\NoteSkins\dance\cel
+    RmDir /REBOOTOK /r $INSTDIR\NoteSkins\dance\default
+    RmDir /REBOOTOK /r $INSTDIR\NoteSkins\dance\flat
+    RmDir /REBOOTOK /r $INSTDIR\NoteSkins\dance\metal
+    RmDir /REBOOTOK /r $INSTDIR\NoteSkins\dance\robot
+    RmDir /REBOOTOK /r $INSTDIR\NoteSkins\dance\vivid
+    RmDir /REBOOTOK $INSTDIR\NoteSkins\dance
+    RmDir /REBOOTOK $INSTDIR\NoteSkins
+
+    ; BackgroundTransitions/
+    Delete /REBOOTOK $INSTDIR\BackgroundTransitions\CrossFade.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundTransitions\FadeDown.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundTransitions\FadeLeft.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundTransitions\FadeRight.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundTransitions\FadeUp.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundTransitions\SlideDown.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundTransitions\SlideLeft.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundTransitions\SlideRight.xml
+    Delete /REBOOTOK $INSTDIR\BackgroundTransitions\SlideUp.xml
+    RmDir /REBOOTOK $INSTDIR\BackgroundTransitions
+
+    ; BGAnimations/
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\flash
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_674_JumpBack.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_675_JumpBack.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_676_JumpBack.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_689_JumpBack.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_700_JumpBack.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_736_JumpBack.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_738_JumpBack.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_EV01440N.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_EV01447N.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_EV01451N.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_EV01457N.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_jb_043.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_jb_047.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_jb_072.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_VOL1-02-NTSC.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_VOL1-03-NTSC.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_VOL1-08-NTSC.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_VOL1-13-NTSC.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_VOL1-17-NTSC.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_VOL1-21-NTSC.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_VOL1-25-NTSC.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_VOL1-34-NTSC.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol3-10-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol3-12-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol3-19-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol4-03-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol4-04-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol4-06-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol4-07-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol4-13-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol4-17-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol4-18-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol4-20-ntsc.mpg
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations\vis_vol4-24-ntsc.mpg
+    RmDir /r /REBOOTOK "$INSTDIR\BGAnimations\white flash"
+    RmDir /r /REBOOTOK "$INSTDIR\BGAnimations\yellow flash"
+    RmDir /r /REBOOTOK $INSTDIR\BGAnimations
+
+    RmDir /r /REBOOTOK $INSTDIR\Characters
+    RmDir /r /REBOOTOK $INSTDIR\Data
+    RmDir /REBOOTOK $INSTDIR\RandomMovies
+    RmDir /REBOOTOK $INSTDIR\Songs
+
+    ; Courses/
+    RmDir /r /REBOOTOK $INSTDIR\Courses\Marathon
+    RmDir /r /REBOOTOK $INSTDIR\Courses\Marathon2
+    RmDir /r /REBOOTOK $INSTDIR\Courses\Survival
+    RmDir /r /REBOOTOK $INSTDIR\Courses\Workout
+    RmDir /REBOOTOK $INSTDIR\Courses
+
+    RmDir /r /REBOOTOK $INSTDIR\Docs
+    RmDir /REBOOTOK $INSTDIR\Packages
+    RmDir /REBOOTOK $INSTDIR\UserPacks
+
+    Delete /REBOOTOK $INSTDIR\WhoToSue.txt
+    Delete /REBOOTOK $INSTDIR\changelog.txt
+    Delete /REBOOTOK $INSTDIR\copyright.txt
+    Delete /REBOOTOK $INSTDIR\Licenses.txt
+    
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
 

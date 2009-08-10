@@ -13,7 +13,7 @@ B. Arcade version questions
 
 C. General questions
   C-1: What's the difference between regular and SSE2 builds?
-
+  C-2: Why don't you guys have Mac/Xbox versions?
 
 
 Questions section
@@ -105,3 +105,18 @@ C-1: What's the difference between regular and SSE2 builds?
    rendering and other vector operations (RageColors, RageVectors, etc. 
    will all perform faster). If you don't, it'll crash with an "Illegal 
    instruction" error. C'est la vie.
+
+c-2: Why don't you guys have Mac/Xbox versions?
+
+   The Xbox one is being worked on, actually. LightningXCE lent an Xbox
+   for development and testing, and we expect a release for beta 3.
+
+   We want to make a Mac version - yes, really - but we don't have one
+   because none of the devs have a Mac and we don't know anyone who can
+   (and will ) compile for it. If you know someone (or you have a Mac
+   to spare), please let us know! You can reach us at:
+       http://www.boxorroxors.net/forum/
+
+   Registration is required, but free and very well worth it. Trust me,
+   it's a great place for technical help, discussions, etc. and we do
+   most of our user feedback polling there.

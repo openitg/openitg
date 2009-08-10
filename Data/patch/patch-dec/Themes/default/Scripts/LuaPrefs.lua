@@ -194,7 +194,7 @@ function GiveUpTimeRow()
 end
 
 local function deprecated( name )
-	Warn( name .. "Options() is deprecated. Use " .. name .. "Row() instead." )
+	Debug( name .. "Options() is deprecated. Use " .. name .. "Row() instead." )
 end
 
 -- I just realised, it could be catastrophic if some themes are using the old names.

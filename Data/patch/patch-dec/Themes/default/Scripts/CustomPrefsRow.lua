@@ -55,8 +55,13 @@ function CustomPrefsRowBoolSimple( PrefName )
 end
 
 function MusicSelectSecondsRow()
-	local Values = { 50, 60, 70, 80, 90, 105, 120, 135, 150, 165, 180 }
-	return CustomPrefsRowNoNames( Params, Values, "MusicSelectSeconds" )
+	local Values = { 50, 60, 70, 80, 90, 105, 120, 150, 180, -1 }
+	local num = table.getn(Values)
+	local Names = {}
+	for i=1,num do Names[i] = tostring(Values[i]) end
+	Names[num] = "UNLIMITED"
+
+	return CustomPrefsRow( Params, Names, Values, "MusicSelectSeconds" )
 end
 
 function CreditTypeRow()

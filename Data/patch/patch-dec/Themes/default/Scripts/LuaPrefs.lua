@@ -16,7 +16,7 @@ end
 
 -- Special options line for SoundVolumeAttract that
 -- clamps to the maximum value of SoundVolume.
-function SoundVolumeAttractOptions()
+function SoundVolumeAttractRow()
 	-- round this value to the nearest 0.1, so we don't bork due to
 	-- floating-point errors. this will cause inaccuracies with the
 	-- attract settings, but they won't be significantly far off and
@@ -66,7 +66,7 @@ function SoundVolumeAttractOptions()
 	return CreateOptionRow( Params, Names, Load, Save )
 end
 
-function CustomMaxSecondsOptions()
+function CustomMaxSecondsRow()
 	-- start with 2:00, go to 15:00 + UNLIMITED
 	local Values = {}
 	for i = 1,14 do Values[i] = 60*(i+1) end
@@ -80,7 +80,7 @@ function CustomMaxSecondsOptions()
 	return CreatePrefsRow( Params, Names, Values, "CustomMaxSeconds" )
 end
 
-function CustomsLoadMaxOptions()
+function CustomsLoadMaxRow()
 	-- start with 10, go to 100
 	local Values = {}
 	for i = 1,10 do Values[i] = 10*i end
@@ -94,7 +94,7 @@ function CustomsLoadMaxOptions()
 	return CreatePrefsRow( Params, Names, Values, "CustomsLoadMax" )
 end
 
-function CustomsLoadTimeoutOptions()
+function CustomsLoadTimeoutRow()
 	-- start with 1, go to 15
 	local Values = {}
 	for i = 1,15 do Values[i] = i end
@@ -108,7 +108,7 @@ function CustomsLoadTimeoutOptions()
 	return CreatePrefsRow( Params, Names, Values, "CustomsLoadTimeout" )
 end
 
-function CustomMaxSizeOptions()
+function CustomMaxSizeRow()
 	local Values = { 3, 4, 5, 6, 7, 8, 9, 10, 0 }
 
 	local Names = {}
@@ -120,7 +120,7 @@ function CustomMaxSizeOptions()
 	return CreatePrefsRow( Params, Names, Values, "CustomMaxSizeMB" )
 end
 
-function CustomMaxStepSizeOptions()
+function CustomMaxStepSizeRow()
 	-- offset by 30 KB, increments of 15 KB up to 150 KB and unlimited
 	local Names = {}
 	for i=1,9 do Names[i] = (30+((i-1)*15)) .. "KB" end
@@ -151,11 +151,59 @@ local function SongLengthOptions( listname, prefname, offset, num, delta )
 end
 
 -- Long version, lowest: 2:15 (135), highest: 05:00 (300), 11+1 options, 15-second delta
-function LongVersionOptions()
+function LongVersionRow()
 	return SongLengthOptions( "LongVersion", "LongVerSongSeconds", 135, 12, 15 )
 end
 
 -- Marathon version, lowest: 5:00 (300), highest: 10:00 (600), 10+1 options, 30-second delta
-function MarathonVersionOptions()
+function MarathonVersionRow()
 	return SongLengthOptions( "MarathonVersion", "MarathonVerSongSeconds", 300, 11, 30 )
 end
+
+-- XXX: I don't trust the current 'Range' function to round properly.
+function GiveUpTimeRow()
+	local Values = { 0.1, 0.25, 0.5, 1.0, 1.5, 2.0, 2.5 }
+	local num = table.getn(Values)
+	local Names = {}
+	for i=1,num do Names[i] = string.format("%1.2f", Values[i] ) end
+
+	local function round(num, dec)
+		local mult = 10^(dec or 0)
+		return math.floor(num*mult+0.5)/mult
+	end
+
+	-- round to the nearest 0.05 to make sure that we can compare properly
+	local function Load(self, list, pn)
+		local val = round( PREFSMAN:GetPreference('GiveUpTime'), 2 )
+		for i=1,num do
+			if val == Values[i] then list[i] = true return end
+		end
+		list[num] = true	-- default to last value
+	end
+	local function Save(self, list, pn)
+		for i=1,num do
+			if list[i] then
+				PREFSMAN:SetPreference('GiveUpTime', Values[i] )
+				return
+			end
+		end
+	end
+
+	local Params = { Name="GiveUpTime" }
+	return CreateOptionRow( Params, Names, Load, Save )
+end
+
+local function deprecated( name )
+	Warn( name .. "Options() is deprecated. Use " .. name .. "Row() instead." )
+end
+
+-- I just realised, it could be catastrophic if some themes are using the old names.
+-- Here are some aliases, with warnings that they're deprecated.
+function SoundVolumeAttractOptions() deprecated("SoundVolumeAttract"); return SoundVolumeAttractRow() end
+function CustomsLoadMaxOptions() deprecated("CustomsLoadMax"); return CustomsLoadMaxRow() end
+function CustomsLoadTimeoutOptions() deprecated("CustomsLoadTimeout"); return CustomsLoadTimeoutRow() end
+function CustomMaxSizeOptions() deprecated("CustomMaxSize") return CustomMaxSizeRow() end
+function CustomMaxStepSizeOptions() deprecated("CustomMaxStepSize") return CustomMaxStepSizeRow() end
+function CustomMaxSecondsOptions() deprecated("CustomMaxSeconds") return CustomMaxSecondsRow() end
+function LongVersionOptions() deprecated("LongVersion") return LongVersionRow() end
+function MarathonVersionOptions() deprecated("MarathonVersion") return MarathonVersionRow() end

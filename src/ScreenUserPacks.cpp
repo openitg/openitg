@@ -35,12 +35,17 @@ AutoScreenMessage( SM_ConfirmDeleteZip );
 AutoScreenMessage( SM_AnswerConfirmDeleteZip );
 AutoScreenMessage( SM_LinkedMenuChange );
 
+/* draw transfer updates six frames a second */
+static RageTimer DrawTimer;
+const float DRAW_UPDATE_TIME = 0.166667;
+
 ScreenUserPacks::ScreenUserPacks( CString sName ) : ScreenWithMenuElements( sName )
 {
 	m_bRestart = false;
 	m_bPrompt = false;
 	m_CurPlayer = PLAYER_INVALID;
 	MEMCARDMAN->UnlockCards();
+	DrawTimer.SetZero();
 }
 
 ScreenUserPacks::~ScreenUserPacks()
@@ -58,9 +63,11 @@ ScreenUserPacks::~ScreenUserPacks()
 		HOOKS->SystemReboot( false );
 }
 
-void ScreenUserPacks::LoadAddedZips()
+void ScreenUserPacks::ReloadZips()
 {
+	m_asAddedZips.clear();
 	UPACKMAN->GetUserPacks( m_asAddedZips );
+	m_AddedZips.SetChoices( m_asAddedZips );
 }
 
 int InitSASSongThread( void *pSAS )
@@ -72,8 +79,6 @@ int InitSASSongThread( void *pSAS )
 void ScreenUserPacks::Init()
 {
 	ScreenWithMenuElements::Init();
-
-	LoadAddedZips();
 
 	m_SoundDelete.Load( THEME->GetPathS( m_sName, "delete" ) );
 	m_SoundTransferDone.Load( THEME->GetPathS( m_sName, "transfer done" ) );
@@ -106,19 +111,6 @@ void ScreenUserPacks::Init()
 
 	this->SortByDrawOrder();
 
-	m_AddedZips.SetChoices( m_asAddedZips );
-
-	/*
-	CStringArray sDummyChoices;
-	sDummyChoices.push_back( "blah1" );
-	sDummyChoices.push_back( "blah2" );
-	sDummyChoices.push_back( "blah3" );
-	sDummyChoices.push_back( "blah4" );
-	sDummyChoices.push_back( "blah5" );
-	sDummyChoices.push_back( "blah6" );
-	sDummyChoices.push_back( "blah7" );
-	m_USBZips.SetChoices( sDummyChoices );*/
-
 	{
 		CStringArray asExit;
 		asExit.push_back( "Exit" );
@@ -131,6 +123,8 @@ void ScreenUserPacks::Init()
 	m_bStopThread = false;
 	m_PlayerSongLoadThread.SetName( "Song Add Thread" );
 	m_PlayerSongLoadThread.Create( InitSASSongThread, this );
+
+	ReloadZips();
 }
 
 void ScreenUserPacks::StartSongThread()
@@ -140,7 +134,7 @@ void ScreenUserPacks::StartSongThread()
 		bool bLaunchPrompt = false;
 		if (m_bPrompt)
 		{
-			usleep( 1000 );
+			usleep( 10000 );
 			continue;
 		}
 
@@ -240,7 +234,13 @@ void UpdateXferProgress( unsigned long iCurrent, unsigned long iTotal )
 	float fPercent = iCurrent / (iTotal/100);
 	CString sMessage = ssprintf( "Please wait ...\n%.2f%%\n\n%s\n", fPercent, g_CurSelection.c_str() );
 	SCREENMAN->OverlayMessage( sMessage );
+
+	// Draw() is very expensive: only do it every .16 seconds or so.
+	if( DrawTimer.Ago() < DRAW_UPDATE_TIME )
+		return;
+
 	SCREENMAN->Draw();
+	DrawTimer.Touch();
 }
 
 void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
@@ -267,10 +267,9 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 		if (bSuccess)
 		{
 			m_SoundDelete.Play();
+			ReloadZips();
 			m_bRestart = true;
-			m_asAddedZips.clear();
-			LoadAddedZips();
-			m_AddedZips.SetChoices( m_asAddedZips );
+
 		}
 		else
 		{
@@ -324,12 +323,15 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 			}
 
 			sError = ""; //  ??
+			RageTimer start;
+			DrawTimer.Touch();
 			if (!UPACKMAN->TransferPack( g_CurXferFile, sSelection, UpdateXferProgress, sError ) )
 			{
 				SCREENMAN->SystemMessage( "Transfer error:\n" + sError );
 				XFER_CLEANUP;
 				return;
 			}
+			LOG->Debug( "Transferred %s in %f seconds.", g_CurXferFile.c_str(), start.Ago() );
 		}
 #if defined(LINUX) && defined(ITG_ARCADE)
 		sync();
@@ -342,9 +344,7 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 		m_bRestart = true;
 
 		m_SoundTransferDone.Play();
-		m_asAddedZips.clear();
-		LoadAddedZips();
-		m_AddedZips.SetChoices( m_asAddedZips );
+		ReloadZips();
 
 		XFER_CLEANUP;
 #undef XFER_CLEANUP

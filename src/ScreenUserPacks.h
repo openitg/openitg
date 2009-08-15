@@ -1,14 +1,14 @@
 #ifndef SCREEN_USER_PACKS_H
 #define SCREEN_USER_PACKS_H
 
-#include "RageFile.h"
-#include "Screen.h"
-#include "ScreenWithMenuElements.h"
-#include "PlayerNumber.h"
-#include "song.h"
 #include "RageThreads.h"
+#include "RageTimer.h"
+#include "RageFile.h"
 #include "ScreenMiniMenu.h"
+#include "ScreenWithMenuElements.h"
 #include "LinkedOptionsMenu.h"
+#include "song.h"
+#include "PlayerNumber.h"
 
 class ScreenUserPacks : public ScreenWithMenuElements
 {
@@ -29,9 +29,8 @@ public:
 
 	void StartSongThread();
 	bool m_bStopThread;
-
 private:
-	void LoadAddedZips();
+	void ReloadZips();
 
 	CStringArray m_asAddedZips;
 	CStringArray m_asAddableZips[NUM_PLAYERS];

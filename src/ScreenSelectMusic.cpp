@@ -38,6 +38,10 @@
 // XXX: custom song loading. remove these if we can.
 #include "RageFileDriverTimeout.h"
 
+// Draw every 1/6 second, approx. one per 10 minutes
+static RageTimer DrawTimer;
+const float DRAW_UPDATE_TIME = 0.1666667;
+
 const int NUM_SCORE_DIGITS	=	9;
 
 #define NEXT_SCREEN							THEME->GetMetric (m_sName,"NextScreen")
@@ -115,6 +119,8 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 
 void ScreenSelectMusic::Init()
 {
+	DrawTimer.SetZero();
+
 	m_bSelectIsDown = false; // used by LoadHelpText which is called by ScreenWithMenuElements::Init()
 
 	ScreenWithMenuElements::Init();
@@ -1308,11 +1314,6 @@ void ScreenSelectMusic::HandleScreenMessage( const ScreenMessage SM )
 // XXX: lots of ctors/dtors and redundant calls. How can we best fix this?
 void UpdateLoadProgress( unsigned long iCurrent, unsigned long iTotal )
 {
-	float fPercent = iCurrent / (iTotal/100);
-
-	CString sMessage = ssprintf( "%s\n%i%%\n%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
-		(int)fPercent, CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
-
 	// UGLY: send a manual update to INPUTFILTER to force input buffering
 	INPUTFILTER->Update( 0 );
 
@@ -1334,6 +1335,14 @@ void UpdateLoadProgress( unsigned long iCurrent, unsigned long iTotal )
 		InputEventArray throwaway;
 		INPUTFILTER->GetInputEvents( throwaway );
 	}
+
+	/* only Draw() occasionally, since this is expensive. */
+	if( DrawTimer.Ago() < DRAW_UPDATE_TIME )
+		return;
+
+	float fPercent = iCurrent / (iTotal/100);
+	CString sMessage = ssprintf( "%s\n%i%%\n%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
+		(int)fPercent, CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
 
 	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();
@@ -1378,14 +1387,20 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 	// this code block, so it's wrapped in this conditional.
 	if( bVerified )
 	{
+		RageTimer timer;
+
 		// we can copy the music. destination is determined with
 		// "m_sGameplayMusic" so we can change that from one place
+		DrawTimer.Touch();
 		bCopied = FileCopy( GAMESTATE->m_pCurSong->GetMusicPath(), 
 		GAMESTATE->m_pCurSong->m_sGameplayMusic, sError, &UpdateLoadProgress );
 
 		// failed, most likely a permissions error
 		if( !bCopied && !sError.empty() )
 			SCREENMAN->SystemMessage( ssprintf("Copying error: %s.", sError.c_str()) );
+
+		LOG->Trace( "Copied %s -> %s in %f seconds.", GAMESTATE->m_pCurSong->GetMusicPath().c_str(),
+			GAMESTATE->m_pCurSong->m_sGameplayMusic.c_str(), timer.Ago() );
 	}
 
 	// ...and unmount, now that we're done.

@@ -176,6 +176,10 @@ bool ThemeManager::IsThemeSelectable( const CString &sThemeName )
 	LOG->Info("IsThemeSelectable(): %s", sThemeName.c_str() );
 	if ( !sThemeName.CompareNoCase("fallback") || !sThemeName.CompareNoCase("default") )
 		return false;
+
+	if ( !sThemeName.CompareNoCase("CVS") || !sThemeName.CompareNoCase(".svn") )
+		return false;
+
 	return true;
 }
 

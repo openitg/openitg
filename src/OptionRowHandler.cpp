@@ -717,7 +717,14 @@ public:
 
 
 		lua_pop( L, 1 ); /* pop main table */
-		ASSERT( lua_gettop(L) == 0 );
+
+		//ASSERT_M( lua_gettop(L) == 0, ssprintf("assertion 'lua_gettop(L) == 0' failed for \"%s\"", sLuaFunction.c_str()) );
+		if( lua_gettop(L) != 0 )
+		{
+			LOG->Warn( "OptionsRowHandlerLua Warning: LUA stack not empty before release" );
+			while( lua_gettop(L) != 0 )
+				lua_pop( L, 1 );
+		}
 
 		LUA->Release(L);
 	}

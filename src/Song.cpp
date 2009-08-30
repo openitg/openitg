@@ -464,9 +464,7 @@ void Song::AdjustDuplicateSteps()
 			 * bug in an earlier version. */
 			DeleteDuplicateSteps( vSteps );
 
-			CHECKPOINT;
 			StepsUtil::SortNotesArrayByDifficulty( vSteps );
-			CHECKPOINT;
 			for( unsigned k=1; k<vSteps.size(); k++ )
 			{
 				vSteps[k]->SetDifficulty( DIFFICULTY_EDIT );
@@ -477,6 +475,39 @@ void Song::AdjustDuplicateSteps()
 					vSteps[k]->SetDescription( EditName );
 				}
 			}
+		}
+
+		// delete duplicate edits, particularly ones that arise from Edit Mode's
+		// Revert To Disk bug
+		vector<Steps*> vSteps;
+		this->GetSteps( vSteps, st, DIFFICULTY_EDIT );
+		vector<Steps*> vProcessedSteps;
+		for( int i = vSteps.size()-1; i >= 0; i-- )
+		{
+			if ( vSteps[i] == NULL )
+				continue;
+			if ( vSteps[i]->GetDescription() )
+				LOG->Debug( "Edit %s, %08x", vSteps[i]->GetDescription().c_str(), vSteps[i]->GetHash() );
+			bool bProcess = true;
+			for( unsigned j = 0; j < vProcessedSteps.size(); j++ )
+			{
+				if ( vSteps[i]->GetHash() == vProcessedSteps[j]->GetHash() )
+				{
+					// found a duplicate edit, delete it
+					for( int k=this->m_vpSteps.size()-1; k>=0; k-- )
+					{
+						if( this->m_vpSteps[k] == vSteps[i] )
+						{
+							delete this->m_vpSteps[k];
+							this->m_vpSteps.erase( this->m_vpSteps.begin()+k );
+							bProcess = false;
+							break;
+						}
+					}
+				}
+			}
+			if ( bProcess )
+				vProcessedSteps.push_back(vSteps[i]);
 		}
 
 		/* XXX: Don't allow edits to have descriptions that look like regular difficulties.

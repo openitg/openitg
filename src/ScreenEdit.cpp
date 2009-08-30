@@ -2871,13 +2871,22 @@ void ScreenEdit::RevertFromDisk()
 	if( GAMESTATE->m_pCurSteps[PLAYER_1] )
 		id.FromSteps( GAMESTATE->m_pCurSteps[PLAYER_1] );
 
+	// remove all the steps in memory before reloading them from disk
+	vector<Steps *> vSteps = GAMESTATE->m_pCurSong->GetAllSteps();
+	for( int i = vSteps.size()-1; i >= 0; i-- )
+	{
+		GAMESTATE->m_pCurSong->RemoveSteps( vSteps[i] );
+	}
+
 	CString sSongDir = GAMESTATE->m_pCurSong->GetSongDir();
 	GAMESTATE->m_pCurSong->LoadFromSongDir( sSongDir );
 
 	GAMESTATE->m_pCurSong->TidyUpData();
 
 	if( id.IsValid() )
-		GAMESTATE->m_pCurSteps[PLAYER_1].Set( id.ToSteps( GAMESTATE->m_pCurSong, false ) );
+		GAMESTATE->m_pCurSteps[PLAYER_1].Set( id.ToSteps( GAMESTATE->m_pCurSong, false, false ) );
+
+	m_pSteps = & ( *GAMESTATE->m_pCurSteps[PLAYER_1] );
 
 	m_songLastSave = *GAMESTATE->m_pCurSong;
 	if( GAMESTATE->m_pCurSteps[PLAYER_1] )

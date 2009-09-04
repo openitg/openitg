@@ -16,6 +16,9 @@ public:
 	void RestartProgram();
 	void SystemReboot( bool bForceSync = true );
 
+	virtual uint64_t GetDiskSpaceTotal( const CString &sPath );
+	virtual uint64_t GetDiskSpaceFree( const CString &sPath );
+
 	int OldThreadPriority;
 	RageMutex *TimeCritMutex;
 	void EnterTimeCriticalSection();

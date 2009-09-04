@@ -14,6 +14,9 @@ public:
 
 	void SetTime( tm newtime );
 
+	virtual uint64_t GetDiskSpaceTotal( const CString &sPath );
+	virtual uint64_t GetDiskSpaceFree( const CString &sPath );
+
 	bool OpenMemoryRange( unsigned short start_port, unsigned short bytes );
 	void CloseMemoryRange( unsigned short start_port, unsigned short bytes );
 

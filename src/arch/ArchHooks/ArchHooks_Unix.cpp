@@ -18,15 +18,19 @@
 #include <unistd.h>
 #include <cerrno>
 
-// Include Unix/Linux networking types
 extern "C"
 {
+// Include Unix/Linux networking types
 #include <ifaddrs.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
+// Include statvfs, for disk space info
+#include <sys/statvfs.h>
 };
+
 
 #if defined(CRASH_HANDLER)
 #include "archutils/Unix/CrashHandler.h"
@@ -85,6 +89,32 @@ struct stat st;
 	/* This mounts everything else, including Cache, Data, UserPacks, etc. */
 	FILEMAN->Mount( "dir", Root, "/" );
 #endif // ITG_ARCADE
+}
+
+uint64_t ArchHooks_Unix::GetDiskSpaceTotal( const CString &sPath )
+{
+	struct statvfs fsdata;
+	if( statvfs(sPath.c_str(), &fsdata) != 0 )
+	{
+		LOG->Warn( "GetDiskSpaceTotal(): statvfs() failed: %s", strerror(errno) );
+		return 0;
+	}
+
+	// return blocksize x blocks available
+	return uint64_t(fsdata.f_frsize) * uint64_t(fsdata.f_blocks);
+}
+
+uint64_t ArchHooks_Unix::GetDiskSpaceFree( const CString &sPath )
+{
+	struct statvfs fsdata;
+	if( statvfs(sPath.c_str(), &fsdata) != 0 )
+	{
+		LOG->Warn( "GetDiskSpaceTotal(): statvfs() failed: %s", strerror(errno) );
+		return 0;
+	}
+
+	// return blocksize x blocks available
+	return uint64_t(fsdata.f_frsize) * uint64_t(fsdata.f_bfree);
 }
 
 bool ArchHooks_Unix::OpenMemoryRange( unsigned short start_port, unsigned short bytes )
@@ -165,23 +195,18 @@ bool ArchHooks_Unix::GetNetworkAddress( CString &sIP, CString &sNetmask, CString
 
 void ArchHooks_Unix::SystemReboot( bool bForceSync )
 {
-	LOG->Trace( "ArchHooks_Unix::SystemReboot()" );
-
 #ifdef ITG_ARCADE
-	if( !IsAFile("/rootfs/tmp/no-crash-reboot") )
+	/* Important: flush to disk first */
+	if( bForceSync )
 	{
-		LOG->Warn( "no-crash-reboot not found. Rebooting." );
+		sync();
+		sleep(5);
+	}
 
-		/* Important: flush to disk first */
-		if( bForceSync )
-		{
-			sync();
-			sleep(5);
-		}
-
+	/* If /tmp/no-crash-reboot exists, don't reboot. Just exit. */
+	if( !IsAFile("/rootfs/tmp/no-crash-reboot") )
 		if( reboot(RB_AUTOBOOT) != 0 )
 			LOG->Warn( "Could not reboot: %s", strerror(errno) );
-	}
 #endif
 
 	// Should we try to develop a RestartProgram for Unix?

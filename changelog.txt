@@ -1,3 +1,8 @@
+OpenITG, beta 3 (in development)
+--------------------------------
+-New LUA bindings:
+     ProfileManager: "IsSongNew(Song)"
+
 OpenITG, beta 2 (August 10th, 2009)
 --------------------------------
 -New preferences:

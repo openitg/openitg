@@ -56,6 +56,10 @@ const unsigned int DEFAULT_WEIGHT_POUNDS	= 120;
 #pragma warning (disable : 4706) // assignment within conditional expression
 #endif
 
+#define DBG_TIMER_START(x) RageTimer dbg_rt_##x; \
+  LOG->Debug("Starting timer for " #x);
+
+#define DBG_TIMER_STOP(x) LOG->Debug("Time for " #x ": %.04f", (dbg_rt_##x).GetDeltaTime());
 
 void Profile::InitEditableData()
 {
@@ -533,6 +537,9 @@ const HighScoreList& Profile::GetStepsHighScoreList( const Song* pSong, const St
 
 HighScoreList& Profile::GetStepsHighScoreList( const Song* pSong, const Steps* pSteps )
 {
+
+  DBG_TIMER_START(GetStepsHighScoreList);
+
 	SongID songID;
 	songID.FromSong( pSong );
 	
@@ -541,6 +548,8 @@ HighScoreList& Profile::GetStepsHighScoreList( const Song* pSong, const Steps* p
 	
 	HighScoresForASong &hsSong = m_SongHighScores[songID];	// operator[] inserts into map
 	HighScoresForASteps &hsSteps = hsSong.m_StepsHighScores[stepsID];	// operator[] inserts into map
+
+  DBG_TIMER_STOP(GetStepsHighScoreList);
 
 	return hsSteps.hsl;
 }
@@ -736,13 +745,16 @@ void Profile::IncrementCategoryPlayCount( StepsType st, RankingCategory rc )
 Profile::LoadResult Profile::LoadAllFromDir( CString sDir, bool bRequireSignature )
 {
 	CHECKPOINT;
+	RageTimer rtm;
 
 	LOG->Trace( "Profile::LoadAllFromDir( %s )", sDir.c_str() );
 
 	InitAll();
 
+	rtm.Touch();
 	// Not critical if this fails
 	LoadEditableDataFromDir( sDir );
+	LOG->Debug( "LoadEditableDataFromDir() took %.02f seconds", rtm.Ago() );
 	
 	// Check for the existance of stats.xml
 	CString fn = sDir + STATS_XML;
@@ -790,7 +802,10 @@ EXPERIMENT: will this make stats load and save properly?
 
 	LOG->Trace( "Loading %s", fn.c_str() );
 	XNode xml;
-	if( !xml.LoadFromFile(fn) )
+	rtm.Touch();
+	bool bXmlResult = xml.LoadFromFile(fn);
+	LOG->Debug( "xml.LoadFromFile() took %.02f seconds", rtm.Ago() );
+	if( !bXmlResult )
 		return failed_tampered;
 	LOG->Trace( "Done." );
 
@@ -799,10 +814,12 @@ EXPERIMENT: will this make stats load and save properly?
 
 Profile::LoadResult Profile::LoadStatsXmlFromNode( const XNode *xml )
 {
+
+  DBG_TIMER_START(LoadStatsXmlFromNode); // XXX
 	/* The placeholder stats.xml file has an <html> tag.  Don't load it, but don't
 	 * warn about it. */
-	if( xml->m_sName == "html" )
-		return failed_no_profile;
+        if( xml->m_sName == "html" )
+                return failed_no_profile;
 
 	if( xml->m_sName != "Stats" )
 	{
@@ -818,7 +835,8 @@ Profile::LoadResult Profile::LoadStatsXmlFromNode( const XNode *xml )
 	LOAD_NODE( CalorieData );
 	LOAD_NODE( RecentSongScores );
 	LOAD_NODE( RecentCourseScores );
-		
+
+	DBG_TIMER_STOP(LoadStatsXmlFromNode); // XXX
 	return success;
 }
 
@@ -1045,6 +1063,7 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	CString efn = sDir + EXTRA_INI;
 	m_sPlayerAdditionalModifiers.clear();
 
+	DBG_TIMER_START(LoadEditableDataFromDir_Editable);
 	//
 	// Don't load unreasonably large editable.ini files.
 	//
@@ -1085,11 +1104,14 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 		// return success because Extra.ini is optional
 		return success;
 	}
+	DBG_TIMER_STOP(LoadEditableDataFromDir_Editable);
+
 	if ( !IsAFile(efn) )
 	{
 		LOG->Warn( "no Extra.ini found, skipping." );
 		return success;
 	}
+	DBG_TIMER_START(LoadEditableDataFromDir_Extra);
 	eIni.ReadFile( efn );
 
 	ini.GetValue("Extra","UseCatalogXML",		m_bUseCatalog );
@@ -1124,7 +1146,7 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 			}
 		}
 	}
-
+	DBG_TIMER_STOP(LoadEditableDataFromDir_Extra);
 	return success;
 }
 
@@ -1132,6 +1154,7 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 {
 	ASSERT( pNode->m_sName == "GeneralData" );
 
+	DBG_TIMER_START(LoadGeneralDataFromNode);
 	CString s;
 	const XNode* pTemp;
 
@@ -1300,6 +1323,7 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 	
 	}
 
+	DBG_TIMER_STOP(LoadGeneralDataFromNode);
 }
 
 void Profile::AddStepTotals( int iTotalTapsAndHolds, int iTotalJumps, int iTotalHolds, int iTotalRolls, int iTotalMines, int iTotalHands, float fCaloriesBurned )
@@ -1368,6 +1392,8 @@ void Profile::LoadSongScoresFromNode( const XNode* pSongScores )
 
 	ASSERT( pSongScores->m_sName == "SongScores" );
 
+	DBG_TIMER_START(LoadSongScoresFromNode);
+
 	FOREACH_CONST_Child( pSongScores, pSong )
 	{
 		if( pSong->m_sName != "Song" )
@@ -1396,6 +1422,7 @@ void Profile::LoadSongScoresFromNode( const XNode* pSongScores )
 			hsl.LoadFromNode( pHighScoreListNode );
 		}
 	}
+	DBG_TIMER_STOP(LoadSongScoresFromNode);
 }
 
 
@@ -1552,6 +1579,8 @@ void Profile::LoadCategoryScoresFromNode( const XNode* pCategoryScores )
 
 	ASSERT( pCategoryScores->m_sName == "CategoryScores" );
 
+	DBG_TIMER_START(LoadCategoryScoresFromNode);
+
 	FOREACH_CONST_Child( pCategoryScores, pStepsType )
 	{
 		if( pStepsType->m_sName != "StepsType" )
@@ -1583,6 +1612,8 @@ void Profile::LoadCategoryScoresFromNode( const XNode* pCategoryScores )
 			hsl.LoadFromNode( pHighScoreListNode );
 		}
 	}
+
+	DBG_TIMER_STOP(LoadCategoryScoresFromNode);
 }
 
 void Profile::SaveStatsWebPageToDir( CString sDir ) const
@@ -1618,6 +1649,7 @@ void Profile::AddScreenshot( const Screenshot &screenshot )
 void Profile::LoadScreenshotDataFromNode( const XNode* pScreenshotData )
 {
 	CHECKPOINT;
+	DBG_TIMER_START(LoadScreenshotDataFromNode);
 
 	ASSERT( pScreenshotData->m_sName == "ScreenshotData" );
 	FOREACH_CONST_Child( pScreenshotData, pScreenshot )
@@ -1630,6 +1662,8 @@ void Profile::LoadScreenshotDataFromNode( const XNode* pScreenshotData )
 
 		m_vScreenshots.push_back( ss );
 	}	
+
+	DBG_TIMER_STOP(LoadScreenshotDataFromNode);
 }
 
 XNode* Profile::SaveScreenshotDataCreateNode() const
@@ -1735,6 +1769,7 @@ void Profile::LoadRecentSongScoresFromNode( const XNode* pRecentSongScores )
 {
 	CHECKPOINT;
 
+	DBG_TIMER_START(LoadRecentSongScoresFromNode);
 	ASSERT( pRecentSongScores->m_sName == "RecentSongScores" );
 	FOREACH_CONST_Child( pRecentSongScores, p )
 	{
@@ -1750,6 +1785,8 @@ void Profile::LoadRecentSongScoresFromNode( const XNode* pRecentSongScores )
 			WARN_AND_CONTINUE_M( p->m_sName );
 		}
 	}	
+
+	DBG_TIMER_STOP(LoadRecentSongScoresFromNode);
 }
 
 XNode* Profile::SaveRecentSongScoresCreateNode() const

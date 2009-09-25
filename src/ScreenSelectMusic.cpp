@@ -146,6 +146,9 @@ void ScreenSelectMusic::Init()
 	/* Load low-res banners, if needed. */
 	BANNERCACHE->Demand();
 
+	// About 3/4 of the time, the user forgets this was set.  Let's cut him/her some slack.
+	GAMESTATE->m_SongOptions.m_fMusicRate = 1.0f;
+
 	m_MusicWheel.Load( MUSIC_WHEEL_TYPE );
 
 	// pop'n music has this under the songwheel...
@@ -393,7 +396,7 @@ void ScreenSelectMusic::Init()
 
 #ifndef WIN32
 	/* At least for right now, we need the card mounted for previews */
-	if( PREFSMAN->m_bCustomSongPreviews )
+	if( PREFSMAN->m_bCustomSongPreviews && PREFSMAN->m_bCustomSongs )
 	{
 		FOREACH_PlayerNumber( pn )
 		{
@@ -411,7 +414,7 @@ ScreenSelectMusic::~ScreenSelectMusic()
 	BANNERCACHE->Undemand();
 	
 #ifndef WIN32
-	if( PREFSMAN->m_bCustomSongPreviews )
+	if( PREFSMAN->m_bCustomSongPreviews && PREFSMAN->m_bCustomSongs )
 		FOREACH_EnabledPlayer( pn )
 			MEMCARDMAN->UnmountCard( pn );
 #endif
@@ -1946,7 +1949,7 @@ void ScreenSelectMusic::AfterMusicChange()
 
 			if( GAMESTATE->IsExtraStage() || GAMESTATE->IsExtraStage2() )
 			{
-				m_BPMDisplay.CycleRandomly();				
+				m_BPMDisplay.CycleRandomly();
 			}
 			else
 			{

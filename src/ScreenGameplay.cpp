@@ -1722,6 +1722,8 @@ void ScreenGameplay::Update( float fDeltaTime )
 	//
 	// update bpm display
 	//
+	// XXX shouldn't this be BPMDisplay's job?
+#if 0
 	if( m_fLastBPS != GAMESTATE->m_fCurBPS && !m_BPMDisplay.GetHidden() )
 	{
 		m_fLastBPS = GAMESTATE->m_fCurBPS;
@@ -1732,6 +1734,7 @@ void ScreenGameplay::Update( float fDeltaTime )
 
 		m_BPMDisplay.SetConstantBpm( fNewBPM );
 	}
+#endif
 
 	CompareScores();
 

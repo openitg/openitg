@@ -2,6 +2,8 @@ OpenITG, beta 3 (in development)
 --------------------------------
 -New LUA bindings:
      ProfileManager: "IsSongNew(Song)"
+-Fixed more minor cross-platform bugs:
+     BPMDisplay: showing BPM multiplied by music rate twice instead of once
 
 OpenITG, beta 2 (August 10th, 2009)
 --------------------------------

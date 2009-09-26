@@ -236,6 +236,7 @@ public:
 		play_whole_song,
 		play_current_beat_to_end,
 		save,
+		save_and_transfer,
 		revert_to_last_save,
 		revert_from_disk,
 		player_options,

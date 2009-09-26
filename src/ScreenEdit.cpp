@@ -13,8 +13,12 @@
 #include "InputMapper.h"
 #include "RageLog.h"
 #include "ThemeManager.h"
+#include "ProfileManager.h"
+#include "RageFile.H"
+#include "NotesWriterSM.h"
 #include "ScreenMiniMenu.h"
 #include "NoteSkinManager.h"
+#include "MemoryCardManager.h"
 #include "Steps.h"
 #include <utility>
 #include "NoteFieldPositioning.h"
@@ -390,6 +394,7 @@ static Menu g_MainMenu(
 	MenuRow( ScreenEdit::play_whole_song,			"Play Whole Song",				true, EDIT_MODE_PRACTICE, 0, NULL ),
 	MenuRow( ScreenEdit::play_current_beat_to_end,	"Play Current Beat to End",		true, EDIT_MODE_PRACTICE, 0, NULL ),
 	MenuRow( ScreenEdit::save,						"Save",							true, EDIT_MODE_HOME, 0, NULL ),
+	MenuRow( ScreenEdit::save_and_transfer,			"Save and Transfer to USB as Edit",		true, EDIT_MODE_HOME, 0, NULL ),
 	MenuRow( ScreenEdit::revert_to_last_save,		"Revert to Last Save",			true, EDIT_MODE_HOME, 0, NULL ),
 	MenuRow( ScreenEdit::revert_from_disk,			"Revert from Disk",				true, EDIT_MODE_FULL, 0, NULL ),
 	MenuRow( ScreenEdit::player_options,			"Player Options",				true, EDIT_MODE_PRACTICE, 0, NULL ),
@@ -2022,6 +2027,7 @@ void ScreenEdit::HandleMainMenuChoice( MainMenuChoice c, const vector<int> &iAns
 			break;
 		case save:
 		case save_on_exit:
+		case save_and_transfer:
 			{
 				m_CurrentAction = c;
 
@@ -2079,6 +2085,85 @@ void ScreenEdit::HandleMainMenuChoice( MainMenuChoice c, const vector<int> &iAns
 				}
 
 				m_soundSave.Play();
+			}
+			if ( c == save_and_transfer )
+			{
+				// transfer the edit to USB if it's plugged in
+				PlayerNumber SavedPN = PLAYER_INVALID;
+				FOREACH_PlayerNumber( pn )
+				{
+					if ( MEMCARDMAN->GetCardState(pn) == MEMORY_CARD_STATE_READY )
+					{
+						SavedPN = pn;
+						break;
+					}
+				}
+				if ( SavedPN == PLAYER_INVALID )
+				{ // there was no ready USB device at the time
+					SCREENMAN->SystemMessage("Saved, but no USB profile to transfer to.");
+				}
+				else
+				{ // here, there is
+					MEMCARDMAN->MountCard( SavedPN, 30 );
+					SCREENMAN->OverlayMessage( "Transferring..." );
+					CString sEditSteps, sNewEditFileName,
+						sMemoryCardPath = MEM_CARD_MOUNT_POINT[SavedPN] + "/" + PREFSMAN->m_sMemoryCardProfileSubdir.Get() + "/Edits/";
+
+					// naming scheme: {Group Dir}_{Song Name}_{ (EditDescription|Difficulty) }
+					vector<CString> asParts;
+					split( m_pSong->GetSongDir(), "/", asParts );
+					if( asParts.size() )
+						sNewEditFileName = join( "_", asParts.begin()+1, asParts.end() );
+
+					if ( m_pSteps->GetDifficulty() == DIFFICULTY_EDIT )
+					{
+						if ( m_pSteps->GetDescription().length() > 0 )
+						{
+							CString sSafeDescription = m_pSteps->GetDescription();
+							sSafeDescription.Replace( ' ', '_' );
+							sSafeDescription.Replace( "\\", "_" );
+							sSafeDescription.Replace( '/', '_' );
+							sSafeDescription.Replace( ':', '_' );
+							sSafeDescription.Replace( '?', '_' );
+							sSafeDescription.Replace( '<', '_' );
+							sSafeDescription.Replace( '>', '_' );
+							sSafeDescription.Replace( '*', '_' );
+							sSafeDescription.Replace( '"', '_' );
+							sSafeDescription.Replace( '|', '_' );
+							sNewEditFileName += CString("_") + sSafeDescription;
+						}
+						else
+						{
+							sNewEditFileName += "_Edit";
+						}
+					}
+					else
+					{
+						sNewEditFileName += CString("_") + DifficultyToString( m_pSteps->GetDifficulty() );
+					}
+						
+					sNewEditFileName += ".edit";
+					
+					NotesWriterSM::GetEditFile( this->m_pSong, this->m_pSteps, sEditSteps );
+					
+					RageFile myfile;
+					if ( !myfile.Open( sMemoryCardPath + sNewEditFileName, RageFile::WRITE | RageFile::SLOW_FLUSH ) )
+					{ // ..WHAT?
+						SCREENMAN->SystemMessage( "Saved to disk, but could not open file for transfer" );
+					}
+					else
+					{ // ...SUCCESS
+						int ret = myfile.Write( sEditSteps );
+						myfile.Flush();
+						myfile.Close();
+						if ( ret > 0 )
+							SCREENMAN->SystemMessage( "Saved to USB drive as: " + (sMemoryCardPath+sNewEditFileName) );
+						else
+							SCREENMAN->SystemMessage( "Saved to disk, but error on file write for USB transfer." );
+					}
+					SCREENMAN->HideOverlayMessage();
+					MEMCARDMAN->UnmountCard( SavedPN );
+				}
 			}
 			break;
 		case revert_to_last_save:

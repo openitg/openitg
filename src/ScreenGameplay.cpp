@@ -1735,6 +1735,7 @@ void ScreenGameplay::Update( float fDeltaTime )
 		m_BPMDisplay.SetConstantBpm( fNewBPM );
 	}
 #endif
+	m_BPMDisplay.SetConstantBpm( GAMESTATE->m_fCurBPS * 60.0f );
 
 	CompareScores();
 

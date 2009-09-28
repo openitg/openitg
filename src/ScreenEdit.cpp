@@ -14,7 +14,7 @@
 #include "RageLog.h"
 #include "ThemeManager.h"
 #include "ProfileManager.h"
-#include "RageFile.H"
+#include "RageFile.h"
 #include "NotesWriterSM.h"
 #include "ScreenMiniMenu.h"
 #include "NoteSkinManager.h"

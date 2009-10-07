@@ -8,6 +8,8 @@
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 
+REGISTER_INPUT_HANDLER( X11 );
+
 static RageKeySym XSymToKeySym( int key )
 {
 #define KEY_INV KEY_INVALID

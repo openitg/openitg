@@ -15,7 +15,7 @@ typedef long OSStatus;
 class CAAudioHardwareDevice;
 class RageSoundBase;
 
-class RageSound_CA : public RageSound_Generic_Software
+class RageSound_CA : public RageSoundDriver_Generic_Software
 {
 private:
     int64_t mDecodePos;
@@ -45,7 +45,6 @@ public:
     int64_t GetPosition(const RageSoundBase *sound) const;
     void SetupDecodingThread();
 };
-#define USE_RAGE_SOUND_CA
 
 #endif
 

@@ -8,7 +8,6 @@
 #include "LightsManager.h"
 #include "PrefsManager.h"
 #include "GameInput.h"	// for GameController
-#include "Preference.h"
 #include "Foreach.h"
 #include "CommonMetrics.h"
 #include "Actor.h"
@@ -18,8 +17,13 @@
 #include "arch/Lights/LightsDriver.h"
 #include "arch/arch.h"
 
+/* UGLY: to maintain compatibility, we need to use 'LightsDriver',
+ * even though our system allows more than one to be instantiated... */
+static Preference<CString> g_sLightsDrivers( "LightsDriver", "" ); // "" = DEFAULT_LIGHTS_DRIVER
+
 Preference<float>	g_fLightsFalloffSeconds( "LightsFalloffSeconds", 0.1f );
 Preference<float>	g_fLightsAheadSeconds( "LightsAheadSeconds", 0.05f );
+Preference<bool>	g_bBlinkGameplayButtonLightsOnNote( "BlinkGameplayButtonLightsOnNote", false );
 
 
 static const CString CabinetLightNames[] = {
@@ -81,7 +85,7 @@ static void GetUsedGameInputs( vector<GameInput> &vGameInputsOut )
 
 LightsManager*	LIGHTSMAN = NULL;	// global and accessable from anywhere in our program
 
-LightsManager::LightsManager(CString sDriver)
+LightsManager::LightsManager()
 {
 	ZERO( m_fSecsLeftInCabinetLightBlink );
 	ZERO( m_fSecsLeftInGameButtonBlink );
@@ -91,7 +95,9 @@ LightsManager::LightsManager(CString sDriver)
 	m_CoinCounterTimer.SetZero();
 
 	m_LightsMode = LIGHTSMODE_JOINING;
-	MakeLightsDrivers( sDriver, m_vpDrivers );
+
+	LightsDriver::Create( g_sLightsDrivers, m_vpDrivers );
+
 	m_fTestAutoCycleCurrentIndex = 0;
 	m_clTestManualCycleCurrent = LIGHT_INVALID;
 	m_iControllerTestManualCycleCurrent = -1;
@@ -374,7 +380,7 @@ void LightsManager::Update( float fDeltaTime )
 	case LIGHTSMODE_DEMONSTRATION:
 	case LIGHTSMODE_GAMEPLAY:
 		{
-			if( (m_LightsMode == LIGHTSMODE_GAMEPLAY && PREFSMAN->m_bBlinkGameplayButtonLightsOnNote) || m_LightsMode == LIGHTSMODE_DEMONSTRATION )
+			if( (m_LightsMode == LIGHTSMODE_GAMEPLAY && g_bBlinkGameplayButtonLightsOnNote) || m_LightsMode == LIGHTSMODE_DEMONSTRATION )
 			{
 				//
 				// Blink on notes.

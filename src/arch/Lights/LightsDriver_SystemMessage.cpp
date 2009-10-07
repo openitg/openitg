@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "PrefsManager.h"
 
+REGISTER_LIGHTS_DRIVER( SystemMessage );
 
 LightsDriver_SystemMessage::LightsDriver_SystemMessage()
 {

@@ -5,7 +5,7 @@
 #include "RageThreads.h"
 #include "RageSoundDriver_Generic_Software.h"
 
-class RageSound_DSound_Software: public RageSound_Generic_Software
+class RageSound_DSound_Software: public RageSoundDriver_Generic_Software
 {
 	DSound ds;
 	DSoundBuf *pcm;
@@ -28,7 +28,6 @@ public:
 	virtual ~RageSound_DSound_Software();
 	CString Init();
 };
-#define USE_RAGE_SOUND_DSOUND_SOFTWARE
 
 #endif
 

@@ -95,6 +95,9 @@ void CircularShift( vector<T> &v, int dist )
 	}
 }
 
+template<typename Type, typename Ret>
+static Ret *CreateClass() { return new Type; }
+
 /*
  * We only have unsigned swaps; byte swapping a signed value doesn't make sense. 
  *

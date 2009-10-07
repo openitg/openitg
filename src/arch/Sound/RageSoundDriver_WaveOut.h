@@ -6,7 +6,7 @@
 #include <windows.h>
 #include <mmsystem.h>
 
-class RageSound_WaveOut: public RageSound_Generic_Software
+class RageSound_WaveOut: public RageSoundDriver_Generic_Software
 {
 public:
 	RageSound_WaveOut();
@@ -29,7 +29,6 @@ private:
 	bool m_bShutdown;
 	int m_iLastCursorPos;
 };
-#define USE_RAGE_SOUND_WAVE_OUT
 
 #endif
 

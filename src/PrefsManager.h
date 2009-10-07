@@ -302,22 +302,15 @@ public:
 #endif
 	Preference<CString>	m_sVideoRenderers;		// StepMania.cpp sets these on first run based on the card
 	Preference<bool>	m_bSmoothLines;
-private:
-	Preference<CString>	m_sSoundDrivers;	// "" == default
 public:
 	Preference<float>	m_fSoundVolume;	// -1 == default
 	Preference<float>	m_fSoundVolumeAttract;
 	Preference<int>		m_iSoundWriteAhead;
 	Preference<CString>	m_iSoundDevice;	
 	Preference<RageSoundReader_Resample::ResampleQuality>	m_SoundResampleQuality;
-private:
-	Preference<CString>	m_sInputDrivers;	// "" == default
-	Preference<CString>	m_sLightsDriver;	// "" == default
 public:
-	Preference<CString>	m_sMovieDrivers;	// "" == default
 	Preference<CString>	m_sLightsStepsDifficulty;
 	Preference<bool>	m_bLightsChartsInMenus;
-	Preference<bool>	m_bBlinkGameplayButtonLightsOnNote;
 	Preference<bool>	m_bAllowUnacceleratedRenderer;
 	Preference<bool>	m_bThreadedInput;
 	Preference<bool>	m_bThreadedMovieDecode;
@@ -335,7 +328,6 @@ public:
 	Preference<bool>	m_bTimestamping;
 	Preference<bool>	m_bLogSkips;
 	Preference<bool>	m_bLogCheckpoints;
-	Preference<bool>	m_bShowLoadingWindow;
 
 	/* Game-specific prefs: */
 	Preference<CString>	m_sDefaultModifiers;
@@ -352,12 +344,8 @@ public:
 
 	// wrappers
 	CString GetVideoRenderers();
-	CString GetSoundDrivers();
 	float GetSoundVolume();
 	float GetSoundVolumeAttract();
-	CString GetInputDrivers();
-	CString GetMovieDrivers();
-	CString GetLightsDriver();
 
 
 	void ReadGlobalPrefsFromIni( const IniFile &ini );

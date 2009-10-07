@@ -36,8 +36,6 @@ private:
 	bool m_bShutdown;
 };
 
-#define USE_INPUT_HANDLER_MK3
-
 #endif // INPUT_HANDLER_MK3_H
 
 /*

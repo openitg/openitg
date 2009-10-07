@@ -1,9 +1,13 @@
 OpenITG, beta 3 (in development)
 --------------------------------
+-Miscellaneous changes:
+     Changed "DebugTheme" preference to "ShowThemeErrors"
 -New LUA bindings:
      ProfileManager: "IsSongNew(Song)"
 -Fixed more minor cross-platform bugs:
      BPMDisplay: showing BPM multiplied by music rate twice instead of once
+-Backend updates:
+     Arch updated to use SM4's RageDriver structure
 
 OpenITG, beta 2 (August 10th, 2009)
 --------------------------------

@@ -1,10 +1,82 @@
+/* XXX: this is going to take a lot of work to convert over to the
+ * SM4 RageDriver structure. We'll do that later. For now, we'll
+ * just stuff arch.cpp's MakeRageMovieTexture here... -- Vyhd */
+
 #include "global.h"
 #include "MovieTexture.h"
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "MovieTexture_Null.h"
-#include "PrefsManager.h"
+#include "Preference.h"
 #include "RageFile.h"
+
+#include "Selector_MovieTexture.h"
+
+static Preference<CString> g_sMovieDrivers( "MovieDrivers", "" ); // "" = DEFAULT_MOVIE_DRIVER_LIST
+
+static void DumpAVIDebugInfo(CString);
+
+#include "arch/arch_default.h"
+
+/* Try drivers in order of preference until we find one that works. */
+RageMovieTexture *RageMovieTexture::Create( RageTextureID ID )
+{
+	DumpAVIDebugInfo( ID.filename );
+
+	CString drivers = g_sMovieDrivers;
+	if( drivers.empty() )	
+		drivers = DEFAULT_MOVIE_DRIVER_LIST;
+
+	CStringArray DriversToTry;
+	split(drivers, ",", DriversToTry, true);
+	ASSERT(DriversToTry.size() != 0);
+
+	CString Driver;
+	RageMovieTexture *ret = NULL;
+
+	for( unsigned i=0; ret==NULL && i<DriversToTry.size(); ++i )
+	{
+		Driver = DriversToTry[i];
+		LOG->Trace("Initializing driver: %s", Driver.c_str());
+#ifdef USE_MOVIE_TEXTURE_DSHOW
+		if( !Driver.CompareNoCase("DShow") ) ret = new MovieTexture_DShow(ID);
+#endif
+#ifdef USE_MOVIE_TEXTURE_FFMPEG
+		if( !Driver.CompareNoCase("FFMpeg") ) ret = new MovieTexture_FFMpeg(ID);
+#endif
+#ifdef USE_MOVIE_TEXTURE_NULL
+		if( !Driver.CompareNoCase("Null") ) ret = new MovieTexture_Null(ID);
+#endif
+		if( ret == NULL )
+		{
+			LOG->Warn( "Unknown movie driver name: %s", Driver.c_str() );
+			continue;
+		}
+
+		CString sError = ret->Init();
+		if( sError != "" )
+		{
+			LOG->Info( "Couldn't load driver %s: %s", Driver.c_str(), sError.c_str() );
+			SAFE_DELETE( ret );
+		}
+	}
+	if (!ret)
+		RageException::Throw("Couldn't create a movie texture");
+
+	LOG->Trace("Created movie texture \"%s\" with driver \"%s\"",
+		ID.filename.c_str(), Driver.c_str() );
+	return ret;
+}
+
+// Helper for MakeRageMovieTexture()
+static void DumpAVIDebugInfo( CString fn )
+{
+	CString type, handler;
+	if( !RageMovieTexture::GetFourCC( fn, handler, type ) )
+		return;
+
+	LOG->Trace("Movie %s has handler '%s', type '%s'", fn.c_str(), handler.c_str(), type.c_str());
+}
 
 void ForceToAscii( CString &str )
 {

@@ -3,11 +3,19 @@
 #include "RageUtil.h"
 #include "InputHandler.h"
 #include "RageLog.h"
-#include <map>
+#include "Foreach.h"
+#include "arch/arch_default.h"
+#include "InputHandler_MonkeyKeyboard.h"
 
 Preference<bool> g_bDebugInputDrivers( "DebugInputDrivers", false );
 
 #define UPDATE_WARN_LIMIT 100
+
+InputHandler::InputHandler()
+{
+	m_iInputsSinceUpdate = 0;
+	m_DebugTimer.m_bAutoReport = g_bDebugInputDrivers;
+}
 
 void InputHandler::UpdateTimer()
 {
@@ -40,6 +48,32 @@ void InputHandler::ButtonPressed( DeviceInput di, bool Down )
 		 */
 		LOG->Warn( "InputHandler::ButtonPressed: Driver sent %d updates without calling UpdateTimer", UPDATE_WARN_LIMIT );
 	}
+}
+
+DriverList InputHandler::m_pDriverList;
+
+void InputHandler::Create( const CString &sDrivers, vector<InputHandler*> &Add )
+{
+	const CString drivers = sDrivers.empty() ? CString(DEFAULT_INPUT_DRIVER_LIST) : sDrivers;
+	vector<CString> DriversToTry;
+	split( drivers, ",", DriversToTry, true );
+
+	FOREACH_CONST( CString, DriversToTry, s )
+	{
+		RageDriver *pDriver = m_pDriverList.Create( *s );
+		if( pDriver == NULL )
+		{
+			LOG->Warn( "Unknown input handler name: %s", s->c_str() );
+			continue;
+		}
+
+		InputHandler *ret = dynamic_cast<InputHandler*>( pDriver );
+		DEBUG_ASSERT( ret );
+		Add.push_back( ret );
+	}
+
+	// always add
+	Add.push_back( new InputHandler_MonkeyKeyboard );
 }
 
 /*

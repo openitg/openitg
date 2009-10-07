@@ -5,7 +5,7 @@
 #include "RageThreads.h"
 #include "RageTimer.h"
 
-class RageSound_OSS: public RageSound_Generic_Software
+class RageSoundDriver_OSS: public RageSoundDriver_Generic_Software
 {
 	int fd;
 
@@ -20,6 +20,11 @@ class RageSound_OSS: public RageSound_Generic_Software
 	static CString CheckOSSVersion( int fd );
 	
 public:
+	RageSoundDriver_OSS();
+	~RageSoundDriver_OSS();
+
+	CString Init();
+
 	bool GetData();
 	int GetSampleRate( int rate ) const { return samplerate; }
 
@@ -27,12 +32,7 @@ public:
 	int64_t GetPosition( const RageSoundBase *snd ) const;
 	float GetPlayLatency() const;
 	void SetupDecodingThread();
-
-	RageSound_OSS();
-	CString Init();
-	~RageSound_OSS();
 };
-#define USE_RAGE_SOUND_OSS
 
 #endif
 

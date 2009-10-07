@@ -1,20 +1,52 @@
-#ifndef DIALOG_BOX_DRIVER_COCOA_H
-#define DIALOG_BOX_DRIVER_COCOA_H
-
+#include "global.h"
 #include "DialogDriver.h"
+#include "Foreach.h"
+#include "RageLog.h"
 
-class DialogDriver_Cocoa: public DialogDriver
+Preference<bool> g_bShowThemeErrors( "ShowThemeErrors", false );
+
+REGISTER_DIALOG_DRIVER_CLASS( Null );
+
+map<istring, CreateDialogDriverFn> *RegisterDialogDriver::g_pRegistrees;
+RegisterDialogDriver::RegisterDialogDriver( const istring &sName, CreateDialogDriverFn pfn )
 {
-public:
-	void Error( CString sError, CString sID );
-	void OK( CString sMessage, CString sID );
-	Dialog::Result AbortRetryIgnore( CString sMessage, CString sID );
-};
-    
-#endif /* DIALOG_BOX_DRIVER_COCOA_H */
+	if( g_pRegistrees == NULL )
+		g_pRegistrees = new map<istring, CreateDialogDriverFn>;
+	
+	ASSERT( g_pRegistrees->find(sName) == g_pRegistrees->end() );
+	(*g_pRegistrees)[sName] = pfn;
+}
+
+DialogDriver *DialogDriver::Create()
+{
+	CString sDrivers = "win32,macosx,null";
+	vector<CString> asDriversToTry;
+	split( sDrivers, ",", asDriversToTry, true );
+	
+	ASSERT( asDriversToTry.size() != 0 );
+	
+	FOREACH_CONST( CString, asDriversToTry, Driver )
+	{
+		map<istring, CreateDialogDriverFn>::const_iterator iter = RegisterDialogDriver::g_pRegistrees->find( istring(*Driver) );
+		
+		if( iter == RegisterDialogDriver::g_pRegistrees->end() )
+			continue;
+		
+		DialogDriver *pRet = (iter->second)();
+		DEBUG_ASSERT( pRet );
+		const CString sError = pRet->Init();
+		
+		if( sError.empty() )
+			return pRet;
+		if( LOG )
+			LOG->Info( "Couldn't load driver %s: %s", Driver->c_str(), sError.c_str() );
+		SAFE_DELETE( pRet );
+	}
+	return NULL;
+}
 
 /*
- * (c) 2003-2004 Steve Checkoway
+ * (c) 2002-2006 Glenn Maynard, Steve Checkoway
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

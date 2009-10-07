@@ -1,19 +1,19 @@
 #include "global.h"
 #include "RageInput.h"
 #include "RageLog.h"
-#include "RageException.h"
 #include "arch/InputHandler/InputHandler.h"
-
-#include "arch/arch.h"
+#include "Preference.h"
 
 RageInput*		INPUTMAN	= NULL;		// globally accessable input device
 
-RageInput::RageInput( CString sDriverList )
+static Preference<CString> g_sInputDrivers( "InputDrivers", "" ); // "" = DEFAULT_INPUT_DRIVER_LIST
+
+RageInput::RageInput()
 {
 	LOG->Trace( "RageInput::RageInput()" );
 
 	/* Init optional devices. */
-	MakeInputHandlers( sDriverList, m_pDevices );
+	InputHandler::Create( g_sInputDrivers, m_pDevices );
 
 	/* If no input devices are loaded, the user won't be able to input anything. */
 	if( m_pDevices.size() == 0 )

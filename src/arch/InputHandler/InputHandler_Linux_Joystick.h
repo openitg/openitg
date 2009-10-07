@@ -29,8 +29,6 @@ private:
 	int m_iReadCount;
 };
 
-#define USE_INPUT_HANDLER_LINUX_JOYSTICK
-
 #endif
 
 /*

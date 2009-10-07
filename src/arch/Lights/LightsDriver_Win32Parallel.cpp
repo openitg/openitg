@@ -4,6 +4,8 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 
+REGISTER_LIGHTS_DRIVER2( Parallel, Win32Parallel );
+
 HINSTANCE hDLL = NULL;
 
 typedef void (WINAPI PORTOUT)(short int Port, char Data);

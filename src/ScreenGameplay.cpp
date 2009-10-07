@@ -1592,13 +1592,15 @@ void ScreenGameplay::Update( float fDeltaTime )
 		//
 		// Check for end of song
 		//
-		float fSecondsToStop = GAMESTATE->m_pCurSong->GetElapsedTimeFromBeat( GAMESTATE->m_pCurSong->m_fLastBeat );
+		{
+			float fSecondsToStop = GAMESTATE->m_pCurSong->GetElapsedTimeFromBeat( GAMESTATE->m_pCurSong->m_fLastBeat );
 
-		/* Make sure we keep going long enough to register a miss for the last note. */
-		fSecondsToStop += m_Player[GAMESTATE->m_MasterPlayerNumber].GetMaxStepDistanceSeconds();
+			/* Make sure we keep going long enough to register a miss for the last note. */
+			fSecondsToStop += m_Player[GAMESTATE->m_MasterPlayerNumber].GetMaxStepDistanceSeconds();
 
-		if( GAMESTATE->m_fMusicSeconds > fSecondsToStop && !m_SongFinished.IsTransitioning() && !m_NextSong.IsTransitioning() )
-			m_SongFinished.StartTransitioning( SM_NotesEnded );
+			if( GAMESTATE->m_fMusicSeconds > fSecondsToStop && !m_SongFinished.IsTransitioning() && !m_NextSong.IsTransitioning() )
+				m_SongFinished.StartTransitioning( SM_NotesEnded );
+		}
 	
 		//
 		// update 2d dancing characters

@@ -20,8 +20,6 @@ private:
 	bool m_bHasDevice;
 };
 
-#define USE_LIGHTS_DRIVER_PACDRIVE
-
 #endif // LIGHTSDRIVER_PACDRIVE_H
 
 /*

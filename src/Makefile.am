@@ -127,7 +127,7 @@ StepMania = StdString.h \
 		StepMania.cpp StepMania.h \
 		global.cpp global.h
 
-LoadingWindow = arch/LoadingWindow/LoadingWindow.h \
+LoadingWindow = arch/LoadingWindow/LoadingWindow.cpp arch/LoadingWindow/LoadingWindow.h \
 		arch/LoadingWindow/LoadingWindow_Null.h
 
 
@@ -151,7 +151,7 @@ if HAVE_GTK
 LoadingWindow += arch/LoadingWindow/LoadingWindow_Gtk.cpp arch/LoadingWindow/LoadingWindow_Gtk.h
 endif
 
-Sound = arch/Sound/RageSoundDriver.h \
+Sound = arch/Sound/RageSoundDriver.cpp arch/Sound/RageSoundDriver.h \
 	arch/Sound/RageSoundDriver_Null.cpp arch/Sound/RageSoundDriver_Null.h \
 	arch/Sound/RageSoundDriver_Generic_Software.cpp arch/Sound/RageSoundDriver_Generic_Software.h
 
@@ -191,18 +191,19 @@ MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture
 		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h \
 		arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h
 
-Lights = arch/Lights/LightsDriver.h \
+Lights = arch/Lights/LightsDriver.cpp arch/Lights/LightsDriver.h \
 		arch/Lights/LightsDriver_SystemMessage.cpp arch/Lights/LightsDriver_SystemMessage.h \
 		arch/Lights/LightsDriver_External.cpp arch/Lights/LightsDriver_External.h \
 		arch/Lights/LightsDriver_PacDrive.cpp arch/Lights/LightsDriver_PacDrive.h \
 		arch/Lights/LightsDriver_G15.cpp arch/Lights/LightsDriver_G15.h
 
 MemoryCard = arch/MemoryCard/MemoryCardDriver.cpp arch/MemoryCard/MemoryCardDriver.h
-LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.h
+LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.cpp arch/LowLevelWindow/LowLevelWindow.h
 
 ArchUtils =
 
-Dialog = arch/Dialog/Dialog.cpp arch/Dialog/Dialog.h arch/Dialog/DialogDriver.h
+Dialog = arch/Dialog/Dialog.cpp arch/Dialog/Dialog.h \
+	arch/Dialog/DialogDriver.cpp arch/Dialog/DialogDriver.h
 
 Threads = arch/Threads/Threads.h
 
@@ -255,7 +256,7 @@ endif
 
 Arch = $(LoadingWindow) $(Sound) $(ArchHooks) $(InputHandler) $(MovieTexture) \
 	   $(Lights) $(MemoryCard) $(LowLevelWindow) $(ArchUtils) $(Dialog) $(Threads) \
-	   arch/arch.h arch/arch.cpp arch/arch_default.h arch/arch_platform.h
+	   arch/arch_default.h arch/arch_platform.h arch/RageDriver.cpp arch/RageDriver.h
 
 RageSoundFileReaders = RageSoundReader_WAV.cpp RageSoundReader_WAV.h 
 

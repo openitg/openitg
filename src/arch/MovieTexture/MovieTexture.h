@@ -6,6 +6,8 @@
 class RageMovieTexture : public RageTexture
 {
 public:
+	static RageMovieTexture *Create( RageTextureID ID );
+
 	RageMovieTexture( RageTextureID ID ): RageTexture(ID) { }
 	virtual ~RageMovieTexture() { }
 	virtual CString Init() { return ""; }

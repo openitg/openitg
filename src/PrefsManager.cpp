@@ -19,7 +19,6 @@
 PrefsManager*	PREFSMAN = NULL;	// global and accessable from anywhere in our program
 
 const float DEFAULT_SOUND_VOLUME = 1.00f;
-const CString DEFAULT_LIGHTS_DRIVER = "ext"; // this is a safe default, so we may as well
 
 //
 // For self-registering prefs
@@ -291,18 +290,13 @@ PrefsManager::PrefsManager() :
 #endif
 	m_sVideoRenderers				( "VideoRenderers",				"" ),	// StepMania.cpp sets these on first run:
 	m_bSmoothLines					( "SmoothLines",				false ),
-	m_sSoundDrivers					( "SoundDrivers",				"" ),
 	m_fSoundVolume					( "SoundVolume",				-1 ),	// default
 	m_fSoundVolumeAttract				( "SoundVolumeAttract",				0.5 ),
 	m_iSoundWriteAhead				( "SoundWriteAhead",			0 ),
 	m_iSoundDevice					( "SoundDevice",				"" ),
 	m_SoundResampleQuality			( "SoundResampleQuality",		RageSoundReader_Resample::RESAMP_NORMAL ),
-	m_sInputDrivers					( "InputDrivers",				"" ),
-	m_sLightsDriver					( "LightsDriver",				"" ),
-	m_sMovieDrivers					( "MovieDrivers",				"" ),
 	m_sLightsStepsDifficulty		( "LightsStepsDifficulty",		"medium" ),
 	m_bLightsChartsInMenus			( "LightsChartsInMenus",	false ),
-	m_bBlinkGameplayButtonLightsOnNote	( "BlinkGameplayButtonLightsOnNote",false ),
 	m_bAllowUnacceleratedRenderer	( "AllowUnacceleratedRenderer",	false ),
 	m_bThreadedInput				( "ThreadedInput",				true ),
 	m_bThreadedMovieDecode			( "ThreadedMovieDecode",		true ),
@@ -320,7 +314,6 @@ PrefsManager::PrefsManager() :
 	m_bTimestamping					( "Timestamping",				false ),
 	m_bLogSkips						( "LogSkips",					false ),
 	m_bLogCheckpoints				( "LogCheckpoints",				false ),
-	m_bShowLoadingWindow			( "ShowLoadingWindow",			true ),
 
 	/* Game-specific prefs: */
 	m_sDefaultModifiers				( "DefaultModifiers",			"" )
@@ -400,15 +393,6 @@ void PrefsManager::SaveGlobalPrefsToIni( IniFile &ini ) const
 		(*p)->WriteTo( ini );
 }
 
-// wrappers
-CString PrefsManager::GetSoundDrivers()	
-{
-	if ( m_sSoundDrivers.Get().empty() )
-		return (CString)DEFAULT_SOUND_DRIVER_LIST;
-	else
-		return m_sSoundDrivers;
-}
-
 float PrefsManager::GetSoundVolume()
 {
 	if ( m_fSoundVolume==-1 )
@@ -425,29 +409,6 @@ float PrefsManager::GetSoundVolumeAttract()
 
 	return m_fSoundVolumeAttract;
 }
-
-CString PrefsManager::GetInputDrivers()	{
-	if( m_sInputDrivers.Get().empty() )
-		return (CString)DEFAULT_INPUT_DRIVER_LIST;
-	else
-		return m_sInputDrivers;
-}
-
-CString PrefsManager::GetMovieDrivers()
-{ 
-	if ( m_sMovieDrivers.Get().empty() )
-		return (CString)DEFAULT_MOVIE_DRIVER_LIST;
-	else
-		return m_sMovieDrivers; 
-}
-
-CString PrefsManager::GetLightsDriver()	{ 
-	if ( m_sLightsDriver.Get().empty() )
-		return (CString)DEFAULT_LIGHTS_DRIVER;
-	else
-		return m_sLightsDriver;
-}
-
 
 // lua start
 #include "LuaBinding.h"

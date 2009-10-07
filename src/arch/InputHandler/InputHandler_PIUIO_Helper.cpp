@@ -7,11 +7,11 @@
 #include "InputHandler_PIUIO_Helper.h"
 
 // keep these in local scope
-uint32_t g_iSensors[4];
-uint32_t g_iLights;
+static uint32_t g_iSensors[4];
+static uint32_t g_iLights;
 
-bool g_bReportSensors[32];
-bool g_bSensorMapInitialized = false;
+static bool g_bReportSensors[32];
+static bool g_bSensorMapInitialized = false;
 
 /* determine which inputs are used for gameplay and
  * cache them, so we have a quick reference later. */

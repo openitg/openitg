@@ -2,11 +2,17 @@
 #define RAGE_SOUND_DRIVER
 
 #include "global.h"
+#include "RageUtil.h"
+#include "arch/RageDriver.h"
 
 class RageSoundBase;
-class RageSoundDriver
+class RageSoundDriver: public RageDriver
 {
 public:
+	/* Pass an empty string to get the default sound driver list. */
+	static RageSoundDriver *Create( const CString &sDrivers );
+	static DriverList m_pDriverList;
+
 	friend class RageSoundManager;
 
 	/* Initialize.  On failure, an error message is returned. */
@@ -49,6 +55,11 @@ public:
 
 	virtual ~RageSoundDriver() { }
 };
+
+// Can't use Create##name because many of these have -sw suffixes.
+#define REGISTER_SOUND_DRIVER2( name, x ) \
+	static RegisterRageDriver register_##x( &RageSoundDriver::m_pDriverList, #name, CreateClass<RageSoundDriver_##x, RageDriver> )
+#define REGISTER_SOUND_DRIVER( name ) REGISTER_SOUND_DRIVER2( name, name )
 
 /*
  * (c) 2002-2004 Glenn Maynard

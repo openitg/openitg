@@ -1,22 +1,43 @@
-#ifndef SELECTOR_DIALOG
-#define SELECTOR_DIALOG
+#include "global.h"
+#include "RageSoundDriver.h"
+#include "RageLog.h"
+#include "RageUtil.h"
+#include "Foreach.h"
+#include "arch/arch_default.h"
 
-#include "arch/arch_platform.h"
+DriverList RageSoundDriver::m_pDriverList;
 
-/* Dialog drivers selector. */
-#if defined(HAVE_WIN32)
-#include "DialogDriver_Win32.h"
+RageSoundDriver *RageSoundDriver::Create( const CString &sDrivers )
+{
+	vector<CString> DriversToTry;
+	split( sDrivers.empty()? DEFAULT_SOUND_DRIVER_LIST:sDrivers, ",", DriversToTry, true );
+	
+	FOREACH_CONST( CString, DriversToTry, Driver )
+	{
+		RageDriver *pDriver = m_pDriverList.Create( *Driver );
+		if( pDriver == NULL )
+		{
+			LOG->Trace( "Unknown sound driver: %s", Driver->c_str() );
+			continue;
+		}
 
-#elif defined(HAVE_COCOA)
-#include "DialogDriver_Cocoa.h"
-#endif
+		RageSoundDriver *pRet = dynamic_cast<RageSoundDriver *>( pDriver );
+		ASSERT( pRet != NULL );
 
-#include "DialogDriver.h" // DialogDriver_Null is in here
-
-#endif
+		const CString sError = pRet->Init();
+		if( sError.empty() )
+		{
+			LOG->Info( "Sound driver: %s", Driver->c_str() );
+			return pRet;
+		}
+		LOG->Info( "Couldn't load driver %s: %s", Driver->c_str(), sError.c_str() );
+		SAFE_DELETE( pRet );
+	}
+	return NULL;
+}
 
 /*
- * (c) 2005 Ben Anderson.
+ * (c) 2002-2006 Glenn Maynard, Steve Checkoway
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

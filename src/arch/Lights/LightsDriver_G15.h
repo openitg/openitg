@@ -36,8 +36,6 @@ private:
 	G15DisplayState m_DisplayState;
 };
 
-#define USE_LIGHTS_DRIVER_G15
-
 #endif // LIGHTSDRIVER_G15_H
 
 /*

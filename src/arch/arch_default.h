@@ -1,38 +1,65 @@
 #ifndef ARCH_DEFAULT_H
 #define ARCH_DEFAULT_H
 
-#include "arch/arch_platform.h"
+/* Define the default driver sets. */
+#if defined(WINDOWS)
+#include "ArchHooks/ArchHooks_Win32.h"
+#include "LoadingWindow/LoadingWindow_Win32.h"
+#include "LowLevelWindow/LowLevelWindow_Win32.h"
+#include "MemoryCard/MemoryCardDriverThreaded_Windows.h"
+#define DEFAULT_INPUT_DRIVER_LIST "DirectInput,Pump,Para"
+#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,DShow,Null"
+#define DEFAULT_SOUND_DRIVER_LIST "DirectSound-sw,WDMKS,WaveOut,Null"
 
-/* Define the default driver sets. It's okay to have in the sets drivers that
- * might not be available, just as long as you don't mind if they're used when
- * they are available. (For example, if we're using X11, we don't want
- * InputHandler_SDL to be used.) */
 
-/* InputHandler drivers */
-#if defined (HAVE_XBOX)
- #define DEFAULT_INPUT_DRIVER_LIST "Xbox"
-#elif defined(HAVE_DIRECTX)
- #define DEFAULT_INPUT_DRIVER_LIST "DirectInput,Pump,Para"
-#elif defined(HAVE_X11) // Prefer X11 over SDL
- #define DEFAULT_INPUT_DRIVER_LIST "X11,Joystick"
-#elif defined(HAVE_SDL)
- #define DEFAULT_INPUT_DRIVER_LIST "SDL"
-#elif defined(LINUX)
- #define DEFAULT_INPUT_DRIVER_LIST "Joystick"
-#else
- #define DEFAULT_INPUT_DRIVER_LIST "Null"
+#elif defined(MACOSX)
+#include "ArchHooks/ArchHooks_MacOSX.h"
+#include "LoadingWindow/LoadingWindow_MacOSX.h"
+#include "LowLevelWindow/LowLevelWindow_MacOSX.h"
+#define DEFAULT_INPUT_DRIVER_LIST "SDL"
+#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,Null"
+#define DEFAULT_SOUND_DRIVER_LIST "CoreAudio,Null"
+
+
+#elif defined(_XBOX)
+#include "ArchHooks/ArchHooks_Xbox.h"
+#include "LoadingWindow/LoadingWindow_Xbox.h"
+#include "LowLevelWindow/LowLevelWindow_Win32.h"
+#define DEFAULT_INPUT_DRIVER_LIST "Xbox"
+#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,DShow,Null"
+#define DEFAULT_SOUND_DRIVER_LIST "DirectSound,DirectSound-sw,Null"
+
+
+#elif defined(UNIX)
+#include "ArchHooks/ArchHooks_Unix.h"
+#include "LowLevelWindow/LowLevelWindow_X11.h"
+
+#if defined(LINUX)
+#include "MemoryCard/MemoryCardDriverThreaded_Linux.h"
 #endif
 
-/* MovieTexture drivers */
-#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,DShow,Null"
+#if defined(HAVE_GTK)
+#include "LoadingWindow/LoadingWindow_Gtk.h"
+#endif
+#if defined(LINUX)
+#define DEFAULT_INPUT_DRIVER_LIST "X11,Joystick"
+#else
+#define DEFAULT_INPUT_DRIVER_LIST "X11"
+#endif
+#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,Null"
+#define DEFAULT_SOUND_DRIVER_LIST "ALSA-sw,OSS,Null"
+#else
+#error Which arch?
+#endif
 
-/* RageSoundDrivers */
-#define DEFAULT_SOUND_DRIVER_LIST "ALSA,DirectSound,ALSA-sw,DirectSound-sw,CoreAudio,OSS,QT1,WaveOut,Null"
+/* All use these. */
+#include "LoadingWindow/LoadingWindow_Null.h"
+#include "MemoryCard/MemoryCardDriver_Null.h"
 
 #endif
 
 /*
- * (c) 2002-2005 Glenn Maynard, Ben Anderson
+ * (c) 2002-2006 Glenn Maynard, Ben Anderson, Steve Checkoway
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

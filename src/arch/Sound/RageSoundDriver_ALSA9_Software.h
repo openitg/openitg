@@ -7,7 +7,7 @@
 
 #include "ALSA9Helpers.h"
 
-class RageSound_ALSA9_Software: public RageSound_Generic_Software
+class RageSoundDriver_ALSA9_Software: public RageSoundDriver_Generic_Software
 {
 private:
 	bool shutdown;
@@ -21,19 +21,17 @@ private:
 	bool GetData();
 
 public:
+	RageSoundDriver_ALSA9_Software();
+	~RageSoundDriver_ALSA9_Software();
+	CString Init();
+
 	/* virtuals: */
 	int64_t GetPosition( const RageSoundBase *snd ) const;
 	float GetPlayLatency() const;
         int GetSampleRate( int rate ) const;
 
-	void SetupDecodingThread();
-		
-
-	RageSound_ALSA9_Software();
-	CString Init();
-	~RageSound_ALSA9_Software();
+	void SetupDecodingThread();		
 };
-#define USE_RAGE_SOUND_ALSA9_SOFTWARE
 
 #endif
 

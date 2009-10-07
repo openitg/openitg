@@ -7,9 +7,14 @@
 
 #include "ALSA9Helpers.h"
 
-class RageSound_ALSA9: public RageSoundDriver
+class RageSoundDriver_ALSA9: public RageSoundDriver
 {
 public:
+	RageSoundDriver_ALSA9();
+	~RageSoundDriver_ALSA9();
+
+	CString Init();
+	
 	/* virtuals: */
 	void StartMixing(RageSoundBase *snd);
 	void StopMixing(RageSoundBase *snd);
@@ -18,10 +23,6 @@ public:
 	int GetSampleRate( int rate ) const;
 
 	void Update(float delta);
-
-	RageSound_ALSA9();
-	CString Init();
-	~RageSound_ALSA9();
 
 private:
 	/* This mutex serializes the decode thread and StopMixing. */
@@ -71,7 +72,6 @@ private:
 
 	void GetData();
 };
-#define USE_RAGE_SOUND_ALSA9
 
 #endif
 

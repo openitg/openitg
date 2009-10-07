@@ -4,8 +4,9 @@
 #include "RageLog.h"
 #include "RageDisplay.h"
 
-
 #include <xtl.h>
+
+REGISTER_INPUT_HANDLER( Xbox );
 
 struct DEVICE_STATE {
     XPP_DEVICE_TYPE *pxdt;

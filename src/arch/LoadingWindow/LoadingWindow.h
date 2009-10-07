@@ -4,12 +4,16 @@
 #define LOADING_WINDOW_H
 
 #include "global.h"
+#include "arch/RageDriver.h"
 
 struct RageSurface;
-class LoadingWindow
+class LoadingWindow: public RageDriver
 {
 public:
-	virtual CString Init() { return ""; }
+	static LoadingWindow *Create();
+	static DriverList m_pDriverList;
+
+	virtual CString Init() { return CString(); }
 	virtual ~LoadingWindow() { }
 
 	virtual void Paint() = 0;
@@ -18,9 +22,11 @@ public:
 };
 
 #endif
+#define REGISTER_LOADING_WINDOW( name ) \
+	static RegisterRageDriver register_##name( &LoadingWindow::m_pDriverList, #name, CreateClass<LoadingWindow_##name, RageDriver> )
 
 /*
- * (c) 2002-2004 Glenn Maynard
+ * (c) 2002-2009 Glenn Maynard, BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

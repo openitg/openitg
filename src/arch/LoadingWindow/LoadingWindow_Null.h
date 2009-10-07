@@ -11,7 +11,6 @@ public:
 	void SetText(CString str) { }
 	void Paint() { }
 };
-#define USE_LOADING_WINDOW_NULL
 
 #endif
 

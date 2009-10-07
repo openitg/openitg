@@ -3,8 +3,6 @@
 #include "PrefsManager.h"
 #include "MemoryCardDriver_Null.h"
 
-#include "Selector_MemoryCardDriver.h"
-
 bool UsbStorageDevice::operator==(const UsbStorageDevice& other) const
 {
   //  LOG->Trace( "Comparing %d %d %d %s %s to %d %d %d %s %s",
@@ -23,6 +21,21 @@ void UsbStorageDevice::SetOsMountDir( const CString &s )
 {
 	sOsMountDir = s;
 	FixSlashesInPlace( sOsMountDir );
+}
+
+#include "arch/arch_default.h"
+MemoryCardDriver *MemoryCardDriver::Create()
+{
+	MemoryCardDriver *ret = NULL;
+
+#ifdef ARCH_MEMORY_CARD_DRIVER
+	ret = new ARCH_MEMORY_CARD_DRIVER;
+#endif
+
+	if( !ret )
+		ret = new MemoryCardDriver_Null;
+
+	return ret;
 }
 
 /*

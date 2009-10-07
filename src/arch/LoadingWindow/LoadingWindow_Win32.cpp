@@ -10,6 +10,8 @@
 #include "RageSurface.h"
 #include "RageSurfaceUtils.h"
 
+REGISTER_LOADING_WINDOW( Win32 );
+
 static HBITMAP g_hBitmap = NULL;
 
 /* Load a file into a GDI surface. */

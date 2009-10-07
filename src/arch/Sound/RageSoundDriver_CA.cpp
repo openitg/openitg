@@ -15,6 +15,8 @@
 #include <mach/mach_init.h>
 #include <mach/mach_error.h>
 
+REGISTER_SOUND_DRIVER2( CoreAudio, CA );
+
 static const UInt32 kFramesPerPacket = 1;
 static const UInt32 kChannelsPerFrame = 2;
 static const UInt32 kBitsPerChannel = 16;

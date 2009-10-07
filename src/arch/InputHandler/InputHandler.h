@@ -23,19 +23,19 @@
 #include "RageInputDevice.h"	// for InputDevice
 #include "Preference.h"		// for the controller debug
 #include "DebugTimer.h"		// for timing data debug
+#include "arch/RageDriver.h"
 
 extern Preference<bool>		g_bDebugInputDrivers;
 
-class InputHandler
+class InputHandler: public RageDriver
 {
 public:
-	InputHandler()
-	{
-		m_iInputsSinceUpdate = 0;
-		m_DebugTimer.m_bAutoReport = g_bDebugInputDrivers;
-	}
+	static void Create( const CString &sDrivers, vector<InputHandler*> &apAdd );
+	static DriverList m_pDriverList;
 
+	InputHandler();
 	virtual ~InputHandler() { }
+
 	virtual void Update( float fDeltaTime ) { }
 	virtual void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut ) = 0;
 
@@ -64,10 +64,16 @@ protected:
 
 	/* Call StartUpdate() / EndUpdate() for each input loop */
 	DebugTimer m_DebugTimer;
+
 private:
 	RageTimer m_LastUpdate;
 	int m_iInputsSinceUpdate;
 };
+
+/* the _CLASS seems pretty redundant to me. -- Vyhd */
+#define REGISTER_INPUT_HANDLER2( name, class ) \
+	static RegisterRageDriver register_##name( &InputHandler::m_pDriverList, #name, CreateClass<InputHandler_##class, RageDriver> )
+#define REGISTER_INPUT_HANDLER( name ) REGISTER_INPUT_HANDLER2( name, name )
 
 #endif
 

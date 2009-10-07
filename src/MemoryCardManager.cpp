@@ -108,7 +108,7 @@ ThreadedMemoryCardWorker::ThreadedMemoryCardWorker():
 	WorkerThread("ThreadedMemoryCardWorker"),
 	UsbStorageDevicesMutex("UsbStorageDevicesMutex")
 {
-	m_pDriver = MakeMemoryCardDriver();
+	m_pDriver = MemoryCardDriver::Create();
 	m_MountThreadState = detect_and_mount;
 	SetHeartbeat( 0.1f );
 

@@ -44,6 +44,19 @@ ActorFrame::~ActorFrame()
 		DeleteAllChildren();
 }
 
+void ActorFrame::SetUpdateFunction( const LuaReference &UpdateFunction, bool bOnStack )
+{
+	if( !bOnStack )
+	{
+		m_UpdateFunction = UpdateFunction;
+		return;
+	}
+
+	Lua *L = LUA->Get();
+	m_UpdateFunction.SetFromStack( L );
+	LUA->Release( L );
+}
+
 void ActorFrame::LoadFromNode( const CString& sDir, const XNode* pNode )
 {
 	Actor::LoadFromNode( sDir, pNode );

@@ -7,6 +7,8 @@
 #include "RageInputDevice.h"
 #include "archutils/Win32/USB.h"
 
+REGISTER_INPUT_DRIVER2( Para, Win32_Para );
+
 InputHandler_Win32_Para::InputHandler_Win32_Para()
 {
 	shutdown = false;

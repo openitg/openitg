@@ -8,6 +8,8 @@
 #include "LightsDriver_G15.h"
 #include "RageThreads.h"
 
+REGISTER_LIGHTS_DRIVER( G15 );
+
 RageMutex g_G15LightMutex("G15LightMutex");
 
 LightsDriver_G15::LightsDriver_G15()

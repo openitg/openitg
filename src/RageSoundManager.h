@@ -24,7 +24,7 @@ public:
 	 * start sounds will do nothing, and threads may be shut down. */
 	void Shutdown();
 
-	void Init( CString drivers );
+	void Init();
 
 	float GetMixVolume() const { return MixVolume; }
 	void SetPrefs(float MixVol);

@@ -1007,6 +1007,10 @@ int main(int argc, char* argv[])
 	LOG			= new RageLog();
 
 	/* Whew--we should be able to crash safely now! */
+	LOG->Info( "%llu MB total, %llu MB remaining.", 
+		HOOKS->GetDiskSpaceTotal( argv[0] ) / (1024*1024), 
+		HOOKS->GetDiskSpaceFree( argv[0] ) / (1024*1024)
+	);
 
 	//
 	// load preferences and mount any alternative trees.
@@ -1094,7 +1098,7 @@ int main(int argc, char* argv[])
 	GAMESTATE	= new GameState;
 
 	/* This requires PREFSMAN, for PREFSMAN->m_bShowLoadingWindow. */
-	LoadingWindow *loading_window = MakeLoadingWindow();
+	LoadingWindow *loading_window = LoadingWindow::Create();
 	if( loading_window == NULL )
 		RageException::Throw( "Couldn't open any loading windows." );
 
@@ -1136,11 +1140,11 @@ int main(int argc, char* argv[])
 	if( PREFSMAN->m_iSoundWriteAhead )
 		LOG->Info( "Sound writeahead has been overridden to %i", PREFSMAN->m_iSoundWriteAhead.Get() );
 	SOUNDMAN	= new RageSoundManager;
-	SOUNDMAN->Init( PREFSMAN->GetSoundDrivers() );
+	SOUNDMAN->Init();
 	SOUNDMAN->SetPrefs( PREFSMAN->GetSoundVolume() );
 	SOUND		= new GameSoundManager;
 	BOOKKEEPER	= new Bookkeeper;
-	LIGHTSMAN	= new LightsManager( PREFSMAN->GetLightsDriver() );
+	LIGHTSMAN	= new LightsManager;
 	INPUTFILTER	= new InputFilter;
 	INPUTMAPPER	= new InputMapper;
 	INPUTQUEUE	= new InputQueue;
@@ -1197,7 +1201,7 @@ int main(int argc, char* argv[])
 
 	/* This initializes objects that change the SDL event mask, and has other
 	 * dependencies on the SDL video subsystem, so it must be initialized after DISPLAY. */
-	INPUTMAN	= new RageInput( PREFSMAN->GetInputDrivers() );
+	INPUTMAN	= new RageInput;
 
 	// These things depend on the TextureManager, so do them after!
 	FONT		= new FontManager;

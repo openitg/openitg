@@ -32,8 +32,17 @@ public:
 
 		LuaReference ref;
 		lua_pushvalue( L, 1 );
-		ref.SetFromStack( L );
-		p->SetUpdateFunction( ref );
+		p->SetUpdateFunction( LuaReference(), true );
+		return 0;
+	}
+	static int SetUpdateCommand( T* p, lua_State *L )
+	{
+		if( !p->HasCommand(SArg(1)) )
+			return 0;
+		p->GetCommand( SArg(1) )->PushSelf( L );
+		luaL_checktype( L, 1, LUA_TFUNCTION );
+		lua_pushvalue( L, 1 );
+		p->SetUpdateFunction( LuaReference(), true );
 		return 0;
 	}
 
@@ -47,6 +56,7 @@ public:
 		ADD_METHOD( GetNumChildren )
 		ADD_METHOD( SetDrawByZPosition )
 		ADD_METHOD( SetUpdateFunction )
+		ADD_METHOD( SetUpdateCommand )
 		LunaActor<T>::Register( L );
 	}
 };
@@ -71,7 +81,7 @@ public:
 	void SortByDrawOrder();
 	void SetDrawByZPosition( bool b );
 
-	void SetUpdateFunction( const LuaReference &UpdateFunction ) { m_UpdateFunction = UpdateFunction; }
+	void SetUpdateFunction( const LuaReference &UpdateFunction, bool bOnStack = true );
 
 	void DeleteChildrenWhenDone( bool bDelete=true ) { m_bDeleteChildren = bDelete; }
 	void DeleteAllChildren();

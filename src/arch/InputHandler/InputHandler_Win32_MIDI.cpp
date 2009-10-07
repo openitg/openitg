@@ -8,6 +8,8 @@
 
 #pragma comment (lib,"winmm.lib")
 
+REGISTER_INPUT_HANDLER2( MIDI, Win32_MIDI );
+
 static HMIDIIN g_device;
 static void CALLBACK midiCallback(HMIDIIN g_device, UINT status, DWORD instancePtr, DWORD data, DWORD timestamp);
 

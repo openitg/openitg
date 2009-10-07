@@ -1,37 +1,34 @@
-#ifndef SELECTOR_RAGE_SOUND_DRIVER_H
-#define SELECTOR_RAGE_SOUND_DRIVER_H
+#ifndef RAGE_DRIVER_H
+#define RAGE_DRIVER_H
 
-#include "arch/arch_platform.h"
+#include "RageUtil.h"
+#include <map>
 
-/* RageSoundDriver selector. */
-#ifdef HAVE_ALSA
-#include "RageSoundDriver_ALSA9.h"
-#include "RageSoundDriver_ALSA9_Software.h"
-#endif
+class RageDriver
+{
+public:
+	virtual ~RageDriver() { }
+};
 
-#ifdef HAVE_COREAUDIO
-#include "RageSoundDriver_CA.h"
-#endif
+typedef RageDriver *(*CreateRageDriverFn)();
 
-#ifdef HAVE_DIRECTX
-#include "RageSoundDriver_DSound.h"
-#include "RageSoundDriver_DSound_Software.h"
-#endif
+/* This is created and accessed during C++ static initialization; it must be a POD. */
+struct DriverList
+{
+	void Add( const istring &sName, CreateRageDriverFn pfn );
+	RageDriver *Create( const CString &sDriverName );
+	map<istring, CreateRageDriverFn> *m_pRegistrees;
+};
 
-#include "RageSoundDriver_Null.h"
-
-#ifdef HAVE_OSS
-#include "RageSoundDriver_OSS.h"
-#endif
-
-#ifdef HAVE_WIN32
-#include "RageSoundDriver_WaveOut.h"
-#endif
+struct RegisterRageDriver
+{
+	RegisterRageDriver( DriverList *pDriverList, const istring &sName, CreateRageDriverFn pfn );
+};
 
 #endif
 
 /*
- * (c) 2005 Ben Anderson
+ * (c) 2006 Glenn Maynard
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

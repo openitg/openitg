@@ -538,7 +538,7 @@ const HighScoreList& Profile::GetStepsHighScoreList( const Song* pSong, const St
 HighScoreList& Profile::GetStepsHighScoreList( const Song* pSong, const Steps* pSteps )
 {
 
-  DBG_TIMER_START(GetStepsHighScoreList);
+//  DBG_TIMER_START(GetStepsHighScoreList);
 
 	SongID songID;
 	songID.FromSong( pSong );
@@ -549,7 +549,7 @@ HighScoreList& Profile::GetStepsHighScoreList( const Song* pSong, const Steps* p
 	HighScoresForASong &hsSong = m_SongHighScores[songID];	// operator[] inserts into map
 	HighScoresForASteps &hsSteps = hsSong.m_StepsHighScores[stepsID];	// operator[] inserts into map
 
-  DBG_TIMER_STOP(GetStepsHighScoreList);
+//  DBG_TIMER_STOP(GetStepsHighScoreList);
 
 	return hsSteps.hsl;
 }

@@ -1,30 +1,33 @@
-#ifndef SELECTOR_LIGHTS_DRIVER_H
-#define SELECTOR_LIGHTS_DRIVER_H
+#include "global.h"
+#include "RageDriver.h"
 
-#include "arch/arch_platform.h"
+void DriverList::Add( const istring &sName, CreateRageDriverFn pfn )
+{
+	if( m_pRegistrees == NULL )
+		m_pRegistrees = new map<istring, CreateRageDriverFn>;
+	
+	ASSERT( m_pRegistrees->find(sName) == m_pRegistrees->end() );
+	(*m_pRegistrees)[sName] = pfn;
+}
 
-/* LightsDriver selector. */
-#ifdef HAVE_WIN32
-#include "LightsDriver_Win32Parallel.h"
-#endif
-#ifdef HAVE_LINUXKERNEL
-#include "LightsDriver_LinuxParallel.h"
-#include "LightsDriver_LinuxWeedTech.h"
-#endif
-#include "LightsDriver_External.h"
-#include "LightsDriver_SystemMessage.h"
+RageDriver *DriverList::Create( const CString &sDriverName )
+{
+	if( m_pRegistrees == NULL )
+		return NULL;
 
-#ifndef XBOX
-#include "LightsDriver_PacDrive.h"
-#include "LightsDriver_G15.h"
-#endif
+	map<istring, CreateRageDriverFn>::const_iterator iter = m_pRegistrees->find( istring(sDriverName) );
+	if( iter == m_pRegistrees->end() )
+		return NULL;
+	return (iter->second)();
+}
 
-#include "LightsDriver_Null.h"
-
-#endif
+RegisterRageDriver::RegisterRageDriver( DriverList *pDriverList, const istring &sName, CreateRageDriverFn pfn )
+{
+	pDriverList->Add( sName, pfn );
+}
 
 /*
- * (c) 2005 Ben Anderson.
+ * (c) 2006 Glenn Maynard
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

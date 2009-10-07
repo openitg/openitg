@@ -1,21 +1,46 @@
-#ifndef SELECTOR_LOW_LEVEL_WINDOW_H
-#define SELECTOR_LOW_LEVEL_WINDOW_H
+#include "global.h"
+#include "LightsDriver.h"
+#include "RageLog.h"
+#include "Foreach.h"
+#include "arch/arch_default.h"
 
-/* LowLevelWindow selector. */
-#if defined(HAVE_WIN32)
-#include "LowLevelWindow_Win32.h"
-#elif defined(HAVE_X11) // Prefer LLW_X11 over LLW_SDL
-#include "LowLevelWindow_X11.h"
-#elif defined(HAVE_SDL)
-#include "LowLevelWindow_SDL.h"
-#else
-#error "No suitable LowLevelWindow available."
-#endif
+#include "arch/Lights/LightsDriver_SystemMessage.h"
+#include "arch/Lights/LightsDriver_External.h"
 
-#endif
+DriverList LightsDriver::m_pDriverList;
+
+void LightsDriver::Create( const CString &sDrivers, vector<LightsDriver *> &Add )
+{
+	LOG->Trace( "Initializing lights drivers: %s", sDrivers.c_str() );
+
+	vector<CString> asDriversToTry;
+	split( sDrivers, ",", asDriversToTry, true );
+	
+	FOREACH_CONST( CString, asDriversToTry, Driver )
+	{
+		RageDriver *pRet = m_pDriverList.Create( *Driver );
+
+		if( pRet == NULL )
+		{
+			LOG->Trace( "Unknown lights driver: %s", Driver->c_str() );
+			continue;
+		}
+
+		LightsDriver *pDriver = dynamic_cast<LightsDriver *>( pRet );
+		ASSERT( pDriver != NULL );
+
+		LOG->Info( "Lights driver: %s", Driver->c_str() );
+		Add.push_back( pDriver );
+	}
+
+	/* always add these drivers. system message for lights debugging,
+	 * and ext to avoid any weird problems with I/O lights not working. */
+	Add.push_back( new LightsDriver_SystemMessage );
+	Add.push_back( new LightsDriver_External );
+}
 
 /*
- * (c) 2005 Ben Anderson
+ * (c) 2002-2005 Glenn Maynard
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

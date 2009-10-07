@@ -21,7 +21,6 @@ public:
 	void Paint() { } /* Not needed but pure virtual*/
 	void SetText( CString str ) { SetCocoaWindowText( str ); }
 };
-#define USE_LOADING_WINDOW_COCOA
 
 #endif
 

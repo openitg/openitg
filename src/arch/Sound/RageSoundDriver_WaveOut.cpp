@@ -11,6 +11,8 @@
 #include "RageUtil.h"
 #include "RageSoundManager.h"
 
+REGISTER_SOUND_DRIVER( WaveOut );
+
 const int channels = 2;
 const int bytes_per_frame = channels*2;		/* 16-bit */
 const int samplerate = 44100;

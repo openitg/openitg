@@ -67,6 +67,8 @@ struct UsbStorageDevice
 class MemoryCardDriver
 {
 public:
+	static MemoryCardDriver *Create();
+
 	MemoryCardDriver() {};
 	virtual ~MemoryCardDriver() {};
 	virtual bool Mount( UsbStorageDevice* pDevice ) = 0;	// return false if mount or write fails

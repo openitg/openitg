@@ -428,7 +428,7 @@ void InitScalingScript()
 
 CString RageDisplay_OGL::Init( VideoModeParams p, bool bAllowUnacceleratedRenderer )
 {
-	wind = MakeLowLevelWindow();
+	wind = LowLevelWindow::Create();
 
 	bool bIgnore = false;
 	CString sError = SetVideoMode( p, bIgnore );

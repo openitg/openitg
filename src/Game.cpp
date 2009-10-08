@@ -11,9 +11,7 @@
 
 int Game::GetNumGameplayButtons() const
 {
-	int iIndexOfOperator = ButtonNameToIndex( "Operator" );
-	ASSERT( iIndexOfOperator != GAME_BUTTON_INVALID );
-	return m_iButtonsPerController - iIndexOfOperator;
+	return m_iButtonsPerController - GAME_BUTTON_NEXT;
 }
 
 GameButton Game::ButtonNameToIndex( const CString &sButtonName ) const

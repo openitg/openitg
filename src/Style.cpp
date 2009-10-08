@@ -47,10 +47,7 @@ GameInput Style::StyleInputToGameInput( const StyleInput& StyleI ) const
 	FOREACH_GameController(gc)
 	{
 		if( bUsingOneSide && gc != (int) StyleI.player )
-		{
-			LOG->Debug( "bUsingOneSide, %d != %d\n", gc, StyleI.player );
 			continue;
-		}
 
 		for( GameButton gb = GAME_BUTTON_NEXT; gb < m_pGame->m_iButtonsPerController && m_iInputColumn[gc][gb-GAME_BUTTON_NEXT] != END_MAPPING; gb=(GameButton)(gb+1) )
 			if( m_iInputColumn[gc][gb-GAME_BUTTON_NEXT] == StyleI.col )

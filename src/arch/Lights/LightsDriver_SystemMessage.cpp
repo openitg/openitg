@@ -31,12 +31,12 @@ void LightsDriver_SystemMessage::Set( const LightsState *ls )
 	}
 	s += "\n";
 
-	int iNumGameButtonsToShow = GAMESTATE->m_pCurGame->GetNumGameplayButtons();
+	int iNumGameButtonsToShow = GAMESTATE->m_pCurGame->GetNumGameplayButtons() + GAME_BUTTON_NEXT;
 	
 	FOREACH_GameController( gc )
 	{
 		s += ssprintf("Controller%d: ",gc+1);
-		for( int gb=0; gb<iNumGameButtonsToShow; gb++ )
+		for( int gb= int(GAME_BUTTON_NEXT); gb<iNumGameButtonsToShow; gb++ )
 		{
 			s += ls->m_bGameButtonLights[gc][gb] ? '1' : '0';
 		}

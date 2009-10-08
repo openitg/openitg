@@ -1,5 +1,7 @@
 OpenITG, beta 3 (in development)
 --------------------------------
+-New LightsDrivers:
+     LightsDriver_Dynamic: use external libraries to control lights
 -Miscellaneous changes:
      Changed "DebugTheme" preference to "ShowThemeErrors"
      Switched to SM4-style button enumerations

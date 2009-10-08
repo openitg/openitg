@@ -55,7 +55,7 @@ void ScreenMapControllers::Init()
 	for( int b=0; b<GAMESTATE->GetCurrentGame()->m_iButtonsPerController; b++ )
 	{
 		CString sName = GAMESTATE->GetCurrentGame()->m_szButtonNames[b];
-		CString sSecondary = GAMEMAN->GetMenuButtonSecondaryFunction( GAMESTATE->GetCurrentGame(), b );
+		CString sSecondary = GAMEMAN->GetMenuButtonSecondaryFunction( GAMESTATE->GetCurrentGame(), GameButton(b) );
 
 		m_textName[b].LoadFromFont( THEME->GetPathF("Common","title") );
 		m_textName[b].SetXY( SCREEN_CENTER_X, -6 );

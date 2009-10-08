@@ -344,6 +344,7 @@ void LightsManager::Update( float fDeltaTime )
 			if( !GAMESTATE->m_bSideIsJoined[pn] && GAMESTATE->PlayersCanJoin() && GAMESTATE->EnoughCreditsToJoin() )
 			{
 				m_LightsState.m_bCabinetLights[LIGHT_BUTTONS_LEFT+pn] = bBlinkOn;
+				m_LightsState.m_bGameButtonLights[pn][GAME_BUTTON_START] = bBlinkOn;
 			}
 		}
 	}
@@ -404,7 +405,7 @@ void LightsManager::Update( float fDeltaTime )
 					if( !GAMESTATE->m_bSideIsJoined[gc] )
 						continue;
 
-					FOREACH_GameButton( gb )
+					FOREACH_GameButton_Custom( gb )
 					{
 						bool bOn = INPUTMAPPER->IsButtonDown( GameInput(gc,gb) );
 						m_LightsState.m_bGameButtonLights[gc][gb] = bOn;

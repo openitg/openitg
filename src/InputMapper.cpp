@@ -65,7 +65,7 @@ struct AutoJoyMapping
 	const char *szControllerName;	// the product name of the controller
 	struct InputMapper::Mapping maps[32];
 };
-#define END_MARKER	{-1, -1, -1, false },	// end marker
+#define END_MARKER	{-1, -1, GAME_BUTTON_INVALID, false },	// end marker
 
 /* I'm separating ITGIO and PIUIO since we're soft-coding them.
  * ITGIO won't see any improvements, but PIUIO already has, so...
@@ -82,22 +82,22 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, JOY_13,		DANCE_BUTTON_RIGHT,		false },
 			{ 0, JOY_16,		DANCE_BUTTON_UP,		false },
 			{ 0, JOY_15,		DANCE_BUTTON_DOWN,		false },
-			{ 0, JOY_12,		DANCE_BUTTON_START,		false },
-			{ 0, JOY_11,		DANCE_BUTTON_MENULEFT,		false },
-			{ 0, JOY_10,		DANCE_BUTTON_MENURIGHT,		false },
+			{ 0, JOY_12,		GAME_BUTTON_START,		false },
+			{ 0, JOY_11,		GAME_BUTTON_MENULEFT,		false },
+			{ 0, JOY_10,		GAME_BUTTON_MENURIGHT,		false },
 
 			/* Player 2 */
 			{ 1, JOY_7,		DANCE_BUTTON_LEFT,		true },
 			{ 1, JOY_6,		DANCE_BUTTON_RIGHT,		true },
 			{ 1, JOY_9,		DANCE_BUTTON_UP,		true },
 			{ 1, JOY_8,		DANCE_BUTTON_DOWN,		true },
-			{ 1, JOY_5,		DANCE_BUTTON_START,		true },
-			{ 1, JOY_4,		DANCE_BUTTON_MENULEFT,		true },
-			{ 1, JOY_3,		DANCE_BUTTON_MENURIGHT,		true },
+			{ 1, JOY_5,		GAME_BUTTON_START,		true },
+			{ 1, JOY_4,		GAME_BUTTON_MENULEFT,		true },
+			{ 1, JOY_3,		GAME_BUTTON_MENURIGHT,		true },
 
 			/* Other controls */
-			{ 0, JOY_2,		DANCE_BUTTON_OPERATOR,		false },
-			{ 0, JOY_1,		DANCE_BUTTON_COIN,		false },
+			{ 0, JOY_2,		GAME_BUTTON_OPERATOR,		false },
+			{ 0, JOY_1,		GAME_BUTTON_COIN,		false },
 			END_MARKER
 		}
 	},
@@ -111,25 +111,25 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, JOY_29,		DANCE_BUTTON_RIGHT,		false },
 			{ 0, JOY_32,		DANCE_BUTTON_UP,		false },
 			{ 0, JOY_31,		DANCE_BUTTON_DOWN,		false },
-			{ 0, JOY_27,		DANCE_BUTTON_SELECT,		false },
-			{ 0, JOY_28,		DANCE_BUTTON_START,		false },
-			{ 0, JOY_26,		DANCE_BUTTON_MENULEFT,		false },
-			{ 0, JOY_25,		DANCE_BUTTON_MENURIGHT,		false },
+			{ 0, JOY_27,		GAME_BUTTON_SELECT,		false },
+			{ 0, JOY_28,		GAME_BUTTON_START,		false },
+			{ 0, JOY_26,		GAME_BUTTON_MENULEFT,		false },
+			{ 0, JOY_25,		GAME_BUTTON_MENURIGHT,		false },
 
 			/* Player 2 */
 			{ 1, JOY_14,		DANCE_BUTTON_LEFT,		true },
 			{ 1, JOY_13,		DANCE_BUTTON_RIGHT,		true },
 			{ 1, JOY_16,		DANCE_BUTTON_UP,		true },
 			{ 1, JOY_15,		DANCE_BUTTON_DOWN,		true },
-			{ 1, JOY_11,		DANCE_BUTTON_SELECT,		true },
-			{ 1, JOY_12,		DANCE_BUTTON_START,		true },
-			{ 1, JOY_10,		DANCE_BUTTON_MENULEFT,		true },
-			{ 1, JOY_9,		DANCE_BUTTON_MENURIGHT,		true },
+			{ 1, JOY_11,		GAME_BUTTON_SELECT,		true },
+			{ 1, JOY_12,		GAME_BUTTON_START,		true },
+			{ 1, JOY_10,		GAME_BUTTON_MENULEFT,		true },
+			{ 1, JOY_9,		GAME_BUTTON_MENURIGHT,		true },
 
 			/* Other controls */
-			{ 0, JOY_23,		DANCE_BUTTON_OPERATOR,		false },
-			{ 1, JOY_18,		DANCE_BUTTON_OPERATOR,		false },
-			{ 0, JOY_22,		DANCE_BUTTON_COIN,		false },
+			{ 0, JOY_23,		GAME_BUTTON_OPERATOR,		false },
+			{ 1, JOY_18,		GAME_BUTTON_OPERATOR,		false },
+			{ 0, JOY_22,		GAME_BUTTON_COIN,		false },
 			END_MARKER
 		}
 	},
@@ -172,8 +172,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 1, JOY_2,			DANCE_BUTTON_DOWN,		false },
 			{ 0, JOY_5,			DANCE_BUTTON_UPLEFT,	false },
 			{ 0, JOY_6,			DANCE_BUTTON_UPRIGHT,	false },
-			{ 0, JOY_9,			DANCE_BUTTON_BACK,		false },
-			{ 0, JOY_10,		DANCE_BUTTON_START,		false },
+			{ 0, JOY_9,			GAME_BUTTON_BACK,		false },
+			{ 0, JOY_10,		GAME_BUTTON_START,		false },
 			END_MARKER
 		}
 	},
@@ -192,8 +192,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 1, JOY_1,			DANCE_BUTTON_DOWN,		false },
 			{ 0, JOY_7,			DANCE_BUTTON_UPLEFT,	false },
 			{ 0, JOY_8,			DANCE_BUTTON_UPRIGHT,	false },
-			{ 0, JOY_9,			DANCE_BUTTON_BACK,		false },
-			{ 0, JOY_10,		DANCE_BUTTON_START,		false },
+			{ 0, JOY_9,			GAME_BUTTON_BACK,		false },
+			{ 0, JOY_10,		GAME_BUTTON_START,		false },
 			END_MARKER
 		}
 	},
@@ -214,8 +214,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, JOY_6,			DANCE_BUTTON_UPRIGHT,	false },
 			{ 1, JOY_7,			DANCE_BUTTON_UPLEFT,	false },
 			{ 1, JOY_8,			DANCE_BUTTON_UPRIGHT,	false },
-			{ 0, JOY_10,		DANCE_BUTTON_BACK,		false },
-			{ 0, JOY_9,			DANCE_BUTTON_START,		false },
+			{ 0, JOY_10,		GAME_BUTTON_BACK,		false },
+			{ 0, JOY_9,			GAME_BUTTON_START,		false },
 			END_MARKER
 		}
 	},
@@ -236,8 +236,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, JOY_6,			DANCE_BUTTON_UPRIGHT,	false },
 			{ 1, JOY_7,			DANCE_BUTTON_UPLEFT,	false },
 			{ 1, JOY_8,			DANCE_BUTTON_UPRIGHT,	false },
-			{ 0, JOY_10,		DANCE_BUTTON_BACK,		false },
-			{ 0, JOY_9,			DANCE_BUTTON_START,		false },
+			{ 0, JOY_10,		GAME_BUTTON_BACK,		false },
+			{ 0, JOY_9,			GAME_BUTTON_START,		false },
 			END_MARKER
 		}
 	},
@@ -258,8 +258,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, JOY_6,		DANCE_BUTTON_UPRIGHT,	false },
 			{ 1, JOY_7,		DANCE_BUTTON_UPLEFT,	false },
 			{ 1, JOY_8,		DANCE_BUTTON_UPRIGHT,	false },
-			{ 0, JOY_9,		DANCE_BUTTON_BACK,		false },
-			{ 0, JOY_10,	DANCE_BUTTON_START,		false },
+			{ 0, JOY_9,		GAME_BUTTON_BACK,		false },
+			{ 0, JOY_10,	GAME_BUTTON_START,		false },
 			END_MARKER
 		}
 	},
@@ -280,8 +280,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, JOY_5,		DANCE_BUTTON_UPRIGHT,	false },
 			{ 1, JOY_8,		DANCE_BUTTON_UPLEFT,	false },
 			{ 1, JOY_6,		DANCE_BUTTON_UPRIGHT,	false },
-			{ 0, JOY_10,	DANCE_BUTTON_BACK,		false },
-			{ 0, JOY_9,		DANCE_BUTTON_START,		false },
+			{ 0, JOY_10,	GAME_BUTTON_BACK,		false },
+			{ 0, JOY_9,		GAME_BUTTON_START,		false },
 			END_MARKER
 		}
 	},
@@ -300,8 +300,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 1, JOY_4,			DANCE_BUTTON_UP,		false },	// Y
 			{ 0, JOY_7,			DANCE_BUTTON_UPLEFT,	false },	// L shoulder
 			{ 0, JOY_8,			DANCE_BUTTON_UPRIGHT,	false },	// R shoulder
-			{ 0, JOY_9,			DANCE_BUTTON_START,		false },
-			{ 0, JOY_10,		DANCE_BUTTON_BACK,		false },
+			{ 0, JOY_9,			GAME_BUTTON_START,		false },
+			{ 0, JOY_10,		GAME_BUTTON_BACK,		false },
 			END_MARKER
 		}
 	},
@@ -322,10 +322,10 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 1, JOY_3,		DANCE_BUTTON_DOWN,		false },
 			{ 0, JOY_7,		DANCE_BUTTON_UPLEFT,    false },
 			{ 0, JOY_8,		DANCE_BUTTON_UPRIGHT,   false },
-			{ 0, JOY_9,		DANCE_BUTTON_SELECT,	false },
-			{ 0, JOY_10,	DANCE_BUTTON_START,		false },
-			{ 0, JOY_5,		DANCE_BUTTON_BACK,		false },
-			{ 0, JOY_6,		DANCE_BUTTON_COIN,		false },
+			{ 0, JOY_9,		GAME_BUTTON_SELECT,	false },
+			{ 0, JOY_10,	GAME_BUTTON_START,		false },
+			{ 0, JOY_5,		GAME_BUTTON_BACK,		false },
+			{ 0, JOY_6,		GAME_BUTTON_COIN,		false },
 			// Player 2.
 			{ 0, JOY_32,	DANCE_BUTTON_LEFT,		true },
 			{ 0, JOY_30,	DANCE_BUTTON_RIGHT,		true },
@@ -337,10 +337,10 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 1, JOY_19,	DANCE_BUTTON_DOWN,		true },
 			{ 0, JOY_23,	DANCE_BUTTON_UPRIGHT,	true },
 			{ 0, JOY_24,	DANCE_BUTTON_UPLEFT,	true },
-			{ 0, JOY_25,	DANCE_BUTTON_SELECT,	true },
-			{ 0, JOY_26,	DANCE_BUTTON_START,		true },
-			{ 0, JOY_21,	DANCE_BUTTON_BACK,		true },
-			{ 0, JOY_22,	DANCE_BUTTON_COIN,		true },
+			{ 0, JOY_25,	GAME_BUTTON_SELECT,	true },
+			{ 0, JOY_26,	GAME_BUTTON_START,		true },
+			{ 0, JOY_21,	GAME_BUTTON_BACK,		true },
+			{ 0, JOY_22,	GAME_BUTTON_COIN,		true },
 			END_MARKER
 		}
 	},
@@ -355,8 +355,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, JOY_4,			DANCE_BUTTON_RIGHT,		false },
 			{ 0, JOY_7,			DANCE_BUTTON_UPRIGHT,	false },
 			{ 0, JOY_8,			DANCE_BUTTON_UPLEFT,	false },
-			{ 0, JOY_9,			DANCE_BUTTON_BACK,		false },
-			{ 0, JOY_10,		DANCE_BUTTON_START,		false },
+			{ 0, JOY_9,			GAME_BUTTON_BACK,		false },
+			{ 0, JOY_10,		GAME_BUTTON_START,		false },
 			END_MARKER
 		}
 	},
@@ -370,7 +370,7 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, PUMP_MID,		PUMP_BUTTON_CENTER,		false },
 			{ 0, PUMP_DL,		PUMP_BUTTON_DOWNLEFT,	false },
 			{ 0, PUMP_DR,		PUMP_BUTTON_DOWNRIGHT,	false },
-			{ 0, PUMP_ESCAPE,	PUMP_BUTTON_BACK,		false },
+			{ 0, PUMP_ESCAPE,	GAME_BUTTON_BACK,		false },
 			{ 0, PUMP_2P_UL,	PUMP_BUTTON_UPLEFT,		true },
 			{ 0, PUMP_2P_UR,	PUMP_BUTTON_UPRIGHT,	true },
 			{ 0, PUMP_2P_MID,	PUMP_BUTTON_CENTER,		true },
@@ -392,8 +392,8 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			{ 0, JOY_6,			TECHNO_BUTTON_DOWNLEFT,	false },
 			{ 0, JOY_7,			TECHNO_BUTTON_UPRIGHT,	false },
 			{ 0, JOY_8,			TECHNO_BUTTON_UPLEFT,	false },
-			{ 0, JOY_9,			TECHNO_BUTTON_BACK,		false },
-			{ 0, JOY_10,		TECHNO_BUTTON_START,	false },
+			{ 0, JOY_9,			GAME_BUTTON_BACK,		false },
+			{ 0, JOY_10,		GAME_BUTTON_START,	false },
 			END_MARKER
 		}
 	},

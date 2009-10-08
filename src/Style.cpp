@@ -42,14 +42,19 @@ GameInput Style::StyleInputToGameInput( const StyleInput& StyleI ) const
 	ASSERT_M( StyleI.player < NUM_PLAYERS, ssprintf("P%i", StyleI.player) );
 	ASSERT_M( StyleI.col < MAX_COLS_PER_PLAYER, ssprintf("C%i", StyleI.col) );
 
+	bool bUsingOneSide = this->m_StyleType != ONE_PLAYER_TWO_SIDES;
+
 	FOREACH_GameController(gc)
 	{
-		if( this->m_StyleType != ONE_PLAYER_TWO_SIDES && gc != (int) StyleI.player )
+		if( bUsingOneSide && gc != (int) StyleI.player )
+		{
+			LOG->Debug( "bUsingOneSide, %d != %d\n", gc, StyleI.player );
 			continue;
+		}
 
-		for( int i = 0; i < m_pGame->m_iButtonsPerController && m_iInputColumn[gc][i] != END_MAPPING; ++i )
-			if( m_iInputColumn[gc][i] == StyleI.col )
-				return GameInput( gc, i );
+		for( GameButton gb = GAME_BUTTON_NEXT; gb < m_pGame->m_iButtonsPerController && m_iInputColumn[gc][gb-GAME_BUTTON_NEXT] != END_MAPPING; gb=(GameButton)(gb+1) )
+			if( m_iInputColumn[gc][gb-GAME_BUTTON_NEXT] == StyleI.col )
+				return GameInput( gc, gb );
 	}
 
 	FAIL_M( ssprintf("Unknown StyleInput %i,%i", StyleI.player, StyleI.col) );
@@ -59,14 +64,19 @@ StyleInput Style::GameInputToStyleInput( const GameInput &GameI ) const
 {
 	StyleInput SI;
 
-	if( m_iInputColumn[0][0] == NO_MAPPING )
+	if( GameI.button < GAME_BUTTON_NEXT )
 		return SI;	// Return invalid.
 
-	for( int i = 0; i <= GameI.button; ++i )
+	int iColumnIndex = GameI.button - GAME_BUTTON_NEXT;
+
+	if( m_iInputColumn[GameI.controller][iColumnIndex] == NO_MAPPING )
+		return SI;	// Return invalid.
+
+	for( int i = 0; i <= iColumnIndex; ++i )
 		if( m_iInputColumn[GameI.controller][i] == END_MAPPING )
 			return SI;	// Return invalid.
 
-	SI = StyleInput( ControllerToPlayerNumber(GameI.controller), m_iInputColumn[GameI.controller][GameI.button] );
+	SI = StyleInput( ControllerToPlayerNumber(GameI.controller), m_iInputColumn[GameI.controller][iColumnIndex] );
 
 	return SI;
 }

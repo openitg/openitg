@@ -6,6 +6,8 @@
 const int channels = 2;
 const int samplerate = 44100;
 
+REGISTER_SOUND_DRIVER( Null );
+
 void RageSoundDriver_Null::Update( float fDeltaTime )
 {
 	/* "Play" frames. */

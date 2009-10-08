@@ -17,7 +17,7 @@ RageSoundDriver *RageSoundDriver::Create( const CString &sDrivers )
 		RageDriver *pDriver = m_pDriverList.Create( *Driver );
 		if( pDriver == NULL )
 		{
-			LOG->Trace( "Unknown sound driver: %s", Driver->c_str() );
+			LOG->Warn( "Unknown sound driver: %s", Driver->c_str() );
 			continue;
 		}
 
@@ -33,6 +33,7 @@ RageSoundDriver *RageSoundDriver::Create( const CString &sDrivers )
 		LOG->Info( "Couldn't load driver %s: %s", Driver->c_str(), sError.c_str() );
 		SAFE_DELETE( pRet );
 	}
+
 	return NULL;
 }
 

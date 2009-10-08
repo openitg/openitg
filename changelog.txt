@@ -2,6 +2,8 @@ OpenITG, beta 3 (in development)
 --------------------------------
 -Miscellaneous changes:
      Changed "DebugTheme" preference to "ShowThemeErrors"
+     Switched to SM4-style button enumerations
+     Added blinking for GAME_BUTTON_START on LIGHTSMODE_MENU
 -New LUA bindings:
      ProfileManager: "IsSongNew(Song)"
 -Fixed more minor cross-platform bugs:

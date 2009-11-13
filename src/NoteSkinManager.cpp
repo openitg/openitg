@@ -69,7 +69,7 @@ void NoteSkinManager::LoadNoteSkinData( const CString &sNoteSkinName, NoteSkinDa
 	data_out.metrics.ReadFile( GetNoteSkinDir(GAME_BASE_NOTESKIN_NAME)+"metrics.ini" );
 	data_out.vsDirSearchOrder.push_front( GetNoteSkinDir(GAME_BASE_NOTESKIN_NAME) );
 
-	LOG->Debug(__FUNCTION__ " sNoteSkinName: %s", sNoteSkinName.c_str()); // XXX KILLME
+	LOG->Debug( "%s sNoteSkinName: %s", __FUNCTION__, sNoteSkinName.c_str() ); // XXX KILLME
 	/* Read the current NoteSkin and all of its fallbacks */
 	LoadNoteSkinDataRecursive( sNoteSkinName, data_out );
 
@@ -79,7 +79,7 @@ void NoteSkinManager::LoadNoteSkinData( const CString &sNoteSkinName, NoteSkinDa
 		vsDirSearchFindings.push_back( *iter );
 	}
 
-	LOG->Debug(__FUNCTION__ " findings: %s", join(",", vsDirSearchFindings)); // XXX KILLME
+	LOG->Debug( "%s findings: %s", __FUNCTION__, join(",", vsDirSearchFindings).c_str() ); // XXX KILLME
 }
 
 void NoteSkinManager::LoadNoteSkinDataRecursive( const CString &sNoteSkinName, NoteSkinData& data_out )

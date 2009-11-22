@@ -33,6 +33,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
 				EnableEnhancedInstructionSet="2"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile="$(IntDir)/StepMania.pch"
 				AssemblerListingLocation=".\../Debug/"
@@ -41,6 +42,7 @@
 				BrowseInformation="0"
 				WarningLevel="4"
 				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
@@ -454,6 +456,7 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				BufferSecurityCheck="FALSE"
 				EnableFunctionLevelLinking="FALSE"
 				EnableEnhancedInstructionSet="2"
+				RuntimeTypeInfo="TRUE"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="global.h"
 				PrecompiledHeaderFile="$(IntDir)/OpenITG-PC-SSE2.pch"
@@ -1473,9 +1476,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				Name="arch"
 				Filter="">
 				<File
-					RelativePath="arch\arch.cpp">
-				</File>
-				<File
 					RelativePath="arch\arch.h">
 				</File>
 				<File
@@ -1485,11 +1485,17 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					RelativePath="arch\arch_platform.h">
 				</File>
 				<File
-					RelativePath="arch\arch_Win32.h">
+					RelativePath=".\arch\RageDriver.cpp">
+				</File>
+				<File
+					RelativePath=".\arch\RageDriver.h">
 				</File>
 				<Filter
 					Name="LoadingWindow"
 					Filter="">
+					<File
+						RelativePath=".\arch\LoadingWindow\LoadingWindow.cpp">
+					</File>
 					<File
 						RelativePath="arch\LoadingWindow\LoadingWindow.h">
 					</File>
@@ -1508,6 +1514,9 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					</File>
 					<File
 						RelativePath="arch\Sound\DSoundHelpers.h">
+					</File>
+					<File
+						RelativePath=".\arch\Sound\RageSoundDriver.cpp">
 					</File>
 					<File
 						RelativePath="arch\Sound\RageSoundDriver.h">
@@ -1673,6 +1682,9 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					Name="LowLevelWindow"
 					Filter="">
 					<File
+						RelativePath=".\arch\LowLevelWindow\LowLevelWindow.cpp">
+					</File>
+					<File
 						RelativePath="arch\LowLevelWindow\LowLevelWindow.h">
 					</File>
 					<File
@@ -1686,7 +1698,16 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					Name="Lights"
 					Filter="">
 					<File
+						RelativePath=".\arch\Lights\LightsDriver.cpp">
+					</File>
+					<File
 						RelativePath="arch\Lights\LightsDriver.h">
+					</File>
+					<File
+						RelativePath=".\arch\Lights\LightsDriver_Dynamic.cpp">
+					</File>
+					<File
+						RelativePath=".\arch\Lights\LightsDriver_Dynamic.h">
 					</File>
 					<File
 						RelativePath="arch\Lights\LightsDriver_External.cpp">
@@ -1749,6 +1770,9 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					</File>
 					<File
 						RelativePath="arch\Dialog\Dialog.h">
+					</File>
+					<File
+						RelativePath=".\arch\Dialog\DialogDriver.cpp">
 					</File>
 					<File
 						RelativePath="arch\Dialog\DialogDriver.h">

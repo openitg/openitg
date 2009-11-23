@@ -8,7 +8,7 @@ const int samplerate = 44100;
 
 REGISTER_SOUND_DRIVER( Null );
 
-void RageSoundDriver_Null::Update( float fDeltaTime )
+void RageSound_Null::Update( float fDeltaTime )
 {
 	/* "Play" frames. */
 	while( last_cursor_pos < GetPosition(NULL)+1024*4 )
@@ -21,19 +21,19 @@ void RageSoundDriver_Null::Update( float fDeltaTime )
 	RageSoundDriver_Generic_Software::Update( fDeltaTime );
 }
 
-int64_t RageSoundDriver_Null::GetPosition( const RageSoundBase *snd ) const
+int64_t RageSound_Null::GetPosition( const RageSoundBase *snd ) const
 {
 	return int64_t( RageTimer::GetTimeSinceStart() * samplerate );
 }
 
-RageSoundDriver_Null::RageSoundDriver_Null()
+RageSound_Null::RageSound_Null()
 {
 	last_cursor_pos = GetPosition( NULL );
 
 	StartDecodeThread();
 }
 
-float RageSoundDriver_Null::GetPlayLatency() const
+float RageSound_Null::GetPlayLatency() const
 {
 	return 0;  /* silence is fast! */
 }

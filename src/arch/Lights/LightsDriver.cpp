@@ -63,7 +63,14 @@ static LightsDriver *TryModuleDriver( const CString &sName )
 	if( !IsAFile(sRagePath) )
 		return NULL;
 
+#if defined(LINUX)
 	LightsDriver_Dynamic *ret = new LightsDriver_Dynamic_Unix( sRealPath );
+#else
+	LightsDriver_Dynamic *ret = NULL;
+	// TODO: LightsDriver_Dynamic_Win32
+	return NULL;
+#endif
+
 	ret->Load();
 
 	/* if this module couldn't actually load, don't return it. */

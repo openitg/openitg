@@ -5,7 +5,7 @@
 
 Preference<bool> g_bShowThemeErrors( "ShowThemeErrors", false );
 
-REGISTER_DIALOG_DRIVER_CLASS( Null );
+REGISTER_DIALOG_DRIVER( Null );
 
 map<istring, CreateDialogDriverFn> *RegisterDialogDriver::g_pRegistrees;
 RegisterDialogDriver::RegisterDialogDriver( const istring &sName, CreateDialogDriverFn pfn )

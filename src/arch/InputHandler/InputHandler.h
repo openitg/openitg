@@ -71,8 +71,8 @@ private:
 };
 
 /* the _CLASS seems pretty redundant to me. -- Vyhd */
-#define REGISTER_INPUT_HANDLER2( name, class ) \
-	static RegisterRageDriver register_##name( &InputHandler::m_pDriverList, #name, CreateClass<InputHandler_##class, RageDriver> )
+#define REGISTER_INPUT_HANDLER2( name, name2 ) \
+	static RegisterRageDriver register_##name( &InputHandler::m_pDriverList, #name, CreateClass<InputHandler_##name2, RageDriver> )
 #define REGISTER_INPUT_HANDLER( name ) REGISTER_INPUT_HANDLER2( name, name )
 
 #endif

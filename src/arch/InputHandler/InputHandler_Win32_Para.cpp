@@ -4,10 +4,12 @@
 #include "PrefsManager.h"
 #include "RageLog.h"
 #include "RageUtil.h"
+#include "InputFilter.h"
 #include "RageInputDevice.h"
 #include "archutils/Win32/USB.h"
 
-REGISTER_INPUT_DRIVER2( Para, Win32_Para );
+//REGISTER_INPUT_DRIVER2( Para, Win32_Para );
+static RegisterRageDriver register_Para( &InputHandler::m_pDriverList, "Para", CreateClass<InputHandler_Win32_Para, RageDriver> );
 
 InputHandler_Win32_Para::InputHandler_Win32_Para()
 {

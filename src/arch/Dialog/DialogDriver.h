@@ -30,7 +30,7 @@ struct RegisterDialogDriver
 	static map<istring, CreateDialogDriverFn> *g_pRegistrees;
 	RegisterDialogDriver( const istring &sName, CreateDialogDriverFn pfn );
 };
-#define REGISTER_DIALOG_DRIVER_CLASS( name ) \
+#define REGISTER_DIALOG_DRIVER( name ) \
 	static RegisterDialogDriver register_##name( #name, CreateClass<DialogDriver_##name, DialogDriver> )
 
 #endif

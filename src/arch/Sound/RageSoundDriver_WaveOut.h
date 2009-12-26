@@ -6,11 +6,11 @@
 #include <windows.h>
 #include <mmsystem.h>
 
-class RageSound_WaveOut: public RageSoundDriver_Generic_Software
+class RageSoundDriver_WaveOut: public RageSoundDriver_Generic_Software
 {
 public:
-	RageSound_WaveOut();
-	~RageSound_WaveOut();
+	RageSoundDriver_WaveOut();
+	~RageSoundDriver_WaveOut();
 	CString Init();
 
 	int64_t GetPosition( const RageSoundBase *pSound ) const;

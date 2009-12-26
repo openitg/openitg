@@ -35,13 +35,13 @@ static float g_fLastMixTimes[NUM_MIX_TIMES];
 static int g_iLastMixTimePos = 0;
 static int g_iNumIOProcCalls = 0;
 
-RageSound_CA::RageSound_CA()
+RageSoundDriver_CA::RageSoundDriver_CA()
 {
 	mOutputDevice = NULL;
 	mConverter = NULL;
 }
 
-CString RageSound_CA::Init()
+CString RageSoundDriver_CA::Init()
 {
 	try
 	{
@@ -145,7 +145,7 @@ CString RageSound_CA::Init()
 	return "";
 }
 
-RageSound_CA::~RageSound_CA()
+RageSoundDriver_CA::~RageSoundDriver_CA()
 {
 	if( mOutputDevice != NULL )
 		mOutputDevice->StopIOProc( GetData );
@@ -155,7 +155,7 @@ RageSound_CA::~RageSound_CA()
 		AudioConverterDispose( mConverter );
 }
 
-int64_t RageSound_CA::GetPosition(const RageSoundBase *sound) const
+int64_t RageSoundDriver_CA::GetPosition(const RageSoundBase *sound) const
 {
 	AudioTimeStamp time;
     
@@ -163,7 +163,7 @@ int64_t RageSound_CA::GetPosition(const RageSoundBase *sound) const
 	return int64_t(time.mSampleTime);
 }
 
-OSStatus RageSound_CA::GetData(AudioDeviceID inDevice,
+OSStatus RageSoundDriver_CA::GetData(AudioDeviceID inDevice,
 							   const AudioTimeStamp *inNow,
 							   const AudioBufferList *inInputData,
 							   const AudioTimeStamp *inInputTime,
@@ -172,7 +172,7 @@ OSStatus RageSound_CA::GetData(AudioDeviceID inDevice,
 							   void *inClientData)
 {
 	RageTimer tm;
-	RageSound_CA *This = (RageSound_CA *)inClientData;
+	RageSoundDriver_CA *This = (RageSoundDriver_CA *)inClientData;
 	AudioBuffer& buf = outOutputData->mBuffers[0];
 	UInt32 dataPackets = buf.mDataByteSize >> 3; // 8 byes per packet
 	int64_t decodePos = int64_t(inOutputTime->mSampleTime);
@@ -196,7 +196,7 @@ OSStatus RageSound_CA::GetData(AudioDeviceID inDevice,
 }
 		
 
-OSStatus RageSound_CA::OverloadListener(AudioDeviceID inDevice,
+OSStatus RageSoundDriver_CA::OverloadListener(AudioDeviceID inDevice,
 										UInt32 inChannel,
 										Boolean isInput,
 										AudioDevicePropertyID inPropertyID,
@@ -215,7 +215,7 @@ OSStatus RageSound_CA::OverloadListener(AudioDeviceID inDevice,
 	return noErr;
 }
 
-void RageSound_CA::SetupDecodingThread()
+void RageSoundDriver_CA::SetupDecodingThread()
 {
 	/* Increase the scheduling precedence of the decoder thread. */
 	thread_precedence_policy po;

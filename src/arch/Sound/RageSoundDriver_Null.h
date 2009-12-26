@@ -3,7 +3,7 @@
 
 #include "RageSoundDriver_Generic_Software.h"
 
-class RageSound_Null: public RageSoundDriver_Generic_Software
+class RageSoundDriver_Null: public RageSoundDriver_Generic_Software
 {
 private:
 	int64_t last_cursor_pos;
@@ -14,7 +14,7 @@ protected:
 	void Update( float fDeltaTime );
 
 public:
-    RageSound_Null();
+    RageSoundDriver_Null();
 };
 
 #endif

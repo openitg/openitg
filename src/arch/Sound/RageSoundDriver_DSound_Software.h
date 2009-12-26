@@ -5,7 +5,7 @@
 #include "RageThreads.h"
 #include "RageSoundDriver_Generic_Software.h"
 
-class RageSound_DSound_Software: public RageSoundDriver_Generic_Software
+class RageSoundDriver_DSound_Software: public RageSoundDriver_Generic_Software
 {
 	DSound ds;
 	DSoundBuf *pcm;
@@ -24,8 +24,8 @@ public:
 	float GetPlayLatency() const;
 	int GetSampleRate( int rate ) const;
 	
-	RageSound_DSound_Software();
-	virtual ~RageSound_DSound_Software();
+	RageSoundDriver_DSound_Software();
+	virtual ~RageSoundDriver_DSound_Software();
 	CString Init();
 };
 

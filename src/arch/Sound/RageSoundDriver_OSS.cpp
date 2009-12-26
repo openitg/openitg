@@ -6,8 +6,6 @@
 #include "RageSoundManager.h"
 #include "RageUtil.h"
 
-REGISTER_SOUND_DRIVER( OSS );
-
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
@@ -15,6 +13,8 @@ REGISTER_SOUND_DRIVER( OSS );
 #include <sys/ioctl.h>
 #include <sys/soundcard.h>
 #include <sys/select.h>
+
+REGISTER_SOUND_DRIVER( OSS );
 
 /* samples */
 const int channels = 2;

@@ -58,7 +58,7 @@ public:
 
 // Can't use Create##name because many of these have -sw suffixes.
 #define REGISTER_SOUND_DRIVER2( name, x ) \
-static RegisterRageDriver register_##x( &RageSoundDriver::m_pDriverList, #name, CreateClass<RageSound_##x, RageDriver> )
+static RegisterRageDriver register_##x( &RageSoundDriver::m_pDriverList, #name, CreateClass<RageSoundDriver_##x, RageDriver> )
 #define REGISTER_SOUND_DRIVER( name ) REGISTER_SOUND_DRIVER2( name, name )
 
 /*

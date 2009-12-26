@@ -1,3 +1,5 @@
+/* TODO: LoadFromCustomSongDir tries to save cache data. Where? */
+
 #include "global.h"
 #include "song.h"
 #include "Steps.h"

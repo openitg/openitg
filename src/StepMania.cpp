@@ -1064,14 +1064,12 @@ int main(int argc, char* argv[])
 		LOG->Trace("VFS: No patch file found");
 	}
 
-#if 0
 	LOG->Info("======= MOUNTPOINTS =========");
 	vector<RageFileManager::DriverLocation> mymounts;
 	FILEMAN->GetLoadedDrivers(mymounts);
 	for (unsigned i = 0; i < mymounts.size(); i++)
 		LOG->Info("%s ..... %s ..... %s", mymounts[i].Type.c_str(), mymounts[i].Root.c_str(), mymounts[i].MountPoint.c_str() );
 	LOG->Info("=============================");
-#endif
 
 	/* One of the above filesystems might contain files that affect preferences, eg Data/Static.ini.
 	 * Re-read preferences. */

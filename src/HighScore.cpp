@@ -267,6 +267,7 @@ public:
 	static int GetScore( T* p, lua_State *L )			{ lua_pushnumber(L, p->iScore ); return 1; }
 	static int GetPercentDP( T* p, lua_State *L )			{ lua_pushnumber(L, p->fPercentDP ); return 1; }
 	static int GetDate( T* p, lua_State *L )			{ lua_pushstring(L, p->dateTime.GetString() ); return 1; }
+	static int GetModifiers( T* p, lua_State *L )			{ lua_pushstring(L, p->sModifiers ); return 1; }
 	static int GetSurvivalSeconds( T* p, lua_State *L )			{ lua_pushnumber(L, p->fSurviveSeconds ); return 1; }
 	static int IsFillInMarker( T* p, lua_State *L )
 	{
@@ -283,6 +284,7 @@ public:
 		ADD_METHOD( GetScore );
 		ADD_METHOD( GetPercentDP );
 		ADD_METHOD( GetDate );
+		ADD_METHOD( GetModifiers );
 		ADD_METHOD( GetSurvivalSeconds );
 		ADD_METHOD( IsFillInMarker );
 		Luna<T>::Register( L );

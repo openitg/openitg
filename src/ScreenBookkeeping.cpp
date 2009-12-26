@@ -1,3 +1,5 @@
+/* TODO: figure out why one of the pages displays a lot in a row. */
+
 #include "global.h"
 #include "ScreenBookkeeping.h"
 #include "PrefsManager.h"

@@ -148,7 +148,12 @@ void InputHandler_Iow::HandleInput()
 		if( InputThread.IsCreated() )
 			di.ts.Touch();
 
-		ButtonPressed( di, m_iReadData & (1 << (31-iButton)) );
+		bool bIsPressed = m_iReadData & (1 << (31-iButton));
+
+		if( di.button == JOY_1 && bIsPressed )
+			LOG->Warn( "%s: coin event detected!", __FUNCTION__ );
+
+		ButtonPressed( di, bIsPressed );
 	}
 }
 

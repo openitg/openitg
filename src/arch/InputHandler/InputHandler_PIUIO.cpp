@@ -206,7 +206,12 @@ void InputHandler_PIUIO::HandleInput()
 
 		/* Is the button we're looking for flagged in the input data? */
 		/* Incremented by one, since IsBitSet uses 1-32 and this uses 0-31. */
-		ButtonPressed( di, IsBitSet(m_iInputField,iButton+1) );
+		bool bIsPressed = IsBitSet( m_iInputField, iButton+1 );
+
+		if( di.button == JOY_22 && bIsPressed )
+			LOG->Warn( "%s: detected coin event!", __FUNCTION__ );
+
+		ButtonPressed( di, bIsPressed );
 	}
 }
 

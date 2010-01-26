@@ -6,10 +6,13 @@ OpenITG, beta 3 (in development)
      Changed "DebugTheme" preference to "ShowThemeErrors"
      Switched to SM4-style button enumerations
      Added blinking for GAME_BUTTON_START on LIGHTSMODE_MENU
+     Win32: Crash dialog shows OpenITG logo/text in place of StepMania (thanks, Wanny)
 -New LUA bindings:
      ProfileManager: "IsSongNew(Song)"
 -Fixed more minor cross-platform bugs:
      BPMDisplay: showing BPM multiplied by music rate twice instead of once
+     ScreenGameplay: announcers actually work (thanks, Wanny)
+     ScreenDebugOverlay can now override used font (thanks, Wanny)
 -Backend updates:
      Arch updated to use SM4's RageDriver structure
 

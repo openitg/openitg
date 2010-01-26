@@ -22,7 +22,7 @@ Questions section
 A-1: My songs are all offsync, so how do I adjust the global offset?
 
    To adjust the global offset, play a song you know is onsync (like
-   Tribal Style) and press F8 twice until it says "Autosync Machine"
+   Tribal Style) and press F6 twice until it says "Autosync Machine"
    (NOT "Autosync Song"!). Play the song - going only to the music -
    until it feels on-sync. End the song and save the sync changes.
 

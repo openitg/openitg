@@ -103,7 +103,7 @@ void ScreenDebugOverlay::Init()
 	m_Quad.SetDiffuse( RageColor(0, 0, 0, 0.5f) );
 	this->AddChild( &m_Quad );
 	
-	m_textHeader.LoadFromFont( THEME->GetPathToF("Common normal") );
+	m_textHeader.LoadFromFont( THEME->GetPathToF("ScreenDebugOverlay title") );
 	m_textHeader.SetHorizAlign( Actor::align_left );
 	m_textHeader.SetX( SCREEN_LEFT+20 );
 	m_textHeader.SetY( SCREEN_TOP+20 );
@@ -114,13 +114,13 @@ void ScreenDebugOverlay::Init()
 	FOREACH_DebugLine( i )
 	{
 		BitmapText &txt1 = m_textButton[i];
-		txt1.LoadFromFont( THEME->GetPathToF("Common normal") );
+		txt1.LoadFromFont( THEME->GetPathToF("ScreenDebugOverlay line") );
 		txt1.SetHorizAlign( Actor::align_right );
 		txt1.SetShadowLength( 2 );
 		this->AddChild( &txt1 );
 
 		BitmapText &txt2 = m_textFunction[i];
-		txt2.LoadFromFont( THEME->GetPathToF("Common normal") );
+		txt2.LoadFromFont( THEME->GetPathToF("ScreenDebugOverlay line") );
 		txt2.SetHorizAlign( Actor::align_left );
 		txt2.SetShadowLength( 2 );
 		this->AddChild( &txt2 );

@@ -52,6 +52,8 @@
 #include "InputMapper.h"
 #include "Game.h"
 #include "RageFileManager.h" // XXX!!! needed for custom song cleanup, remove as soon as we can
+#include "AnnouncerManager.h"
+
 //
 // Defines
 //
@@ -1330,7 +1332,7 @@ void ScreenGameplay::PlayAnnouncer( CString type, float fSeconds )
 		return;
 	m_fTimeSinceLastDancingComment = 0;
 
-	SOUND->PlayOnceFromAnnouncer( type );
+	SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( type ));
 
 	if( m_pCombinedLifeMeter )
 		m_pCombinedLifeMeter->OnTaunt();
@@ -1382,7 +1384,7 @@ void ScreenGameplay::Update( float fDeltaTime )
 		LoadLights();
 		UpdateLights();
 
-		SOUND->PlayOnceFromAnnouncer( "gameplay intro" );	// crowd cheer
+		SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay intro" ));	// crowd cheer
 
 		//
 		// Get the transitions rolling
@@ -2178,17 +2180,17 @@ void ScreenGameplay::HandleScreenMessage( const ScreenMessage SM )
 	CHECKPOINT_M( ssprintf("HandleScreenMessage(%i)", SM) );
 	if( SM == SM_DoneFadingIn )
 	{
-		SOUND->PlayOnceFromAnnouncer( "gameplay ready" );
+		SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay ready" ));
 		m_Ready.StartTransitioning( SM_PlayGo );
 	}
 	else if( SM == SM_PlayGo )
 	{
 		if( GAMESTATE->IsExtraStage() || GAMESTATE->IsExtraStage2() )
-			SOUND->PlayOnceFromAnnouncer( "gameplay here we go extra" );
+			SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay here we go extra" ));
 		else if( GAMESTATE->IsFinalStage() )
-			SOUND->PlayOnceFromAnnouncer( "gameplay here we go final" );
+			SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay here we go final" ));
 		else
-			SOUND->PlayOnceFromAnnouncer( "gameplay here we go normal" );
+			SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay here we go normal" ));
 
 		m_Go.StartTransitioning( SM_None );
 		GAMESTATE->m_bPastHereWeGo = true;
@@ -2296,7 +2298,7 @@ void ScreenGameplay::HandleScreenMessage( const ScreenMessage SM )
 		{
 			TweenOffScreen();
 			m_Extra.StartTransitioning( SM_GoToNextScreen );
-			SOUND->PlayOnceFromAnnouncer( "gameplay extra" );
+			SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay extra" ));
 		}
 		else
 		{
@@ -2324,7 +2326,7 @@ void ScreenGameplay::HandleScreenMessage( const ScreenMessage SM )
 				break;
 			}
 			
-			SOUND->PlayOnceFromAnnouncer( "gameplay cleared" );
+			SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay cleared" ));
 		}
 
 	}
@@ -2458,11 +2460,11 @@ void ScreenGameplay::HandleScreenMessage( const ScreenMessage SM )
 		
 		if( GAMESTATE->IsCourseMode() )
 			if( GAMESTATE->GetCourseSongIndex() >= int(m_apSongsQueue.size() / 2) )
-				SOUND->PlayOnceFromAnnouncer( "gameplay oni failed halfway" );
+				SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay oni failed halfway" ));
 			else
-				SOUND->PlayOnceFromAnnouncer( "gameplay oni failed" );
+				SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay oni failed" ));
 		else
-			SOUND->PlayOnceFromAnnouncer( "gameplay failed" );
+			SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "gameplay failed" ));
 	}
 	else if( SM == SM_StopMusic )
 	{

@@ -34,6 +34,7 @@
 #include "MemoryCardManager.h" 
 #include "InputQueue.h"
 #include "OptionsList.h"
+#include "AnnouncerManager.h"
 
 // XXX: custom song loading. remove these if we can.
 #include "RageFileDriverTimeout.h"
@@ -381,7 +382,7 @@ void ScreenSelectMusic::Init()
 	m_soundLocked.Load( THEME->GetPathS(m_sName,"locked") );
 	m_soundSelectPressed.Load( THEME->GetPathS(m_sName,"select down"), true );
 
-	SOUND->PlayOnceFromAnnouncer( "select music intro" );
+	SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "select music intro" ));
 
 	m_bMadeChoice = false;
 	m_bGoToOptions = false;
@@ -1492,13 +1493,13 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 //				bIsRepeat = false;
 
 			if( bIsRepeat )
-				SOUND->PlayOnceFromAnnouncer( "select music comment repeat" );
+				SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "select music comment repeat" ));
 			else if( bIsNew )
-				SOUND->PlayOnceFromAnnouncer( "select music comment new" );
+				SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "select music comment new" ));
 			else if( bIsHard )
-				SOUND->PlayOnceFromAnnouncer( "select music comment hard" );
+				SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "select music comment hard" ));
 			else
-				SOUND->PlayOnceFromAnnouncer( "select music comment general" );
+				SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "select music comment general" ));
 
 			/* If we're in event mode, we may have just played a course (putting us
 			 * in course mode).  Make sure we're in a single song mode. */
@@ -1511,7 +1512,7 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 		{
 			SCREENMAN->PlayStartSound();
 
-			SOUND->PlayOnceFromAnnouncer( "select course comment general" );
+			SOUND->PlayOnceFromDir( ANNOUNCER->GetPathTo( "select course comment general" ));
 
 			Course *pCourse = m_MusicWheel.GetSelectedCourse();
 			ASSERT( pCourse );

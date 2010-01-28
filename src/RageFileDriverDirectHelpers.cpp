@@ -17,57 +17,51 @@
 #include <io.h>
 #endif
 
+CString DoPathReplace( const CString &sOldPath )
+{
+	CString sTemp = sOldPath;
+#ifdef _XBOX
+	sTemp.Replace( "//", "\\" );
+	sTemp.Replace( "/", "\\" );
+#endif
+	return sTemp;
+}
+
 #if defined(_XBOX)
 /* Wrappers for low-level file functions, to work around Xbox issues: */
 int DoMkdir( const CString &sPath, int perm )
 {
-	CString TempPath = sPath;
-	TempPath.Replace( "/", "\\" );
-	return mkdir( TempPath );
+	return mkdir( DoPathReplace(sPath), perm );
 }
 
 int DoOpen( const CString &sPath, int flags, int perm )
 {
-	CString TempPath = sPath;
-	TempPath.Replace( "/", "\\" );
-	return open( TempPath, flags, perm );
+	return open( DoPathReplace(sPath), flags, perm );
 }
 
 int DoStat( const CString &sPath, struct stat *st )
 {
-	CString TempPath = sPath;
-	TempPath.Replace( "/", "\\" );
-	return stat( sPath, st );
+	return stat( DoPathReplace(sPath), st );
 }
 
 int DoRename( const CString &sOldPath, const CString &sNewPath )
 {
-	CString TempOldPath = sOldPath;
-	CString TempNewPath = sNewPath;
-	TempOldPath.Replace( "/", "\\" );
-	TempNewPath.Replace( "/", "\\" );
-	return rename( TempOldPath, TempNewPath );
+	return rename( DoPathReplace(sOldPath), DoPathReplace(sNewPath) );
 }
 
 int DoRemove( const CString &sPath )
 {
-	CString TempPath = sPath;
-	TempPath.Replace( "/", "\\" );
-	return remove( sPath );
+	return remove( DoPathReplace(sPath) );
 }
 
 int DoRmdir( const CString &sPath )
 {
-	CString TempPath = sPath;
-	TempPath.Replace( "/", "\\" );
-	return rmdir( sPath );
+	return rmdir( DoPathReplace(sPath) );
 }
 
 HANDLE DoFindFirstFile( const CString &sPath, WIN32_FIND_DATA *fd )
 {
-	CString TempPath = sPath;
-	TempPath.Replace( "/", "\\" );
-	return FindFirstFile( TempPath, fd );
+	return FindFirstFile( DoPathReplace(sPath), fd );
 }
 
 #endif
@@ -109,19 +103,14 @@ static bool WinMoveFileInternal( const CString &sOldPath, const CString &sNewPat
 
 bool WinMoveFile( CString sOldPath, CString sNewPath )
 {
-#if defined(_XBOX)
-	sOldPath.Replace( "/", "\\" );
-	sNewPath.Replace( "/", "\\" );
-#endif
-
-	if( WinMoveFileInternal(sOldPath, sNewPath) )
+	if( WinMoveFileInternal( DoPathReplace(sOldPath), DoPathReplace(sNewPath)) )
 		return true;
 	if( GetLastError() != ERROR_ACCESS_DENIED )
 		return false;
 	/* Try turning off the read-only bit on the file we're overwriting. */
 	SetFileAttributes( sNewPath, FILE_ATTRIBUTE_NORMAL );
 
-	return WinMoveFileInternal( sOldPath, sNewPath );
+	return WinMoveFileInternal( DoPathReplace(sOldPath), DoPathReplace(sNewPath) );
 }
 #endif
 

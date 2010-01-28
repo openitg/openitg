@@ -60,7 +60,9 @@ void GameCommand::Init()
 	m_bClearBookkeepingData = false;
 	m_bClearMachineStats = false;
 	m_bClearMachineEdits = false;
+	m_bClearMachineLogs = false;
 	m_bFillMachineStats = false;
+	m_bTransferLogsFromMachine = false;
 	m_bTransferStatsFromMachine = false;
 	m_bTransferStatsToMachine = false;
 	m_bCopyEditsFromMachine = false;
@@ -381,9 +383,17 @@ void GameCommand::LoadOne( const Command& cmd )
 	{
 		m_bClearMachineEdits = true;
 	}
+	else if( sName == "clearmachinelogs" )
+	{
+		m_bClearMachineLogs = true;
+	}
 	else if( sName == "fillmachinestats" )
 	{
 		m_bFillMachineStats = true;
+	}
+	else if( sName == "transferlogsfrommachine" )
+	{
+		m_bTransferLogsFromMachine = true;
 	}
 	else if( sName == "transferstatsfrommachine" )
 	{
@@ -869,6 +879,24 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 		
 		SCREENMAN->SystemMessage( ssprintf("%d edits cleared, %d errors.",iNumSuccessful,iNumAttempted-iNumSuccessful) );
 	}
+	if( m_bClearMachineLogs )
+	{
+		int iNumAttempted = 0;
+		int iNumSuccessful = 0;
+
+		CStringArray vsLogs;
+		GetDirListing( "Data/crashinfo-*.txt", vsLogs, false, true );
+		FOREACH_CONST( CString, vsLogs, i )
+		{
+			iNumAttempted++;
+			if( FILEMAN->Remove(*i) )
+				iNumSuccessful++;
+		}
+
+		// update the dir cache, so Diagnostics gives the correct number of logs
+		FILEMAN->FlushDirCache( "Data/" );
+		SCREENMAN->SystemMessage( ssprintf("%d logs cleared, %d errors.", iNumSuccessful, iNumAttempted-iNumSuccessful) );
+	}
 	if( m_bFillMachineStats )
 	{
 		// Choose a percent for all scores.  This is useful for testing unlocks
@@ -912,6 +940,45 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 		
 		PROFILEMAN->SaveMachineProfile();
 		SCREENMAN->SystemMessage( "Machine stats filled." );
+	}
+	if( m_bTransferLogsFromMachine )
+	{
+		bool bTriedToCopy = false;
+		FOREACH_PlayerNumber( pn )
+		{
+			if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
+				continue;
+
+			MEMCARDMAN->MountCard(pn);
+			bTriedToCopy = true;
+
+			CString sDir = MEM_CARD_MOUNT_POINT[pn];
+			sDir += "Logs/";
+
+			{
+				int iNumAttempted = 0;
+				int iNumSuccessful = 0;
+
+				CStringArray vsLogs;
+				GetDirListing( "Data/crashinfo-*.txt" , vsLogs, false, false );
+				FOREACH_CONST( CString, vsLogs, i )
+				{
+					iNumAttempted++;				
+					bool bSuccess = FileCopy( (*i), sDir + (*i), NULL );
+					if( bSuccess )
+						iNumSuccessful++;
+				}
+
+				MEMCARDMAN->UnmountCard(pn);			
+				SCREENMAN->SystemMessage( ssprintf("Logs copied to P%d card: %d/%d copies OK.",pn+1,iNumSuccessful,iNumAttempted) );
+				break;
+			}
+		}
+
+		if( !bTriedToCopy )
+			SCREENMAN->SystemMessage( "Logs not copied - No memory cards ready." );
+		
+		MEMCARDMAN->FlushAndReset();
 	}
 	if( m_bTransferStatsFromMachine )
 	{

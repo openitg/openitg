@@ -895,6 +895,7 @@ static void WriteLogHeader()
 	LOG->Info( PRODUCT_NAME_VER );
 	LOG->Info( "Compiled %s (%s %lu)", VersionTime, 
 		VersionSVN ? "revision" : "build", VersionNumber );
+	LOG->Info( "Serial number: %s", DiagnosticsUtil::GetSerialNumber() );
 
 	time_t cur_time;
 	time(&cur_time);

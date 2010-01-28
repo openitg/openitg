@@ -37,7 +37,7 @@ AutoScreenMessage( SM_LinkedMenuChange );
 
 /* draw transfer updates six frames a second */
 static RageTimer DrawTimer;
-const float DRAW_UPDATE_TIME = 0.166667;
+const float DRAW_UPDATE_TIME = 0.166667f;
 
 ScreenUserPacks::ScreenUserPacks( CString sName ) : ScreenWithMenuElements( sName )
 {

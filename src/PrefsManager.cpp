@@ -24,22 +24,21 @@ const float DEFAULT_SOUND_VOLUME = 1.00f;
 // For self-registering prefs
 //
 #include "SubscriptionManager.h"
-template<>
-set<IPreference*>* SubscriptionManager<IPreference>::s_pSubscribers = NULL;
+static SubscriptionManager<IPreference> m_Subscribers;
 
 void PrefsManager::Subscribe( IPreference *p )
 {
-	SubscriptionManager<IPreference>::Subscribe( p );
+	m_Subscribers.Subscribe( p );
 }
 
 void PrefsManager::Unsubscribe( IPreference *p )
 {
-	SubscriptionManager<IPreference>::Unsubscribe( p );
+	m_Subscribers.Unsubscribe( p );
 }
 
 IPreference *PrefsManager::GetPreferenceByName( const CString &sName )
 {
-	FOREACHS( IPreference*, *SubscriptionManager<IPreference>::s_pSubscribers, p )
+	FOREACHS( IPreference*, *m_Subscribers.m_pSubscribers, p )
 	{
 		if( !(*p)->GetName().CompareNoCase( sName ) )
 			return *p;
@@ -334,7 +333,7 @@ PrefsManager::PrefsManager() :
 
 void PrefsManager::Init()
 {
-	FOREACHS_CONST( IPreference*, *SubscriptionManager<IPreference>::s_pSubscribers, p )
+	FOREACHS_CONST( IPreference*, *m_Subscribers.m_pSubscribers, p )
 		(*p)->LoadDefault();
 }
 
@@ -370,7 +369,7 @@ void PrefsManager::ReadPrefsFromFile( CString sIni )
 
 void PrefsManager::ReadGlobalPrefsFromIni( const IniFile &ini )
 {
-	FOREACHS_CONST( IPreference*, *SubscriptionManager<IPreference>::s_pSubscribers, p )
+	FOREACHS_CONST( IPreference*, *m_Subscribers.m_pSubscribers, p )
 		(*p)->ReadFrom( ini );
 
 	// validate
@@ -389,7 +388,7 @@ void PrefsManager::SaveGlobalPrefsToDisk() const
 
 void PrefsManager::SaveGlobalPrefsToIni( IniFile &ini ) const
 {
-	FOREACHS_CONST( IPreference*, *SubscriptionManager<IPreference>::s_pSubscribers, p )
+	FOREACHS_CONST( IPreference*, *m_Subscribers.m_pSubscribers, p )
 		(*p)->WriteTo( ini );
 }
 

@@ -96,7 +96,7 @@ void ScreenArcadeDiagnostics::UpdateElements()
 		sInfo += sDevInfo;
 	}
 	m_iLastSeenDevices = vDevList.size();
-
+	
 	m_USBInfo.SetText( sInfo );
 	m_Title.SetText( sTitleInfo );
 }

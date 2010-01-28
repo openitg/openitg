@@ -48,7 +48,7 @@
 	<Layer
 		Class="BitmapText"
 		Font="_eurostile normal"
-		Text="@'&xa9; 2008-2009 BoXoRroXoRs, r' .. GetRevision()"
+		Text="@'&xa9; 2008-2009 BoXoRRoXoRs, r' .. GetRevision()"
 		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-17;zoom,0.5;shadowlength,2;diffusealpha,0.8"
 	/>
 

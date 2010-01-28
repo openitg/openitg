@@ -2,7 +2,11 @@ OpenITG, beta 3 (in development)
 --------------------------------
 -New LightsDrivers:
      LightsDriver_Dynamic: use external libraries to control lights
+New GameCommands:
+     "clearmachinelogs" - clears crash logs from machine.
+     "transferlogsfrommachine" - transfers crash logs to a USB drive.
 -Miscellaneous changes:
+     Changed OptionsList behavior (Exit on multiple selection, don't insta-exit on button)
      Changed "DebugTheme" preference to "ShowThemeErrors"
      Switched to SM4-style button enumerations
      Added blinking for GAME_BUTTON_START on LIGHTSMODE_MENU

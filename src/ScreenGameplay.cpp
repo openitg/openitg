@@ -95,7 +95,6 @@ static Preference<float> g_fGiveUpTime( "GiveUpTime", 2.5f );
 // define which steps type we autogen lights from
 const StepsType LIGHTS_AUTOGEN_TYPE = STEPS_TYPE_DANCE_SINGLE;
 
-
 REGISTER_SCREEN_CLASS( ScreenGameplay );
 ScreenGameplay::ScreenGameplay( CString sName ) : ScreenWithMenuElements(sName)
 {

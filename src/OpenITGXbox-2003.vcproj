@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="StepMania"
+	ProjectGUID="{2B81A234-F6BF-40AA-884C-9BB1246ECB2D}"
 	SccProjectName=""
 	SccLocalPath=""
 	Keyword="MFCProj">
@@ -279,6 +280,7 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 				Name="VCPreLinkEventTool"/>
 			<Tool
 				Name="XboxDeploymentTool"
+				ExcludedFromBuild="TRUE"
 				Progress="TRUE"
 				ForceCopy="TRUE"/>
 			<Tool
@@ -287,9 +289,11 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 				StackSize="0x10000"
 				IncludeDebugInfo="TRUE"
 				SuppressStartupBanner="TRUE"
+				DontModifyHD="FALSE"
 				TitleID=""
+				XboxGameRating="5"
 				TitleInfo=""
-				TitleName="StepmaniaX"
+				TitleName="OpenITG-X"
 				TitleImage=""/>
 		</Configuration>
 	</Configurations>
@@ -1330,10 +1334,10 @@ cl /Zl /nologo /c verstub.cpp /Fo$(IntDir)\
 					RelativePath="archutils\Win32\arch_setup.cpp">
 				</File>
 				<File
-					RelativePath="archutils\Win32\arch_setup.h">
+					RelativePath=".\archutils\Xbox\arch_setup.h">
 				</File>
 				<File
-					RelativePath=".\archutils\Xbox\arch_setup.h">
+					RelativePath="archutils\Win32\arch_setup.h">
 				</File>
 				<File
 					RelativePath="archutils\Xbox\custom_launch_params.cpp">

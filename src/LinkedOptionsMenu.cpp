@@ -9,6 +9,10 @@
 #include "ScreenManager.h"
 #include "CodeDetector.h"
 
+/* It's going to be a pain to fix these. Disable for now. */
+#pragma warning( disable : 4018 )	// signed/unsigned mismatch
+#pragma warning( disable : 4244 )	// conversion, possible loss of data
+
 void LinkedOptionsMenu::Load( LinkedOptionsMenu *prev, LinkedOptionsMenu *next )
 {
 	m_sprLineHighlight.Load( THEME->GetPathG(m_sName, "line highlight") );

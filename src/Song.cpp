@@ -292,6 +292,7 @@ bool Song::LoadFromSongDir( CString sDir )
 		/* Compress all Steps.  During initial caching, this will remove cached NoteData;
 		 * during cached loads, this will just remove cached SMData. */
 		(*s)->Compress();
+		;
 	}
 
 	/* Load the cached banners, if it's not loaded already. */
@@ -609,7 +610,7 @@ void Song::TidyUpData()
 
 	/* Generate these before we autogen notes, so the new notes can inherit
 	 * their source's values. */
-	ReCalculateRadarValuesAndLastBeat();
+	ReCalculateRadarValuesAndLastBeat( m_fStepsLengthSeconds );
 
 	TrimLeft( m_sMainTitle );
 	TrimRight( m_sMainTitle );
@@ -881,17 +882,23 @@ void Song::TranslateTitles()
 	title.SaveToStrings( m_sMainTitle, m_sSubTitle, m_sArtist, m_sMainTitleTranslit, m_sSubTitleTranslit, m_sArtistTranslit );
 }
 
-void Song::ReCalculateRadarValuesAndLastBeat()
+void Song::ReCalculateRadarValuesAndLastBeat( float fSeconds )
 {
 	float fFirstBeat = FLT_MAX; /* inf */
 	float fLastBeat = 0;
 	CHECKPOINT;
 
+	// fix for rare case ogglengthpatch wankery
+	if ( fSeconds <= 1.0f )
+		fSeconds = m_fStepsLengthSeconds;
+	if ( fSeconds <= 1.0f )
+		fSeconds = m_fMusicLengthSeconds;
+
 	for( unsigned i=0; i<m_vpSteps.size(); i++ )
 	{
 		Steps* pSteps = m_vpSteps[i];
 
-		pSteps->CalculateRadarValues( m_fStepsLengthSeconds );
+		pSteps->CalculateRadarValues( fSeconds );
 
 		//
 		// calculate lastBeat

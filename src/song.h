@@ -66,7 +66,7 @@ public:
 	bool LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber pn );
 
 	void TidyUpData();	// call after loading to clean up invalid data
-	void ReCalculateRadarValuesAndLastBeat();	// called by TidyUpData, and after saving
+	void ReCalculateRadarValuesAndLastBeat( float fSeconds = -1.0f );	// called by TidyUpData, and after saving
 	void TranslateTitles();	// called by TidyUpData
 
 	void SaveToSMFile( CString sPath, bool bSavingCache );

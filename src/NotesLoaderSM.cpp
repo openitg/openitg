@@ -47,11 +47,14 @@ void SMLoader::LoadFromSMTokens(
 	out.SetMeter(atoi(sMeter));
 	CStringArray saValues;
 	split( sRadarValues, ",", saValues, true );
-	if( saValues.size() == NUM_RADAR_CATEGORIES )
+
 	{
 		RadarValues v;
 		FOREACH_RadarCategory(rc)
-			v[rc] = strtof( saValues[rc], NULL );
+		{
+			if ( (int)rc < saValues.size() )
+				v[rc] = strtof( saValues[rc], NULL );
+		}
 		out.SetCachedRadarValues( v ); 
 	}
 

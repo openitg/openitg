@@ -25,7 +25,6 @@
 #include "Style.h"
 #include "ThemeMetric.h"
 #include "PlayerState.h"
-#include "MessageManager.h"
 
 #define NUM_WHEEL_ITEMS		((int)ceil(NUM_WHEEL_ITEMS_TO_DRAW+2))
 

@@ -10,6 +10,7 @@ New GameCommands:
      Changed "DebugTheme" preference to "ShowThemeErrors"
      Switched to SM4-style button enumerations
      Added blinking for GAME_BUTTON_START on LIGHTSMODE_MENU
+     Added StartRoulette and StartRandom messages for themes
      Win32: Crash dialog shows OpenITG logo/text in place of StepMania (thanks, Wanny)
 -New LUA bindings:
      ProfileManager: "IsSongNew(Song)"

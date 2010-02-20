@@ -25,6 +25,7 @@
 #include "Style.h"
 #include "ThemeMetric.h"
 #include "PlayerState.h"
+#include "MessageManager.h"
 
 #define NUM_WHEEL_ITEMS		((int)ceil(NUM_WHEEL_ITEMS_TO_DRAW+2))
 
@@ -1152,6 +1153,7 @@ bool MusicWheel::Select()	// return true if this selection ends the screen
 
 void MusicWheel::StartRoulette() 
 {
+	MESSAGEMAN->Broadcast("StartRoulette");
 	m_WheelState = STATE_ROULETTE_SPINNING;
 	m_Moving = 1;
 	m_TimeBeforeMovingBegins = 0;
@@ -1161,6 +1163,7 @@ void MusicWheel::StartRoulette()
 
 void MusicWheel::StartRandom()
 {
+	MESSAGEMAN->Broadcast("StartRandom");
 	/* If RANDOM_PICKS_LOCKED_SONGS is disabled, pick a song from the active sort and
 	 * section.  If enabled, picking from the section makes it too easy to trick the
 	 * game into picking a locked song, so pick from SORT_ROULETTE. */

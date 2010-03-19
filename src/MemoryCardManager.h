@@ -5,6 +5,7 @@
 #include "PlayerNumber.h"
 #include "RageSound.h"
 #include "arch/MemoryCard/MemoryCardDriver.h"
+#include "Preference.h"
 
 
 extern const CString MEM_CARD_MOUNT_POINT[NUM_PLAYERS];
@@ -15,22 +16,24 @@ public:
 	MemoryCardManager();
 	~MemoryCardManager();
 
-	void Update( float fDelta );
+	void Update();
 
 	MemoryCardState GetCardState( PlayerNumber pn ) const { return m_State[pn]; }
 	CString GetCardError( PlayerNumber pn ) const { return m_sError[pn]; }
 	
-	void LockCards();	// prevent removing or changing of memory cards
+	void WaitForCheckingToComplete();
+	bool CardInserted( PlayerNumber pn );
+	void LockCards();	// prevent removing or changing of memory card
 	void UnlockCards();
 	bool MountCard( PlayerNumber pn, int iTimeout = 10 );
 	void UnmountCard( PlayerNumber pn );
+
+	bool IsMounted( PlayerNumber pn ) const { return m_bMounted[pn]; }
 
 	/* When paused, no changes in memory card state will be noticed until unpaused. */
 	void PauseMountingThread( int iTimeout = 10 );
 	void UnPauseMountingThread();
 	
-	void FlushAndReset();	// force all files to be flushed to mounted memory cards
-
 	bool GetCardsLocked() const { return m_bCardsLocked; }
 
 	bool PathIsMemCard( CString sDir ) const;
@@ -38,11 +41,23 @@ public:
 	bool IsNameAvailable( PlayerNumber pn ) const;
 	CString GetName( PlayerNumber pn ) const;
 
+	const vector<UsbStorageDevice> &GetStorageDevices() { return m_vStorageDevices; }
+
+	static Preference<CString>	m_sMemoryCardOsMountPoint[NUM_PLAYERS];
+	static Preference<int>		m_iMemoryCardUsbBus[NUM_PLAYERS];
+	static Preference<int>		m_iMemoryCardUsbPort[NUM_PLAYERS];
+	static Preference<int>		m_iMemoryCardUsbLevel[NUM_PLAYERS];
+
+	static Preference<CString>	m_sEditorMemoryCardOsMountPoint;	
+
+	// Lua
+	void PushSelf( lua_State *L );
+
 protected:
+	void UpdateAssignments();
 	void CheckStateChanges();
 
 	vector<UsbStorageDevice> m_vStorageDevices;	// all currently connected
-
 
 	bool	m_bCardsLocked;
 	bool	m_bMounted[NUM_PLAYERS];	// card is currently mounted
@@ -51,7 +66,7 @@ protected:
 	UsbStorageDevice m_FinalDevice[NUM_PLAYERS];	// device in the memory card slot when we finalized, blank if none
 
 	MemoryCardState m_State[NUM_PLAYERS];
-	CString m_sError[NUM_PLAYERS]; // if MEMORY_CARD_STATE_ERROR
+	CString m_sError[NUM_PLAYERS]; // if MemoryCardState_Error
 
 	RageSound m_soundReady;
 	RageSound m_soundError;

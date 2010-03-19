@@ -347,6 +347,10 @@ void GameState::PlayersFinalized()
 	SONGMAN->FreeAllLoadedPlayerSongs(); // avoid duplicates
 	SONGMAN->FreeAllLoadedPlayerCourses();
 
+	// cards may still be in checking when we hit this.
+	// wait a few seconds to let them finish checking.
+	MEMCARDMAN->WaitForCheckingToComplete();
+
 	MESSAGEMAN->Broadcast( MESSAGE_PLAYERS_FINALIZED );
 
 	MEMCARDMAN->LockCards();

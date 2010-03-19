@@ -10,13 +10,14 @@ public:
 	MemoryCardDriverThreaded_Windows();
 	virtual ~MemoryCardDriverThreaded_Windows();
 
-	virtual bool DoOneUpdate( bool bMount, vector<UsbStorageDevice>& vStorageDevicesOut );
 	virtual bool Mount( UsbStorageDevice* pDevice );
 	virtual void Unmount( UsbStorageDevice* pDevice );
-	virtual void Flush( UsbStorageDevice* pDevice );
-    virtual void Reset();
 
 private:
+	void GetUSBStorageDevices( vector<UsbStorageDevice>& vDevicesOut );
+	bool USBStorageDevicesChanged();
+	bool TestWrite( UsbStorageDevice* pDevice );
+
 	DWORD m_dwLastLogicalDrives;
 };
 

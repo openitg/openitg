@@ -61,6 +61,7 @@ public:
 
 	Preference<float>	m_fJudgeWindowScale;
 	Preference<float>	m_fJudgeWindowAdd;		// this is useful for compensating for changes in sampling rate between devices
+	Preference<float>	m_fJudgeWindowSecondsRidiculous;
 	Preference<float>	m_fJudgeWindowSecondsMarvelous;
 	Preference<float>	m_fJudgeWindowSecondsPerfect;
 	Preference<float>	m_fJudgeWindowSecondsGreat;
@@ -72,6 +73,7 @@ public:
 	Preference<float>	m_fJudgeWindowSecondsAttack;
 
 	Preference<float>	m_fLifeDifficultyScale;
+	Preference<float>	m_fLifeDeltaPercentChangeRidiculous;
 	Preference<float>	m_fLifeDeltaPercentChangeMarvelous;
 	Preference<float>	m_fLifeDeltaPercentChangePerfect;
 	Preference<float>	m_fLifeDeltaPercentChangeGreat;
@@ -83,6 +85,7 @@ public:
 	Preference<float>	m_fLifeDeltaPercentChangeNG;
 
 	// tug meter used in rave
+	Preference<float>	m_fTugMeterPercentChangeRidiculous;
 	Preference<float>	m_fTugMeterPercentChangeMarvelous;
 	Preference<float>	m_fTugMeterPercentChangePerfect;
 	Preference<float>	m_fTugMeterPercentChangeGreat;
@@ -106,6 +109,7 @@ public:
 	Preference<bool>	m_bMercifulBeginner;	// don't subtract from percent score or grade DP, larger boo window
 
 	// percent score (the number that is shown on the screen and saved to memory card)
+	Preference<int>		m_iPercentScoreWeightRidiculous;
 	Preference<int>		m_iPercentScoreWeightMarvelous;
 	Preference<int>		m_iPercentScoreWeightPerfect;
 	Preference<int>		m_iPercentScoreWeightGreat;
@@ -117,6 +121,7 @@ public:
 	Preference<int>		m_iPercentScoreWeightNG;
 
 	// grades are calculated based on a percentage, but might have different weights than the percent score
+	Preference<int>		m_iGradeWeightRidiculous;
 	Preference<int>		m_iGradeWeightMarvelous;
 	Preference<int>		m_iGradeWeightPerfect;
 	Preference<int>		m_iGradeWeightGreat;
@@ -128,6 +133,7 @@ public:
 	Preference<int>		m_iGradeWeightNG;
 
 	// super meter used in rave
+	Preference<float>	m_fSuperMeterPercentChangeRidiculous;
 	Preference<float>	m_fSuperMeterPercentChangeMarvelous;
 	Preference<float>	m_fSuperMeterPercentChangePerfect;
 	Preference<float>	m_fSuperMeterPercentChangeGreat;
@@ -140,6 +146,7 @@ public:
 	Preference<float>	m_bMercifulSuperMeter;	// negative super deltas are scaled by the players life percentage
 
 	// time meter used in survival
+	Preference<float>	m_fTimeMeterSecondsChangeRidiculous;
 	Preference<float>	m_fTimeMeterSecondsChangeMarvelous;
 	Preference<float>	m_fTimeMeterSecondsChangePerfect;
 	Preference<float>	m_fTimeMeterSecondsChangeGreat;
@@ -225,19 +232,6 @@ public:
 	Preference<CString>	m_sDefaultLocalProfileIDP1, m_sDefaultLocalProfileIDP2;
 	Preference<CString>& GetDefaultLocalProfileID( PlayerNumber pn )
 	{ switch(pn) { case PLAYER_1: return m_sDefaultLocalProfileIDP1; case PLAYER_2: return m_sDefaultLocalProfileIDP2;	default: ASSERT(0); } }
-	Preference<bool>	m_bMemoryCards;
-	Preference<CString>	m_sMemoryCardOsMountPointP1, m_sMemoryCardOsMountPointP2;	// if set, always use the device that mounts to this point
-	Preference<CString>& GetMemoryCardOsMountPoint( PlayerNumber pn )
-	{ switch(pn) { case PLAYER_1: return m_sMemoryCardOsMountPointP1; case PLAYER_2: return m_sMemoryCardOsMountPointP2;	default: ASSERT(0); } }
-	Preference<int>		m_iMemoryCardUsbBusP1, m_iMemoryCardUsbBusP2;	// look for this bus when assigning cards.  -1 = match any
-	Preference<int>& GetMemoryCardUsbBus( PlayerNumber pn )
-	{ switch(pn) { case PLAYER_1: return m_iMemoryCardUsbBusP1; case PLAYER_2: return m_iMemoryCardUsbBusP2;	default: ASSERT(0); } }
-	Preference<int>		m_iMemoryCardUsbPortP1, m_iMemoryCardUsbPortP2;	// look for this port when assigning cards.  -1 = match any
-	Preference<int>& GetMemoryCardUsbPort( PlayerNumber pn )
-	{ switch(pn) { case PLAYER_1: return m_iMemoryCardUsbPortP1; case PLAYER_2: return m_iMemoryCardUsbPortP2;	default: ASSERT(0); } }
-	Preference<int>		m_iMemoryCardUsbLevelP1, m_iMemoryCardUsbLevelP2;	// look for this level when assigning cards.  -1 = match any
-	Preference<int>& GetMemoryCardUsbLevel( PlayerNumber pn )
-	{ switch(pn) { case PLAYER_1: return m_iMemoryCardUsbLevelP1; case PLAYER_2: return m_iMemoryCardUsbLevelP2;	default: ASSERT(0); } }
 	Preference<int>		m_iCenterImageTranslateX;
 	Preference<int>		m_iCenterImageTranslateY;
 	Preference<int>		m_fCenterImageAddWidth;

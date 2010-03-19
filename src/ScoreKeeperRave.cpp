@@ -41,8 +41,9 @@ void ScoreKeeperRave::HandleTapRowScore( TapNoteScore scoreOfLastTap, int iNumTa
 	float fPercentToMove;
 	switch( scoreOfLastTap )
 	{
-	case TNS_MARVELOUS:		fPercentToMove = PREFSMAN->m_fSuperMeterPercentChangeMarvelous;	break;
-	case TNS_PERFECT:		fPercentToMove = PREFSMAN->m_fSuperMeterPercentChangePerfect;	break;
+	case TNS_RIDICULOUS:		fPercentToMove = PREFSMAN->m_fSuperMeterPercentChangeRidiculous;	break;
+	case TNS_MARVELOUS:		fPercentToMove = PREFSMAN->m_fSuperMeterPercentChangeMarvelous;		break;
+	case TNS_PERFECT:		fPercentToMove = PREFSMAN->m_fSuperMeterPercentChangePerfect;		break;
 	case TNS_GREAT:			fPercentToMove = PREFSMAN->m_fSuperMeterPercentChangeGreat;		break;
 	case TNS_GOOD:			fPercentToMove = PREFSMAN->m_fSuperMeterPercentChangeGood;		break;
 	case TNS_BOO:			fPercentToMove = PREFSMAN->m_fSuperMeterPercentChangeBoo;		break;

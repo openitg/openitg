@@ -91,6 +91,7 @@ PrefsManager::PrefsManager() :
 
 	m_fJudgeWindowScale				( "JudgeWindowScale",				1.0f ),
 	m_fJudgeWindowAdd				( "JudgeWindowAdd",					0 ),
+	m_fJudgeWindowSecondsRidiculous	( "JudgeWindowSecondsRidiculous",	0.01125f ),
 	m_fJudgeWindowSecondsMarvelous	( "JudgeWindowSecondsMarvelous",	0.0225f ),
 	m_fJudgeWindowSecondsPerfect	( "JudgeWindowSecondsPerfect",		0.045f ),
 	m_fJudgeWindowSecondsGreat		( "JudgeWindowSecondsGreat",		0.090f ),
@@ -102,6 +103,7 @@ PrefsManager::PrefsManager() :
 	m_fJudgeWindowSecondsAttack		( "JudgeWindowSecondsAttack",		0.135f ),
 
 	m_fLifeDifficultyScale				( "LifeDifficultyScale",				1.0f ),
+	m_fLifeDeltaPercentChangeRidiculous	( "LifeDeltaPercentChangeRidiculous",	+0.008f ),
 	m_fLifeDeltaPercentChangeMarvelous	( "LifeDeltaPercentChangeMarvelous",	+0.008f ),
 	m_fLifeDeltaPercentChangePerfect	( "LifeDeltaPercentChangePerfect",		+0.008f ),
 	m_fLifeDeltaPercentChangeGreat		( "LifeDeltaPercentChangeGreat",		+0.004f ),
@@ -112,6 +114,7 @@ PrefsManager::PrefsManager() :
 	m_fLifeDeltaPercentChangeOK			( "LifeDeltaPercentChangeOK",			+0.008f ),
 	m_fLifeDeltaPercentChangeNG			( "LifeDeltaPercentChangeNG",			-0.080f ),
 
+	m_fTugMeterPercentChangeRidiculous	( "TugMeterPercentChangeRidiculous",		+0.012f ),
 	m_fTugMeterPercentChangeMarvelous	( "TugMeterPercentChangeMarvelous",		+0.010f ),
 	m_fTugMeterPercentChangePerfect		( "TugMeterPercentChangePerfect",		+0.008f ),
 	m_fTugMeterPercentChangeGreat		( "TugMeterPercentChangeGreat",			+0.004f ),
@@ -133,6 +136,7 @@ PrefsManager::PrefsManager() :
 	m_bFailOffForFirstStageEasy		( "FailOffForFirstStageEasy",		false ),
 	m_bMercifulBeginner				( "MercifulBeginner",				false ),
 
+	m_iPercentScoreWeightRidiculous	( "PercentScoreWeightRidiculous",	3 ),
 	m_iPercentScoreWeightMarvelous	( "PercentScoreWeightMarvelous",	3 ),
 	m_iPercentScoreWeightPerfect	( "PercentScoreWeightPerfect",		2 ),
 	m_iPercentScoreWeightGreat		( "PercentScoreWeightGreat",		1 ),
@@ -143,6 +147,7 @@ PrefsManager::PrefsManager() :
 	m_iPercentScoreWeightOK			( "PercentScoreWeightOK",			3 ),
 	m_iPercentScoreWeightNG			( "PercentScoreWeightNG",			0 ),
 	
+	m_iGradeWeightRidiculous		( "GradeWeightRidiculous",	2 ),
 	m_iGradeWeightMarvelous		( "GradeWeightMarvelous",	2 ),
 	m_iGradeWeightPerfect		( "GradeWeightPerfect",		2 ),
 	m_iGradeWeightGreat			( "GradeWeightGreat",		1 ),
@@ -153,7 +158,7 @@ PrefsManager::PrefsManager() :
 	m_iGradeWeightOK			( "GradeWeightOK",			6 ),
 	m_iGradeWeightNG			( "GradeWeightNG",			0 ),
 
-	m_fSuperMeterPercentChangeMarvelous	( "SuperMeterPercentChangeMarvelous",	+0.05f ),
+	m_fSuperMeterPercentChangeRidiculous	( "SuperMeterPercentChangeRidiculous",		+0.05f ),
 	m_fSuperMeterPercentChangePerfect	( "SuperMeterPercentChangePerfect",		+0.04f ),
 	m_fSuperMeterPercentChangeGreat		( "SuperMeterPercentChangeGreat",		+0.02f ),
 	m_fSuperMeterPercentChangeGood		( "SuperMeterPercentChangeGood",		+0.00f ),
@@ -164,6 +169,7 @@ PrefsManager::PrefsManager() :
 	m_fSuperMeterPercentChangeNG		( "SuperMeterPercentChangeNG",			-0.20f ),
 	m_bMercifulSuperMeter				( "MercifulSuperMeter",					true ),
 	
+	m_fTimeMeterSecondsChangeRidiculous	( "TimeMeterSecondsChangeRidiculous",	+0.2f ),
 	m_fTimeMeterSecondsChangeMarvelous	( "TimeMeterSecondsChangeMarvelous",	+0.1f ),
 	m_fTimeMeterSecondsChangePerfect	( "TimeMeterSecondsChangePerfect",		 0.0f ),
 	m_fTimeMeterSecondsChangeGreat		( "TimeMeterSecondsChangeGreat",		-0.5f ),
@@ -242,15 +248,6 @@ PrefsManager::PrefsManager() :
 	m_iProductID					( "ProductID",					1 ),	
 	m_sDefaultLocalProfileIDP1		( "DefaultLocalProfileIDP1",	"" ),
 	m_sDefaultLocalProfileIDP2		( "DefaultLocalProfileIDP2",	"" ),
-	m_bMemoryCards					( "MemoryCards",				false ),
-	m_sMemoryCardOsMountPointP1		( "MemoryCardOsMountPointP1",	"" ),
-	m_sMemoryCardOsMountPointP2		( "MemoryCardOsMountPointP2",	"" ),
-	m_iMemoryCardUsbBusP1			( "MemoryCardUsbBusP1",			-1 ),
-	m_iMemoryCardUsbBusP2			( "MemoryCardUsbBusP2",			-1 ),
-	m_iMemoryCardUsbPortP1			( "MemoryCardUsbPortP1",		-1 ),
-	m_iMemoryCardUsbPortP2			( "MemoryCardUsbPortP2",		-1 ),
-	m_iMemoryCardUsbLevelP1			( "MemoryCardUsbLevelP1",		-1 ),
-	m_iMemoryCardUsbLevelP2			( "MemoryCardUsbLevelP2",		-1 ),
 	m_iCenterImageTranslateX		( "CenterImageTranslateX",		0 ),
 	m_iCenterImageTranslateY		( "CenterImageTranslateY",		0 ),
 	m_fCenterImageAddWidth			( "CenterImageAddWidth",		0 ),
@@ -374,8 +371,6 @@ void PrefsManager::ReadGlobalPrefsFromIni( const IniFile &ini )
 
 	// validate
 	m_iSongsPerPlay.Set( clamp(m_iSongsPerPlay.Get(),0,MAX_SONGS_PER_PLAY) );
-	FOREACH_PlayerNumber( pn )
-		GetMemoryCardOsMountPoint(pn).Set( FixSlashes(GetMemoryCardOsMountPoint(pn)) );
 	m_BackgroundMode.Set( (BackgroundMode)clamp((int)m_BackgroundMode.Get(),0,(int)NUM_BackgroundMode-1) );
 }
 

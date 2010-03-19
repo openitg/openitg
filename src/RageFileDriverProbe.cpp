@@ -32,7 +32,7 @@ RageFileObjDirect *RageFileDriverProbe::CreateInternal( const CString &sPath )
 	if ( sHeader == ":|" || sHeader == "8O" )
 	{
 		LOG->Debug( "%s: returning %s as RageFileObjCrypt_ITG2", __FUNCTION__, sPath.c_str() );
-		return new RageFileObjCrypt_ITG2( CRYPT_KEY );
+		return new RageFileObjCrypt_ITG2( "" );
 	}
 	else
 	{

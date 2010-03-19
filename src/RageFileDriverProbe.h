@@ -13,8 +13,8 @@
 class RageFileDriverProbe: public RageFileDriverCrypt_ITG2
 {
 public:
-	RageFileDriverProbe( ): RageFileDriverCrypt_ITG2( CRYPT_KEY ) {}
-	RageFileDriverProbe( const CString &sRoot ): RageFileDriverCrypt_ITG2( sRoot, CRYPT_KEY ) {}
+	RageFileDriverProbe( ): RageFileDriverCrypt_ITG2( "" ) {}
+	RageFileDriverProbe( const CString &sRoot ): RageFileDriverCrypt_ITG2( sRoot, "" ) {}
 
 protected:
 	RageFileObjDirect *CreateInternal( const CString &sPath );

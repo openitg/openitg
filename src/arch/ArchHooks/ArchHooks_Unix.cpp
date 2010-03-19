@@ -84,7 +84,7 @@ struct stat st;
 	FILEMAN->Mount( "dir", "/itgdata/cache-sink", "/Cache" );
 #else
 	/* OpenITG-specific paths */
-	FILEMAN->Mount( "kry", Root + "/CryptPackages", "/Packages" );
+	FILEMAN->Mount( "oitg", Root + "/CryptPackages", "/Packages" );
 
 	/* This mounts everything else, including Cache, Data, UserPacks, etc. */
 	FILEMAN->Mount( "dir", Root, "/" );

@@ -103,6 +103,7 @@ void ScoreKeeperMAX2::Load(
 		m_iRoundTo = 5;
 		if (!GAMESTATE->IsCourseMode())
 		{
+			m_ComboBonusFactor[TNS_RIDICULOUS] = 55;
 			m_ComboBonusFactor[TNS_MARVELOUS] = 55;
 			m_ComboBonusFactor[TNS_PERFECT] = 55;
 			m_ComboBonusFactor[TNS_GREAT] = 33;
@@ -271,6 +272,7 @@ void ScoreKeeperMAX2::AddScore( TapNoteScore score )
 
 	switch( score )
 	{
+	case TNS_RIDICULOUS:
 	case TNS_MARVELOUS:	p = 10;		break;
 	case TNS_PERFECT:	p = GAMESTATE->ShowMarvelous()? 9:10; break;
 	case TNS_GREAT:		p = 5;		break;
@@ -351,13 +353,13 @@ void ScoreKeeperMAX2::HandleTapRowScore( TapNoteScore scoreOfLastTap, int iNumTa
 	// Update dance points.
 	if( !m_pPlayerStageStats->bFailed )
 		m_pPlayerStageStats->iActualDancePoints += TapNoteScoreToDancePoints( scoreOfLastTap );
-	m_pPlayerStageStats->iCurPossibleDancePoints += TapNoteScoreToDancePoints( TNS_MARVELOUS );
+	m_pPlayerStageStats->iCurPossibleDancePoints += TapNoteScoreToDancePoints( TNS_RIDICULOUS );
 	// update judged row totals
 	m_pPlayerStageStats->iTapNoteScores[scoreOfLastTap] += 1;
 
 	// increment the current total possible dance score
 
-	m_pPlayerStageStats->iCurPossibleDancePoints += TapNoteScoreToDancePoints( TNS_MARVELOUS );
+	m_pPlayerStageStats->iCurPossibleDancePoints += TapNoteScoreToDancePoints( TNS_RIDICULOUS );
 
 	//
 	// Regular combo
@@ -388,6 +390,7 @@ void ScoreKeeperMAX2::HandleTapRowScore( TapNoteScore scoreOfLastTap, int iNumTa
 	//
 	switch( scoreOfLastTap )
 	{
+	case TNS_RIDICULOUS:
 	case TNS_MARVELOUS:
 	case TNS_PERFECT:
 		m_iCurToastyCombo += iNumTapsInRow;
@@ -429,7 +432,7 @@ void ScoreKeeperMAX2::HandleHoldScore( HoldNoteScore holdScore, TapNoteScore tap
 	m_pPlayerStageStats->iCurPossibleDancePoints += HoldNoteScoreToDancePoints( HNS_OK );
 
 	if( holdScore == HNS_OK )
-		AddScore( TNS_MARVELOUS );
+		AddScore( TNS_RIDICULOUS );
 	else if ( holdScore == HNS_NG )
 		AddScore( TNS_GOOD ); // required for subtractive score display to work properly
 
@@ -452,7 +455,7 @@ int ScoreKeeperMAX2::GetPossibleDancePoints( const RadarValues& radars )
 	int NumHolds = int(radars[RADAR_NUM_HOLDS]); 
 	int NumRolls = int(radars[RADAR_NUM_ROLLS]); 
 	return 
-		NumTaps*TapNoteScoreToDancePoints(TNS_MARVELOUS, false)+
+		NumTaps*TapNoteScoreToDancePoints(TNS_RIDICULOUS, false)+
 		NumHolds*HoldNoteScoreToDancePoints(HNS_OK, false) +
 		NumRolls*HoldNoteScoreToDancePoints(HNS_OK, false);
 }
@@ -477,7 +480,7 @@ int ScoreKeeperMAX2::GetPossibleGradePoints( const RadarValues& radars )
 	int NumHolds = int(radars[RADAR_NUM_HOLDS]); 
 	int NumRolls = int(radars[RADAR_NUM_ROLLS]); 
 	return 
-		NumTaps*TapNoteScoreToGradePoints(TNS_MARVELOUS, false)+
+		NumTaps*TapNoteScoreToGradePoints(TNS_RIDICULOUS, false)+
 		NumHolds*HoldNoteScoreToGradePoints(HNS_OK, false) +
 		NumRolls*HoldNoteScoreToGradePoints(HNS_OK, false);
 }

@@ -14,6 +14,10 @@ public:
 
 	void SetTime( tm newtime );
 
+	// Windows thread IDs are DWORD, pthread IDs are uint64_t. Cast up.
+	virtual void BoostThreadPriority( uint64_t tid );
+	virtual void UnBoostThreadPriority( uint64_t tid );
+
 	uint64_t GetDiskSpaceTotal( const CString &sPath );
 	uint64_t GetDiskSpaceFree( const CString &sPath );
 

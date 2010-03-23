@@ -19,11 +19,11 @@ public:
 protected:
 	virtual bool LoadInternal();
 
-	LoadFn		Module_Load;
-	UnloadFn	Module_Unload;
-	UpdateFn	Module_Update;
+	LoadFn			Module_Load;
+	UnloadFn		Module_Unload;
+	UpdateFn		Module_Update;
 	GetModuleInfoFn	Module_GetModuleInfo;
-	GetErrorFn	Module_GetError;
+	GetErrorFn		Module_GetError;
 
 	CString m_sLibraryPath;
 private:

@@ -2,7 +2,7 @@ OpenITG, beta 3 (in development)
 --------------------------------
 -New LightsDrivers:
      LightsDriver_Dynamic: use external libraries to control lights
-New GameCommands:
+-New GameCommands:
      "clearmachinelogs" - clears crash logs from machine.
      "transferlogsfrommachine" - transfers crash logs to a USB drive.
 -Miscellaneous changes:
@@ -20,6 +20,7 @@ New GameCommands:
      ScreenDebugOverlay can now override used font (thanks, Wanny)
 -Backend updates:
      Arch updated to use SM4's RageDriver structure
+     Boost ITGIO/PIUIO thread priority, tentative fix for coin nomming
 
 OpenITG, beta 2 (August 10th, 2009)
 --------------------------------

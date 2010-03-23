@@ -274,7 +274,7 @@ void ScoreKeeperMAX2::AddScore( TapNoteScore score )
 	{
 	case TNS_RIDICULOUS:
 	case TNS_MARVELOUS:	p = 10;		break;
-	case TNS_PERFECT:	p = GAMESTATE->ShowMarvelous()? 9:10; break;
+	case TNS_PERFECT:	p = GAMESTATE->ShowTapNoteScore(TNS_MARVELOUS)? 9:10; break;
 	case TNS_GREAT:		p = 5;		break;
 	default:			p = 0;		break;
 	}
@@ -517,22 +517,25 @@ int ScoreKeeperMAX2::HoldNoteScoreToGradePoints( HoldNoteScore hns ) const
 
 int ScoreKeeperMAX2::TapNoteScoreToDancePoints( TapNoteScore tns, bool bBeginner )
 {
-	if( !GAMESTATE->ShowMarvelous() && tns == TNS_MARVELOUS )
-		tns = TNS_PERFECT;
+	// TNS_MARVELOUS --> TNS_PERFECT, any other restricted window goes to TNS_MARVELOUS
+	// (this assumes that all hidden windows will be higher than MARVELOUS)
+	if( !GAMESTATE->ShowTapNoteScore( tns ) )
+		tns = (tns == TNS_MARVELOUS) ? TNS_PERFECT : TNS_MARVELOUS;
 
 	/* This is used for Oni percentage displays.  Grading values are currently in
 	 * StageStats::GetGrade. */
 	int iWeight = 0;
 	switch( tns )
 	{
-	case TNS_NONE:		iWeight = 0;
-	case TNS_HIT_MINE:	iWeight = PREFSMAN->m_iPercentScoreWeightHitMine;	break;
-	case TNS_MISS:		iWeight = PREFSMAN->m_iPercentScoreWeightMiss;		break;
-	case TNS_BOO:		iWeight = PREFSMAN->m_iPercentScoreWeightBoo;		break;
-	case TNS_GOOD:		iWeight = PREFSMAN->m_iPercentScoreWeightGood;		break;
-	case TNS_GREAT:		iWeight = PREFSMAN->m_iPercentScoreWeightGreat;		break;
-	case TNS_PERFECT:	iWeight = PREFSMAN->m_iPercentScoreWeightPerfect;	break;
-	case TNS_MARVELOUS:	iWeight = PREFSMAN->m_iPercentScoreWeightMarvelous;	break;
+	case TNS_NONE:			iWeight = 0;
+	case TNS_HIT_MINE:		iWeight = PREFSMAN->m_iPercentScoreWeightHitMine;	break;
+	case TNS_MISS:			iWeight = PREFSMAN->m_iPercentScoreWeightMiss;		break;
+	case TNS_BOO:			iWeight = PREFSMAN->m_iPercentScoreWeightBoo;		break;
+	case TNS_GOOD:			iWeight = PREFSMAN->m_iPercentScoreWeightGood;		break;
+	case TNS_GREAT:			iWeight = PREFSMAN->m_iPercentScoreWeightGreat;		break;
+	case TNS_PERFECT:		iWeight = PREFSMAN->m_iPercentScoreWeightPerfect;	break;
+	case TNS_MARVELOUS:		iWeight = PREFSMAN->m_iPercentScoreWeightMarvelous;	break;
+	case TNS_RIDICULOUS:	iWeight = PREFSMAN->m_iPercentScoreWeightRidiculous;break;
 	default: FAIL_M( ssprintf("%i", tns) );
 	}
 	if( bBeginner && PREFSMAN->m_bMercifulBeginner )
@@ -557,8 +560,9 @@ int ScoreKeeperMAX2::HoldNoteScoreToDancePoints( HoldNoteScore hns, bool bBeginn
 
 int ScoreKeeperMAX2::TapNoteScoreToGradePoints( TapNoteScore tns, bool bBeginner )
 {
-	if( !GAMESTATE->ShowMarvelous() && tns == TNS_MARVELOUS )
-		tns = TNS_PERFECT;
+	// this assumes that all hidden windows will be higher than MARVELOUS
+	if( !GAMESTATE->ShowTapNoteScore( tns ) )
+		tns = (tns == TNS_MARVELOUS) ? TNS_PERFECT : TNS_MARVELOUS;
 
 	/* This is used for Oni percentage displays.  Grading values are currently in
 	 * StageStats::GetGrade. */
@@ -574,6 +578,7 @@ int ScoreKeeperMAX2::TapNoteScoreToGradePoints( TapNoteScore tns, bool bBeginner
 	case TNS_GREAT:			iWeight = PREFSMAN->m_iGradeWeightGreat;	break;
 	case TNS_PERFECT:		iWeight = PREFSMAN->m_iGradeWeightPerfect;	break;
 	case TNS_MARVELOUS:		iWeight = PREFSMAN->m_iGradeWeightMarvelous;break;
+	case TNS_RIDICULOUS:	iWeight = PREFSMAN->m_iGradeWeightRidiculous; break;
 	default: FAIL_M( ssprintf("%i", tns) );
 	}
 	if( bBeginner && PREFSMAN->m_bMercifulBeginner )

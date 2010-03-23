@@ -606,7 +606,8 @@ void ScreenEvaluation::Init()
 	//
 	for( int l=0; l<NUM_JUDGE_LINES; l++ ) 
 	{
-		if( l == 0  && !GAMESTATE->ShowMarvelous() )
+		// XXX: this is voodoo. Should clean it up later.
+		if( !GAMESTATE->ShowTapNoteScore( TapNoteScore(TNS_RIDICULOUS-l) ) )
 			continue;	// skip
 
 		if( SHOW_JUDGMENT(l) )

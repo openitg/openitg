@@ -4,6 +4,7 @@
 #include "DiagnosticsUtil.h"
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
+#include "arch/ArchHooks/ArchHooks.h"
 #include "InputHandler_PIUIO.h"
 #include "InputHandler_PIUIO_Helper.h"
 
@@ -115,6 +116,10 @@ void InputHandler_PIUIO::SetLightsMappings()
 
 void InputHandler_PIUIO::InputThreadMain()
 {
+	// boost this thread priority past the priority of the binary;
+	// if we don't, we might lose input data (e.g. coins) during loads.
+	HOOKS->BoostThreadPriority();
+
 	while( !m_bShutdown )
 	{
 		m_DebugTimer.StartUpdate();
@@ -136,6 +141,8 @@ void InputHandler_PIUIO::InputThreadMain()
 			m_DebugTimer.Reset();
 		}
 	}
+
+	HOOKS->UnBoostThreadPriority();
 }
 
 /* WARNING: SCIENCE CONTENT!

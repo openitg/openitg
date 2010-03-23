@@ -29,6 +29,9 @@ extern "C"
 
 // Include statvfs, for disk space info
 #include <sys/statvfs.h>
+
+// Include scheduling info for priority
+#include <sched.h>
 };
 
 
@@ -211,6 +214,21 @@ void ArchHooks_Unix::SystemReboot( bool bForceSync )
 
 	// Should we try to develop a RestartProgram for Unix?
 	ExitGame();
+}
+
+void ArchHooks_Unix::BoostThreadPriority()
+{
+	// This call requires root access; if we don't have it, warn.
+	// (Nothing will explode if we don't, but it's good practice.)
+	if( geteuid() == 0 )
+		setprio( 0, -10 );
+	else
+		LOG->Warn( "Tried to boost thread priority, but not running as root!" );
+}
+
+void ArchHooks_Unix::UnBoostThreadPriority()
+{
+	setprio( 0, 0 );
 }
 
 static void DoCleanShutdown( int signal, siginfo_t *si, const ucontext_t *uc )

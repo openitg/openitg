@@ -46,7 +46,7 @@ bool MemoryCardDriverThreaded_Windows::TestWrite( UsbStorageDevice* pDevice )
 	 * the chance of corruption if the user removes the device immediately, without doing anything. */
 	for( int i = 0; i < 10; ++i )
 	{
-		HANDLE hFile = CreateFile( ssprintf( "%stmp%i", pDevice->sOsMountDir.c_str(), RandomInt(100000)),
+		HANDLE hFile = CreateFile( ssprintf( "%stmp%i", pDevice->sOsMountDir.c_str(), RandomInt(0,100000)),
 			GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
 			NULL, CREATE_NEW, FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL );
 
@@ -122,8 +122,8 @@ void MemoryCardDriverThreaded_Windows::GetUSBStorageDevices( vector<UsbStorageDe
 		// driver letter is specified as a m_sMemoryCardOsMountPoint.
 
 		bool bIsSpecifiedMountPoint = false;
-		FOREACH_ENUM( PlayerNumber, p )
-			bIsSpecifiedMountPoint |= MEMCARDMAN->m_sMemoryCardOsMountPoint[p].Get().EqualsNoCase(sDrive);
+		FOREACH_PlayerNumber( p )
+			bIsSpecifiedMountPoint |= bool(MEMCARDMAN->m_sMemoryCardOsMountPoint[p].Get().CompareNoCase(sDrive));
 
 		CString sDrivePath = sDrive + "\\";
 

@@ -1828,6 +1828,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					RelativePath="archutils\Win32\DebugInfoHunt.h">
 				</File>
 				<File
+					RelativePath=".\archutils\Win32\ErrorStrings.cpp">
+				</File>
+				<File
+					RelativePath=".\archutils\Win32\ErrorStrings.h">
+				</File>
+				<File
 					RelativePath="archutils\Win32\GetFileInformation.cpp">
 				</File>
 				<File

@@ -2,6 +2,8 @@
 #include "RageLog.h"
 #include "DiagnosticsUtil.h"
 
+#include "arch/ArchHooks/ArchHooks.h"
+
 // required I/O routines
 #include "LightsManager.h"
 #include "arch/Lights/LightsDriver_External.h"
@@ -114,6 +116,10 @@ int InputHandler_Iow::InputThread_Start( void *p )
 
 void InputHandler_Iow::InputThreadMain()
 {
+	// boost this thread priority past the priority of the binary;
+	// if we don't, we might lose input data (e.g. coins) during loads.
+	HOOKS->BoostThreadPriority();
+
 	while( !m_bShutdown )
 	{
 		m_DebugTimer.StartUpdate();
@@ -134,6 +140,8 @@ void InputHandler_Iow::InputThreadMain()
 		if( g_bDebugInputDrivers && m_DebugTimer.TimeToReport() && SCREENMAN )
 			SCREENMAN->SystemMessageNoAnimate( BitsToString(m_iReadData) );
 	}
+
+	HOOKS->UnBoostThreadPriority();
 }
 
 void InputHandler_Iow::HandleInput()

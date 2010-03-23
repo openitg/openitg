@@ -685,7 +685,7 @@ void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, int iRow, bool bIsB
 		}
 
 		const float fYOffset			= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
-		const float fRotationY			= ArrowEffects::GetRotationY( m_pPlayerState, fY );
+		const float fRotationY			= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset );
 		const float fZ					= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
 		const float fX					= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
 		const float fXLeft				= fX - fFrameWidth/2;

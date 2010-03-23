@@ -319,6 +319,8 @@ inline T Decrement( T a ) { --a; return a; }
 void TrimLeft(CString &str, const char *s = "\r\n\t ");
 void TrimRight(CString &str, const char *s = "\r\n\t ");
 void StripCrnl(CString &s);
+bool BeginsWith( const CString &sTestThis, const CString &sBeginning );
+bool EndsWith( const CString &sTestThis, const CString &sEnding );
 
 CString DerefRedir( const CString &sPath );
 bool GetFileContents( const CString &sPath, CString &sOut, bool bOneLine = false );

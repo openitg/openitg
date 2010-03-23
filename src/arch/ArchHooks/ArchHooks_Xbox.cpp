@@ -22,11 +22,6 @@ static void InitTimer()
 	g_iStartTime = timeGetTime();
 }
 
-void ArchHooks_Xbox::MountInitialFilesystems( const CString &sDirOfExecutable )
-{
-	FILEMAN->Mount( "dir", "D:\\", "/" );
-}
-
 int64_t ArchHooks::GetMicrosecondsSinceStart( bool bAccurate )
 {
 	if( !g_bTimerInitialized )
@@ -116,6 +111,12 @@ void EnableExtraRAM()
 	WRITEMSRREG( 0x02FF, regVal );
 }
 
+void InitDevices()
+{
+	XDEVICE_PREALLOC_TYPE xdpt[] = {{XDEVICE_TYPE_GAMEPAD, 4}, {XDEVICE_TYPE_MEMORY_UNIT, 2}};
+	XInitDevices( sizeof(xdpt) / sizeof(XDEVICE_PREALLOC_TYPE), xdpt );
+}
+
 ArchHooks_Xbox::ArchHooks_Xbox()
 {
 	_set_new_handler(NoMemory);
@@ -130,13 +131,54 @@ ArchHooks_Xbox::ArchHooks_Xbox()
 	SetupNetwork();
 
 	EnableExtraRAM();
+
+	InitDevices();
 }
+
+static CString XLangID( DWORD Lang )
+{
+	switch(Lang)
+	{
+	case XC_LANGUAGE_JAPANESE:return "JA";
+	case XC_LANGUAGE_GERMAN:return "DE";
+	case XC_LANGUAGE_FRENCH:return "FR";
+	case XC_LANGUAGE_SPANISH:return "ES";
+	case XC_LANGUAGE_ITALIAN:return "IT";
+	case XC_LANGUAGE_KOREAN:return "KO";
+	case XC_LANGUAGE_TCHINESE:return "ZH";
+	case XC_LANGUAGE_PORTUGUESE:return "PT";
+	default:
+	case XC_LANGUAGE_ENGLISH: return "EN";
+	}
+}
+
+#if 0
+CString ArchHooks::GetPreferredLanguage()
+{
+	return XLangID( XGetLanguage() );
+}
+#endif
 
 ArchHooks_Xbox::~ArchHooks_Xbox()
 {
 	// We only want to reboot the Xbox in a software manner.
 	XLaunchNewImage( NULL, NULL );
 }
+
+#if 0
+#include "RageFileManager.h"
+
+void ArchHooks::MountInitialFilesystems( const CString &sDirOfExecutable )
+{
+	FILEMAN->Mount( "dir", "D:\\", "/" );
+
+	// Mount everything game-writable (not counting the editor) to the game title persistent data region ( /E/TDATA/33342530/ )
+	FILEMAN->Mount( "dir", "T:/Cache", "/Cache" );
+	FILEMAN->Mount( "dir", "T:/Logs", "/Logs" );
+	FILEMAN->Mount( "dir", "T:/Save", "/Save" );
+	FILEMAN->Mount( "dir", "T:/Screenshots", "/Screenshots" );
+}
+#endif
 
 /*
  * (c) 2003-2004 Glenn Maynard, Chris Danford

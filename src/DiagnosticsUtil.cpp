@@ -127,7 +127,7 @@ CString DiagnosticsUtil::GetProductName()
 	return CString(PRODUCT_NAME_VER);
 }
 
-CString DiagnosticsUtil::GetSerialNumber()
+const CString& DiagnosticsUtil::GetSerialNumber()
 {
 	static CString g_SerialNum;
 

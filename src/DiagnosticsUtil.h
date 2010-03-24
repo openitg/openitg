@@ -14,7 +14,7 @@ namespace DiagnosticsUtil
 	CString GetInputType();
 	CString GetProductName();
 
-	CString GetSerialNumber();
+	const CString& GetSerialNumber();
 	CString GenerateDebugSerial();
 
 	bool HubIsConnected();

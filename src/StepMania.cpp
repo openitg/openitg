@@ -895,16 +895,18 @@ static void WriteLogHeader()
 	LOG->Info( PRODUCT_NAME_VER );
 	LOG->Info( "Compiled %s (%s %lu)", VersionTime, 
 		VersionSVN ? "revision" : "build", VersionNumber );
-	LOG->Info( "Serial number: %s", DiagnosticsUtil::GetSerialNumber() );
+	LOG->Info( "Serial number: %s", DiagnosticsUtil::GetSerialNumber().c_str() );
 
 	time_t cur_time;
 	time(&cur_time);
 	struct tm now;
 	localtime_r( &cur_time, &now );
+	CHECKPOINT;
 
 	LOG->Info( "Log starting %.4d-%.2d-%.2d %.2d:%.2d:%.2d", 
 		1900+now.tm_year, now.tm_mon+1, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec );
 	LOG->Trace( " " );
+	CHECKPOINT;
 
 	if( g_argc > 1 )
 	{

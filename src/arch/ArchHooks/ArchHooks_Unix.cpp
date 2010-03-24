@@ -14,6 +14,7 @@
 #include <sys/io.h>
 #include <sys/time.h>
 #include <sys/reboot.h>
+#include <sys/resource.h>
 #include <sys/io.h>
 #include <unistd.h>
 #include <cerrno>
@@ -29,10 +30,7 @@ extern "C"
 
 // Include statvfs, for disk space info
 #include <sys/statvfs.h>
-
-// Include scheduling info for priority
-#include <sched.h>
-};
+}
 
 
 #if defined(CRASH_HANDLER)
@@ -218,17 +216,14 @@ void ArchHooks_Unix::SystemReboot( bool bForceSync )
 
 void ArchHooks_Unix::BoostThreadPriority()
 {
-	// This call requires root access; if we don't have it, warn.
-	// (Nothing will explode if we don't, but it's good practice.)
-	if( geteuid() == 0 )
-		setprio( 0, -10 );
-	else
-		LOG->Warn( "Tried to boost thread priority, but not running as root!" );
+	if( setpriority(PRIO_PROCESS, 0, -15) != 0 )
+		LOG->Warn( "BoostThreadPriority failed: %s", strerror(errno) );
 }
 
 void ArchHooks_Unix::UnBoostThreadPriority()
 {
-	setprio( 0, 0 );
+	if( setpriority(PRIO_PROCESS, 0, 0) != 0 )
+		LOG->Warn( "UnBoostThreadPriority failed: %s", strerror(errno) );
 }
 
 static void DoCleanShutdown( int signal, siginfo_t *si, const ucontext_t *uc )

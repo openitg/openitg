@@ -2,22 +2,6 @@
  * This file contains all the definitions you'll want, or at least
  * need. If not, let me know and we can update the API. -- Vyhd */
 
-#ifndef LIGHTSDRIVER_MODULE_DEFS_H
-#define LIGHTSDRIVER_MODULE_DEFS_H
-
-#define MODULE_API_VERSION_MAJOR 1	// incremented whenever the API breaks old versions
-#define MODULE_API_VERSION_MINOR 1	// incremented whenever new calls are added
-
-/* we need a uint8_t type for CLightsState, but we don't
- * want to require stdint, especially not for Windows. */
-#ifndef GLOBAL_H
-  #ifdef _MSC_VER
-    typedef unsigned __int8 uint8_t;
-  #else
-    typedef unsigned char uint8_t;
-  #endif
-#endif
-
 /* API overview, version 1.1:
  *
  * int Load():
@@ -35,8 +19,8 @@
  *	returned error code is < 0, the device is presumed lost and the
  *	driver is unloaded.
  *
- * const ModuleInfo* GetModuleInfo():
- *	Returns a pointer to a const ModuleInfo struct. This is used to
+ * const LightsModuleInfo* GetModuleInfo():
+ *	Returns a pointer to a const LightsModuleInfo struct. This is used to
  *	check the API version and make sure that the binary is compatible
  *	as well as retrieve a description for the logs.
  *
@@ -48,15 +32,32 @@
  * If you're still confused, check out an example .so in Docs.
  */
 
+
+#ifndef LIGHTSDRIVER_MODULE_DEFS_H
+#define LIGHTSDRIVER_MODULE_DEFS_H
+
+#define LIGHTS_API_VERSION_MAJOR 1	// incremented whenever the API breaks old versions
+#define LIGHTS_API_VERSION_MINOR 1	// incremented whenever new calls are added
+
+/* we need a uint8_t type for CLightsState, but we don't
+ * want to require stdint, especially not for Windows. */
+#ifndef GLOBAL_H
+  #ifdef _MSC_VER
+    typedef unsigned __int8 uint8_t;
+  #else
+    typedef unsigned char uint8_t;
+  #endif
+#endif
+
 /* forward struct declarations */
 struct CLightsState;
-struct ModuleInfo;
+struct LightsModuleInfo;
 
 /* typedefs for function casting, placed here for consistency */
 typedef int (*LoadFn)();
 typedef int (*UnloadFn)();
 typedef int (*UpdateFn)(struct CLightsState*);
-typedef const struct ModuleInfo* (*GetModuleInfoFn)();
+typedef const struct LightsModuleInfo* (*GetLightsModuleInfoFn)();
 typedef const char* (*GetErrorFn)(int);
 
 #if defined(__cplusplus)
@@ -66,12 +67,12 @@ extern "C"
 
 /* contains all the info we need to have about a module. this can be extended
  * but any old variables must remain in place to maintain compatibility. */
-struct ModuleInfo
+struct LightsModuleInfo
 {
 	short mi_api_ver_major;
 	short mi_api_ver_minor;
-	short mi_module_ver_major;
-	short mi_module_ver_minor;
+	short mi_lights_ver_major;
+	short mi_lights_ver_minor;
 	const char *mi_name;
 	const char *mi_author;
 };

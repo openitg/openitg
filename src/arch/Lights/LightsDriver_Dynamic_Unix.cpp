@@ -29,7 +29,7 @@ bool LightsDriver_Dynamic_Unix::Load()
 	Module_Update		= (UpdateFn)	dlsym( pLib, "Update" );
 
 	Module_GetError		= (GetErrorFn)	dlsym( pLib, "GetError" );
-	Module_GetModuleInfo	= (GetModuleInfoFn) dlsym( pLib, "GetModuleInfo" );
+	Module_GetModuleInfo	= (GetLightsModuleInfoFn) dlsym( pLib, "GetModuleInfo" );
 	CHECKPOINT;
 
 	if( !Module_Load || !Module_Unload || !Module_Update || !Module_GetModuleInfo )

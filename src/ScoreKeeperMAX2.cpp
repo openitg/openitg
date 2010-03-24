@@ -519,7 +519,7 @@ int ScoreKeeperMAX2::TapNoteScoreToDancePoints( TapNoteScore tns, bool bBeginner
 {
 	// TNS_MARVELOUS --> TNS_PERFECT, any other restricted window goes to TNS_MARVELOUS
 	// (this assumes that all hidden windows will be higher than MARVELOUS)
-	if( !GAMESTATE->ShowTapNoteScore( tns ) )
+	if( !GAMESTATE->ShowTapNoteScore(tns) )
 		tns = (tns == TNS_MARVELOUS) ? TNS_PERFECT : TNS_MARVELOUS;
 
 	/* This is used for Oni percentage displays.  Grading values are currently in
@@ -535,7 +535,7 @@ int ScoreKeeperMAX2::TapNoteScoreToDancePoints( TapNoteScore tns, bool bBeginner
 	case TNS_GREAT:			iWeight = PREFSMAN->m_iPercentScoreWeightGreat;		break;
 	case TNS_PERFECT:		iWeight = PREFSMAN->m_iPercentScoreWeightPerfect;	break;
 	case TNS_MARVELOUS:		iWeight = PREFSMAN->m_iPercentScoreWeightMarvelous;	break;
-	case TNS_RIDICULOUS:	iWeight = PREFSMAN->m_iPercentScoreWeightRidiculous;break;
+	case TNS_RIDICULOUS:		iWeight = PREFSMAN->m_iPercentScoreWeightRidiculous;	break;
 	default: FAIL_M( ssprintf("%i", tns) );
 	}
 	if( bBeginner && PREFSMAN->m_bMercifulBeginner )
@@ -570,15 +570,15 @@ int ScoreKeeperMAX2::TapNoteScoreToGradePoints( TapNoteScore tns, bool bBeginner
 	switch( tns )
 	{
 	case TNS_NONE:			iWeight = 0;
-	case TNS_AVOIDED_MINE:	iWeight = 0;
+	case TNS_AVOIDED_MINE:		iWeight = 0;
 	case TNS_HIT_MINE:		iWeight = PREFSMAN->m_iGradeWeightHitMine;	break;
 	case TNS_MISS:			iWeight = PREFSMAN->m_iGradeWeightMiss;		break;
 	case TNS_BOO:			iWeight = PREFSMAN->m_iGradeWeightBoo;		break;
 	case TNS_GOOD:			iWeight = PREFSMAN->m_iGradeWeightGood;		break;
 	case TNS_GREAT:			iWeight = PREFSMAN->m_iGradeWeightGreat;	break;
 	case TNS_PERFECT:		iWeight = PREFSMAN->m_iGradeWeightPerfect;	break;
-	case TNS_MARVELOUS:		iWeight = PREFSMAN->m_iGradeWeightMarvelous;break;
-	case TNS_RIDICULOUS:	iWeight = PREFSMAN->m_iGradeWeightRidiculous; break;
+	case TNS_MARVELOUS:		iWeight = PREFSMAN->m_iGradeWeightMarvelous;	break;
+	case TNS_RIDICULOUS:		iWeight = PREFSMAN->m_iGradeWeightRidiculous;	break;
 	default: FAIL_M( ssprintf("%i", tns) );
 	}
 	if( bBeginner && PREFSMAN->m_bMercifulBeginner )

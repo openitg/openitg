@@ -46,7 +46,7 @@ CString ATTACK_DISPLAY_X_NAME( size_t p, size_t both_sides ){ return "AttackDisp
 static const float StepSearchDistance = 1.0f;
 
 enum HoldWindow { HW_OK, HW_Roll };
-enum TapWindow { TW_Marvelous, TW_Perfect, TW_Great, TW_Good, TW_Boo, TW_Mine, TW_Attack };
+enum TapWindow { TW_Ridiculous, TW_Marvelous, TW_Perfect, TW_Great, TW_Good, TW_Boo, TW_Mine, TW_Attack };
 
 
 float AdjustedWindowTap( TapWindow tw, bool bIsPlayingBeginner )
@@ -54,11 +54,12 @@ float AdjustedWindowTap( TapWindow tw, bool bIsPlayingBeginner )
 	float fSecs = 0;
 	switch( tw )
 	{
+	case TW_Ridiculous:	fSecs = PREFSMAN->m_fJudgeWindowSecondsRidiculous;	break;
 	case TW_Marvelous:	fSecs = PREFSMAN->m_fJudgeWindowSecondsMarvelous;	break;
 	case TW_Perfect:	fSecs = PREFSMAN->m_fJudgeWindowSecondsPerfect;		break;
 	case TW_Great:		fSecs = PREFSMAN->m_fJudgeWindowSecondsGreat;		break;
 	case TW_Good:		fSecs = PREFSMAN->m_fJudgeWindowSecondsGood;		break;
-	case TW_Boo:		fSecs = PREFSMAN->m_fJudgeWindowSecondsBoo;			break;
+	case TW_Boo:		fSecs = PREFSMAN->m_fJudgeWindowSecondsBoo;		break;
 	case TW_Mine:		fSecs = PREFSMAN->m_fJudgeWindowSecondsMine;		break;
 	case TW_Attack:		fSecs = PREFSMAN->m_fJudgeWindowSecondsAttack;		break;
 	default:	ASSERT(0);
@@ -966,7 +967,8 @@ void Player::HandleStep( int col, const RageTimer &tm, bool bHeld )
 					score = TNS_PERFECT; /* sentinel */
 				break;
 			default:
-				if(		 fSecondsFromPerfect <= ADJUSTED_WINDOW_TAP(TW_Marvelous) )	score = TNS_MARVELOUS;
+				if( fSecondsFromPerfect <= ADJUSTED_WINDOW_TAP(TW_Ridiculous ) )	score = TNS_RIDICULOUS;
+				else if( fSecondsFromPerfect <= ADJUSTED_WINDOW_TAP(TW_Marvelous) )	score = TNS_MARVELOUS;
 				else if( fSecondsFromPerfect <= ADJUSTED_WINDOW_TAP(TW_Perfect) )	score = TNS_PERFECT;
 				else if( fSecondsFromPerfect <= ADJUSTED_WINDOW_TAP(TW_Great) )		score = TNS_GREAT;
 				else if( fSecondsFromPerfect <= ADJUSTED_WINDOW_TAP(TW_Good) )		score = TNS_GOOD;
@@ -1303,7 +1305,7 @@ void Player::DisplayJudgedRow( int iIndexThatWasSteppedOn, TapNoteScore score, i
 	if (m_pPlayerState->m_PlayerOptions.m_fBlind)
 	{
 		if( m_pNoteField )
-			m_pNoteField->DidTapNote( iTrack, TNS_MARVELOUS, bBright );
+			m_pNoteField->DidTapNote( iTrack, TNS_RIDICULOUS, bBright );
 	}
 	else
 	{
@@ -1557,6 +1559,7 @@ void Player::HandleTapRowScore( unsigned row, float fStepsSeconds )
 	int &iCurMissCombo = m_pPlayerStageStats ? m_pPlayerStageStats->iCurMissCombo : iDummy;
 	switch( scoreOfLastTap )
 	{
+	case TNS_RIDICULOUS:
 	case TNS_MARVELOUS:
 	case TNS_PERFECT:
 	case TNS_GREAT:

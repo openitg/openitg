@@ -164,8 +164,9 @@ void Steps::CalculateRadarValues( float fMusicLengthSeconds )
 		return;
 
 	// If we're an edit, leave the RadarValues invalid.
-	if( IsAnEdit() )
-		return;
+	// Vyhd sez: calculate them anyway if they're on the machine
+//	if( IsAPlayerEdit() )
+//		return;
 
 	NoteData tempNoteData;
 	this->GetNoteData( tempNoteData );

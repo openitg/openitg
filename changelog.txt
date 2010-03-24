@@ -1,17 +1,20 @@
 OpenITG, beta 3 (in development)
 --------------------------------
 -New LightsDrivers:
-     LightsDriver_Dynamic: use external libraries to control lights
+     LightsDriver_Dynamic: use external libraries to control lights (Unix, Windows)
 -New GameCommands:
      "clearmachinelogs" - clears crash logs from machine.
      "transferlogsfrommachine" - transfers crash logs to a USB drive.
 -Miscellaneous changes:
      Changed OptionsList behavior (Exit on multiple selection, don't insta-exit on button)
      Changed "DebugTheme" preference to "ShowThemeErrors"
-     Switched to SM4-style button enumerations
      Added blinking for GAME_BUTTON_START on LIGHTSMODE_MENU
      Added StartRoulette and StartRandom messages for themes
      Win32: Crash dialog shows OpenITG logo/text in place of StepMania (thanks, Wanny)
+-New theme metrics:
+     (Ridiculous timing stuff, fill in later)
+-New noteskin metrics:
+     (Ridiculous timing stuff, fill in later)
 -New LUA bindings:
      ProfileManager: "IsSongNew(Song)"
 -Fixed more minor cross-platform bugs:
@@ -20,7 +23,10 @@ OpenITG, beta 3 (in development)
      ScreenDebugOverlay can now override used font (thanks, Wanny)
 -Backend updates:
      Arch updated to use SM4's RageDriver structure
-     Boost ITGIO/PIUIO thread priority, tentative fix for coin nomming
+     Cleaned up LightsMapping structs so all mappings take arrays
+     Boost ITGIO/PIUIO thread priority (tentative fix for coin nomming)
+     Use read/write buffers for RageFile (should fix memory card issues)
+     Switched to SM4-style button enumerations
 
 OpenITG, beta 2 (August 10th, 2009)
 --------------------------------

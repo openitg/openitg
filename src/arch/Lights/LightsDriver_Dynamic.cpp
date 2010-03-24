@@ -8,33 +8,29 @@ CLightsState LightsDriver_Dynamic::m_CLightsState;
 LightsDriver_Dynamic::LightsDriver_Dynamic( const CString &sLibPath )
 {
 	m_bLoaded = false;
-
-	/* fix up the path; RageFileManager made it dirty. */
 	m_sLibraryPath = sLibPath;
-	CollapsePath(m_sLibraryPath);
 }
-
 
 bool LightsDriver_Dynamic::LoadInternal()
 {
 	ASSERT( !m_sLibraryPath.empty() );
 
-	const struct ModuleInfo *info = Module_GetModuleInfo();
+	const struct LightsModuleInfo *info = Module_GetModuleInfo();
 	CHECKPOINT;
 
 	if( info == NULL )
 	{
-		LOG->Warn( "Could not get ModuleInfo from LightsDriver \"%s\".", m_sLibraryPath.c_str() );
+		LOG->Warn( "Could not get LightsModuleInfo from LightsDriver \"%s\".", m_sLibraryPath.c_str() );
 		return false;
 	}
 
 	CHECKPOINT;
-	if( MODULE_API_VERSION_MAJOR != info->mi_api_ver_major ||
-		MODULE_API_VERSION_MINOR != info->mi_api_ver_minor )
+	if( LIGHTS_API_VERSION_MAJOR != info->mi_api_ver_major ||
+		LIGHTS_API_VERSION_MINOR != info->mi_api_ver_minor )
 	{
 		LOG->Warn( "LightsDriver \"%s\" uses API version %d%.%d, binary uses %d%.%d. Disabled.",
 			info->mi_name, info->mi_api_ver_major, info->mi_api_ver_minor,
-			MODULE_API_VERSION_MAJOR, MODULE_API_VERSION_MINOR );
+			LIGHTS_API_VERSION_MAJOR, LIGHTS_API_VERSION_MINOR );
 		return false;
 	}
 	CHECKPOINT;

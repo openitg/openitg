@@ -104,12 +104,13 @@ void InputHandler_PIUIO::SetLightsMappings()
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
+	/* off, on */
+	uint32_t iCoinCounter[2] = { (1 << 27), (1 << 28) };
+
 	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
-		iGameLights[GAME_CONTROLLER_2] );
-	
-	m_LightsMappings.m_iCoinCounterOn = (1 << 28);
-	m_LightsMappings.m_iCoinCounterOff = (1 << 27);
+	m_LightsMappings.SetGameLights( iGameLights );
+
+	m_LightsMappings.SetCoinCounter( iCoinCounter );
 
 	LightsMapper::LoadMappings( "PIUIO", m_LightsMappings );
 }
@@ -237,15 +238,15 @@ void InputHandler_PIUIO::UpdateLights()
 			m_iLightData |= m_LightsMappings.m_iCabinetLights[cl];
 
 	FOREACH_GameController( gc )
-		FOREACH_GameButton( gb )
+		FOREACH_GameButton_Custom( gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iLightData |= m_LightsMappings.m_iGameLights[gc][gb];
+				m_iLightData |= m_LightsMappings.m_iButtonLights[gc][gb];
 
 	/* The coin counter moves halfway if we send bit 4, then the
 	 * rest of the way (or not at all) if we send bit 5. Send bit
 	 * 5 unless we have a coin event being recorded. */
-	m_iLightData |= m_LightsState->m_bCoinCounter ?
-		m_LightsMappings.m_iCoinCounterOn : m_LightsMappings.m_iCoinCounterOff;
+	m_iLightData |= m_LightsState->m_bCoinCounter ? m_LightsMappings.m_iCoinCounter[1]
+		: m_LightsMappings.m_iCoinCounter[0];
 }
 
 /*

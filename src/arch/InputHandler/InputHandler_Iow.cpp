@@ -101,8 +101,7 @@ void InputHandler_Iow::SetLightsMappings()
 	};
 
 	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
-		iGameLights[GAME_CONTROLLER_2] );
+	m_LightsMappings.SetGameLights( iGameLights );
 
 	// if there are any alternate mappings, set them here now
 	LightsMapper::LoadMappings( "ITGIO", m_LightsMappings );
@@ -165,7 +164,6 @@ void InputHandler_Iow::HandleInput()
 	}
 }
 
-/* Requires LightsDriver_External. */
 void InputHandler_Iow::UpdateLights()
 {
 	// set a pointer to the LightsState for access
@@ -181,10 +179,12 @@ void InputHandler_Iow::UpdateLights()
 	FOREACH_GameController( gc )
 		FOREACH_GameButton( gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iWriteData |= m_LightsMappings.m_iGameLights[gc][gb];
+				m_iWriteData |= m_LightsMappings.m_iButtonLights[gc][gb];
 
-	m_iWriteData |= m_LightsState->m_bCoinCounter ?
-		m_LightsMappings.m_iCoinCounterOn : m_LightsMappings.m_iCoinCounterOff;
+	if( m_LightsState->m_bCoinCounter )
+		m_iWriteData |= m_LightsMappings.m_iCoinCounter[1];
+	else
+		m_iWriteData |= m_LightsMappings.m_iCoinCounter[0];
 }
 
 /*

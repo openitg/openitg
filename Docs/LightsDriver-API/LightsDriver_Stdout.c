@@ -8,17 +8,17 @@
 #include <unistd.h>
 #include "LightsDriver_ModuleDefs.h"
 
-struct ModuleInfo info =
+struct LightsModuleInfo info =
 {
-	MODULE_API_VERSION_MAJOR,	/* API major version */
-	MODULE_API_VERSION_MINOR,	/* API minor version */
+	LIGHTS_API_VERSION_MAJOR,	/* API major version */
+	LIGHTS_API_VERSION_MINOR,	/* API minor version */
 	1,				/* Lib major version */
 	0,				/* Lib minor version */
 	"Stdout",			/* Driver description */
 	"Vyhd",				/* Driver author */
 };
 
-const struct ModuleInfo* GetModuleInfo()
+const struct LightsModuleInfo* GetModuleInfo()
 {
 	return &info;
 }

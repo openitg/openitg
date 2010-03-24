@@ -82,9 +82,9 @@ void LightsMapper::LoadMappings( const CString &sDeviceName, LightsMapping &mapp
 	}
 
 	ini.GetValue( sDeviceName, "CoinCounterOn", sBuffer );
-	ToMapping( sBuffer, mapping.m_iCoinCounterOn );
+	ToMapping( sBuffer, mapping.m_iCoinCounter[1] );
 	ini.GetValue( sDeviceName, "CoinCounterOff", sBuffer );
-	ToMapping( sBuffer, mapping.m_iCoinCounterOff );
+	ToMapping( sBuffer, mapping.m_iCoinCounter[0] );
 
 	// "PIUIO-dance-", "PIUIO-pump-", etc.
 	CString sBaseKey = sDeviceName + "-" + pGame->m_szName + "-";
@@ -98,7 +98,7 @@ void LightsMapper::LoadMappings( const CString &sDeviceName, LightsMapping &mapp
 		FOREACH_ENUM( GameButton, pGame->ButtonNameToIndex("Operator"), gb )
 		{
 			ini.GetValue( sPlayerKey, GameButtonToString(pGame, gb), sBuffer );
-			ToMapping( sBuffer, mapping.m_iGameLights[gc][gb] );
+			ToMapping( sBuffer, mapping.m_iButtonLights[gc][gb] );
 		}
 	}
 
@@ -114,8 +114,8 @@ void LightsMapper::WriteMappings( const CString &sDeviceName, LightsMapping &map
 	const Game* pGame = GAMESTATE->GetCurrentGame();
 
 	// set cabinet and counter data
-	ini.SetValue( sDeviceName, "CoinCounterOn", FromMapping(mapping.m_iCoinCounterOn) );
-	ini.SetValue( sDeviceName, "CoinCounterOff", FromMapping(mapping.m_iCoinCounterOff) );
+	ini.SetValue( sDeviceName, "CoinCounterOn", FromMapping(mapping.m_iCoinCounter[1]) );
+	ini.SetValue( sDeviceName, "CoinCounterOff", FromMapping(mapping.m_iCoinCounter[0]) );
 
 	FOREACH_CabinetLight( cl )
 		ini.SetValue( sDeviceName, CabinetLightToString(cl), FromMapping(mapping.m_iCabinetLights[cl]) );
@@ -131,7 +131,7 @@ void LightsMapper::WriteMappings( const CString &sDeviceName, LightsMapping &map
 		// only read up to the last-set game button, which is the operator button
 		FOREACH_ENUM( GameButton, pGame->ButtonNameToIndex("Operator"), gb )
 			ini.SetValue( sPlayerKey, GameButtonToString(pGame, gb),
-				FromMapping(mapping.m_iGameLights[gc][gb]) );
+				FromMapping(mapping.m_iButtonLights[gc][gb]) );
 	}
 
 	ini.WriteFile( LIGHTS_INI_PATH );

@@ -22,8 +22,8 @@ protected:
 	LoadFn			Module_Load;
 	UnloadFn		Module_Unload;
 	UpdateFn		Module_Update;
-	GetModuleInfoFn	Module_GetModuleInfo;
 	GetErrorFn		Module_GetError;
+	GetLightsModuleInfoFn	Module_GetModuleInfo;
 
 	CString m_sLibraryPath;
 private:

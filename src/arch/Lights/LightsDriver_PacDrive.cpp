@@ -45,8 +45,7 @@ void LightsDriver_PacDrive::SetLightsMappings()
 	};
 
 	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
-		iGameLights[GAME_CONTROLLER_2] );
+	m_LightsMappings.SetGameLights( iGameLights );
 
 	LightsMapper::LoadMappings( "PacDrive", m_LightsMappings );
 }
@@ -78,7 +77,7 @@ void LightsDriver_PacDrive::Set( const LightsState *ls )
 	FOREACH_GameController( gc )
 		FOREACH_GameButton( gb )
 			if( ls->m_bGameButtonLights[gc][gb] )
-				iWriteData |= m_LightsMappings.m_iGameLights[gc][gb];
+				iWriteData |= m_LightsMappings.m_iButtonLights[gc][gb];
 
 
 	// write the data - if it fails, stop updating

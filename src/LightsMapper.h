@@ -14,30 +14,45 @@ struct LightsMapping
 	LightsMapping()
 	{
 		ZERO(m_iCabinetLights);
-		ZERO(m_iGameLights);
-		ZERO(m_iCoinCounterOn);
-		ZERO(m_iCoinCounterOff);
+		ZERO(m_iButtonLights);
+		ZERO(m_iCoinCounter);
 	}
 
-	// XXX: coder is trusted to have the right amount of elements for these calls.
-	void SetCabinetLights( uint32_t array[] )
+	void SetCabinetLights( uint32_t array[NUM_CABINET_LIGHTS] )
 	{
 		for( int i = 0; i < NUM_CABINET_LIGHTS; i++ )
 			m_iCabinetLights[i] = array[i];
 	}
 
-	void SetGameLights( uint32_t array1[], uint32_t array2[] )
+	void SetButtonLights( uint32_t array[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] )
 	{
-		for( int i = 0; i < MAX_GAME_BUTTONS; i++ )
+		FOREACH_GameController( gc )
+			FOREACH_GameButton( gb )
+				m_iButtonLights[gc][gb] = array[gc][gb];
+	}
+
+	/* like the above, but only modifies custom button lights */
+	void SetGameLights( uint32_t array[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] )
+	{
+		FOREACH_GameController( gc )
 		{
-			m_iGameLights[GAME_CONTROLLER_1][i] = array1[i];
-			m_iGameLights[GAME_CONTROLLER_2][i] = array2[i];
+			FOREACH_GameButton_Custom( gb )
+			{
+				unsigned int iIndex = gb - GAME_BUTTON_NEXT;
+				m_iButtonLights[gc][gb] = array[gc][iIndex];
+			}
 		}
 	}
 
+	void SetCoinCounter( uint32_t array[2] )
+	{
+		m_iCoinCounter[0] = array[0];	// off state
+		m_iCoinCounter[1] = array[1];	// on state
+	}
+
 	uint32_t	m_iCabinetLights[NUM_CABINET_LIGHTS];
-	uint32_t	m_iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];
-	uint32_t	m_iCoinCounterOn, m_iCoinCounterOff;
+	uint32_t	m_iButtonLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];
+	uint32_t	m_iCoinCounter[2];	// off, on
 };
 
 namespace LightsMapper

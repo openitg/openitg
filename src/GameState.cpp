@@ -1387,13 +1387,14 @@ bool GameState::ShowTapNoteScore( TapNoteScore tns ) const
 	case TNS_MARVELOUS:		window = PREFSMAN->m_MarvelousTiming;	break;
 	case TNS_RIDICULOUS:
 		window = PREFSMAN->m_RidiculousTiming;
+
 		// don't allow Ridiculous timing if Marvelous isn't allowed
 		CLAMP( (int&)window, PrefsManager::WINDOW_NEVER, PREFSMAN->m_MarvelousTiming );
 	}
 
 	switch( window )
 	{
-	case PrefsManager::WINDOW_NEVER:			return false;
+	case PrefsManager::WINDOW_NEVER:		return false;
 	case PrefsManager::WINDOW_COURSES_ONLY:		return IsCourseMode();
 	case PrefsManager::WINDOW_EVERYWHERE:		return true;
 	default:	ASSERT(0);

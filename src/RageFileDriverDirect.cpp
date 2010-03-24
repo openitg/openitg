@@ -157,7 +157,7 @@ bool RageFileObjDirect::OpenInternal( const CString &sPath, int iMode, int &iErr
 
 	/* enable the write buffer if we're writing data */
 	if( iMode & RageFile::WRITE )
-		this->EnableBuffering();
+		this->EnableWriteBuffering( BUFFER_SIZE );
 
 	return true;
 }
@@ -333,46 +333,35 @@ static int RetriedWrite( int iFD, const void *pBuf, size_t iCount )
 
 int RageFileObjDirect::FlushInternal()
 {
-	if( !m_sWriteBuf.size() )
-		return 0;
-
-	int iRet = RetriedWrite( m_iFD, m_sWriteBuf.data(), m_sWriteBuf.size() );
-	if( iRet == -1 )
+	if( WriteFailed() )
 	{
-		LOG->Warn("Error writing %s: %s", this->m_sPath.c_str(), strerror(errno) );
-		SetError( strerror(errno) );
+		SetError( "previous write failed" );
+		return -1;
 	}
 
-	m_sWriteBuf.erase();
-	m_sWriteBuf.reserve( BUFFER_SIZE );
-	return iRet;
+	return 0;
 }
 
 int RageFileObjDirect::WriteInternal( const void *pBuf, size_t iBytes )
 {
-	if( m_sWriteBuf.size()+iBytes > BUFFER_SIZE )
+	if( WriteFailed() )
 	{
-		if( Flush() == -1 )
-			return -1;
-
-		ASSERT( !m_sWriteBuf.size() );
-
-		/* The buffer is cleared.  If we still don't have space, it's bigger than
-		 * the buffer size, so just write it directly. */
-		if( iBytes >= BUFFER_SIZE )
-		{
-			int iRet = RetriedWrite( m_iFD, pBuf, iBytes );
-			if( iRet == -1 )
-			{
-				LOG->Warn("Error writing %s: %s", this->m_sPath.c_str(), strerror(errno) );
-				SetError( strerror(errno) );
-				return -1;
-			}
-			return iBytes;
-		}
+		SetError( "previous write failed" );
+		return -1;
 	}
 
-	m_sWriteBuf.append( (const char *) pBuf, (const char *) pBuf+iBytes );
+	/* The buffer is cleared. If we still don't have space, it's bigger than
+	 * the buffer size, so just write it directly. */
+
+	int iRet = RetriedWrite( m_iFD, pBuf, iBytes );
+
+	if( iRet == -1 )
+	{
+		SetError( strerror(errno) );
+		m_bWriteFailed = true;
+		return -1;
+	}
+
 	return iBytes;
 }
 

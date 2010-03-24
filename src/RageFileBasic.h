@@ -88,7 +88,7 @@ public:
 	bool GetCRC32( uint32_t *iRet );
 
 	virtual int GetFileSize() const = 0;
-	virtual CString GetDisplayPath() const { return ""; }
+	virtual CString GetDisplayPath() const { return CString(); }
 	virtual RageFileBasic *Copy() const { FAIL_M( "Copying unimplemented" ); }
 
 protected:
@@ -97,28 +97,29 @@ protected:
 	virtual int WriteInternal( const void *pBuffer, size_t iBytes ) = 0;
 	virtual int FlushInternal() { return 0; }
 
-	void EnableBuffering();
+	void EnableReadBuffering();
+	void EnableWriteBuffering( int iBytes = 1024*64 );
 
 	void SetError( const CString &sError ) { m_sError = sError; }
 	CString m_sError;
 
 private:
-	int FillBuf();
-	void ResetBuf();
+	int FillReadBuf();
+	void ResetReadBuf();
+	int EmptyWriteBuf();
 
 	bool m_bEOF;
 	int m_iFilePos;
 
 	/*
-	 * If buffering is enabled, m_pBuffer is the buffer, m_pBuf is the current read
-	 * position in the buffer and m_iBufAvail is the number of bytes at m_pBuf.  Note
-	 * that buffering is only enabled if:
+	 * If read buffering is enabled, m_pReadBuffer is the buffer, m_pReadBuf is the 
+	 * current read position in the buffer, and m_iReadBufAvail is the number of
+	 * bytes at m_pBuf.  Note that buffering is only enabled if:
 	 *
 	 *  - GetLine() is called (which requires buffering to efficiently search for newlines);
-	 *  - or EnableBuffering() is called
+	 *  - or EnableReadBuffering() is called
 	 *
-	 * Currently, once buffering is enabled, it stays enabled for the life of the
-	 * object.
+	 * Once buffering is enabled, it stays enabled for the life of the object.
 	 *
 	 * If buffering is not enabled, this buffer will not be allocated, keeping the
 	 * size overhead of each file down.  Layered RageFileBasic implementations, which
@@ -126,10 +127,21 @@ private:
 	 * to avoid reads being passed through several buffers, which is only a waste of
 	 * memory.
 	 */
+
 	enum { BSIZE = 1024 };
-	char *m_pBuffer;
-	char *m_pBuf;
-	int  m_iBufAvail;
+	char *m_pReadBuffer;
+	char *m_pReadBuf;
+	int  m_iReadBufAvail;
+
+	/*
+	 * If write buffering is enabled, m_pWriteBuffer will be allocated, and m_iWriteBufferPos
+	 * is the file position of the start of the buffer.
+	 */
+
+	char *m_pWriteBuffer;
+	int m_iWriteBufferPos;
+	int m_iWriteBufferSize;
+	int m_iWriteBufferUsed;
 
 	/* If EnableCRC32() is called, a CRC32 will be calculated as the file is read.
 	 * This is only meaningful if EnableCRC32() is called at the very start of the

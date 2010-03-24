@@ -47,6 +47,9 @@ const CString GetModuleDir()
 			break;
 	}
 
+	// extraneous dots will screw up the system-level paths.
+	CollapsePath(sModulePath);
+
 	LOG->Debug( "GetModuleDir(): returning %s", sModulePath.c_str() );
 	return sModulePath;
 }

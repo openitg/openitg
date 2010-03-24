@@ -911,7 +911,7 @@ void Song::ReCalculateRadarValuesAndLastBeat( float fSeconds )
 
 		/* Don't calculate based off edits from the machine profile. Use them
 		 * only if they were in the original .SM file to begin with. */
-		if( pSteps->WasLoadedFromProfile() )
+		if( pSteps->IsAPlayerEdit() )
 			continue;
 
 		CHECKPOINT_M( m_sSongFileName + " end");

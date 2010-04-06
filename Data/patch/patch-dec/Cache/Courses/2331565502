@@ -1,0 +1,196 @@
+#COURSE:Transience;
+#METER:Regular:9;
+#METER:Difficult:11;
+// cache tags:
+#RADAR:0:1:1.535,0.056,1.137,0.323,0.009,988.000,120.000,35.000,0.000,0.000,0.000;
+#RADAR:0:2:2.160,0.028,1.543,0.534,0.782,1389.000,162.000,58.000,33.000,0.000,0.000;
+#RADAR:0:3:3.161,0.000,1.654,0.737,2.682,2137.000,175.000,77.000,80.000,0.000,0.000;
+#RADAR:1:1:1.414,0.000,0.420,0.314,0.000,982.000,45.000,34.000,0.000,0.000,0.000;
+#RADAR:1:2:2.249,0.000,0.837,0.335,1.296,1556.000,89.000,36.000,48.000,4.000,0.000;
+#RADAR:1:3:2.773,0.000,1.253,0.055,2.499,1934.000,131.000,6.000,22.000,3.000,0.000;
+// end cache tags
+#MODS:
+  TIME=0.00:LEN=100.34:MODS=30% Distant:
+  TIME=0.00:LEN=9.66:MODS=*20 400% Dizzy:
+  TIME=9.66:LEN=0.68:MODS=*200 300% Bumpy, 200% Beat, *20 0% Dizzy:
+  TIME=11.03:LEN=5.52:MODS=75% Wave, 75% Drunk:
+  TIME=16.55:LEN=5.33:MODS=300% Bumpy:
+  TIME=21.90:LEN=0.34:MODS=*100 100% Beat, Bumpy, Mini:
+  TIME=23.28:LEN=0.34:MODS=*100 100% Beat, Bumpy, Mini:
+  TIME=24.66:LEN=0.34:MODS=*100 100% Beat, Bumpy, Mini:
+  TIME=26.03:LEN=0.35:MODS=*100 100% Beat, Bumpy, Mini:
+  TIME=27.41:LEN=0.35:MODS=*100 100% Beat, Bumpy, Mini:
+  TIME=28.79:LEN=0.35:MODS=*100 100% Beat, Bumpy, Mini:
+  TIME=30.17:LEN=0.35:MODS=*100 100% Beat, Bumpy, Mini:
+  TIME=31.55:LEN=0.35:MODS=*100 100% Beat, Bumpy, Mini:
+  TIME=33.10:LEN=2.42:MODS=Brake:
+  TIME=35.86:LEN=2.42:MODS=Bumpy, Beat:
+  TIME=38.61:LEN=2.77:MODS=50% Brake, flat, no roll, no twirl:
+  TIME=41.38:LEN=2.41:MODS=Bumpy, Beat:
+  TIME=44.14:LEN=2.41:MODS=Brake:
+  TIME=46.90:LEN=2.41:MODS=Bumpy, Beat:
+  TIME=49.65:LEN=2.76:MODS=50% Brake, flat, no roll, no twirl:
+  TIME=52.41:LEN=1.38:MODS=Bumpy, Beat:
+  TIME=53.79:LEN=1.38:MODS=*200 300% Bumpy, Beat:
+  TIME=55.17:LEN=0.01:MODS=*1000 1000% Dizzy:
+  TIME=55.50:LEN=16.22:MODS=Tipsy, 20% Expand:
+  TIME=71.72:LEN=4.14:MODS=Wave:
+  TIME=75.86:LEN=0.69:MODS=*200 300% Bumpy, Beat:
+  TIME=77.24:LEN=11.04:MODS=*0.09 Centered, *0.03 50% Flip, *0.1 -50% Mini:
+  TIME=88.28:LEN=5.51:MODS=*0.18 0% Centered, *0.07 0% Flip, *0.2 0% mini:
+  TIME=93.79:LEN=6.55:MODS=*1000 1000% Dizzy:
+  TIME=99.31:LEN=1.03:MODS=*200 300% Bumpy, Beat;
+#SONG:In The Groove 2/Hardcore Symphony:Hard:;
+#MODS:
+  TIME=0.00:LEN=29.52:MODS=Wave:
+  TIME=14.75:LEN=14.77:MODS=30% Hallway, 30% Beat:
+  TIME=29.52:LEN=14.77:MODS=200% Boost, 30% Distant:
+  TIME=42.44:LEN=1.85:MODS=*10 40% Mini:
+  TIME=44.29:LEN=14.77:MODS=*10 200% Dizzy, 50% Tipsy:
+  TIME=57.21:LEN=1.85:MODS=*10 40% Mini:
+  TIME=59.06:LEN=7.38:MODS=*10 Dark, *10 0% Mini, *0.1 Centered, *0.1 Hallway, Tornado, Drunk, Wave:
+  TIME=66.44:LEN=7.39:MODS=*10 Dark, *0.1 Distant, *0.1 0% Centered, 50% Drunk, 50% Wave:
+  TIME=73.83:LEN=7.38:MODS=30% Hallway, Bumpy:
+  TIME=79.37:LEN=1.84:MODS=*10 40% Mini:
+  TIME=81.21:LEN=7.39:MODS=30% Distant, 50% Expand:
+  TIME=86.75:LEN=1.85:MODS=*10 40% Mini:
+  TIME=88.60:LEN=7.25:MODS=40% Hallway, 80% Tipsy:
+  TIME=94.13:LEN=1.72:MODS=*10 40% Mini:
+  TIME=95.85:LEN=8.01:MODS=40% Distant, 80% Drunk:
+  TIME=101.52:LEN=2.34:MODS=*10 40% Mini;
+#SONG:In The Groove 2/Psalm Pilot:Hard:;
+#MODS:
+  TIME=0.00:LEN=103.89:MODS=Dark:
+  TIME=8.16:LEN=14.55:MODS=25% Sudden:
+  TIME=8.16:LEN=7.27:MODS=50% Expand, 30% Hallway:
+  TIME=13.39:LEN=2.04:MODS=*10 200% Bumpy:
+  TIME=15.43:LEN=5.23:MODS=50% Expand, 30% Distant, *10 0% Bumpy:
+  TIME=20.66:LEN=2.05:MODS=*10 200% Dizzy:
+  TIME=22.71:LEN=14.54:MODS=75% Brake, *100 0% Dizzy:
+  TIME=37.25:LEN=10.91:MODS=50% Tipsy:
+  TIME=37.25:LEN=0.91:MODS=*10 10% Flip:
+  TIME=38.16:LEN=0.91:MODS=*10 80% Mini, *10 0% Flip:
+  TIME=39.07:LEN=0.91:MODS=*10 10% Flip, *10 0% Mini:
+  TIME=39.98:LEN=0.91:MODS=*10 80% Mini, *10 0% Flip:
+  TIME=40.89:LEN=0.91:MODS=*10 10% Flip, *10 0% Mini:
+  TIME=41.80:LEN=0.91:MODS=*10 80% Mini, *10 0% Flip:
+  TIME=42.71:LEN=0.91:MODS=*10 10% Flip, *10 0% Mini:
+  TIME=43.62:LEN=0.91:MODS=*10 80% Mini, *10 0% Flip:
+  TIME=44.53:LEN=0.90:MODS=*10 10% Flip, *10 0% Mini:
+  TIME=45.43:LEN=0.91:MODS=*10 80% Mini, *10 0% Flip:
+  TIME=46.34:LEN=0.91:MODS=*10 10% Flip, *10 0% Mini:
+  TIME=47.25:LEN=0.91:MODS=*10 80% Mini, *10 0% Flip:
+  TIME=48.16:LEN=7.27:MODS=Beat, *10 0% Mini:
+  TIME=51.80:LEN=0.45:MODS=*1000 Hallway:
+  TIME=52.25:LEN=0.46:MODS=*1000 Distant:
+  TIME=52.71:LEN=0.45:MODS=*1000 Hallway:
+  TIME=53.16:LEN=0.46:MODS=*1000 Distant:
+  TIME=53.62:LEN=0.45:MODS=*1000 Hallway:
+  TIME=54.07:LEN=0.46:MODS=*1000 Distant:
+  TIME=54.53:LEN=0.45:MODS=*1000 Hallway:
+  TIME=54.98:LEN=0.45:MODS=*1000 Distant:
+  TIME=55.43:LEN=0.23:MODS=*20 25% Centered, *20 25% Mini, *10 Overhead:
+  TIME=55.66:LEN=0.23:MODS=*20 0% Centered, *20 0% Mini:
+  TIME=55.89:LEN=0.23:MODS=*20 25% Centered, *20 25% Mini:
+  TIME=56.12:LEN=0.22:MODS=*20 0% Centered, *20 0% Mini:
+  TIME=56.34:LEN=0.23:MODS=*20 25% Centered, *20 25% Mini:
+  TIME=56.57:LEN=0.23:MODS=*20 0% Centered, *20 0% Mini:
+  TIME=56.80:LEN=0.23:MODS=*20 25% Centered, *20 25% Mini:
+  TIME=57.03:LEN=0.22:MODS=*20 0% Centered, *20 0% Mini:
+  TIME=57.25:LEN=1.82:MODS=*1000 1000% Dizzy:
+  TIME=59.07:LEN=7.27:MODS=Beat, Bumpy, *1000 0% Dizzy:
+  TIME=59.98:LEN=0.23:MODS=*20 25% Flip, *20 25% Centered:
+  TIME=60.21:LEN=1.59:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=61.80:LEN=0.23:MODS=*20 25% Flip, *20 25% Centered:
+  TIME=62.03:LEN=0.68:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=62.71:LEN=0.22:MODS=*20 25% Flip:
+  TIME=62.94:LEN=0.67:MODS=*20 0% Flip:
+  TIME=63.62:LEN=0.22:MODS=*20 25% Flip, *20 25% Centered:
+  TIME=63.85:LEN=0.44:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=64.30:LEN=0.23:MODS=*20 25% Flip:
+  TIME=64.54:LEN=0.43:MODS=*20 0% Flip:
+  TIME=64.98:LEN=0.45:MODS=*20 25% Flip, *20 25% Centered:
+  TIME=65.44:LEN=4.53:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=66.34:LEN=7.28:MODS=15% Tornado:
+  TIME=67.25:LEN=0.23:MODS=*20 25% Flip, *20 25% Centered:
+  TIME=67.48:LEN=1.59:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=69.07:LEN=0.23:MODS=*20 25% Flip, *20 25% Centered:
+  TIME=69.30:LEN=0.68:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=69.98:LEN=0.23:MODS=*20 20% Flip:
+  TIME=70.22:LEN=0.66:MODS=*20 0% Flip:
+  TIME=70.89:LEN=0.23:MODS=*20 20% Flip, *20 25% Centered:
+  TIME=71.13:LEN=0.43:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=71.57:LEN=0.23:MODS=*20 20% Flip:
+  TIME=71.81:LEN=0.43:MODS=*20 0% Flip:
+  TIME=72.25:LEN=0.46:MODS=*20 20% Flip, *20 25% Centered:
+  TIME=72.72:LEN=0.89:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=73.62:LEN=14.54:MODS=50% Hidden:
+  TIME=73.62:LEN=0.00:MODS=50% Expand, 30% Hallway:
+  TIME=73.62:LEN=7.27:MODS=*10 200% Bumpy:
+  TIME=80.89:LEN=1.82:MODS=*10 15% Mini 50% Expand, 30% Distant:
+  TIME=82.71:LEN=1.82:MODS=*10 30% Mini:
+  TIME=84.53:LEN=1.59:MODS=*10 60% Mini:
+  TIME=86.12:LEN=2.04:MODS=*10 30% Mini, *10 200% Dizzy:
+  TIME=88.16:LEN=15.73:MODS=Beat, Bumpy, Dark, Wave:
+  TIME=89.07:LEN=0.23:MODS=*20 25% Flip, *20 25% Centered, *1000 0% Dizzy:
+  TIME=89.30:LEN=1.59:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=90.89:LEN=0.23:MODS=*20 25% Flip, *20 25% Centered:
+  TIME=91.12:LEN=0.68:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=91.80:LEN=0.23:MODS=*20 20% Flip:
+  TIME=92.03:LEN=0.68:MODS=*20 0% Flip:
+  TIME=92.71:LEN=0.22:MODS=*20 20% Flip:
+  TIME=92.93:LEN=1.00:MODS=*20 0% Flip:
+  TIME=93.39:LEN=0.23:MODS=*20 20% Flip:
+  TIME=93.62:LEN=0.45:MODS=*20 0% Flip:
+  TIME=94.07:LEN=0.46:MODS=*20 20% Flip:
+  TIME=94.53:LEN=4.54:MODS=*20 0% Flip:
+  TIME=95.43:LEN=8.46:MODS=50% Tipsy, 50% Drunk:
+  TIME=96.34:LEN=0.23:MODS=*20 25% Flip, *20 25% Centered:
+  TIME=96.57:LEN=1.59:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=98.16:LEN=0.23:MODS=*20 25% Flip, *20 25% Centered:
+  TIME=98.39:LEN=0.68:MODS=*20 0% Flip, *20 0% Centered:
+  TIME=99.07:LEN=0.23:MODS=*20 20% Flip:
+  TIME=99.30:LEN=0.68:MODS=*20 0% Flip:
+  TIME=99.98:LEN=0.23:MODS=*20 20% Flip:
+  TIME=100.21:LEN=0.45:MODS=*20 0% Flip:
+  TIME=100.66:LEN=0.23:MODS=*20 20% Flip:
+  TIME=100.89:LEN=0.60:MODS=*20 0% Flip:
+  TIME=100.89:LEN=0.60:MODS=0.1x, *10000 10000% Dizzy:
+  TIME=101.49:LEN=2.40:MODS=0.01x;
+#SONG:In The Groove 2/Vorsprung Durch Techno:Hard:;
+#MODS:
+  TIME=0.00:LEN=13.39:MODS=50% Brake, 50% Wave:
+  TIME=13.93:LEN=3.49:MODS=25% Drunk, 25% Hallway:
+  TIME=17.42:LEN=3.50:MODS=50% Drunk, 50% Hallway:
+  TIME=20.92:LEN=3.49:MODS=75% Drunk, 75% Hallway:
+  TIME=24.41:LEN=3.49:MODS=Drunk, Hallway:
+  TIME=27.90:LEN=3.49:MODS=25% Tipsy, *10 25% Distant, *10 0% Drunk:
+  TIME=31.39:LEN=3.49:MODS=50% Tipsy, 50% Distant:
+  TIME=34.88:LEN=3.49:MODS=75% Tipsy, 75% Distant:
+  TIME=38.37:LEN=3.49:MODS=Tipsy, Distant:
+  TIME=41.86:LEN=15.72:MODS=*10 0% Tipsy, *10 0% Distant, Hidden, Dark, 50% Drunk, 20% Wave:
+  TIME=57.58:LEN=1.74:MODS=*10 Reverse, 25% Hallway:
+  TIME=58.45:LEN=0.87:MODS=*100 1000% Dizzy:
+  TIME=59.32:LEN=0.87:MODS=*100 0% Dizzy, *10 0% Reverse, *100 1x:
+  TIME=61.07:LEN=0.43:MODS=*10 30% Mini:
+  TIME=61.50:LEN=0.44:MODS=*10 0% Mini, *10 10% Flip:
+  TIME=61.94:LEN=0.44:MODS=*10 0% Flip, *10 30% Mini:
+  TIME=62.38:LEN=0.43:MODS=*10 0% Mini, *10 10% Flip:
+  TIME=62.81:LEN=0.22:MODS=*10 0% Beat, *10 0% Flip, *10 20% Centered:
+  TIME=63.03:LEN=0.22:MODS=*10 0% Centered, *10 10% Flip:
+  TIME=63.25:LEN=0.22:MODS=*10 0% Flip, *10 20% Centered:
+  TIME=63.47:LEN=0.22:MODS=*10 0% Centered, *10 10% Flip:
+  TIME=63.69:LEN=0.87:MODS=*1000 1000% Dizzy:
+  TIME=64.56:LEN=3.49:MODS=25% Centered, 20% Brake, 25% Hallway, *10000 0% Dizzy:
+  TIME=68.05:LEN=3.49:MODS=50% Centered, 40% Brake, 50% Hallway:
+  TIME=71.54:LEN=3.49:MODS=75% Centered, 60% Brake, 75% Hallway:
+  TIME=75.03:LEN=3.49:MODS=Centered, 80% Brake, Hallway:
+  TIME=78.52:LEN=3.50:MODS=20% Mini, 25% Wave, 25% Distant, *10 0% Centered, *10 0% Brake:
+  TIME=82.02:LEN=3.49:MODS=40% Mini, 50% Wave, 50% Distant:
+  TIME=85.51:LEN=3.49:MODS=60% Mini, 75% Wave, 75% Distant:
+  TIME=89.00:LEN=3.49:MODS=80% Mini, Wave, Distant:
+  TIME=92.49:LEN=3.49:MODS=25% Beat, 5% Flip, 30% Tipsy, *10 0% Mini, *10 0% Wave:
+  TIME=95.98:LEN=3.49:MODS=50% Beat, 10% Flip, 60% Tipsy, -25% Mini:
+  TIME=99.47:LEN=3.49:MODS=75% Beat, 15% Flip, 90% Tipsy, -50% Mini:
+  TIME=102.96:LEN=3.28:MODS=Beat, 20% Flip, 120% Tipsy, -75% Mini;
+#SONG:In The Groove 2/Summer in Belize:Hard:;

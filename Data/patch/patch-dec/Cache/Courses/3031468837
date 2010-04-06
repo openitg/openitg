@@ -1,0 +1,19 @@
+#COURSE:Mirage;
+#METER:Regular:8;
+#METER:Difficult:8;
+// cache tags:
+#RADAR:0:1:1.454,0.000,1.443,0.590,0.000,867.000,153.000,64.000,4.000,0.000,0.000;
+#RADAR:0:2:2.036,0.000,1.244,0.815,0.590,1298.000,134.000,87.000,48.000,0.000,0.000;
+#RADAR:1:1:1.349,0.000,0.476,0.528,0.009,900.000,51.000,56.000,0.000,0.000,0.000;
+#RADAR:1:2:1.992,0.000,0.903,0.409,0.398,1348.000,96.000,43.000,2.000,11.000,0.000;
+// end cache tags
+#GAINSECONDS:80.000000;
+#SONG:In The Groove 2/The Message:Medium:Overhead,2x,nodifficult;
+#GAINSECONDS:70.000000;
+#SONG:In The Groove 2/Hispanic Panic:Medium:Overhead,2x,nodifficult;
+#GAINSECONDS:70.000000;
+#SONG:In The Groove 2/Spin Chicken:Hard:Overhead,2x,Hidden,nodifficult;
+#GAINSECONDS:55.000000;
+#SONG:In The Groove 2/Pick Me Up & Tango:Hard:Overhead,2x,Dark,Boost,nodifficult;
+#GAINSECONDS:50.000000;
+#SONG:In The Groove 2/Wake Up:Hard:Overhead,2x,Expand,Hidden,nodifficult;

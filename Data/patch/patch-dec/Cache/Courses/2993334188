@@ -1,0 +1,52 @@
+#COURSE:Awakening;
+#METER:Regular:9;
+#METER:Difficult:11;
+// cache tags:
+#RADAR:0:1:1.509,0.000,0.607,0.472,0.167,1035.000,66.000,52.000,3.000,0.000,0.000;
+#RADAR:0:2:2.085,0.000,0.755,0.763,0.917,1428.000,82.000,83.000,51.000,2.000,0.000;
+#RADAR:0:3:2.689,0.000,1.181,0.824,2.145,1842.000,130.000,90.000,51.000,11.000,2.000;
+#RADAR:1:1:1.470,0.000,0.813,0.351,0.005,995.000,90.000,39.000,5.000,0.000,0.000;
+#RADAR:1:2:2.104,0.000,0.789,0.484,0.904,1468.000,87.000,54.000,24.000,3.000,0.000;
+#RADAR:1:3:2.577,0.000,0.726,0.431,1.874,1845.000,80.000,48.000,15.000,5.000,0.000;
+// end cache tags
+#MODS:
+  TIME=7.17:LEN=14.11:MODS=Boost:
+  TIME=21.28:LEN=14.12:MODS=Wave:
+  TIME=35.40:LEN=14.12:MODS=25% Flip:
+  TIME=49.52:LEN=14.12:MODS=50% Hidden:
+  TIME=63.64:LEN=14.12:MODS=Distant, 50% Beat:
+  TIME=77.76:LEN=14.11:MODS=Hallway, 50% Bumpy:
+  TIME=91.87:LEN=15.44:MODS=50% Expand;
+#SONG:In The Groove 2/Out Of The Dark:Hard:;
+#MODS:
+  TIME=0.00:LEN=104.11:MODS=Dark:
+  TIME=5.28:LEN=19.41:MODS=50% Dizzy:
+  TIME=24.69:LEN=15.89:MODS=50% Beat, 75% Boost:
+  TIME=40.58:LEN=16.65:MODS=50% Dizzy, 50% Drunk:
+  TIME=57.23:LEN=16.88:MODS=75% Boost, Dizzy:
+  TIME=74.11:LEN=14.11:MODS=Sudden, 70% Tipsy:
+  TIME=88.22:LEN=15.89:MODS=20% Flip, 50% Drunk;
+#SONG:In The Groove 2/Life of a Butterfly:Hard:;
+#MODS:
+  TIME=0.00:LEN=107.82:MODS=Reverse:
+  TIME=13.83:LEN=28.53:MODS=50% Expand:
+  TIME=27.26:LEN=15.10:MODS=75% Tipsy, 30% Drunk:
+  TIME=42.36:LEN=13.43:MODS=Sudden, flat, no roll, no twirl:
+  TIME=53.27:LEN=14.26:MODS=25% Hidden, 25% Sudden, 25% Flip:
+  TIME=68.38:LEN=27.69:MODS=50% Brake, -60% Mini:
+  TIME=82.64:LEN=13.43:MODS=Hallway, 20% Sudden, 15% Flip:
+  TIME=96.07:LEN=11.75:MODS=Hidden;
+#SONG:In The Groove 2/Amore:Hard:;
+#MODS:
+  TIME=0.00:LEN=110.74:MODS=Dark:
+  TIME=5.49:LEN=5.48:MODS=80% Sudden, 80% Hallway:
+  TIME=10.97:LEN=21.94:MODS=15% Tornado, 25% Drunk:
+  TIME=21.94:LEN=10.97:MODS=10% Flip:
+  TIME=32.91:LEN=9.57:MODS=0.5x:
+  TIME=42.48:LEN=23.35:MODS=Mini, Hallway, Expand:
+  TIME=54.86:LEN=10.97:MODS=50% Drunk, 50% Tipsy:
+  TIME=65.83:LEN=9.57:MODS=Hidden, 50% Mini:
+  TIME=76.80:LEN=10.90:MODS=40% Mini, 15% Flip:
+  TIME=87.77:LEN=21.91:MODS=Distant, 25% Bumpy, 70% Wave, 25% Drunk:
+  TIME=98.74:LEN=10.94:MODS=10% Tornado, 25% Tipsy, 50% Beat, 20% Stealth;
+#SONG:In The Groove 2/Destiny:Hard:;

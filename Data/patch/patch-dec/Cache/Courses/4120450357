@@ -1,0 +1,19 @@
+#COURSE:Cohesion;
+#METER:Regular:8;
+#METER:Difficult:8;
+// cache tags:
+#RADAR:0:1:1.210,0.000,0.729,0.329,0.000,815.000,81.000,36.000,0.000,0.000,0.000;
+#RADAR:0:2:1.736,0.000,1.518,0.680,0.153,1095.000,166.000,75.000,44.000,2.000,2.000;
+#RADAR:1:1:1.208,0.000,0.907,0.335,0.004,792.000,100.000,36.000,0.000,0.000,0.000;
+#RADAR:1:2:1.970,0.000,1.052,0.364,0.126,1359.000,114.000,39.000,2.000,0.000,0.000;
+// end cache tags
+#GAINSECONDS:85.000000;
+#SONG:In The Groove 2/Reactor:Easy:Overhead,1x,nodifficult;
+#GAINSECONDS:75.000000;
+#SONG:In The Groove 2/Incognito:Medium:Overhead,1.25x,nodifficult;
+#GAINSECONDS:70.000000;
+#SONG:In The Groove 2/Psalm Pilot:Medium:Overhead,1.5x,nodifficult;
+#GAINSECONDS:60.000000;
+#SONG:In The Groove 2/Robotix:Medium:Overhead,2x,dizzy,nodifficult;
+#GAINSECONDS:50.000000;
+#SONG:In The Groove 2/Liquid Moon:Hard:Overhead,2.5x,drunk,nodifficult;

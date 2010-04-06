@@ -1,0 +1,5 @@
+<ActorFrame><children>
+	<AutoActor File="_ScreenWarning overlay arcade" Condition="Platform() == 'arcade'" />
+	<AutoActor File="_ScreenWarning overlay home" Condition="Platform() ~= 'arcade'" />
+	<AutoActor File="_join overlay" />
+</children></ActorFrame>

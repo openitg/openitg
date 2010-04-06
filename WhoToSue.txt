@@ -1,0 +1,46 @@
+These are all the awesome people who were involved in making this project just
+as awesome as they are.
+
+Lead Developers:
+ - Vyhd
+ - infamouspat
+
+Assistant Developer:
+ - Matt1360
+
+Network Manager / Webmasters:
+ - Matt1360
+ - Zero
+ - sherl0k
+ - Lightning
+
+Testers:
+ - GRIM.657
+ - mDaWg
+ - Darklink
+ - Wanny
+ - Kung
+ - JJSz / Beaver Valley Mall
+ - Boxorroxors.net
+ - Rhythmatic.net/ITGFreak.com
+ - Sigma
+
+Special Thanks:
+ - KholdFuzion
+ - bacon
+ - Spectere and friends at Spectere.net
+ - StepMania team for making an awesome framework
+ - StepMania.com
+ - Sourceforge.net
+
+Contributions:
+ - GRIM.657 (ScreenExitCommand)
+ - cyt0plas & Spectere (LUA 5.1 patches)
+ - dawnwolf (x64/GCC 4.3 compatibility patch)
+ - Lightning (OpenITG logo & title screen theme stuff)
+ - xjen0vax (theme metrics, Long/Marathon notifiers)
+
+If we forgot to mention you, hit us up at one of the following places:
+	http://www.boxorroxors.net/forum/viewforum.php?f=13
+	http://www.rhythmatic.net/phpBB2/viewforum.php?f=51
+	http://www.stepmania.com/forums/forumdisplay.php?f=99

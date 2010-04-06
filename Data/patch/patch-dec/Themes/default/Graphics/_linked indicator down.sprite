@@ -1,0 +1,3 @@
+[Sprite]
+Texture=_linked indicator up.png
+InitCommand=rotationz,180

@@ -1,7 +1,6 @@
 #include "global.h"
 #include "RageFileBasic.h"
 #include "RageUtil.h"
-#include "RageLog.h"
 
 RageFileObj::RageFileObj()
 {
@@ -227,7 +226,6 @@ int RageFileObj::Write( const void *pBuffer, size_t iBytes )
 {
 	if( m_pWriteBuffer != NULL )
 	{
-		ASSERT_M( m_iWriteBufferUsed <= m_iWriteBufferSize, ssprintf("%i #1", m_iWriteBufferUsed) );
 		/* If the file position has moved away from the write buffer, or the
 		 * incoming data won't fit in the buffer, flush. */
 		if( m_iWriteBufferPos+m_iWriteBufferUsed != m_iFilePos || m_iWriteBufferUsed + (int)iBytes > m_iWriteBufferSize )

@@ -28,17 +28,8 @@ else
 	if test "$LIB_LUA" = ""; then
 		AC_CHECK_LIB(lua50, lua_open, LIB_LUA=-llua50)
 	fi
-	if test "$LIB_LUA_LIB" = ""; then
-		AC_CHECK_LIB(lualib, luaopen_base, LIB_LUA_LIB=-llualib, , [$LIB_LUA -ldl])
-	fi
-	if test "$LIB_LUA_LIB" = ""; then
-		AC_CHECK_LIB(lualib50, luaopen_base, LIB_LUA_LIB=-llualib50, , [$LIB_LUA -ldl])
-	fi
 	if test "$LIB_LUA" = ""; then
 		LUA_MISSING=yes
-	fi
-	if test "$LIB_LUA_LIB" = ""; then
-		LUA_LIB_MISSING=yes
 	fi
 	LUA_CFLAGS=
 	LUA_LIBS="$LIB_LUA $LIB_LUA_LIB"
@@ -57,11 +48,6 @@ if test "$LUA_MISSING" = "yes"; then
 	else
 		AC_DEFINE([HAVE_LUA51], [1], [The system has Lua 5.1 instead of Lua 5.0])
 	fi
-elif test "$LUA_LIB_MISSING" = "yes"; then
-	echo
-	echo "*** liblualib is required to build StepMania; please make sure that"
-	echo "*** it is installed to continue the installation process."
-	exit 1;
 fi
 
 AC_SUBST(LUA_CFLAGS)

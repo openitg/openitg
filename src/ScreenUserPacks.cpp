@@ -228,14 +228,13 @@ void ScreenUserPacks::Input( const DeviceInput& DeviceI, const InputEventType ty
 CString g_CurXferFile;
 CString g_CurSelection;
 
-// shamelessly copied from vyhd's function in ScreenSelectMusic
 void UpdateXferProgress( unsigned long iCurrent, unsigned long iTotal )
 {
 	float fPercent = iCurrent / (iTotal/100);
 	CString sMessage = ssprintf( "Please wait ...\n%.2f%%\n\n%s\n", fPercent, g_CurSelection.c_str() );
 	SCREENMAN->OverlayMessage( sMessage );
 
-	// Draw() is very expensive: only do it every .16 seconds or so.
+	// Draw() is very expensive: only do it on occasion.
 	if( DrawTimer.Ago() < DRAW_UPDATE_TIME )
 		return;
 

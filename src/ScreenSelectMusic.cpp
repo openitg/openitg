@@ -36,6 +36,10 @@
 #include "OptionsList.h"
 #include "AnnouncerManager.h"
 
+// XXX: compatibility hackery for custom song text
+#include "DiagnosticsUtil.h"
+#include "FontCharAliases.h"
+
 // XXX: custom song loading. remove these if we can.
 #include "RageFileDriverTimeout.h"
 
@@ -95,9 +99,6 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 	MODE_MENU_AVAILABLE( m_sName, "ModeMenuAvailable" ),
         USE_OPTIONS_LIST( m_sName, "UseOptionsList" )
 {
-//	CUSTOM_SONG_WAIT_TEXT.Load( m_sName, "CustomSongWaitText" );
-//	CUSTOM_SONG_CANCEL_TEXT.Load( m_sName, "CustomSongCancelText" );
-
 	LOG->Trace( "ScreenSelectMusic::ScreenSelectMusic()" );
 
 	LIGHTSMAN->SetLightsMode( LIGHTSMODE_MENU );
@@ -115,13 +116,24 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 	GAMESTATE->FinishStage();
 
 	m_iSavedRoundIndex = GAMESTATE->m_iCurrentStageIndex;
+
+	// COMPAT: set these if they haven't been set.
+	if( CUSTOM_SONG_WAIT_TEXT.GetValue().empty() )
+		CUSTOM_SONG_WAIT_TEXT.SetValue( "Please wait..." );
+
+	if( CUSTOM_SONG_CANCEL_TEXT.GetValue().empty() )
+	{
+		CString sCancelMessage = ssprintf( "Pressing %s will cancel this selection.",
+			DiagnosticsUtil::GetInputType() == "ITGIO" ? "&MENULEFT;+&MENURIGHT;" : "&SELECT;" );
+
+		FontCharAliases::ReplaceMarkers( sCancelMessage );
+		CUSTOM_SONG_CANCEL_TEXT.SetValue( sCancelMessage );
+	}
 }
 
 
 void ScreenSelectMusic::Init()
 {
-	DrawTimer.SetZero();
-
 	m_bSelectIsDown = false; // used by LoadHelpText which is called by ScreenWithMenuElements::Init()
 
 	ScreenWithMenuElements::Init();
@@ -1325,9 +1337,12 @@ void UpdateLoadProgress( unsigned long iCurrent, unsigned long iTotal )
 
 	// if a player presses Select or ML+MR, stop loading the song.
 	FOREACH_EnabledPlayer( pn )
-		bInterrupt |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) ) ||
-			( INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) &&
-			INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT)) );
+	{
+		bInterrupt |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
+		
+		bInterrupt |= INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) &&
+			INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT));
+	}
 
 	if( bInterrupt )
 	{
@@ -1344,12 +1359,18 @@ void UpdateLoadProgress( unsigned long iCurrent, unsigned long iTotal )
 	if( DrawTimer.Ago() < DRAW_UPDATE_TIME )
 		return;
 
-	float fPercent = iCurrent / (iTotal/100);
-	CString sMessage = ssprintf( "%s\n%i%%\n%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
-		(int)fPercent, CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
+	unsigned long iPercent = iCurrent / (iTotal/100);
+
+	// XXX: kind of voodoo
+	CString sMessage = ssprintf( "\n\n%s\n%i%%\n%s",
+		CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
+		iPercent,
+		CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
 
 	SCREENMAN->OverlayMessage( sMessage );
 	SCREENMAN->Draw();
+
+	DrawTimer.Touch();
 }
 
 // run a few basic tests to be sure we aren't breaking any limits...
@@ -1361,8 +1382,7 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 	// playing the preview while attempting to copy the song from USB = bad
 	SOUND->StopMusic();
 
-	//CString sMessage = ssprintf( "%s", CUSTOM_SONG_WAIT_TEXT.GetValue().c_str() );
-	SCREENMAN->OverlayMessage( "Please wait..." );
+	SCREENMAN->OverlayMessage( CUSTOM_SONG_WAIT_TEXT );
 	SCREENMAN->Draw();
 
 	// set a timeout for USB access, so we don't get flooded with messages.
@@ -1374,7 +1394,7 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 		MEMCARDMAN->MountCard( pSong->m_SongOwner, 6000 );
 #endif
 	
-	// now, verify the song internally since we can read the data now
+	// verify the song internally since we can read the data now
 	CString sError;
 	bool bVerified = pSong->CheckCustomSong( sError );
 
@@ -1395,7 +1415,6 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 
 		// we can copy the music. destination is determined with
 		// "m_sGameplayMusic" so we can change that from one place
-		DrawTimer.Touch();
 		bCopied = FileCopy( GAMESTATE->m_pCurSong->GetMusicPath(), 
 		GAMESTATE->m_pCurSong->m_sGameplayMusic, sError, &UpdateLoadProgress );
 

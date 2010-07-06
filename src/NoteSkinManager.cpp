@@ -58,7 +58,6 @@ void NoteSkinManager::LoadNoteSkinData( const CString &sNoteSkinName, NoteSkinDa
 	data_out.sName = sNoteSkinName;
 	data_out.metrics.Clear();
 
-	LOG->Debug("vsDirSearchOrder CLEARED!!!"); // XXX KILLME
 	data_out.vsDirSearchOrder.clear();
 
 	/* Load global NoteSkin defaults */
@@ -69,7 +68,6 @@ void NoteSkinManager::LoadNoteSkinData( const CString &sNoteSkinName, NoteSkinDa
 	data_out.metrics.ReadFile( GetNoteSkinDir(GAME_BASE_NOTESKIN_NAME)+"metrics.ini" );
 	data_out.vsDirSearchOrder.push_front( GetNoteSkinDir(GAME_BASE_NOTESKIN_NAME) );
 
-	LOG->Debug( "%s sNoteSkinName: %s", __FUNCTION__, sNoteSkinName.c_str() ); // XXX KILLME
 	/* Read the current NoteSkin and all of its fallbacks */
 	LoadNoteSkinDataRecursive( sNoteSkinName, data_out );
 
@@ -78,8 +76,6 @@ void NoteSkinManager::LoadNoteSkinData( const CString &sNoteSkinName, NoteSkinDa
 	{
 		vsDirSearchFindings.push_back( *iter );
 	}
-
-	LOG->Debug( "%s findings: %s", __FUNCTION__, join(",", vsDirSearchFindings).c_str() ); // XXX KILLME
 }
 
 void NoteSkinManager::LoadNoteSkinDataRecursive( const CString &sNoteSkinName, NoteSkinData& data_out )
@@ -157,8 +153,10 @@ CString NoteSkinManager::GetNoteSkinDir( const CString &sSkinName )
 	return NOTESKINS_DIR + sGame + "/" + sSkinName + "/";
 }
 
-CString NoteSkinManager::GetMetric( const CString &sButtonName, const CString &sValue )
+CString NoteSkinManager::GetMetric( const CString &sButtonName, const CString &sValue_ )
 {
+	CString sValue = sValue_;
+
 	ASSERT( !m_sCurrentNoteSkin.empty() );
 	CString sNoteSkinName = m_sCurrentNoteSkin;
 	sNoteSkinName.MakeLower();
@@ -167,6 +165,11 @@ CString NoteSkinManager::GetMetric( const CString &sButtonName, const CString &s
 	const NoteSkinData& data = it->second;
 
 	CString sReturn;
+
+	// COMPAT: redirect Ridiculous to Marvelous unless there's a specific metric for it
+	if( sValue.Find("Ridiculous") != 1 && !data.metrics.GetValue(sButtonName,sValue,sReturn) )
+		sValue.Replace( "Ridiculous", "Marvelous" );
+
 	if( data.metrics.GetValue( sButtonName, sValue, sReturn ) )
 		return sReturn;
 	if( !data.metrics.GetValue( "NoteDisplay", sValue, sReturn ) )
@@ -195,8 +198,10 @@ apActorCommands NoteSkinManager::GetMetricA( const CString &sButtonName, const C
 	return apActorCommands( new ActorCommands( GetMetric(sButtonName,sValueName) ) );
 }
 
-CString NoteSkinManager::GetPath( const CString &sButtonName, const CString &sElement )
+CString NoteSkinManager::GetPath( const CString &sButtonName, const CString &sElement_ )
 {
+	CString sElement = sElement_;
+
 try_again:
 	const CString CacheString = m_sCurrentNoteSkin + "/" + sButtonName + "/" + sElement;
 	map<CString,CString>::iterator it = g_PathCache.find( CacheString );
@@ -216,6 +221,16 @@ try_again:
 			 sPath = GetPathFromDirAndFile( *iter, sButtonName+" "+sElement );
 		 if( !sPath.empty() )
 			 break;	// done searching
+	}
+
+	// COMPAT: if we're looking for Ridiculous and it doesn't exist, try Marvelous
+	if( sPath.empty() && sElement.Find("Ridiculous") != -1 )
+	{
+		CString sOldElement = sElement;
+		sElement.Replace( "Ridiculous", "Marvelous" );
+		LOG->Debug( "Didn't find \"%s %s\", trying \"%s %s\"",
+			sButtonName.c_str(), sOldElement.c_str(), sButtonName.c_str(), sElement.c_str() );
+		goto try_again;
 	}
 
 	if( sPath.empty() )

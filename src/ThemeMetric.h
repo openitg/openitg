@@ -95,6 +95,12 @@ public:
 
 		return m_currentValue;
 	}
+
+	void SetValue( const T& value )
+	{
+		m_currentValue = value;
+		m_bIsLoaded = true;
+	}
 	
 	operator const T& () const
 	{

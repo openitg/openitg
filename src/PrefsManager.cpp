@@ -146,7 +146,7 @@ PrefsManager::PrefsManager() :
 	m_iPercentScoreWeightHitMine	( "PercentScoreWeightHitMine",		-2 ),
 	m_iPercentScoreWeightOK			( "PercentScoreWeightOK",			3 ),
 	m_iPercentScoreWeightNG			( "PercentScoreWeightNG",			0 ),
-	
+
 	m_iGradeWeightRidiculous		( "GradeWeightRidiculous",	2 ),
 	m_iGradeWeightMarvelous		( "GradeWeightMarvelous",	2 ),
 	m_iGradeWeightPerfect		( "GradeWeightPerfect",		2 ),
@@ -169,7 +169,7 @@ PrefsManager::PrefsManager() :
 	m_fSuperMeterPercentChangeOK		( "SuperMeterPercentChangeOK",			+0.04f ),
 	m_fSuperMeterPercentChangeNG		( "SuperMeterPercentChangeNG",			-0.20f ),
 	m_bMercifulSuperMeter				( "MercifulSuperMeter",					true ),
-	
+
 	m_fTimeMeterSecondsChangeRidiculous	( "TimeMeterSecondsChangeRidiculous",	+0.2f ),
 	m_fTimeMeterSecondsChangeMarvelous	( "TimeMeterSecondsChangeMarvelous",	+0.1f ),
 	m_fTimeMeterSecondsChangePerfect	( "TimeMeterSecondsChangePerfect",		 0.0f ),
@@ -193,7 +193,7 @@ PrefsManager::PrefsManager() :
 	m_bEasterEggs				( "EasterEggs",					true ),
 	m_bEasterEggs2				( "EasterEggs2",				true ),
 	m_MarvelousTiming			( "MarvelousTiming",			WINDOW_EVERYWHERE ),
-	m_RidiculousTiming			( "RidiculousTiming",			WINDOW_EVERYWHERE ),
+	m_RidiculousTiming			( "RidiculousTiming",			WINDOW_NEVER ),
 	m_bEventMode				( "EventMode",					false ),
 	m_iCoinsPerCredit			( "CoinsPerCredit",				1 ),
 	m_iSongsPerPlay				( "SongsPerPlay",				3 ),
@@ -247,7 +247,7 @@ PrefsManager::PrefsManager() :
 	m_bDisableScreenSaver			( "DisableScreenSaver",			true ),
 	m_sLanguage						( "Language",					"" ),	// ThemeManager will deal with this invalid language
 	m_sMemoryCardProfileSubdir		( "MemoryCardProfileSubdir",	PRODUCT_NAME ),
-	m_iProductID					( "ProductID",					1 ),	
+	m_iProductID					( "ProductID",					1 ),
 	m_sDefaultLocalProfileIDP1		( "DefaultLocalProfileIDP1",	"" ),
 	m_sDefaultLocalProfileIDP2		( "DefaultLocalProfileIDP2",	"" ),
 	m_iCenterImageTranslateX		( "CenterImageTranslateX",		0 ),
@@ -353,7 +353,7 @@ void PrefsManager::ResetToFactoryDefaults()
 	Init();
 	ReadPrefsFromFile( DEFAULTS_INI_PATH );
 	ReadPrefsFromFile( STATIC_INI_PATH );
-	
+
 	SaveGlobalPrefsToDisk();
 }
 

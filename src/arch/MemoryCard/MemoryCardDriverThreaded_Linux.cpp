@@ -44,7 +44,7 @@ static bool ReadFile( const CString &sPath, CString &sBuf )
 		LOG->Warn( "Error opening \"%s\": %s", sPath.c_str(), strerror(errno) );
 		return false;
 	}
-	
+
 	while(1)
 	{
 		char buf[1024];
@@ -60,7 +60,7 @@ static bool ReadFile( const CString &sPath, CString &sBuf )
 		if( iGot < (int) sizeof(buf) )
 			break;
 	}
-	
+
 	close(fd);
 	return true;
 }
@@ -86,7 +86,7 @@ bool MemoryCardDriverThreaded_Linux::USBStorageDevicesChanged()
 	/* If a device is removed and reinserted, the inode of the /sys/block entry
 	 * will change. */
 	CString sDevicePath = "/sys/block/";
-	
+
 	vector<CString> asDevices;
 	GetFileList( sDevicePath, asDevices );
 
@@ -98,7 +98,7 @@ bool MemoryCardDriverThreaded_Linux::USBStorageDevicesChanged()
 
 		sThisDevices += ssprintf( "%i,", (int) buf.st_ino );
 	}
-	       
+
 	bool bChanged = sThisDevices != m_sLastDevices;
 	m_sLastDevices = sThisDevices;
 	if( bChanged )
@@ -109,7 +109,7 @@ bool MemoryCardDriverThreaded_Linux::USBStorageDevicesChanged()
 void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 {
 	LOG->Trace( "GetUSBStorageDevices" );
-	
+
 	vDevicesOut.clear();
 
 	{
@@ -125,12 +125,12 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 
 			UsbStorageDevice usbd;
 
-			CString sPath = sBlockDevicePath + sDevice + "/";
-			usbd.sSysPath = sPath;
+			CString sPath = sBlockDevicePath + sDevice;
+			usbd.sSysPath = sPath + "/";
 
 			/* Ignore non-removable devices. */
 			CString sBuf;
-			if( !ReadFile( sPath + "removable", sBuf ) )
+			if( !ReadFile( sPath + "/removable", sBuf ) )
 				continue; // already warned
 			if( atoi(sBuf) != 1 )
 				continue;
@@ -147,16 +147,55 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 			else
 				usbd.sDevice = "/dev/" + sDevice;
 
+			struct stat buf;
+			int iRet = lstat( sPath.c_str(), &buf );
+			if ( iRet == -1 )
+				continue;
+
 			/*
-			 * sPath/device should be a symlink to the actual device.  For USB
-			 * devices, it looks like this:
-			 *
-			 * device -> ../../devices/pci0000:00/0000:00:02.1/usb2/2-1/2-1:1.0
-			 *
-			 * "2-1" is "bus-port".
+			 * Is the /sys/block/{device} file a symlink itself?  On newer kernels,
+			 * the /device symlink is useless for obtaining USB location info
 			 */
 			char szLink[256];
-			int iRet = readlink( sPath + "device", szLink, sizeof(szLink) );
+			int iUsbInfoIndex = 7;
+			if ( (buf.st_mode & S_IFMT) == S_IFLNK )
+			{
+				/*
+				 * sPath is a symbolic link, whose path looks like this:
+				 *
+				 * sdd -> ../devices/pci0000:00/0000:00:1d.7/usb2/2-2/2-2:1.0/host47/target47:0:0/47:0:0:0/block/sdd
+				 */
+				LOG->Debug( "%s: is a symlink.", sPath.c_str() );
+				iRet = readlink( sPath, szLink, sizeof(szLink) );
+
+				/*
+				 * Is the device handled by the ub driver rather than usb-storage?
+				 * If so, the path looks like this, instead:
+				 *
+				 * uba -> ../devices/pci0000:00/0000:00:1d.7/usb2/2-2/2-2:1.0/block/uba
+				 */
+				if ( sDevice.substr(0,2) == "ub" )
+				{
+					LOG->Debug( "%s: Device handled by ub driver", sPath.c_str() );
+			 		iUsbInfoIndex = 4;
+				}
+			}
+			else
+			{
+
+				/*
+				 * sPath/device should be a symlink to the actual device.  For USB
+				 * devices, it looks like this:
+				 *
+				 * device -> ../../devices/pci0000:00/0000:00:02.1/usb2/2-1/2-1:1.0
+				 *
+				 * "2-1" is "bus-port".
+				 */
+				LOG->Debug( "%s: is not a symlink, checking %s/device...", sPath.c_str(), sPath.c_str() );
+				iRet = readlink( sPath + "/device", szLink, sizeof(szLink) );
+				iUsbInfoIndex = 2;
+			}
+			sPath += "/";
 			if( iRet == -1 )
 			{
 				LOG->Warn( "readlink(\"%s\"): %s", (sPath + "device").c_str(), strerror(errno) );
@@ -174,7 +213,7 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 				 *   -2           port 1 on the host,
 				 *     .1         port 1 on an attached hub
 				 *       .2       ... port 2 on the next hub ...
-				 * 
+				 *
 				 * We want the bus number and the port of the last hop.  The level is
 				 * the number of hops.
 				 */
@@ -184,7 +223,7 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 
 				if( strstr( szLink, "usb" ) != NULL )
 				{
-					CString sHostPort = asBits[asBits.size()-2];
+					CString sHostPort = asBits[asBits.size()-iUsbInfoIndex];
 					sHostPort.Replace( "-", "." );
 					asBits.clear();
 					split( sHostPort, ".", asBits );

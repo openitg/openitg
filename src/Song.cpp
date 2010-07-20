@@ -217,7 +217,7 @@ static set<istring> BlacklistedImages;
  */
 bool Song::LoadFromSongDir( CString sDir )
 {
-//	LOG->Trace( "Song::LoadFromSongDir(%s)", sDir.c_str() );
+	//	LOG->Trace( "Song::LoadFromSongDir(%s)", sDir.c_str() );
 	ASSERT( sDir != "" );
 
 	// make sure there is a trailing slash at the end of sDir
@@ -266,6 +266,7 @@ bool Song::LoadFromSongDir( CString sDir )
 		}
 
 		bool success = ld->LoadFromDir( sDir, *this );
+
 		BlacklistedImages = ld->GetBlacklistedImages();
 
 		if(!success)
@@ -282,8 +283,6 @@ bool Song::LoadFromSongDir( CString sDir )
 		// save a cache file so we don't have to parse it all over again next time
 		SaveToCacheFile();
 	}
-
-
 	
 	FOREACH( Steps*, m_vpSteps, s )
 	{
@@ -391,15 +390,12 @@ void Song::DeleteDuplicateSteps( vector<Steps*> &vSteps )
 {
 	/* vSteps have the same StepsType and Difficulty.  Delete them if they have the
 	 * same m_sDescription, m_iMeter and SMNoteData. */
-	CHECKPOINT;
 	for( unsigned i=0; i<vSteps.size(); i++ )
 	{
-		CHECKPOINT;
 		const Steps *s1 = vSteps[i];
 
 		for( unsigned j=i+1; j<vSteps.size(); j++ )
 		{
-			CHECKPOINT;
 			const Steps *s2 = vSteps[j];
 
 			if( s1->GetDescription() != s2->GetDescription() )
@@ -666,8 +662,6 @@ void Song::TidyUpData()
 	// image is the banner, which is the background, and which is the CDTitle.
 	//
 
-	CHECKPOINT_M( "Looking for images..." );
-
 	//
 	// First, check the file name for hints.
 	//
@@ -808,7 +802,6 @@ void Song::TidyUpData()
 	if( HasBanner() )
 		BANNERCACHE->CacheBanner( GetBannerPath() );
 
-
 	// If no BGChanges are specified and there are movies in the song directory, then assume
 	// they are DWI style where the movie begins at beat 0.
 	if( !HasBGChanges() )
@@ -825,7 +818,6 @@ void Song::TidyUpData()
 		if( arrayPossibleMovies.size() == 1 )
 			this->AddBackgroundChange( BACKGROUND_LAYER_1, BackgroundChange(0,arrayPossibleMovies[0],"",1.f,SBE_StretchNoLoop) );
 	}
-
 
 	/* Don't allow multiple Steps of the same StepsType and Difficulty (except for edits).
 	 * We should be able to use difficulty names as unique identifiers for steps. */
@@ -885,7 +877,6 @@ void Song::ReCalculateRadarValuesAndLastBeat( float fSeconds )
 {
 	float fFirstBeat = FLT_MAX; /* inf */
 	float fLastBeat = 0;
-	CHECKPOINT;
 
 	// fix for rare case ogglengthpatch wankery
 	if ( fSeconds <= 1.0f )
@@ -907,14 +898,10 @@ void Song::ReCalculateRadarValuesAndLastBeat( float fSeconds )
 		if( pSteps->IsAutogen() )
 			continue;
 
-		CHECKPOINT_M( m_sSongFileName + " begin");
-
 		/* Don't calculate based off edits from the machine profile. Use them
 		 * only if they were in the original .SM file to begin with. */
 		if( pSteps->IsAPlayerEdit() )
 			continue;
-
-		CHECKPOINT_M( m_sSongFileName + " end");
 		
 		// Don't set first/last beat based on lights.  They often start very 
 		// early and end very late.
@@ -933,7 +920,6 @@ void Song::ReCalculateRadarValuesAndLastBeat( float fSeconds )
 		fLastBeat = max( fLastBeat, tempNoteData.GetLastBeat() );
 	}
 
-	CHECKPOINT_M( m_sSongFileName + " tail" );
 	m_fFirstBeat = fFirstBeat;
 	m_fLastBeat = fLastBeat;
 }

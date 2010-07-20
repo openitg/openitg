@@ -262,7 +262,7 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 			return;
 		CString sSelection = m_AddedZips.GetCurrentSelection();
 		g_CurSelection = sSelection;
-		bool bSuccess = UPACKMAN->Remove( USER_PACK_SAVE_PATH + "/" + sSelection );
+		bool bSuccess = UPACKMAN->Remove( USER_PACK_SAVE_PATH + sSelection );
 		if (bSuccess)
 		{
 			m_SoundDelete.Play();

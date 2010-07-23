@@ -14,7 +14,7 @@ public:
 	void GetUserPacks( CStringArray &sAddTo );
 
 	void MountAll();
-	bool IsPackAddable( const CString &sPack, CString &sError );
+	bool IsPackMountable( const CString &sPack, CString &sError );
 	bool Remove( const CString &sPack );
 
 	bool IsPackTransferable( const CString sPack, CString &sError );

@@ -26,7 +26,7 @@ void UserPackManager::MountAll()
 		const CString sPackPath = USER_PACK_SAVE_PATH + asPacks[i];
 		LOG->Info( "Loading user pack: %s", sPackPath.c_str() );
 
-		if ( !IsPackAddable( sPackPath, sError ) ) // if it can't load it, forget it
+		if ( !IsPackMountable( sPackPath, sError ) ) // if it can't load it, forget it
 		{
 			LOG->Warn( "Error adding user pack %s: %s", sPackPath.c_str(), sError.c_str() );
 			continue;
@@ -62,7 +62,7 @@ bool UserPackManager::Remove( const CString &sPack )
 static const int NUM_BLACKLISTED_FOLDERS = 4;
 static const char *BLACKLISTED_FOLDERS[] = { "Data", "Program", "Themes/default", "Themes/home" };
 
-bool UserPackManager::IsPackAddable( const CString &sPack, CString &sError )
+bool UserPackManager::IsPackMountable( const CString &sPack, CString &sError )
 {
 	RageFileDriverZip *pZip = new RageFileDriverZip;
 

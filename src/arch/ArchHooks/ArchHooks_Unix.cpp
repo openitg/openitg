@@ -14,6 +14,7 @@
 #include <sys/io.h>
 #include <sys/time.h>
 #include <sys/reboot.h>
+#include <sys/resource.h>
 #include <sys/io.h>
 #include <unistd.h>
 #include <cerrno>
@@ -186,6 +187,18 @@ void ArchHooks_Unix::SystemReboot( bool bForceSync )
 
 	// Should we try to develop a RestartProgram for Unix?
 	ExitGame();
+}
+
+void ArchHooks_Unix::BoostThreadPriority()
+{
+	if( setpriority(PRIO_PROCESS, 0, -15) != 0 )
+		LOG->Warn( "BoostThreadPriority failed: %s", strerror(errno) );
+}
+
+void ArchHooks_Unix::UnBoostThreadPriority()
+{
+	if( setpriority(PRIO_PROCESS, 0, 0) != 0 )
+		LOG->Warn( "UnBoostThreadPriority failed: %s", strerror(errno) );
 }
 
 static void DoCleanShutdown( int signal, siginfo_t *si, const ucontext_t *uc )

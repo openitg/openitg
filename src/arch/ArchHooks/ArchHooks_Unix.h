@@ -14,6 +14,9 @@ public:
 
 	void SetTime( tm newtime );
 
+	void BoostThreadPriority();
+	void UnBoostThreadPriority();
+
 	bool OpenMemoryRange( unsigned short start_port, unsigned short bytes );
 	void CloseMemoryRange( unsigned short start_port, unsigned short bytes );
 

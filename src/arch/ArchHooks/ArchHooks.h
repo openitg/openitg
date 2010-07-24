@@ -33,8 +33,13 @@ public:
 
 	virtual void SetTime( tm newtime ) { }
 
+	/* Boost the priority of this process. */
 	virtual void BoostPriority() { }
 	virtual void UnBoostPriority() { }
+
+	/* Boost the priority of the calling thread. */
+	virtual void BoostThreadPriority() { }
+	virtual void UnBoostThreadPriority() { }
 
 	/* Call this to open access to attempt to claim the given privileged I/O port range. */
 	virtual bool OpenMemoryRange( unsigned short start_port, unsigned short bytes ) { return false; }

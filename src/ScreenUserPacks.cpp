@@ -314,7 +314,7 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 			bSkip = false;
 
 			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/" + USER_PACK_TRANSFER_PATH + sSelection;
-			if ( !UPACKMAN->IsPackTransferable( sSelection, sError ) || !UPACKMAN->IsPackAddable( g_CurXferFile, sError ) )
+			if ( !UPACKMAN->IsPackTransferable( sSelection, sError ) || !UPACKMAN->IsPackMountable( g_CurXferFile, sError ) )
 			{
 				SCREENMAN->SystemMessage( "Could not add pack to machine:\n" + sError );
 				XFER_CLEANUP;

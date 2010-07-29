@@ -18,13 +18,9 @@ static struct FileDriverEntry_##name: public FileDriverEntry \
 /* This is the additional key used for ITG2's patch files */
 #define ITG2_PATCH_KEY "58691958710496814910943867304986071324198643072"
 
-/* If no key is given, the driver will use the dongle for file keys.
- * Provide a default key for PC builds, and use the dongle for AC. */
-#if !defined(ITG_ARCADE) || defined(XBOX)
-#define CRYPT_KEY "65487573252940086457044055343188392138734144585"
-#else
-#define CRYPT_KEY ""
-#endif
+/* This key is provided for PC builds. It can be changed via hex editing if
+ * people really like, or they can recode it entirely. I'm not too fussed. */
+#define OPENITG_CRYPT_KEY "65487573252940086457044055343188392138734144585"
 
 typedef std::map<const char *, unsigned char*> tKeyMap;
 

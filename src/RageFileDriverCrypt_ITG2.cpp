@@ -10,9 +10,9 @@
 #include "ibutton/ibutton.h"
 #include "crypto/CryptSH512.h"
 
-
 /* Register all the file drivers we're going to be using */
-REGISTER_ITG2_FILE_DRIVER( ITG2, "kry", CRYPT_KEY );
+REGISTER_ITG2_FILE_DRIVER( ITG2, "kry", "" );	// sentinel for "use the iButton"
+REGISTER_ITG2_FILE_DRIVER( OITG, "oitg", OPENITG_CRYPT_KEY );
 REGISTER_ITG2_FILE_DRIVER( PATCH, "patch", ITG2_PATCH_KEY );
 
 /* Declare the static key map used by the crypto implementation */

@@ -204,7 +204,6 @@ static const CString TapNoteScoreNames[] = {
 	"Great",
 	"Perfect",
 	"Marvelous",
-	"Ridiculous",
 };
 XToString( TapNoteScore, NUM_TAP_NOTE_SCORES );
 StringToX( TapNoteScore );

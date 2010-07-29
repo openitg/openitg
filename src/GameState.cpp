@@ -347,10 +347,6 @@ void GameState::PlayersFinalized()
 	SONGMAN->FreeAllLoadedPlayerSongs(); // avoid duplicates
 	SONGMAN->FreeAllLoadedPlayerCourses();
 
-	// cards may still be in checking when we hit this.
-	// wait a few seconds to let them finish checking.
-	MEMCARDMAN->WaitForCheckingToComplete();
-
 	MESSAGEMAN->Broadcast( MESSAGE_PLAYERS_FINALIZED );
 
 	MEMCARDMAN->LockCards();
@@ -1378,25 +1374,13 @@ SongOptions::FailType GameState::GetPlayerFailType( PlayerNumber pn ) const
 	return ft;
 }
 
-bool GameState::ShowTapNoteScore( TapNoteScore tns ) const
+bool GameState::ShowMarvelous() const
 {
-	PrefsManager::UseWindow window = PrefsManager::WINDOW_EVERYWHERE;
-
-	switch( tns )
+	switch( PREFSMAN->m_MarvelousTiming )
 	{
-	case TNS_MARVELOUS:		window = PREFSMAN->m_MarvelousTiming;	break;
-	case TNS_RIDICULOUS:
-		window = PREFSMAN->m_RidiculousTiming;
-
-		// don't allow Ridiculous timing if Marvelous isn't allowed
-		CLAMP( (int&)window, PrefsManager::WINDOW_NEVER, PREFSMAN->m_MarvelousTiming );
-	}
-
-	switch( window )
-	{
-	case PrefsManager::WINDOW_NEVER:		return false;
-	case PrefsManager::WINDOW_COURSES_ONLY:		return IsCourseMode();
-	case PrefsManager::WINDOW_EVERYWHERE:		return true;
+	case PrefsManager::MARVELOUS_NEVER:			return false;
+	case PrefsManager::MARVELOUS_COURSES_ONLY:	return IsCourseMode();
+	case PrefsManager::MARVELOUS_EVERYWHERE:	return true;
 	default:	ASSERT(0);
 	}
 }

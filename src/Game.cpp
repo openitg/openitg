@@ -104,7 +104,6 @@ TapNoteScore Game::MapTapNoteScore( TapNoteScore tns ) const
 {
 	switch( tns )
 	{
-	case TNS_RIDICULOUS:
 	case TNS_MARVELOUS: return	m_mapMarvelousTo;
 	case TNS_PERFECT: return m_mapPerfectTo;
 	case TNS_GREAT: return m_mapGreatTo;

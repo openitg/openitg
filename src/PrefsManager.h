@@ -61,7 +61,6 @@ public:
 
 	Preference<float>	m_fJudgeWindowScale;
 	Preference<float>	m_fJudgeWindowAdd;		// this is useful for compensating for changes in sampling rate between devices
-	Preference<float>	m_fJudgeWindowSecondsRidiculous;
 	Preference<float>	m_fJudgeWindowSecondsMarvelous;
 	Preference<float>	m_fJudgeWindowSecondsPerfect;
 	Preference<float>	m_fJudgeWindowSecondsGreat;
@@ -73,7 +72,6 @@ public:
 	Preference<float>	m_fJudgeWindowSecondsAttack;
 
 	Preference<float>	m_fLifeDifficultyScale;
-	Preference<float>	m_fLifeDeltaPercentChangeRidiculous;
 	Preference<float>	m_fLifeDeltaPercentChangeMarvelous;
 	Preference<float>	m_fLifeDeltaPercentChangePerfect;
 	Preference<float>	m_fLifeDeltaPercentChangeGreat;
@@ -85,7 +83,6 @@ public:
 	Preference<float>	m_fLifeDeltaPercentChangeNG;
 
 	// tug meter used in rave
-	Preference<float>	m_fTugMeterPercentChangeRidiculous;
 	Preference<float>	m_fTugMeterPercentChangeMarvelous;
 	Preference<float>	m_fTugMeterPercentChangePerfect;
 	Preference<float>	m_fTugMeterPercentChangeGreat;
@@ -109,7 +106,6 @@ public:
 	Preference<bool>	m_bMercifulBeginner;	// don't subtract from percent score or grade DP, larger boo window
 
 	// percent score (the number that is shown on the screen and saved to memory card)
-	Preference<int>		m_iPercentScoreWeightRidiculous;
 	Preference<int>		m_iPercentScoreWeightMarvelous;
 	Preference<int>		m_iPercentScoreWeightPerfect;
 	Preference<int>		m_iPercentScoreWeightGreat;
@@ -121,7 +117,6 @@ public:
 	Preference<int>		m_iPercentScoreWeightNG;
 
 	// grades are calculated based on a percentage, but might have different weights than the percent score
-	Preference<int>		m_iGradeWeightRidiculous;
 	Preference<int>		m_iGradeWeightMarvelous;
 	Preference<int>		m_iGradeWeightPerfect;
 	Preference<int>		m_iGradeWeightGreat;
@@ -133,7 +128,6 @@ public:
 	Preference<int>		m_iGradeWeightNG;
 
 	// super meter used in rave
-	Preference<float>	m_fSuperMeterPercentChangeRidiculous;
 	Preference<float>	m_fSuperMeterPercentChangeMarvelous;
 	Preference<float>	m_fSuperMeterPercentChangePerfect;
 	Preference<float>	m_fSuperMeterPercentChangeGreat;
@@ -146,7 +140,6 @@ public:
 	Preference<float>	m_bMercifulSuperMeter;	// negative super deltas are scaled by the players life percentage
 
 	// time meter used in survival
-	Preference<float>	m_fTimeMeterSecondsChangeRidiculous;
 	Preference<float>	m_fTimeMeterSecondsChangeMarvelous;
 	Preference<float>	m_fTimeMeterSecondsChangePerfect;
 	Preference<float>	m_fTimeMeterSecondsChangeGreat;
@@ -169,9 +162,8 @@ public:
 	Preference<int>		m_iMusicWheelSwitchSpeed;
 	Preference<bool>	m_bEasterEggs;
 	Preference<bool>	m_bEasterEggs2;
-	enum UseWindow { WINDOW_NEVER, WINDOW_COURSES_ONLY, WINDOW_EVERYWHERE };
-	Preference<UseWindow>		m_MarvelousTiming;
-	Preference<UseWindow>		m_RidiculousTiming;
+	enum MarvelousTiming { MARVELOUS_NEVER, MARVELOUS_COURSES_ONLY, MARVELOUS_EVERYWHERE };
+	Preference<MarvelousTiming>		m_MarvelousTiming;
 	Preference<bool>	m_bEventMode;
 	Preference<int>		m_iCoinsPerCredit;
 	Preference<int>		m_iSongsPerPlay;

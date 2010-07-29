@@ -91,7 +91,6 @@ PrefsManager::PrefsManager() :
 
 	m_fJudgeWindowScale				( "JudgeWindowScale",				1.0f ),
 	m_fJudgeWindowAdd				( "JudgeWindowAdd",					0 ),
-	m_fJudgeWindowSecondsRidiculous	( "JudgeWindowSecondsRidiculous",	0.01125f ),
 	m_fJudgeWindowSecondsMarvelous	( "JudgeWindowSecondsMarvelous",	0.0225f ),
 	m_fJudgeWindowSecondsPerfect	( "JudgeWindowSecondsPerfect",		0.045f ),
 	m_fJudgeWindowSecondsGreat		( "JudgeWindowSecondsGreat",		0.090f ),
@@ -103,7 +102,6 @@ PrefsManager::PrefsManager() :
 	m_fJudgeWindowSecondsAttack		( "JudgeWindowSecondsAttack",		0.135f ),
 
 	m_fLifeDifficultyScale				( "LifeDifficultyScale",				1.0f ),
-	m_fLifeDeltaPercentChangeRidiculous	( "LifeDeltaPercentChangeRidiculous",	+0.008f ),
 	m_fLifeDeltaPercentChangeMarvelous	( "LifeDeltaPercentChangeMarvelous",	+0.008f ),
 	m_fLifeDeltaPercentChangePerfect	( "LifeDeltaPercentChangePerfect",		+0.008f ),
 	m_fLifeDeltaPercentChangeGreat		( "LifeDeltaPercentChangeGreat",		+0.004f ),
@@ -114,7 +112,6 @@ PrefsManager::PrefsManager() :
 	m_fLifeDeltaPercentChangeOK			( "LifeDeltaPercentChangeOK",			+0.008f ),
 	m_fLifeDeltaPercentChangeNG			( "LifeDeltaPercentChangeNG",			-0.080f ),
 
-	m_fTugMeterPercentChangeRidiculous	( "TugMeterPercentChangeRidiculous",	+0.012f ),
 	m_fTugMeterPercentChangeMarvelous	( "TugMeterPercentChangeMarvelous",		+0.010f ),
 	m_fTugMeterPercentChangePerfect		( "TugMeterPercentChangePerfect",		+0.008f ),
 	m_fTugMeterPercentChangeGreat		( "TugMeterPercentChangeGreat",			+0.004f ),
@@ -136,7 +133,6 @@ PrefsManager::PrefsManager() :
 	m_bFailOffForFirstStageEasy		( "FailOffForFirstStageEasy",		false ),
 	m_bMercifulBeginner				( "MercifulBeginner",				false ),
 
-	m_iPercentScoreWeightRidiculous	( "PercentScoreWeightRidiculous",	3 ),
 	m_iPercentScoreWeightMarvelous	( "PercentScoreWeightMarvelous",	3 ),
 	m_iPercentScoreWeightPerfect	( "PercentScoreWeightPerfect",		2 ),
 	m_iPercentScoreWeightGreat		( "PercentScoreWeightGreat",		1 ),
@@ -147,8 +143,7 @@ PrefsManager::PrefsManager() :
 	m_iPercentScoreWeightOK			( "PercentScoreWeightOK",			3 ),
 	m_iPercentScoreWeightNG			( "PercentScoreWeightNG",			0 ),
 
-	m_iGradeWeightRidiculous		( "GradeWeightRidiculous",	2 ),
-	m_iGradeWeightMarvelous		( "GradeWeightMarvelous",	2 ),
+	m_iGradeWeightMarvelous		( "GradeWeightMarvelous", 2 ),
 	m_iGradeWeightPerfect		( "GradeWeightPerfect",		2 ),
 	m_iGradeWeightGreat			( "GradeWeightGreat",		1 ),
 	m_iGradeWeightGood			( "GradeWeightGood",		0 ),
@@ -158,7 +153,6 @@ PrefsManager::PrefsManager() :
 	m_iGradeWeightOK			( "GradeWeightOK",			6 ),
 	m_iGradeWeightNG			( "GradeWeightNG",			0 ),
 
-	m_fSuperMeterPercentChangeRidiculous	( "SuperMeterPercentChangeRidiculous",		+0.05f ),
 	m_fSuperMeterPercentChangeMarvelous	( "SuperMeterPercentChangeMarvelous",	+0.05f ),
 	m_fSuperMeterPercentChangePerfect	( "SuperMeterPercentChangePerfect",		+0.04f ),
 	m_fSuperMeterPercentChangeGreat		( "SuperMeterPercentChangeGreat",		+0.02f ),
@@ -170,7 +164,6 @@ PrefsManager::PrefsManager() :
 	m_fSuperMeterPercentChangeNG		( "SuperMeterPercentChangeNG",			-0.20f ),
 	m_bMercifulSuperMeter				( "MercifulSuperMeter",					true ),
 
-	m_fTimeMeterSecondsChangeRidiculous	( "TimeMeterSecondsChangeRidiculous",	+0.2f ),
 	m_fTimeMeterSecondsChangeMarvelous	( "TimeMeterSecondsChangeMarvelous",	+0.1f ),
 	m_fTimeMeterSecondsChangePerfect	( "TimeMeterSecondsChangePerfect",		 0.0f ),
 	m_fTimeMeterSecondsChangeGreat		( "TimeMeterSecondsChangeGreat",		-0.5f ),
@@ -192,8 +185,7 @@ PrefsManager::PrefsManager() :
 	m_iMusicWheelSwitchSpeed	( "MusicWheelSwitchSpeed",		10 ),
 	m_bEasterEggs				( "EasterEggs",					true ),
 	m_bEasterEggs2				( "EasterEggs2",				true ),
-	m_MarvelousTiming			( "MarvelousTiming",			WINDOW_EVERYWHERE ),
-	m_RidiculousTiming			( "RidiculousTiming",			WINDOW_NEVER ),
+	m_MarvelousTiming			( "MarvelousTiming",			MARVELOUS_EVERYWHERE ),
 	m_bEventMode				( "EventMode",					false ),
 	m_iCoinsPerCredit			( "CoinsPerCredit",				1 ),
 	m_iSongsPerPlay				( "SongsPerPlay",				3 ),

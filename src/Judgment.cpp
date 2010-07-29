@@ -7,23 +7,22 @@
 #include "ThemeManager.h"
 #include "ThemeMetric.h"
 
-static ThemeMetric<apActorCommands>	RIDICULOUS_COMMAND		("Judgment","RidiculousCommand");
 static ThemeMetric<apActorCommands>	MARVELOUS_COMMAND		("Judgment","MarvelousCommand");
 static ThemeMetric<apActorCommands>	PERFECT_COMMAND			("Judgment","PerfectCommand");
 static ThemeMetric<apActorCommands>	GREAT_COMMAND			("Judgment","GreatCommand");
 static ThemeMetric<apActorCommands>	GOOD_COMMAND			("Judgment","GoodCommand");
-static ThemeMetric<apActorCommands>	BOO_COMMAND			("Judgment","BooCommand");
+static ThemeMetric<apActorCommands>	BOO_COMMAND				("Judgment","BooCommand");
 static ThemeMetric<apActorCommands>	MISS_COMMAND			("Judgment","MissCommand");
 
-static ThemeMetric<apActorCommands>	MARVELOUS_ODD_COMMAND		("Judgment","MarvelousOddCommand");
+static ThemeMetric<apActorCommands>	MARVELOUS_ODD_COMMAND	("Judgment","MarvelousOddCommand");
 static ThemeMetric<apActorCommands>	PERFECT_ODD_COMMAND		("Judgment","PerfectOddCommand");
 static ThemeMetric<apActorCommands>	GREAT_ODD_COMMAND		("Judgment","GreatOddCommand");
 static ThemeMetric<apActorCommands>	GOOD_ODD_COMMAND		("Judgment","GoodOddCommand");
 static ThemeMetric<apActorCommands>	BOO_ODD_COMMAND			("Judgment","BooOddCommand");
 static ThemeMetric<apActorCommands>	MISS_ODD_COMMAND		("Judgment","MissOddCommand");
 
-static ThemeMetric<apActorCommands>	MARVELOUS_EVEN_COMMAND		("Judgment","MarvelousEvenCommand");
-static ThemeMetric<apActorCommands>	PERFECT_EVEN_COMMAND		("Judgment","PerfectEvenCommand");
+static ThemeMetric<apActorCommands>	MARVELOUS_EVEN_COMMAND	("Judgment","MarvelousEvenCommand");
+static ThemeMetric<apActorCommands>	PERFECT_EVEN_COMMAND	("Judgment","PerfectEvenCommand");
 static ThemeMetric<apActorCommands>	GREAT_EVEN_COMMAND		("Judgment","GreatEvenCommand");
 static ThemeMetric<apActorCommands>	GOOD_EVEN_COMMAND		("Judgment","GoodEvenCommand");
 static ThemeMetric<apActorCommands>	BOO_EVEN_COMMAND		("Judgment","BooEvenCommand");
@@ -61,23 +60,16 @@ void Judgment::SetJudgment( TapNoteScore score, bool bEarly )
 
 	m_sprJudgment.SetHidden( false );
 
-	int iStateMult = (m_sprJudgment.GetNumStates()==14) ? 2 : 1;
+	int iStateMult = (m_sprJudgment.GetNumStates()==12) ? 2 : 1;
 	int iStateAdd = ( bEarly || ( iStateMult == 1 ) ) ? 0 : 1;
 
 	switch( score )
 	{
-	case TNS_RIDICULOUS:
 	case TNS_MARVELOUS:
-	{
-		// HACK: if we're not showing Ridiculous, redirect Marvelous to those commands.
-		const ThemeMetric<apActorCommands>& cmdJudge = (score == TNS_RIDICULOUS) ? RIDICULOUS_COMMAND : MARVELOUS_COMMAND;
-		const ThemeMetric<apActorCommands>& cmdsToRun = GAMESTATE->ShowTapNoteScore(TNS_RIDICULOUS) ? cmdJudge : RIDICULOUS_COMMAND;
-
 		m_sprJudgment.SetState( 0 * iStateMult + iStateAdd );
 		m_sprJudgment.RunCommands( (m_iCount%2) ? MARVELOUS_ODD_COMMAND : MARVELOUS_EVEN_COMMAND );
-		m_sprJudgment.RunCommands( cmdsToRun );
+		m_sprJudgment.RunCommands( MARVELOUS_COMMAND );
 		break;
-	}
 	case TNS_PERFECT:
 		m_sprJudgment.SetState( 1 * iStateMult + iStateAdd );
 		m_sprJudgment.RunCommands( (m_iCount%2) ? PERFECT_ODD_COMMAND : PERFECT_EVEN_COMMAND );

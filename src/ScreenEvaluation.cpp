@@ -41,7 +41,7 @@ const int NUM_SCORE_DIGITS	=	9;
 #define BANNER_HEIGHT						THEME->GetMetricF(m_sName,"BannerHeight")
 const char* JUDGE_STRING[NUM_JUDGE_LINES] =
 {
-	"Ridiculous", "Marvelous", "Perfect", "Great", "Good", "Boo", "Miss", "OK", "MaxCombo", "TotalError"
+	"Marvelous", "Perfect", "Great", "Good", "Boo", "Miss", "OK", "MaxCombo", "TotalError"
 };
 const char* STATS_STRING[NUM_STATS_LINES] =
 {
@@ -159,11 +159,10 @@ ScreenEvaluation::ScreenEvaluation( CString sClassName ) : ScreenWithMenuElement
 			{
 				STATSMAN->m_CurStageStats.m_player[p].bFailedEarlier = true;
 			}
-			STATSMAN->m_CurStageStats.m_player[p].iTapNoteScores[TNS_RIDICULOUS] = rand()%3;
 			STATSMAN->m_CurStageStats.m_player[p].iTapNoteScores[TNS_MARVELOUS] = rand()%3;
 			STATSMAN->m_CurStageStats.m_player[p].iTapNoteScores[TNS_PERFECT] = rand()%3;
 			STATSMAN->m_CurStageStats.m_player[p].iTapNoteScores[TNS_GREAT] = rand()%3;
-			STATSMAN->m_CurStageStats.m_player[p].iPossibleGradePoints = 4*ScoreKeeperMAX2::TapNoteScoreToGradePoints(TNS_RIDICULOUS, false);
+			STATSMAN->m_CurStageStats.m_player[p].iPossibleGradePoints = 4*ScoreKeeperMAX2::TapNoteScoreToGradePoints(TNS_MARVELOUS, false);
 			STATSMAN->m_CurStageStats.m_player[p].fLifeRemainingSeconds = randomf( 90, 580 );
 		}
 
@@ -606,8 +605,7 @@ void ScreenEvaluation::Init()
 	//
 	for( int l=0; l<NUM_JUDGE_LINES; l++ ) 
 	{
-		// XXX: this is voodoo. Should clean it up later.
-		if( !GAMESTATE->ShowTapNoteScore( TapNoteScore(TNS_RIDICULOUS-l) ) )
+		if( l == 0  && !GAMESTATE->ShowMarvelous() )
 			continue;	// skip
 
 		if( SHOW_JUDGMENT(l) )
@@ -631,7 +629,6 @@ void ScreenEvaluation::Init()
 				int iValue;
 				switch( l )
 				{
-				case ridiculous:	iValue = stageStats.m_player[p].iTapNoteScores[TNS_RIDICULOUS];		break;
 				case marvelous:	iValue = stageStats.m_player[p].iTapNoteScores[TNS_MARVELOUS];	break;
 				case perfect:	iValue = stageStats.m_player[p].iTapNoteScores[TNS_PERFECT];	break;
 				case great:		iValue = stageStats.m_player[p].iTapNoteScores[TNS_GREAT];		break;
@@ -640,7 +637,7 @@ void ScreenEvaluation::Init()
 				case miss:		iValue = stageStats.m_player[p].iTapNoteScores[TNS_MISS];		break;
 				case ok:		iValue = stageStats.m_player[p].iHoldNoteScores[HNS_OK];		break;
 				case max_combo:	iValue = stageStats.m_player[p].GetMaxCombo().cnt;				break;
-				case error:		iValue = stageStats.m_player[p].iTotalError;				break;
+				case error:		iValue = stageStats.m_player[p].iTotalError;					break;
 				default:	iValue = 0;	ASSERT(0);
 				}
 

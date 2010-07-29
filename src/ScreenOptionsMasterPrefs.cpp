@@ -340,15 +340,9 @@ static void CustomsLoadMax( int &sel, bool ToSel, const ConfOption *pConfOption 
 
 MOVE( AllowExtraPlayerOptions,	PREFSMAN->m_bAllowExtraPlayerOptions );
 
-static void RidiculousTiming( int &sel, bool ToSel, const ConfOption *pConfOption )
-{
-	const PrefsManager::UseWindow mapping[] = { PrefsManager::WINDOW_NEVER, PrefsManager::WINDOW_COURSES_ONLY, PrefsManager::WINDOW_EVERYWHERE };
-	MoveMap( sel, PREFSMAN->m_RidiculousTiming, ToSel, mapping, ARRAYSIZE(mapping) );
-}
-
 static void MarvelousTiming( int &sel, bool ToSel, const ConfOption *pConfOption )
 {
-	const PrefsManager::UseWindow mapping[] = { PrefsManager::WINDOW_NEVER, PrefsManager::WINDOW_COURSES_ONLY, PrefsManager::WINDOW_EVERYWHERE };
+	const PrefsManager::MarvelousTiming mapping[] = { PrefsManager::MARVELOUS_NEVER, PrefsManager::MARVELOUS_COURSES_ONLY, PrefsManager::MARVELOUS_EVERYWHERE };
 	MoveMap( sel, PREFSMAN->m_MarvelousTiming, ToSel, mapping, ARRAYSIZE(mapping) );
 }
 
@@ -604,7 +598,6 @@ static void InitializeConfOptions()
 	ADD( ConfOption( "SoloSingles",					SoloSingles,		"OFF","ON" ) );
 	ADD( ConfOption( "HiddenSongs",					MovePref,			"OFF","ON" ) );
 	ADD( ConfOption( "EasterEggs",					EasterEggs,			"OFF","ON" ) );
-	ADD( ConfOption( "RidiculousTiming",			RidiculousTiming,	"NEVER","COURSES ONLY","ALWAYS" ) );
 	ADD( ConfOption( "MarvelousTiming",				MarvelousTiming,	"NEVER","COURSES ONLY","ALWAYS" ) );
 	ADD( ConfOption( "AllowExtraStage",				AllowExtraStage,	"OFF","ON" ) );
 //	ADD( ConfOption( "PickExtraStage",				PickExtraStage,		"OFF","ON" ) );

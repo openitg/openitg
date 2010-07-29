@@ -5,6 +5,7 @@
 #include "Foreach.h"
 #include "RageLog.h"
 #include "RageFileDriverZip.h"
+#include "arch/ArchHooks/ArchHooks.h"
 
 UserPackManager* UPACKMAN = NULL; // global and accessable from anywhere in our program
 
@@ -113,6 +114,8 @@ bool UserPackManager::IsPackMountable( const CString &sPack, CString &sError )
 
 bool UserPackManager::IsPackTransferable( const CString sPack, CString &sError )
 {
+	
+
 	CStringArray asSavedPacks;
 	GetUserPacks( asSavedPacks );
 	for ( unsigned i = 0; i < asSavedPacks.size(); i++ )

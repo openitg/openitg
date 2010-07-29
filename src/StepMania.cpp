@@ -1010,9 +1010,9 @@ int main(int argc, char* argv[])
 	LOG			= new RageLog();
 
 	/* Whew--we should be able to crash safely now! */
-	LOG->Info( "%llu MB total, %llu MB remaining.", 
-		HOOKS->GetDiskSpaceTotal( argv[0] ) / (1024*1024), 
-		HOOKS->GetDiskSpaceFree( argv[0] ) / (1024*1024)
+	LOG->Info( "%llu bytes total, %llu bytes remaining.", 
+		HOOKS->GetDiskSpaceTotal( "UserPacks" ), 
+		HOOKS->GetDiskSpaceFree( "UserPacks" )
 	);
 
 	//

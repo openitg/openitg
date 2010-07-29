@@ -1,6 +1,7 @@
 #include "global.h"
 #include "io/G15.h"
 #include "RageLog.h"
+#include "RageUtil.h"
 
 void PixmapToLCDData( const unsigned char *pData, unsigned char *pLCD )
 {
@@ -21,12 +22,24 @@ void PixmapToLCDData( const unsigned char *pData, unsigned char *pLCD )
 	}
 }
 
-/* right now, only supports G15 V2 keyboards */
+struct ID
+{
+	int VID, PID;
+};
+
+const ID DeviceIDs[2] =
+{
+	{ 0x046D, 0xC227 },
+	{ 0x046D, 0xC251 },
+};
+
 bool G15::Matches( int idVendor, int idProduct ) const
 {
-	if ( idVendor != 0x046d ) return false;
-	if ( idProduct != 0xc227 ) return false;
-	return true;
+	for( unsigned i = 0; i < ARRAYSIZE(DeviceIDs); ++i )
+		if( idVendor == DeviceIDs[i].VID && idProduct == DeviceIDs[i].PID )
+			return true;
+
+	return false;
 }
 
 bool G15::WriteLCD( unsigned char *pData )

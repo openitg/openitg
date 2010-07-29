@@ -17,8 +17,8 @@ public:
 	void BoostThreadPriority();
 	void UnBoostThreadPriority();
 
-	uint64_t GetDiskSpaceTotal( const CString &sPath );
-	uint64_t GetDiskSpaceFree( const CString &sPath );
+	uint64_t GetDiskSpaceTotal( const CString &sDir );
+	uint64_t GetDiskSpaceFree( const CString &sDir );
 
 	bool OpenMemoryRange( unsigned short start_port, unsigned short bytes );
 	void CloseMemoryRange( unsigned short start_port, unsigned short bytes );

@@ -25,10 +25,10 @@ public:
 	/* Restart the entire computer, in case of installation updates, etc. */
 	virtual void SystemReboot( bool bForceSync = true ) { }
 
-	/* Get API-specific machine information about the system
-	 * which contains the given file or directory path. */
-	virtual uint64_t GetDiskSpaceTotal( const CString &sPath ) { return 0; }
-	virtual uint64_t GetDiskSpaceFree( const CString &sPath ) { return 0; }
+	/* Get disk space from the device that contains the given directory.
+	 * The path given is in the VFS; we resolve the actual path here. */
+	virtual uint64_t GetDiskSpaceTotal( const CString &sDir ) { return 0; }
+	virtual uint64_t GetDiskSpaceFree( const CString &sDir ) { return 0; }
 
 	/* Call this to temporarily enter a high-priority or realtime scheduling (depending
 	 * on the implementation) mode.  This is used to improve timestamp accuracy.  Do as

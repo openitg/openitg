@@ -92,50 +92,43 @@ struct stat st;
 #endif // ITG_ARCADE
 }
 
-uint64_t ArchHooks_Unix::GetDiskSpaceTotal( const CString &sPath )
+static void GetDiskSpace( const CString &sDir, uint64_t *pSpaceFree, uint64_t *pSpaceTotal )
 {
+	CString sResolvedDir = FILEMAN->ResolvePath( sDir );
+
 	struct statvfs fsdata;
-	if( statvfs(sPath.c_str(), &fsdata) != 0 )
+	if( statvfs(sResolvedDir.c_str(), &fsdata) != 0 )
 	{
-		LOG->Warn( "GetDiskSpaceTotal(): statvfs() failed: %s", strerror(errno) );
-		return 0;
+		LOG->Warn( "GetDiskSpace(): statvfs() failed: %s", strerror(errno) );
+		return;
 	}
 
-	// return blocksize x blocks available
-	return uint64_t(fsdata.f_frsize) * uint64_t(fsdata.f_blocks);
+	// block size * blocks available to user
+	if ( pSpaceFree )
+		*pSpaceFree = uint64_t(fsdata.f_bsize) * uint64_t(fsdata.f_bavail);
+
+	// fragment size * blocks on the FS
+	if( pSpaceTotal )
+		*pSpaceTotal = uint64_t(fsdata.f_frsize) * uint64_t(fsdata.f_blocks);
 }
 
-uint64_t ArchHooks_Unix::GetDiskSpaceFree( const CString &sPath )
+uint64_t ArchHooks_Unix::GetDiskSpaceFree( const CString &sDir )
 {
-	struct statvfs fsdata;
-	if( statvfs(sPath.c_str(), &fsdata) != 0 )
-	{
-		LOG->Warn( "GetDiskSpaceTotal(): statvfs() failed: %s", strerror(errno) );
-		return 0;
-	}
+	uint64_t iSpaceFree = 0;
+	GetDiskSpace( sDir, &iSpaceFree, NULL );
+	return iSpaceFree;
+}
 
-	// return blocksize x blocks available
-	return uint64_t(fsdata.f_frsize) * uint64_t(fsdata.f_bfree);
+uint64_t ArchHooks_Unix::GetDiskSpaceTotal( const CString &sDir )
+{
+	uint64_t iSpaceTotal = 0;
+	GetDiskSpace( sDir, NULL, &iSpaceTotal );
+	return iSpaceTotal;
 }
 
 bool ArchHooks_Unix::OpenMemoryRange( unsigned short start_port, unsigned short bytes )
 {
 	LOG->Trace( "ArchHooks_Unix::OpenMemoryRange( %#x, %d )", start_port, bytes );
-
-/* XXX: this does not work at all for the MK3 driver. Why not? */
-#if 0
-	if( (start_port+bytes) <= 0x3FF )
-	{
-		int ret = ioperm( start_port, bytes, 1 );
-
-		if( ret != 0 )
-			LOG->Warn( "OpenMemoryRange(): ioperm error: %s", strerror(errno) );
-
-		return (ret == 0);
-	}
-
-	LOG->Warn( "ArchHooks_Unix::OpenMemoryRange(): address range extends past ioperm, using iopl." );
-#endif
 
 	int ret = iopl(3);
 
@@ -183,9 +176,10 @@ bool ArchHooks_Unix::GetNetworkAddress( CString &sIP, CString &sNetmask, CString
 		sIP = inet_ntoa(((struct sockaddr_in *)sad)->sin_addr);
 		sNetmask = inet_ntoa(((struct sockaddr_in *)snm)->sin_addr);
 	}
+
 	freeifaddrs(ifaces);
 
-	if( sIP.empty() || sNetmask.empty() )
+	if( sIP.empty() && sNetmask.empty() )
 	{
 		sError = "Networking interface disabled";
 		return false;

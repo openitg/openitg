@@ -32,6 +32,8 @@ public:
 	int GetFileSizeInBytes( const CString &sPath );
 	int GetFileHash( const CString &sPath );
 
+	CString ResolvePath( const CString &sPath );
+
 	bool Mount( const CString &Type, const CString &RealPath, const CString &MountPoint, bool bAddToEnd = true );
 	void Unmount( const CString &Type, const CString &Root, const CString &MountPoint );
 

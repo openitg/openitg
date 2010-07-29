@@ -1,3 +1,4 @@
+
 #include "global.h"
 #include "RageFileManager.h"
 #include "RageFileDriver.h"
@@ -704,6 +705,44 @@ int RageFileManager::GetFileHash( const CString &sPath_ )
 	UnreferenceAllDrivers( apDriverList );
 
 	return iRet;
+}
+
+CString RageFileManager::ResolvePath( const CString &sPath_ )
+{
+	CString sPath = sPath_;
+	NormalizePath( sPath );
+
+	CString sResolvedPath = "";
+
+	vector<LoadedDriver *> apDriverList;
+	ReferenceAllDrivers( apDriverList );
+
+	for( unsigned i = 0; i < apDriverList.size(); ++i )
+	{
+		LoadedDriver *pDriver = apDriverList[i];
+
+		if( pDriver->m_sType == "mountpoints" )
+			continue;
+
+		const CString p = pDriver->GetPath(sPath);
+
+		if( p.empty() )
+			continue;
+
+		sResolvedPath = pDriver->m_sRoot + p;
+
+		LOG->Debug( "p: %s, pDriver->m_sRoot: %s, sResolvedPath: %s",
+			p.c_str(), pDriver->m_sRoot.c_str(), sResolvedPath.c_str() );
+
+		break;
+	}
+
+	UnreferenceAllDrivers( apDriverList );
+
+	NormalizePath( sResolvedPath );
+	LOG->Debug( "\"%s\" resolved to \"%s\".", sPath_.c_str(), sResolvedPath.c_str() );
+
+	return sResolvedPath;
 }
 
 static bool SortBySecond( const pair<int,int> &a, const pair<int,int> &b )

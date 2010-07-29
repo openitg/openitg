@@ -9,18 +9,16 @@
 #include "InputMapper.h"
 #include "PrefsManager.h"
 
-int	Game::GetNumGameplayButtons() const
+int Game::GetNumGameplayButtons() const
 {
-	int iIndexOfStart = ButtonNameToIndex( "Start" );
-	ASSERT( iIndexOfStart != GAME_BUTTON_INVALID );
-	return iIndexOfStart;
+	return m_iButtonsPerController - GAME_BUTTON_NEXT;
 }
 
 GameButton Game::ButtonNameToIndex( const CString &sButtonName ) const
 {
 	for( int i=0; i<m_iButtonsPerController; i++ ) 
 		if( stricmp(m_szButtonNames[i], sButtonName) == 0 )
-			return i;
+			return GameButton(i);
 
 	return GAME_BUTTON_INVALID;
 }

@@ -19,15 +19,19 @@
 #include <unistd.h>
 #include <cerrno>
 
-// Include Unix/Linux networking types
 extern "C"
 {
+// Include Unix/Linux networking types
 #include <ifaddrs.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-};
+
+// Include statvfs, for disk space info
+#include <sys/statvfs.h>
+}
+
 
 #if defined(CRASH_HANDLER)
 #include "archutils/Unix/CrashHandler.h"
@@ -81,31 +85,50 @@ struct stat st;
 	FILEMAN->Mount( "dir", "/itgdata/cache-sink", "/Cache" );
 #else
 	/* OpenITG-specific paths */
-	FILEMAN->Mount( "kry", Root + "/CryptPackages", "/Packages" );
+	FILEMAN->Mount( "oitg", Root + "/CryptPackages", "/Packages" );
 
 	/* This mounts everything else, including Cache, Data, UserPacks, etc. */
 	FILEMAN->Mount( "dir", Root, "/" );
 #endif // ITG_ARCADE
 }
 
+static void GetDiskSpace( const CString &sDir, uint64_t *pSpaceFree, uint64_t *pSpaceTotal )
+{
+	CString sResolvedDir = FILEMAN->ResolvePath( sDir );
+
+	struct statvfs fsdata;
+	if( statvfs(sResolvedDir.c_str(), &fsdata) != 0 )
+	{
+		LOG->Warn( "GetDiskSpace(): statvfs() failed: %s", strerror(errno) );
+		return;
+	}
+
+	// block size * blocks available to user
+	if ( pSpaceFree )
+		*pSpaceFree = uint64_t(fsdata.f_bsize) * uint64_t(fsdata.f_bavail);
+
+	// fragment size * blocks on the FS
+	if( pSpaceTotal )
+		*pSpaceTotal = uint64_t(fsdata.f_frsize) * uint64_t(fsdata.f_blocks);
+}
+
+uint64_t ArchHooks_Unix::GetDiskSpaceFree( const CString &sDir )
+{
+	uint64_t iSpaceFree = 0;
+	GetDiskSpace( sDir, &iSpaceFree, NULL );
+	return iSpaceFree;
+}
+
+uint64_t ArchHooks_Unix::GetDiskSpaceTotal( const CString &sDir )
+{
+	uint64_t iSpaceTotal = 0;
+	GetDiskSpace( sDir, NULL, &iSpaceTotal );
+	return iSpaceTotal;
+}
+
 bool ArchHooks_Unix::OpenMemoryRange( unsigned short start_port, unsigned short bytes )
 {
 	LOG->Trace( "ArchHooks_Unix::OpenMemoryRange( %#x, %d )", start_port, bytes );
-
-/* XXX: this does not work at all for the MK3 driver. Why not? */
-#if 0
-	if( (start_port+bytes) <= 0x3FF )
-	{
-		int ret = ioperm( start_port, bytes, 1 );
-
-		if( ret != 0 )
-			LOG->Warn( "OpenMemoryRange(): ioperm error: %s", strerror(errno) );
-
-		return (ret == 0);
-	}
-
-	LOG->Warn( "ArchHooks_Unix::OpenMemoryRange(): address range extends past ioperm, using iopl." );
-#endif
 
 	int ret = iopl(3);
 
@@ -153,9 +176,10 @@ bool ArchHooks_Unix::GetNetworkAddress( CString &sIP, CString &sNetmask, CString
 		sIP = inet_ntoa(((struct sockaddr_in *)sad)->sin_addr);
 		sNetmask = inet_ntoa(((struct sockaddr_in *)snm)->sin_addr);
 	}
+
 	freeifaddrs(ifaces);
 
-	if( sIP.empty() || sNetmask.empty() )
+	if( sIP.empty() && sNetmask.empty() )
 	{
 		sError = "Networking interface disabled";
 		return false;
@@ -166,23 +190,18 @@ bool ArchHooks_Unix::GetNetworkAddress( CString &sIP, CString &sNetmask, CString
 
 void ArchHooks_Unix::SystemReboot( bool bForceSync )
 {
-	LOG->Trace( "ArchHooks_Unix::SystemReboot()" );
-
 #ifdef ITG_ARCADE
-	if( !IsAFile("/rootfs/tmp/no-crash-reboot") )
+	/* Important: flush to disk first */
+	if( bForceSync )
 	{
-		LOG->Warn( "no-crash-reboot not found. Rebooting." );
+		sync();
+		sleep(5);
+	}
 
-		/* Important: flush to disk first */
-		if( bForceSync )
-		{
-			sync();
-			sleep(5);
-		}
-
+	/* If /tmp/no-crash-reboot exists, don't reboot. Just exit. */
+	if( !IsAFile("/rootfs/tmp/no-crash-reboot") )
 		if( reboot(RB_AUTOBOOT) != 0 )
 			LOG->Warn( "Could not reboot: %s", strerror(errno) );
-	}
 #endif
 
 	// Should we try to develop a RestartProgram for Unix?

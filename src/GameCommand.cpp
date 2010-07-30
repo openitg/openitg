@@ -60,7 +60,9 @@ void GameCommand::Init()
 	m_bClearBookkeepingData = false;
 	m_bClearMachineStats = false;
 	m_bClearMachineEdits = false;
+	m_bClearMachineLogs = false;
 	m_bFillMachineStats = false;
+	m_bTransferLogsFromMachine = false;
 	m_bTransferStatsFromMachine = false;
 	m_bTransferStatsToMachine = false;
 	m_bCopyEditsFromMachine = false;
@@ -207,7 +209,7 @@ void GameCommand::LoadOne( const Command& cmd )
 	{
 		m_sAnnouncer = sValue;
 	}
-	
+
 	else if( sName == "name" )
 	{
 		m_sName = sValue;
@@ -219,13 +221,13 @@ void GameCommand::LoadOne( const Command& cmd )
 			m_sModifiers += ",";
 		m_sModifiers += sValue;
 	}
-	
+
 	else if( sName == "lua" )
 	{
 		m_LuaFunction.SetFromExpression( sValue );
 		ASSERT_M( !m_LuaFunction.IsNil(), ssprintf("\"%s\" evaluated to nil", sValue.c_str()) );
 	}
-	
+
 	else if( sName == "screen" )
 	{
 		m_sScreen = sValue;
@@ -285,7 +287,7 @@ void GameCommand::LoadOne( const Command& cmd )
 			m_bInvalid |= true;
 		}
 	}
-	
+
 	else if( sName == "trail" )
 	{
 		CString sTrail = sValue;
@@ -309,13 +311,13 @@ void GameCommand::LoadOne( const Command& cmd )
 			}
 		}
 	}
-	
+
 	else if( sName == "setenv" )
 	{
 		if( cmd.m_vsArgs.size() == 3 )
 			m_SetEnv[ cmd.m_vsArgs[1] ] = cmd.m_vsArgs[2];
 	}
-	
+
 	else if( sName == "songgroup" )
 	{
 		m_sSongGroup = sValue;
@@ -349,7 +351,7 @@ void GameCommand::LoadOne( const Command& cmd )
 	{
 		m_iUnlockIndex = atoi( sValue );
 	}
-	
+
 	else if( sName == "sound" )
 	{
 		m_sSoundPath = sValue;
@@ -359,12 +361,12 @@ void GameCommand::LoadOne( const Command& cmd )
 	{
 		m_vsScreensToPrepare.push_back( sValue );
 	}
-	
+
 	else if( sName == "deletepreparedscreens" )
 	{
 		m_bDeletePreparedScreens = true;
 	}
-	
+
 	else if( sName == "reloadtheme" )
 	{
 		m_bReloadTheme = true;
@@ -381,9 +383,17 @@ void GameCommand::LoadOne( const Command& cmd )
 	{
 		m_bClearMachineEdits = true;
 	}
+	else if( sName == "clearmachinelogs" )
+	{
+		m_bClearMachineLogs = true;
+	}
 	else if( sName == "fillmachinestats" )
 	{
 		m_bFillMachineStats = true;
+	}
+	else if( sName == "transferlogsfrommachine" )
+	{
+		m_bTransferLogsFromMachine = true;
 	}
 	else if( sName == "transferstatsfrommachine" )
 	{
@@ -428,6 +438,21 @@ void GameCommand::LoadOne( const Command& cmd )
 		LOG->Warn( sWarning );
 		Dialog::OK( sWarning, "INVALID_GAME_COMMAND" );
 	}
+}
+
+PlayerNumber GetFirstReadyMemoryCard()
+{
+	FOREACH_PlayerNumber( pn )
+	{
+		if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
+			continue;	// skip
+
+		if( !MEMCARDMAN->IsMounted(pn) )
+			MEMCARDMAN->MountCard(pn);
+		return pn;
+	}
+
+	return PLAYER_INVALID;
 }
 
 int GetNumCreditsPaid()
@@ -869,6 +894,24 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 		
 		SCREENMAN->SystemMessage( ssprintf("%d edits cleared, %d errors.",iNumSuccessful,iNumAttempted-iNumSuccessful) );
 	}
+	if( m_bClearMachineLogs )
+	{
+		int iNumAttempted = 0;
+		int iNumSuccessful = 0;
+
+		CStringArray vsLogs;
+		GetDirListing( "Data/crashinfo-*.txt", vsLogs, false, true );
+		FOREACH_CONST( CString, vsLogs, i )
+		{
+			iNumAttempted++;
+			if( FILEMAN->Remove(*i) )
+				iNumSuccessful++;
+		}
+
+		// update the dir cache, so Diagnostics gives the correct number of logs
+		FILEMAN->FlushDirCache( "Data/" );
+		SCREENMAN->SystemMessage( ssprintf("%d logs cleared, %d errors.", iNumSuccessful, iNumAttempted-iNumSuccessful) );
+	}
 	if( m_bFillMachineStats )
 	{
 		// Choose a percent for all scores.  This is useful for testing unlocks
@@ -913,18 +956,49 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 		PROFILEMAN->SaveMachineProfile();
 		SCREENMAN->SystemMessage( "Machine stats filled." );
 	}
-	if( m_bTransferStatsFromMachine )
+	if( m_bTransferLogsFromMachine )
 	{
-		bool bTriedToSave = false;
+		bool bTriedToCopy = false;
 		FOREACH_PlayerNumber( pn )
 		{
 			if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
-				continue;	// skip
+				continue;
 
 			MEMCARDMAN->MountCard(pn);
+			bTriedToCopy = true;
 
-			bTriedToSave = true;
+			CString sDir = MEM_CARD_MOUNT_POINT[pn];
+			sDir += "Logs/";
 
+			{
+				int iNumAttempted = 0;
+				int iNumSuccessful = 0;
+
+				CStringArray vsLogs;
+				GetDirListing( "Data/crashinfo-*.txt" , vsLogs, false, false );
+				FOREACH_CONST( CString, vsLogs, i )
+				{
+					iNumAttempted++;				
+					bool bSuccess = FileCopy( (*i), sDir + (*i), NULL );
+					if( bSuccess )
+						iNumSuccessful++;
+				}
+
+				MEMCARDMAN->UnmountCard(pn);			
+				SCREENMAN->SystemMessage( ssprintf("Logs copied to P%d card: %d/%d copies OK.",pn+1,iNumSuccessful,iNumAttempted) );
+				break;
+			}
+		}
+
+		if( !bTriedToCopy )
+			SCREENMAN->SystemMessage( "Logs not copied - No memory cards ready." );		
+	}
+	if( m_bTransferStatsFromMachine )
+	{
+		PlayerNumber pn = GetFirstReadyMemoryCard();
+
+		if( pn != PLAYER_INVALID )
+		{
 			CString sDir = MEM_CARD_MOUNT_POINT[pn];
 			sDir += "MachineProfile/";
 
@@ -936,26 +1010,18 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 				SCREENMAN->SystemMessage( ssprintf("Machine stats saved to P%d card.",pn+1) );
 			else
 				SCREENMAN->SystemMessage( ssprintf("Error saving machine stats to P%d card.",pn+1) );
-			break;
 		}
-
-		if( !bTriedToSave )
+		else
+		{
 			SCREENMAN->SystemMessage( "Stats not saved - No memory cards ready." );
-
-		MEMCARDMAN->FlushAndReset();
+		}
 	}
 	if( m_bTransferStatsToMachine )
 	{
-		bool bTriedToLoad = false;
-		FOREACH_PlayerNumber( pn )
+		PlayerNumber pn = GetFirstReadyMemoryCard();
+
+		if( pn != PLAYER_INVALID )
 		{
-			if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
-				continue;	// skip
-
-			MEMCARDMAN->MountCard(pn);
-
-			bTriedToLoad = true;
-
 			CString sDir = MEM_CARD_MOUNT_POINT[pn];
 			sDir += "MachineProfile/";
 
@@ -968,38 +1034,30 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 				SCREENMAN->SystemMessage( ssprintf("Machine stats loaded from P%d card.",pn+1) );
 				break;
 			case Profile::failed_no_profile:
-				SCREENMAN->SystemMessage( ssprintf("There is no machine profile on P%d card.",pn+1) );
 				*PROFILEMAN->GetMachineProfile() = backup;
+				SCREENMAN->SystemMessage( ssprintf("There is no machine profile on P%d card.",pn+1) );
 				break;
 			case Profile::failed_tampered:
-				SCREENMAN->SystemMessage( ssprintf("The profile on P%d card contains corrupt or tampered data.",pn+1) );
 				*PROFILEMAN->GetMachineProfile() = backup;
+				SCREENMAN->SystemMessage( ssprintf("The profile on P%d card contains corrupt or tampered data.",pn+1) );
 				break;
 			default:
 				ASSERT(0);
 			}
 
 			MEMCARDMAN->UnmountCard(pn);
-			break;
 		}
-
-		if( !bTriedToLoad )
+		else
+		{
 			SCREENMAN->SystemMessage( "Stats not loaded - No memory cards ready." );
-
-		MEMCARDMAN->FlushAndReset();
+		}
 	}
 	if( m_bCopyEditsFromMachine )
 	{
-		bool bTriedToCopy = false;
-		FOREACH_PlayerNumber( pn )
+		PlayerNumber pn = GetFirstReadyMemoryCard();
+
+		if( pn != PLAYER_INVALID )
 		{
-			if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
-				continue;	// skip
-
-			MEMCARDMAN->MountCard(pn);
-
-			bTriedToCopy = true;
-
 			CString sFromDir = PROFILEMAN->GetProfileDir(PROFILE_SLOT_MACHINE) + EDIT_SUBDIR;
 			CString sToDir = MEM_CARD_MOUNT_POINT[pn] + (CString)PREFSMAN->m_sMemoryCardProfileSubdir + "/" + EDITS_SUBDIR;
 
@@ -1022,26 +1080,18 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 			MEMCARDMAN->UnmountCard(pn);
 
 			SCREENMAN->SystemMessage( ssprintf("Copied to P%d card: %d/%d copies OK (%d overwritten).",pn+1,iNumSuccessful,iNumAttempted,iNumOverwritten) );
-			break;
 		}
-
-		if( !bTriedToCopy )
+		else
+		{
 			SCREENMAN->SystemMessage( "Edits not copied - No memory cards ready." );
-
-		MEMCARDMAN->FlushAndReset();
+		}
 	}
 	if( m_bCopyEditsToMachine )
 	{
-		bool bTriedToCopy = false;
-		FOREACH_PlayerNumber( pn )
+		PlayerNumber pn = GetFirstReadyMemoryCard();
+
+		if( pn != PLAYER_INVALID )
 		{
-			if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
-				continue;	// skip
-
-			MEMCARDMAN->MountCard(pn);
-
-			bTriedToCopy = true;
-
 			CString sFromDir = MEM_CARD_MOUNT_POINT[pn] + (CString)PREFSMAN->m_sMemoryCardProfileSubdir + "/" + EDITS_SUBDIR;
 			CString sToDir = PROFILEMAN->GetProfileDir(PROFILE_SLOT_MACHINE) + EDIT_SUBDIR;
 
@@ -1068,17 +1118,15 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 			PROFILEMAN->LoadMachineProfile();
 
 			SCREENMAN->SystemMessage( ssprintf("Copied from P%d card: %d/%d copies OK (%d overwritten).",pn+1,iNumSuccessful,iNumAttempted,iNumOverwritten) );
-			break;
 		}
-
-		if( !bTriedToCopy )
+		else
+		{
 			SCREENMAN->SystemMessage( "Edits not copied - No memory cards ready." );
-
-		MEMCARDMAN->FlushAndReset();
+		}
 	}
 	if( m_bInsertCredit )
 	{
-		/* don't record in the bookkeeper */
+		/* record as a service credit, not a regular credit */
 		InsertCredit( false ); 
 	}
 	if( m_bClearCredits )

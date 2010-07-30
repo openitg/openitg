@@ -2,78 +2,36 @@
 #include "MemoryCardDriverThreaded_Linux.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-#include "RageFileManager.h"
-#include "ProfileManager.h"
-#include "PrefsManager.h"
-#include "Foreach.h"
+#include "RageFile.h"
 
-#include <cstdio>
-#include <cstring>
 #include <cerrno>
-#include <unistd.h>
 #include <fcntl.h>
-#include <fstream>
 #include <dirent.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/poll.h>
 
-const CString TEMP_MOUNT_POINT = "/@mctemp/";
-
-/* the device paths change slightly between USB kernel modules.
- * Assume "ub" unless this returns true, meaning "usb_storage". */
-const bool USB_STORAGE_MODULE = system( "lsmod | grep -q usb_storage" ) == 0;
-
-void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut );
-
-template<class T>
-bool VectorsAreEqual( const T &a, const T &b )
+bool MemoryCardDriverThreaded_Linux::TestWrite( UsbStorageDevice* pDevice )
 {
-	if( a.size() != b.size() )
+	if( access(pDevice->sOsMountDir, W_OK) == -1 )
+	{
+		pDevice->SetError( "TestFailed" );
 		return false;
-	
-	for( unsigned i=0; i<a.size(); i++ )
-    {
-		if( a[i] != b[i] )
-			return false;
-    }
-	
+	}
+
 	return true;
 }
 
-static bool TestWrite( CCStringRef sDir )
-{
-	// Try to write a file.
-	// TODO: Can we use RageFile for this?
-	CString sFile = sDir + "/temp";
-	FILE* fp = fopen( sFile, "w" );
-	if( fp == NULL )
-		return false;
-	fclose( fp );
-	remove( sFile );
-	return true;
-}
-
-static bool ExecuteCommand( CCStringRef sCommand )
+static bool ExecuteCommand( const CString &sCommand )
 {
 	LOG->Trace( "executing '%s'", sCommand.c_str() );
 	int ret = system(sCommand);
 	LOG->Trace( "done executing '%s'", sCommand.c_str() );
 	if( ret != 0 )
-		LOG->Warn( "failed to execute '%s' with error %d.", sCommand.c_str(), ret );
+	{
+		CString sError = ssprintf("failed to execute '%s' with error %d", sCommand.c_str(), ret);
+		if( ret == -1 )
+			sError += ssprintf(": %s", sCommand.c_str());
+		LOG->Warn( "%s", sError.c_str() );
+	}
 	return ret == 0;
-}
-
-MemoryCardDriverThreaded_Linux::MemoryCardDriverThreaded_Linux()
-{
-}
-
-MemoryCardDriverThreaded_Linux::~MemoryCardDriverThreaded_Linux()
-{
-}
-
-void MemoryCardDriverThreaded_Linux::Reset()
-{
 }
 
 static bool ReadFile( const CString &sPath, CString &sBuf )
@@ -86,7 +44,7 @@ static bool ReadFile( const CString &sPath, CString &sBuf )
 		LOG->Warn( "Error opening \"%s\": %s", sPath.c_str(), strerror(errno) );
 		return false;
 	}
-	
+
 	while(1)
 	{
 		char buf[1024];
@@ -102,7 +60,7 @@ static bool ReadFile( const CString &sPath, CString &sBuf )
 		if( iGot < (int) sizeof(buf) )
 			break;
 	}
-	
+
 	close(fd);
 	return true;
 }
@@ -121,15 +79,14 @@ static void GetFileList( const CString &sPath, vector<CString> &out )
 	closedir( dp );
 }
 
-static bool BlockDevicesChanged()
+bool MemoryCardDriverThreaded_Linux::USBStorageDevicesChanged()
 {
-	static CString sLastDevices = "";
 	CString sThisDevices;
 
 	/* If a device is removed and reinserted, the inode of the /sys/block entry
 	 * will change. */
 	CString sDevicePath = "/sys/block/";
-	
+
 	vector<CString> asDevices;
 	GetFileList( sDevicePath, asDevices );
 
@@ -141,238 +98,18 @@ static bool BlockDevicesChanged()
 
 		sThisDevices += ssprintf( "%i,", (int) buf.st_ino );
 	}
-	       
-	bool bChanged = sThisDevices != sLastDevices;
-	sLastDevices = sThisDevices;
+
+	bool bChanged = sThisDevices != m_sLastDevices;
+	m_sLastDevices = sThisDevices;
 	if( bChanged )
 		LOG->Trace( "Change in USB storage devices detected." );
 	return bChanged;
 }
 
-bool MemoryCardDriverThreaded_Linux::NeedUpdate( bool bMount ) const
+void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 {
-	if( bMount )
-	{
-		/* Check if any devices need a write test. */
-		for( unsigned i=0; i<m_vDevicesLastSeen.size(); i++ )
-		{
-			const UsbStorageDevice &d = m_vDevicesLastSeen[i];
-			if( d.m_State == UsbStorageDevice::STATE_CHECKING )
-				return true;
-		}
-	}
+	LOG->Trace( "GetUSBStorageDevices" );
 
-	/* Nothing needs a write test (or we ca'nt do it right now).  If no devices
-	 * have changed, either, we have nothing to do. */
-	if( BlockDevicesChanged() )
-		return true;
-
-	/* Nothing to do. */
-	return false;
-}
-
-bool MemoryCardDriverThreaded_Linux::DoOneUpdate( bool bMount, vector<UsbStorageDevice>& vStorageDevicesOut )
-{
-	if( !NeedUpdate(bMount) )
-		return false;
-
-	vector<UsbStorageDevice> vOld = m_vDevicesLastSeen; // copy
-	GetNewStorageDevices( vStorageDevicesOut );
-	vector<UsbStorageDevice> &vNew = vStorageDevicesOut;
-	
-	// check for connects
-	vector<UsbStorageDevice> vConnects;
-	FOREACH( UsbStorageDevice, vNew, newd )
-	{
-		vector<UsbStorageDevice>::iterator iter = find( vOld.begin(), vOld.end(), *newd );
-		if( iter == vOld.end() )    // didn't find
-		{
-			LOG->Trace( "New device connected: %s", newd->sDevice.c_str() );
-			vConnects.push_back( *newd );
-		}
-	}
-	
-	/* When we first see a device, regardless of bMount, just return it as CHECKING,
-	 * so the main thread knows about the device.  On the next call where bMount is
-	 * true, check it. */
-	for( unsigned i=0; i<vStorageDevicesOut.size(); i++ )
-	{
-		UsbStorageDevice &d = vStorageDevicesOut[i];
-
-		/* If this device was just connected (it wasn't here last time), set it to
-		 * CHECKING and return it, to let the main thread know about the device before
-		 * we start checking. */
-		vector<UsbStorageDevice>::iterator iter = find( vOld.begin(), vOld.end(), d );
-		if( iter == vOld.end() )    // didn't find
-		{
-			LOG->Trace("New device entering CHECKING: %s", d.sDevice.c_str() );
-			d.m_State = UsbStorageDevice::STATE_CHECKING;
-			continue;
-		}
-
-		/* Preserve the state of the device, and any data loaded from previous checks. */
-		d.m_State = iter->m_State;
-		d.bIsNameAvailable = iter->bIsNameAvailable;
-		d.sName = iter->sName;
-
-		/* The device was here last time.  If CHECKING, check the device now if
-		 * we're allowed to. */
-		if( d.m_State == UsbStorageDevice::STATE_CHECKING )
-		{
-			if( !bMount )
-			{
-				/* We can't check it now.  Keep the checking state and check it when
-				 * we can. */
-				d.m_State = UsbStorageDevice::STATE_CHECKING;
-				continue;
-			}
-
-			/* it's possible that the block device will appear in /sys/ before it
-			 * appears in /dev/. Don't mount until we know the dev file exists. */
-			if( USB_STORAGE_MODULE )
-			{
-				struct stat data;
-				if( stat(d.sDevice, &data) == -1 )
-				{
-					LOG->Warn( "Waiting for %s: not in /dev/ yet.", d.sDevice.c_str() );
-					continue;
-				}
-			}
-
-			if( !ExecuteCommand("mount " + d.sDevice) )
-			{
-				d.SetError( "MountFailed" );
-				continue;
-			}
-
-			if( !TestWrite(d.sOsMountDir) )
-			{
-				d.SetError( "TestFailed" );
-			}
-			else
-			{
-				/* We've successfully mounted and tested the device.  Read the
-				 * profile name (by mounting a temporary, private mountpoint),
-				 * and then unmount it until Mount() is called. */
-				d.m_State = UsbStorageDevice::STATE_READY;
-			
-				FILEMAN->Mount( "dir", d.sOsMountDir, TEMP_MOUNT_POINT );
-				d.bIsNameAvailable = PROFILEMAN->FastLoadProfileNameFromMemoryCard( TEMP_MOUNT_POINT, d.sName );
-				FILEMAN->Unmount( "dir", d.sOsMountDir, TEMP_MOUNT_POINT );
-			}
-
-			ExecuteCommand( "umount -l \"" + d.sOsMountDir + "\"" );
-
-			LOG->Trace( "WriteTest: %s, Name: %s", d.m_State == UsbStorageDevice::STATE_ERROR? "failed":"succeeded", d.sName.c_str() );
-		}
-	}
-	
-	m_vDevicesLastSeen = vNew;
-	
-	CHECKPOINT;
-	return true;
-}
-
-/* split to be more readable/easier to mess around with. - Vyhd */
-void SetDeviceInfo( UsbStorageDevice &usbd, CString sPath )
-{
-	/*
-	 * sPath/device should be a symlink to the actual device.  For USB
-	 * devices, it looks like this:
-	 *
-	 * device -> ../../devices/pci0000:00/0000:00:02.1/usb2/2-1/2-1:1.0
-	 *
-	 * "2-1" is "bus-port".
-	 */
-
-	char szLink[256];
-	int iRet = readlink( sPath + "device", szLink, sizeof(szLink) );
-	if( iRet == -1 )
-	{
-		LOG->Warn( "readlink(\"%s\"): %s", (sPath + "device").c_str(), strerror(errno) );
-	}
-	else
-	{
-		/*
-		 * The full path looks like
-		 *
-		 *   ../../devices/pci0000:00/0000:00:02.1/usb2/2-2/2-2.1/2-2.1:1.0
-		 *
-		 * Each path element refers to a new hop in the chain.
-		 *  "usb2" = second USB host
-		 *  2-            second USB host,
-		 *   -2           port 1 on the host,
-		 *     .1         port 1 on an attached hub
-		 *       .2       ... port 2 on the next hub ...
-		 * 
-		 * We want the bus number and the port of the last hop.  The level is
-		 * the number of hops.
-		 */
-		szLink[iRet] = 0;
-		vector<CString> asBits;
-		split( szLink, "/", asBits );
-
-		if( strstr( szLink, "usb" ) != NULL )
-		{
-			/* With the newer symlinks, the format is similar to:
-			 *
-			 * ../../devices/pci0000:00/0000:00:03.3/usb4/4-6/4-6:1.0/host7/target7:0:0/7:0:0:0
-			 *
-			 * We don't care about this info, but it does interfere with this code. So,
-			 * reassign it (i.e., assign 5th from right instead of 2nd). -- Vyhd
-			 */
-			CString sHostPort;
-			if( USB_STORAGE_MODULE )
-				sHostPort = asBits[asBits.size()-5];
-			else
-				sHostPort = asBits[asBits.size()-2];
-
-			sHostPort.Replace( "-", "." );
-			asBits.clear();
-			split( sHostPort, ".", asBits );
-
-			if( asBits.size() > 1 )
-			{
-				usbd.iBus = atoi( asBits[0] );
-				usbd.iPort = atoi( asBits[asBits.size()-1] );
-				usbd.iLevel = asBits.size() - 1;
-			}
-		}
-	}
-
-	return;
-
-	CString sBuf;
-
-	if( ReadFile( sPath + "device/../idVendor", sBuf ) )
-		sscanf( sBuf, "%x", &usbd.idVendor );
-
-	if( ReadFile( sPath + "device/../idProduct", sBuf ) )
-		sscanf( sBuf, "%x", &usbd.idProduct );
-
-	if( ReadFile( sPath + "device/../serial", sBuf ) )
-	{
-		usbd.sSerial = sBuf;
-		TrimRight( usbd.sSerial );
-	}
-
-	if( ReadFile( sPath + "device/../product", sBuf ) )
-	{
-		usbd.sProduct = sBuf;
-		TrimRight( usbd.sProduct );
-	}
-
-	if( ReadFile( sPath + "device/../manufacturer", sBuf ) )
-	{
-		usbd.sVendor = sBuf;
-		TrimRight( usbd.sVendor );
-	}
-}
-
-void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
-{
-	LOG->Trace( "GetNewStorageDevices" );
-	
 	vDevicesOut.clear();
 
 	{
@@ -388,28 +125,139 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 
 			UsbStorageDevice usbd;
 
-			CString sPath = sBlockDevicePath + sDevice + "/";
+			CString sPath = sBlockDevicePath + sDevice;
+			usbd.sSysPath = sPath + "/";
 
 			/* Ignore non-removable devices. */
 			CString sBuf;
-			if( !ReadFile( sPath + "removable", sBuf ) )
+			if( !ReadFile( sPath + "/removable", sBuf ) )
 				continue; // already warned
 			if( atoi(sBuf) != 1 )
 				continue;
 
-			/* If the first partition exists, e.g. /sys/block/uba/uba1, use it. */
-			if( access(sPath + sDevice + "1", F_OK) != -1 )
-			{
+
+			/* HACK: The kernel isn't exposing all of /sys atomically, so we end up
+			 * missing the partition due to it not being shown yet.  The kernel should
+			 * be exposing all of this atomically. */
+			usleep(50000);
+
+			/* If the first partition device exists, eg. /sys/block/uba/uba1, use it. */
+			if( access(usbd.sSysPath + sDevice + "1", F_OK) != -1 )
 				usbd.sDevice = "/dev/" + sDevice + "1";
-				LOG->Debug( "Access to %s okay. Using %s.", CString(sPath + sDevice + "1").c_str(), usbd.sDevice.c_str() );
+			else
+				usbd.sDevice = "/dev/" + sDevice;
+
+			struct stat buf;
+			int iRet = lstat( sPath.c_str(), &buf );
+			if ( iRet == -1 )
+				continue;
+
+			/*
+			 * Is the /sys/block/{device} file a symlink itself?  On newer kernels,
+			 * the /device symlink is useless for obtaining USB location info
+			 */
+			char szLink[256];
+			int iUsbInfoIndex = 7;
+			if ( (buf.st_mode & S_IFMT) == S_IFLNK )
+			{
+				/*
+				 * sPath is a symbolic link, whose path looks like this:
+				 *
+				 * sdd -> ../devices/pci0000:00/0000:00:1d.7/usb2/2-2/2-2:1.0/host47/target47:0:0/47:0:0:0/block/sdd
+				 */
+				LOG->Debug( "%s: is a symlink.", sPath.c_str() );
+				iRet = readlink( sPath, szLink, sizeof(szLink) );
+
+				/*
+				 * Is the device handled by the ub driver rather than usb-storage?
+				 * If so, the path looks like this, instead:
+				 *
+				 * uba -> ../devices/pci0000:00/0000:00:1d.7/usb2/2-2/2-2:1.0/block/uba
+				 */
+				if ( sDevice.substr(0,2) == "ub" )
+				{
+					LOG->Debug( "%s: Device handled by ub driver", sPath.c_str() );
+			 		iUsbInfoIndex = 4;
+				}
 			}
 			else
 			{
-				usbd.sDevice = "/dev/" + sDevice;
-				LOG->Debug( "Couldn't access partition 1, using %s.", usbd.sDevice.c_str() );
+
+				/*
+				 * sPath/device should be a symlink to the actual device.  For USB
+				 * devices, it looks like this:
+				 *
+				 * device -> ../../devices/pci0000:00/0000:00:02.1/usb2/2-1/2-1:1.0
+				 *
+				 * "2-1" is "bus-port".
+				 */
+				LOG->Debug( "%s: is not a symlink, checking %s/device...", sPath.c_str(), sPath.c_str() );
+				iRet = readlink( sPath + "/device", szLink, sizeof(szLink) );
+				iUsbInfoIndex = 2;
+			}
+			sPath += "/";
+			if( iRet == -1 )
+			{
+				LOG->Warn( "readlink(\"%s\"): %s", (sPath + "device").c_str(), strerror(errno) );
+			}
+			else
+			{
+				/*
+				 * The full path looks like
+				 *
+				 *   ../../devices/pci0000:00/0000:00:02.1/usb2/2-2/2-2.1/2-2.1:1.0
+				 *
+				 * Each path element refers to a new hop in the chain.
+				 *  "usb2" = second USB host
+				 *  2-            second USB host,
+				 *   -2           port 1 on the host,
+				 *     .1         port 1 on an attached hub
+				 *       .2       ... port 2 on the next hub ...
+				 *
+				 * We want the bus number and the port of the last hop.  The level is
+				 * the number of hops.
+				 */
+				szLink[iRet] = 0;
+				vector<CString> asBits;
+				split( szLink, "/", asBits );
+
+				if( strstr( szLink, "usb" ) != NULL )
+				{
+					CString sHostPort = asBits[asBits.size()-iUsbInfoIndex];
+					sHostPort.Replace( "-", "." );
+					asBits.clear();
+					split( sHostPort, ".", asBits );
+					if( asBits.size() > 1 )
+					{
+						usbd.iBus = atoi( asBits[0] );
+						usbd.iPort = atoi( asBits[asBits.size()-1] );
+						usbd.iLevel = asBits.size() - 1;
+					}
+				}
 			}
 
-			SetDeviceInfo( usbd, sPath );
+			if( ReadFile( sPath + "device/../idVendor", sBuf ) )
+				sscanf( sBuf, "%x", &usbd.idVendor );
+
+			if( ReadFile( sPath + "device/../idProduct", sBuf ) )
+				sscanf( sBuf, "%x", &usbd.idProduct );
+
+			if( ReadFile( sPath + "device/../serial", sBuf ) )
+			{
+				usbd.sSerial = sBuf;
+				TrimRight( usbd.sSerial );
+			}
+			if( ReadFile( sPath + "device/../product", sBuf ) )
+			{
+				usbd.sProduct = sBuf;
+				TrimRight( usbd.sProduct );
+			}
+			if( ReadFile( sPath + "device/../manufacturer", sBuf ) )
+			{
+				usbd.sVendor = sBuf;
+				TrimRight( usbd.sVendor );
+			}
+
 			vDevicesOut.push_back( usbd );
 		}
 	}
@@ -485,7 +333,7 @@ void GetNewStorageDevices( vector<UsbStorageDevice>& vDevicesOut )
 		}
 	}
 	
-	LOG->Trace( "Done with GetNewStorageDevices" );
+	LOG->Trace( "Done with GetUSBStorageDevices" );
 }
 
 
@@ -509,21 +357,8 @@ void MemoryCardDriverThreaded_Linux::Unmount( UsbStorageDevice* pDevice )
 	 * by new devices until those are closed.  Without this, if something
 	 * causes the device to not unmount here, we'll never unmount it; that
 	 * causes a device name leak, eventually running us out of mountpoints. */
-	CString sCommand = "umount -l \"" + pDevice->sDevice + "\"";
+	CString sCommand = "sync; umount -l \"" + pDevice->sDevice + "\"";
 	ExecuteCommand( sCommand );
-}
-
-void MemoryCardDriverThreaded_Linux::Flush( UsbStorageDevice* pDevice )
-{
-	if( pDevice->sDevice.empty() )
-		return;
-	
-	// "sync" will only flush all file systems at the same time.  -Chris
-	// I don't think so.  Also, sync() merely queues a flush; it doesn't guarantee
-	// that the flush is completed on return.  However, we can mount the filesystem
-	// with the flag "-o sync", which forces synchronous access (but that's probably
-	// very slow.) -glenn
-	ExecuteCommand( "mount -o remount " + pDevice->sDevice );
 }
 
 /*

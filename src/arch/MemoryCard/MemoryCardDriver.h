@@ -21,6 +21,8 @@ struct UsbStorageDevice
 		idProduct = 0;
 		sVendor = "";
 		sProduct = "";
+		sVolumeLabel = "";
+		iVolumeSizeMB = 0;
 	};
 	int iBus;
 	int iPort;
@@ -28,12 +30,13 @@ struct UsbStorageDevice
 	CString sSerial;
 	CString sDevice;
 	CString	sOsMountDir;	// WITHOUT trailing slash
+	CString sSysPath;   // Linux: /sys/block name
 	enum State
 	{
 		/* Empty device.  This is used only by MemoryCardManager. */
 		STATE_NONE,
 
-		/* The card has been detected, but we havn't finished write tests, loading
+		/* The card has been detected, but we haven't finished write tests, loading
 		 * the quick profile information, etc. yet.  We can display something on
 		 * screen, in order to appear responsive, show that something's happening and
 		 * aid diagnostics, though. */
@@ -45,6 +48,9 @@ struct UsbStorageDevice
 
 		/* The device is ready and usable.  sName is filled in, if available. */
 		STATE_READY,
+
+		NUM_State,
+		State_INVALID
 	};
 	State m_State;
 	CString m_sError;
@@ -57,6 +63,8 @@ struct UsbStorageDevice
 	int idProduct;
 	CString sVendor;
 	CString sProduct;
+	CString sVolumeLabel;
+	int iVolumeSizeMB;
 
 	bool IsBlank() const { return m_State == STATE_NONE; }
 	void SetOsMountDir( const CString &s );
@@ -67,16 +75,32 @@ struct UsbStorageDevice
 class MemoryCardDriver
 {
 public:
-	MemoryCardDriver() {};
-	virtual ~MemoryCardDriver() {};
-	virtual bool Mount( UsbStorageDevice* pDevice ) = 0;	// return false if mount or write fails
+	static MemoryCardDriver *Create();
+
+	MemoryCardDriver() {}
+	virtual ~MemoryCardDriver() {}
+
+	/* Make a device accessible via its pDevice->sOsMountDir.  This will be called
+	 * before any access to the device, and before TestWrite. */
+	virtual bool Mount( UsbStorageDevice* pDevice ) = 0;
 	virtual void Unmount( UsbStorageDevice* pDevice ) = 0;
-	virtual void Flush( UsbStorageDevice* pDevice ) = 0;
-	virtual void Reset() { }
 
 	/* Poll for memory card changes.  If anything has changed, fill in vStorageDevicesOut
 	 * and return true. */
-	virtual bool DoOneUpdate( bool bMount, vector<UsbStorageDevice>& vStorageDevicesOut ) = 0;
+	bool DoOneUpdate( bool bMount, vector<UsbStorageDevice>& vStorageDevicesOut );
+
+protected:
+	/* This may be called before GetUSBStorageDevices; return false if the results of
+	 * GetUSBStorageDevices have not changed.  (This is an optimization.) */
+	virtual bool USBStorageDevicesChanged() { return true; }
+	virtual void GetUSBStorageDevices( vector<UsbStorageDevice>& vDevicesOut ) { }
+
+	/* Test the device.  On failure, call pDevice->SetError() appropriately, and return false. */
+	virtual bool TestWrite( UsbStorageDevice* pDevice ) { return true; }
+
+private:
+	vector<UsbStorageDevice> m_vDevicesLastSeen;
+	bool NeedUpdate( bool bMount );
 };
 
 #endif

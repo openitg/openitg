@@ -62,11 +62,12 @@ enum ThreadRequest
 	REQ_COPY,
 	REQ_POPULATE_FILE_SET,
 	REQ_FLUSH_DIR_CACHE,
+	REQ_MOVE,
 	REQ_REMOVE,
 };
 
 /* This is the class that does most of the work. */
-class ThreadedFileWorker: public WorkerThread
+class ThreadedFileWorker: public RageWorkerThread
 {
 public:
 	ThreadedFileWorker( CString sPath );
@@ -85,6 +86,7 @@ public:
 	RageFileBasic *Copy( RageFileBasic *&pFile, CString &sError );
 
 	bool FlushDirCache( const CString &sPath );
+	int Move( const CString &sOldPath, const CString &sNewPath );
 	int Remove( const CString &sPath );
 	bool PopulateFileSet( FileSet &fs, const CString &sPath );
 
@@ -101,8 +103,11 @@ private:
 	vector<RageFileBasic *> m_apDeletedFiles;
 	RageMutex m_DeletedFilesLock;
 
-	/* REQ_OPEN, REQ_POPULATE_FILE_SET, REQ_FLUSH_DIR_CACHE, REQ_REMOVE: */
+	/* REQ_OPEN, REQ_POPULATE_FILE_SET, REQ_FLUSH_DIR_CACHE, REQ_REMOVE, REQ_MOVE: */
 	CString m_sRequestPath; /* in */
+
+	/* REQ_MOVE: */
+	CString m_sRequestPath2; /* in */
 
 	/* REQ_OPEN, REQ_COPY: */
 	RageFileBasic *m_pResultFile; /* out */
@@ -147,13 +152,13 @@ void RageFileDriverTimeout::SetTimeout( float fSeconds )
 
 
 ThreadedFileWorker::ThreadedFileWorker( CString sPath ):
-	WorkerThread( sPath ),
+	RageWorkerThread( sPath ),
 	m_DeletedFilesLock( sPath + "DeletedFilesLock" )
 {
 	/* Grab a reference to the child driver.  We'll operate on it directly. */
 	m_pChildDriver = FILEMAN->GetFileDriver( sPath );
 	if( m_pChildDriver == NULL )
-		LOG->Warn( "ThreadedFileWorker: Mountpoint \"%s\" not found", sPath.c_str() );
+		WARN( ssprintf("ThreadedFileWorker: Mountpoint \"%s\" not found", sPath.c_str()) );
 
 	m_pResultFile = NULL;
 	m_pRequestFile = NULL;
@@ -266,6 +271,12 @@ void ThreadedFileWorker::HandleRequest( int iRequest )
 	case REQ_REMOVE:
 		ASSERT( !m_sRequestPath.empty() );
 		m_iResultRequest = m_pChildDriver->Remove( m_sRequestPath )? 0:-1;
+		break;
+
+	case REQ_MOVE:
+		ASSERT( !m_sRequestPath.empty() );
+		ASSERT( !m_sRequestPath2.empty() );
+		m_iResultRequest = m_pChildDriver->Move( m_sRequestPath, m_sRequestPath2 ) ? 0 : -1;
 		break;
 
 	default:
@@ -577,6 +588,26 @@ bool ThreadedFileWorker::PopulateFileSet( FileSet &fs, const CString &sPath )
 	return true;
 }
 
+int ThreadedFileWorker::Move( const CString &sOldPath, const CString &sNewPath )
+{
+	ASSERT( m_pChildDriver != NULL ); /* how did you get a file to begin with? */
+
+	/* If we're currently in a timed-out state, fail. */
+	if( IsTimedOut() )
+		return -1;
+
+	m_sRequestPath = sOldPath;
+	m_sRequestPath2 = sNewPath;
+	
+	if( !DoRequest(REQ_MOVE) )
+	{
+		/* If we time out, we can no longer access pFile. */
+		return -1;
+	}
+
+	return m_iResultRequest;
+}
+
 int ThreadedFileWorker::Remove( const CString &sPath )
 {
 	ASSERT( m_pChildDriver != NULL ); /* how did you get a file to begin with? */
@@ -634,17 +665,27 @@ class RageFileObjTimeout: public RageFileObj
 {
 public:
 	/* pFile will be freed by passing it to pWorker. */
-	RageFileObjTimeout( ThreadedFileWorker *pWorker, RageFileBasic *pFile, int iSize )
+	RageFileObjTimeout( ThreadedFileWorker *pWorker, RageFileBasic *pFile, int iSize, int iMode )
 	{
 		m_pWorker = pWorker;
 		m_pFile = pFile;
 		m_iFileSize = iSize;
+		m_iMode = iMode;
+		/* We have a lot of overhead per read and write operation, since we send
+		 * commands to the worker thread. Buffer these operations. */
+		if( iMode & RageFile::WRITE )
+			EnableWriteBuffering();
+		if( iMode & RageFile::READ )
+			EnableReadBuffering();
 	}
 
 	~RageFileObjTimeout()
 	{
 		if( m_pFile != NULL )
+		{
+			Flush();
 			m_pWorker->Close( m_pFile );
+		}
 	}
 
 	int GetFileSize() const
@@ -669,7 +710,7 @@ public:
 			return NULL;
 		}
 
-		return new RageFileObjTimeout( m_pWorker, pCopy, m_iFileSize );
+		return new RageFileObjTimeout( m_pWorker, pCopy, m_iFileSize, m_iMode );
 	}
 
 protected:
@@ -750,6 +791,7 @@ protected:
 
 	/* GetFileSize isn't allowed to fail, so cache the file size on load. */
 	int m_iFileSize;
+	int m_iMode;
 };
 
 /* This FilenameDB runs PopulateFileSet in the worker thread. */
@@ -807,13 +849,25 @@ RageFileBasic *RageFileDriverTimeout::Open( const CString &sPath, int iMode, int
 		}
 	}
 
-	return new RageFileObjTimeout( m_pWorker, pChildFile, iSize );
+	return new RageFileObjTimeout( m_pWorker, pChildFile, iSize, iMode );
 }
 
 void RageFileDriverTimeout::FlushDirCache( const CString &sPath )
 {
 	RageFileDriver::FlushDirCache( sPath );
 	m_pWorker->FlushDirCache( sPath );
+}
+
+bool RageFileDriverTimeout::Move( const CString &sOldPath, const CString &sNewPath )
+{
+	int iRet = m_pWorker->Move( sOldPath, sNewPath );
+	if( iRet == -1 )
+	{
+		WARN( ssprintf("RageFileDriverTimeout::Move(%s,%s) failed", sOldPath.c_str(), sNewPath.c_str()) );
+		return false;
+	}
+
+	return true;
 }
 
 bool RageFileDriverTimeout::Remove( const CString &sPath )

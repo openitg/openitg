@@ -31,9 +31,6 @@ protected:
 
 	CString m_sPath; /* for Copy */
 
-	/* TODO: finish backporting from SM4 so we can buffer with RageFileBasic. */
-	CString m_sWriteBuf;
-
 private:
 	bool FinalFlush();
 	

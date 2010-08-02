@@ -198,7 +198,7 @@ Lights = arch/Lights/LightsDriver.h \
 		arch/Lights/LightsDriver_G15.cpp arch/Lights/LightsDriver_G15.h
 
 MemoryCard = arch/MemoryCard/MemoryCardDriver.cpp arch/MemoryCard/MemoryCardDriver.h \
-	arch/MemoryCard/MemoryCardDriver_Null.cpp arch/MemoryCard/MemoryCardDriver_Null.h
+	arch/MemoryCard/MemoryCardDriver_Null.h
 
 LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.h
 

@@ -795,9 +795,12 @@ bool OptionsList::Start()
 
 	SelectItem( GetCurrentRow(), m_iMenuStackSelection );
 
-	/* Move to the exit row. */
-	m_iMenuStackSelection = (int)bSelections.size();
-	PositionCursor();
+	/* Move to the exit row if we made a single selection. */
+	if( m_RowDefs[pHandler]->selectType == SELECT_ONE )
+	{
+		m_iMenuStackSelection = (int)bSelections.size();
+		PositionCursor();
+	}
 
 	CString msg(ssprintf("OptionsListStartP%d",m_pn+1));
 	//msg.SetParam( "Player", m_pn );

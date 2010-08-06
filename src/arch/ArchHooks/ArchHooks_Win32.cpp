@@ -217,28 +217,23 @@ void ArchHooks_Win32::SystemReboot( bool bForceSync )
 	ExitGame();
 }
 
-/* TODO: implement these. */
-uint64_t ArchHooks_Win32::GetDiskSpaceTotal( const CString &sPath )
-{
-	return 0;
-}
-
 static void GetDiskSpace( const CString &sDir, uint64_t *pSpaceFree, uint64_t *pSpaceTotal )
 {
-	if( ::GetDiskSpaceFreeEx( sDir.c_str(), pSpaceFree, pSpaceTotal, NULL ) != 0 )
+	CString sResolvedDir = FILEMAN->ResolvePath( sDir );
+	if( GetDiskFreeSpaceEx( sResolvedDir.c_str(), pSpaceFree, pSpaceTotal, NULL ) != 0 )
 		LOG->Warn( werr_ssprintf(GetLastError(), "GetDiskSpace() failed") );
-}		
+}
 
 uint64_t ArchHooks_Win32::GetDiskSpaceFree( const CString &sDir )
 {
-	uint64_t iDiskSpaceFree;
+	uint64_t iDiskSpaceFree = 0;
 	GetDiskSpace( sDir, &iDiskSpaceFree, NULL );
 	return iDiskSpaceFree;
 }
 
 uint64_t ArchHooks_Win32::GetDiskSpaceTotal( const CString &sDir )
 {
-	uint64_t iDiskSpaceTotal;
+	uint64_t iDiskSpaceTotal = 0;
 	GetDiskSpace( sDir, NULL, &iDiskSpaceTotal );
 	return iDiskSpaceTotal;
 }

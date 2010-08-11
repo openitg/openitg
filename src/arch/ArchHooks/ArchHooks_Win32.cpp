@@ -190,7 +190,7 @@ void ArchHooks_Win32::MountInitialFilesystems( const CString &sDirOfExecutable )
 	}
 
 	// OpenITG-specific file paths
-	FILEMAN->Mount( "kry", Dir + "/CryptPackages", "/Packages" );
+	FILEMAN->Mount( "oitg", Dir + "/CryptPackages", "/Packages" );
 
 	/* This mounts everything else, including Data, etc. */
 	FILEMAN->Mount( "dir", Dir, "/" );
@@ -219,20 +219,37 @@ void ArchHooks_Win32::SystemReboot( bool bForceSync )
 
 static void GetDiskSpace( const CString &sDir, uint64_t *pSpaceFree, uint64_t *pSpaceTotal )
 {
-	CString sResolvedDir = FILEMAN->ResolvePath( sDir );
-	if( GetDiskFreeSpaceEx( sResolvedDir.c_str(), pSpaceFree, pSpaceTotal, NULL ) != 0 )
+	if( GetDiskFreeSpaceEx( sDir.c_str(), (PULARGE_INTEGER)pSpaceFree, (PULARGE_INTEGER)pSpaceTotal, NULL ) == 0 )
 		LOG->Warn( werr_ssprintf(GetLastError(), "GetDiskSpace() failed") );
 }
 
-uint64_t ArchHooks_Win32::GetDiskSpaceFree( const CString &sDir )
+uint64_t ArchHooks_Win32::GetDiskSpaceFree( const CString &sDir_ )
 {
+	CString sDir = FILEMAN->ResolvePath( sDir_ );
+
+	// remove beginning slash:
+	//    /D:/path/to/stepmania
+	sDir = sDir.substr(1);
+	for( unsigned i = 0; i < sDir.size(); ++i )
+		if( sDir[i] == '/' )
+			sDir[i] = '\\';
+
 	uint64_t iDiskSpaceFree = 0;
 	GetDiskSpace( sDir, &iDiskSpaceFree, NULL );
 	return iDiskSpaceFree;
 }
 
-uint64_t ArchHooks_Win32::GetDiskSpaceTotal( const CString &sDir )
+uint64_t ArchHooks_Win32::GetDiskSpaceTotal( const CString &sDir_ )
 {
+	CString sDir = FILEMAN->ResolvePath( sDir_ );
+
+	// remove beginning slash:
+	//    /D:/path/to/stepmania
+	sDir = sDir.substr(1);
+	for( unsigned i = 0; i < sDir.size(); ++i )
+		if( sDir[i] == '/' )
+			sDir[i] = '\\';
+
 	uint64_t iDiskSpaceTotal = 0;
 	GetDiskSpace( sDir, NULL, &iDiskSpaceTotal );
 	return iDiskSpaceTotal;

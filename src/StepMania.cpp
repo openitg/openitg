@@ -1010,10 +1010,6 @@ int main(int argc, char* argv[])
 	LOG			= new RageLog();
 
 	/* Whew--we should be able to crash safely now! */
-	LOG->Info( "%llu bytes total, %llu bytes remaining.", 
-		HOOKS->GetDiskSpaceTotal( "UserPacks" ), 
-		HOOKS->GetDiskSpaceFree( "UserPacks" )
-	);
 
 	//
 	// load preferences and mount any alternative trees.
@@ -1035,6 +1031,12 @@ int main(int argc, char* argv[])
 #endif
 
 	WriteLogHeader();
+
+	uint64_t iSpaceTotal = HOOKS->GetDiskSpaceTotal( "/UserPacks" );
+	uint64_t iSpaceFree = HOOKS->GetDiskSpaceFree( "/UserPacks" );
+
+	LOG->Info( "%llu bytes total", iSpaceTotal );
+	LOG->Info( "%llu bytes remaining", iSpaceFree );
 
 	/* Set up alternative filesystem trees. */
 	if( PREFSMAN->m_sAdditionalFolders.Get() != "" )

@@ -721,18 +721,15 @@ CString RageFileManager::ResolvePath( const CString &sPath_ )
 	{
 		LoadedDriver *pDriver = apDriverList[i];
 
-		if( pDriver->m_sType == "mountpoints" )
+		FileType type = pDriver->m_pDriver->GetFileType(sPath);
+
+		if( type != TYPE_DIR )
 			continue;
 
-		const CString p = pDriver->GetPath(sPath);
+		sResolvedPath = pDriver->m_sRoot + sPath;
 
-		if( p.empty() )
-			continue;
-
-		sResolvedPath = pDriver->m_sRoot + p;
-
-		LOG->Debug( "p: %s, pDriver->m_sRoot: %s, sResolvedPath: %s",
-			p.c_str(), pDriver->m_sRoot.c_str(), sResolvedPath.c_str() );
+		LOG->Debug( "sPath: %s, pDriver->m_sRoot: %s, sResolvedPath: %s",
+			sPath.c_str(), pDriver->m_sRoot.c_str(), sResolvedPath.c_str() );
 
 		break;
 	}

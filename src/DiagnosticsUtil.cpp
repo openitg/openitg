@@ -49,6 +49,39 @@ CString DiagnosticsUtil::GetIP()
 		return sError;
 }
 
+CString DiagnosticsUtil::GetFreeDiskSpace()
+{
+	uint64_t iDiskSpace = HOOKS->GetDiskSpaceFree( "/UserPacks" );
+	double fShownSpace = 0.0;
+
+	CString sSuffix = " bytes", sAmount = "0";
+
+	if ( (iDiskSpace / (1024*1024*1000)) > 0 )
+	{
+		fShownSpace = iDiskSpace / (1024*1024*1000);
+		sSuffix = "GB";
+		sAmount = ssprintf("%.02f", fShownSpace);
+	}
+	else if ( (iDiskSpace / (1024*1024)) > 0 )
+	{
+		fShownSpace = iDiskSpace / (1024*1024);
+		sSuffix = "MB";
+		sAmount = ssprintf("%.02f", fShownSpace);
+	}
+	else if ( (iDiskSpace / 1024) > 0 )
+	{
+		fShownSpace = iDiskSpace / 1024;
+		sSuffix = "Kb";
+		sAmount = ssprintf("%.02f", fShownSpace);
+	}
+	else
+	{
+		sAmount = ssprintf("%llu", iDiskSpace);
+	}
+
+	return ssprintf("%s %s", sAmount.c_str(), sSuffix.c_str());
+}
+
 int DiagnosticsUtil::GetRevision()
 {
 	// default value if a patch value can't be found/loaded
@@ -220,6 +253,7 @@ void SetProgramGlobals( lua_State* L )
 
 LuaFunction_NoArgs( GetUptime,			SecondsToHHMMSS( (int)RageTimer::GetTimeSinceStart() ) ); 
 LuaFunction_NoArgs( GetNumIOErrors,		ITGIO::m_iInputErrorCount );
+LuaFunction_NoArgs( GetFreeDiskSpace,	DiagnosticsUtil::GetFreeDiskSpace() );
 
 // product name function
 LuaFunction_NoArgs( GetProductName,		DiagnosticsUtil::GetProductName() );

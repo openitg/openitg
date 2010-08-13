@@ -11,6 +11,7 @@ namespace DiagnosticsUtil
 	int GetRevision();
 
 	CString GetIP();
+	CString GetFreeDiskSpace();
 	CString GetInputType();
 	CString GetProductName();
 

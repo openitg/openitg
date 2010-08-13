@@ -13,7 +13,7 @@
 #include "Game.h"
 #include "ArrowEffects.h"
 #include "PlayerState.h"
-#include "RageMath.h" // for RageVec3 transform
+#include "RageMath.h" // for RageFastCos/RageFastSin
 
 enum Part
 {
@@ -583,31 +583,33 @@ void NoteDisplay::DrawHoldTopCap( const TapNote& tn, int iCol, int iRow, bool bI
 			bLast = true;
 		}
 
-		const float fYOffset				= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
-		const float fRotationY				= ArrowEffects::GetRotationY( m_pPlayerState, fY );
-		const float fZ						= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
-		const float fX						= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
-		const float fXLeft					= fX - fFrameWidth/2;
-		const float fXRight					= fX + fFrameWidth/2;
-		const float fTopDistFromHeadTop		= fY - fYCapTop;
-		const float fTexCoordTop			= SCALE( fTopDistFromHeadTop,    0, fFrameHeight, pRect->top, pRect->bottom );
-		const float fTexCoordLeft			= pRect->left;
-		const float fTexCoordRight			= pRect->right;
-		const float	fAlpha					= ArrowGetAlphaOrGlow( bGlow, m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );
-		const RageColor color				= RageColor(fColorScale,fColorScale,fColorScale,fAlpha);
+		const float fYOffset		= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
+		const float fX			= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
+		const float fZ			= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
+
+		// XXX: Actor rotations use degrees, RageFastCos/Sin use radians. Convert here.
+		const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset ) * PI/180;
+
+		// if we're rotating, we need to modify the X and Z coords for the outer edges.
+		const float fRotOffsetX		= fFrameWidth/2 * RageFastCos(fRotationY);
+		const float fRotOffsetZ		= fFrameWidth/2 * RageFastSin(fRotationY);
+		const float fXLeft		= fX - fRotOffsetX;
+		const float fXRight		= fX + fRotOffsetX;
+		const float fZLeft		= fZ - fRotOffsetZ;
+		const float fZRight		= fZ + fRotOffsetZ;
+
+		const float fTopDistFromHeadTop	= fY - fYCapTop;
+		const float fTexCoordTop	= SCALE( fTopDistFromHeadTop, 0, fFrameHeight, pRect->top, pRect->bottom );
+		const float fTexCoordLeft	= pRect->left;
+		const float fTexCoordRight	= pRect->right;
+		const float	fAlpha		= ArrowGetAlphaOrGlow( bGlow, m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );
+		const RageColor color		= RageColor(fColorScale,fColorScale,fColorScale,fAlpha);
 
 		if( fAlpha > 0 )
 			bAllAreTransparent = false;
 
-		queue.v[0].p = RageVector3(fXLeft,  fY, fZ);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
-		queue.v[1].p = RageVector3(fXRight, fY, fZ);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
-		// transform the vectors if needed for Twirl
-		if( fRotationY != 0 )
-		{
-			RageVec3RotateY( &queue.v[0].p, fRotationY );
-			RageVec3RotateY( &queue.v[1].p, fRotationY );
-		}
-
+		queue.v[0].p = RageVector3(fXLeft,  fY, fZLeft);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
+		queue.v[1].p = RageVector3(fXRight, fY, fZRight);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
 		queue.v+=2;
 		if( queue.Free() < 2 )
 		{
@@ -684,12 +686,21 @@ void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, int iRow, bool bIsB
 			bLast = true;
 		}
 
-		const float fYOffset			= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
-		const float fRotationY			= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset );
-		const float fZ					= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
-		const float fX					= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
-		const float fXLeft				= fX - fFrameWidth/2;
-		const float fXRight				= fX + fFrameWidth/2;
+		const float fYOffset		= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
+		const float fX			= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
+		const float fZ			= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
+
+		// XXX: Actor rotations use degrees, RageFastCos/Sin use radians. Convert here.
+		const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset ) * PI/180;
+
+		// if we're rotating, we need to modify the X and Z coords for the outer edges.
+		const float fRotOffsetX		= fFrameWidth/2 * RageFastCos(fRotationY);
+		const float fRotOffsetZ		= fFrameWidth/2 * RageFastSin(fRotationY);
+		const float fXLeft		= fX - fRotOffsetX;
+		const float fXRight		= fX + fRotOffsetX;
+		const float fZLeft		= fZ - fRotOffsetZ;
+		const float fZRight		= fZ + fRotOffsetZ;
+
 		const float fDistFromBodyBottom	= fYBodyBottom - fY;
 		const float fDistFromBodyTop	= fY - fYBodyTop;
 		float fTexCoordTop		= SCALE( bAnchorToBottom ? fDistFromBodyTop : fDistFromBodyBottom,    0, fFrameHeight, pRect->bottom, pRect->top );
@@ -706,16 +717,8 @@ void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, int iRow, bool bIsB
 		if( fAlpha > 0 )
 			bAllAreTransparent = false;
 
-		queue.v[0].p = RageVector3(fXLeft,  fY, fZ);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
-		queue.v[1].p = RageVector3(fXRight, fY, fZ);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
-
-		// transform the vectors if needed for Twirl
-		if( fRotationY != 0 )
-		{
-			RageVec3RotateY( &queue.v[0].p, fRotationY );
-			RageVec3RotateY( &queue.v[1].p, fRotationY );
-		}
-
+		queue.v[0].p = RageVector3(fXLeft,  fY, fZLeft);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
+		queue.v[1].p = RageVector3(fXRight, fY, fZRight);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
 		queue.v+=2;
 		if( queue.Free() < 2 )
 		{
@@ -784,31 +787,33 @@ void NoteDisplay::DrawHoldBottomCap( const TapNote& tn, int iCol, int iRow, bool
 			bLast = true;
 		}
 
-		const float fYOffset				= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
-		const float fRotationY				= ArrowEffects::GetRotationY( m_pPlayerState, fY );
-		const float fZ						= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
-		const float fX						= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
-		const float fXLeft					= fX - fFrameWidth/2;
-		const float fXRight					= fX + fFrameWidth/2;
-		const float fTopDistFromTail		= fY - fYCapTop;
-		const float fTexCoordTop			= SCALE( fTopDistFromTail,    0, fFrameHeight, pRect->top, pRect->bottom );
-		const float fTexCoordLeft			= pRect->left;
-		const float fTexCoordRight			= pRect->right;
-		const float	fAlpha					= ArrowGetAlphaOrGlow( bGlow, m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );
-		const RageColor color				= RageColor(fColorScale,fColorScale,fColorScale,fAlpha);
+		const float fYOffset		= ArrowEffects::GetYOffsetFromYPos( m_pPlayerState, iCol, fY, m_fYReverseOffsetPixels );
+		const float fX			= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
+		const float fZ			= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
+
+		// XXX: Actor rotations use degrees, RageFastCos/Sin use radians. Convert here.
+		const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset ) * PI/180;
+
+		// if we're rotating, we need to modify the X and Z coords for the outer edges.
+		const float fRotOffsetX		= fFrameWidth/2 * RageFastCos(fRotationY);
+		const float fRotOffsetZ		= fFrameWidth/2 * RageFastSin(fRotationY);
+		const float fXLeft		= fX - fRotOffsetX;
+		const float fXRight		= fX + fRotOffsetX;
+		const float fZLeft		= fZ - fRotOffsetZ;
+		const float fZRight		= fZ + fRotOffsetZ;
+
+		const float fTopDistFromTail	= fY - fYCapTop;
+		const float fTexCoordTop	= SCALE( fTopDistFromTail,    0, fFrameHeight, pRect->top, pRect->bottom );
+		const float fTexCoordLeft	= pRect->left;
+		const float fTexCoordRight	= pRect->right;
+		const float	fAlpha		= ArrowGetAlphaOrGlow( bGlow, m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );
+		const RageColor color		= RageColor(fColorScale,fColorScale,fColorScale,fAlpha);
 
 		if( fAlpha > 0 )
 			bAllAreTransparent = false;
 
-		queue.v[0].p = RageVector3(fXLeft,  fY, fZ);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
-		queue.v[1].p = RageVector3(fXRight, fY, fZ);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
-
-		// transform the vectors if needed for Twirl
-		if( fRotationY != 0 )
-		{
-			RageVec3RotateY( &queue.v[0].p, fRotationY );
-			RageVec3RotateY( &queue.v[1].p, fRotationY );
-		}
+		queue.v[0].p = RageVector3(fXLeft,  fY, fZLeft);	queue.v[0].c = color; queue.v[0].t = RageVector2(fTexCoordLeft,  fTexCoordTop);
+		queue.v[1].p = RageVector3(fXRight, fY, fZRight);	queue.v[1].c = color; queue.v[1].t = RageVector2(fTexCoordRight, fTexCoordTop);
 
 		queue.v+=2;
 		if( queue.Free() < 2 )
@@ -840,8 +845,7 @@ void NoteDisplay::DrawHoldTail( const TapNote& tn, int iCol, int iRow, bool bIsB
 	if( fYOffset < fYStartOffset || fYOffset > fYEndOffset )
 			return;
 
-	// TRICKY: skew the rotation by a few pixels so this lines up with the start of the twirly hold.
-	const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset+16 );
+	const float fRotationY		= ArrowEffects::GetRotationY( m_pPlayerState, fYOffset );
 	const float fX				= ArrowEffects::GetXPos( m_pPlayerState, iCol, fYOffset );
 	const float fZ				= ArrowEffects::GetZPos( m_pPlayerState, iCol, fYOffset );
 	const float	fAlpha			= ArrowEffects::GetAlpha( m_pPlayerState, iCol, fYOffset, fPercentFadeToFail, m_fYReverseOffsetPixels );

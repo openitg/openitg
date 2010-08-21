@@ -29,18 +29,6 @@ void RageVec3AddToBounds( const RageVector3 &p, RageVector3 &mins, RageVector3 &
 	maxs.z = max( maxs.z, p.z );
 }
 
-void RageVec3RotateY( RageVector3* pOut, float theta )
-{
-	theta *= PI/180;
-
-	// we need at least one temporary variable until I
-	// figure out a more clever way of doing this... - Vyhd
-	float fXRot = pOut->z * RageFastCos(theta) - pOut->x * RageFastSin(theta);
-
-	pOut->z = pOut->z * RageFastSin(theta) + pOut->x * RageFastCos(theta);
-	pOut->x = fXRot;
-}
-
 void RageVec2Normalize( RageVector2* pOut, const RageVector2* pV )
 {
 	float scale = 1.0f / sqrtf( pV->x*pV->x + pV->y*pV->y );

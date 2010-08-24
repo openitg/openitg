@@ -1,4 +1,31 @@
-OpenITG, beta 2 (in development)
+OpenITG, beta 3 (in development)
+--------------------------------
+-New GameCommands:
+     "clearmachinelogs" - clears crash logs from machine.
+     "transferlogsfrommachine" - transfers crash logs to a USB drive.
+-Miscellaneous changes:
+     Changed OptionsList behavior (Exit on multiple selection, don't insta-exit on button)
+     Changed "DebugTheme" preference to "ShowThemeErrors"
+     Added blinking for GAME_BUTTON_START on LIGHTSMODE_MENU
+     Added StartRoulette and StartRandom messages for themes
+     Win32: Crash dialog shows OpenITG logo/text in place of StepMania (thanks, Wanny)
+-New LUA bindings:
+     ProfileManager: "IsSongNew(Song)"
+-Fixed Linux bugs:
+     USB devices would occasionally not be accpted
+-Fixed minor cross-platform bugs:
+     BPMDisplay: display BPM multiplied by music rate twice instead of once
+     NoteDisplay: Twirl would render strangely with Flip, Tornado, etc.
+     ScreenGameplay: announcers actually work (thanks, Wanny)
+     ScreenDebugOverlay can now override used font (thanks, Wanny)
+-Backend updates:
+     Arch updated to use SM4's RageDriver structure
+     Cleaned up LightsMapping structs so all mappings take arrays
+     Boost ITGIO/PIUIO thread priority (tentative fix for coin nomming)
+     Use read/write buffers for RageFile (tentative fix for slow memcard reading)
+     Switched to SM4-style button enumerations
+
+OpenITG, beta 2 (August 10th, 2009)
 --------------------------------
 -New preferences:
      "GiveUpTime" - amount of time that Start must be held to give up songs

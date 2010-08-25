@@ -6,24 +6,23 @@
 #include "RageLog.h"
 #include "SubscriptionManager.h"
 
-template<>
-set<LuaReference*>* SubscriptionManager<LuaReference>::s_pSubscribers = NULL;
+static SubscriptionManager<LuaReference> m_Subscribers;
 
 LuaReference::LuaReference()
 {
 	m_iReference = LUA_NOREF;
-	SubscriptionManager<LuaReference>::Subscribe( this );
+	m_Subscribers.Subscribe( this );
 }
 
 LuaReference::~LuaReference()
 {
 	Unregister();
-	SubscriptionManager<LuaReference>::Unsubscribe( this );
+	m_Subscribers.Unsubscribe( this );
 }
 
 LuaReference::LuaReference( const LuaReference &cpy )
 {
-	SubscriptionManager<LuaReference>::Subscribe( this );
+	m_Subscribers.Subscribe( this );
 
 	if( cpy.m_iReference == LUA_NOREF )
 		m_iReference = LUA_NOREF;
@@ -110,17 +109,17 @@ void LuaReference::Unregister()
 
 void LuaReference::BeforeResetAll()
 {
-	if( SubscriptionManager<LuaReference>::s_pSubscribers == NULL )
+	if( m_Subscribers.m_pSubscribers == NULL )
 		return;
-	FOREACHS( LuaReference*, *SubscriptionManager<LuaReference>::s_pSubscribers, p )
+	FOREACHS( LuaReference*, *m_Subscribers.m_pSubscribers, p )
 		(*p)->BeforeReset();
 }
 
 void LuaReference::AfterResetAll()
 {
-	if( SubscriptionManager<LuaReference>::s_pSubscribers == NULL )
+	if( m_Subscribers.m_pSubscribers == NULL )
 		return;
-	FOREACHS( LuaReference*, *SubscriptionManager<LuaReference>::s_pSubscribers, p )
+	FOREACHS( LuaReference*, *m_Subscribers.m_pSubscribers, p )
 		(*p)->ReRegister();
 }
 

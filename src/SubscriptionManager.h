@@ -4,6 +4,9 @@
 #define SubscriptionManager_H
 
 #include <set>
+
+// Since this class has only POD types and no constructor, there's no 
+// initialize order problem.
 template<class T>
 class SubscriptionManager
 {
@@ -12,27 +15,37 @@ public:
 	// then we'd have to be careful that the static constructors of all
 	// subscribers are called before the collection constructor.  It's
 	// impossible to enfore that in C++.  Instead, we'll allocate the 
-	// collection ourself on first use.
-	static set<T*>* s_pSubscribers;
+	// collection ourself on first use.  SubscriptionHandler itself is
+	// a POD type, so a static SubscriptionHandler will always have
+	// m_pSubscribers == NULL (before any static constructors are called).
+	set<T*>* m_pSubscribers;
 
-	static void Subscribe( T* p )
+	// Use this to access m_pSubscribers, so you don't have to worry about
+	// it being NULL.
+	set<T*> &Get()
 	{
-		if( s_pSubscribers == NULL )
-			s_pSubscribers = new set<T*>;
-#if _DEBUG
-		typename set<T*>::iterator iter = s_pSubscribers->find( p );
-		ASSERT_M( iter == s_pSubscribers->end(), "already subscribed" );
+		if( m_pSubscribers == NULL )
+			m_pSubscribers = new set<T*>;
+		return *m_pSubscribers;
+	}
+
+	void Subscribe( T* p )
+	{
+		if( m_pSubscribers == NULL )
+			m_pSubscribers = new set<T*>;
+#ifdef DEBUG
+		typename set<T*>::iterator iter = m_pSubscribers->find( p );
+		ASSERT_M( iter == m_pSubscribers->end(), "already subscribed" );
 #endif
-		s_pSubscribers->insert( p );
+		m_pSubscribers->insert( p );
 	}
 
-	static void Unsubscribe( T* p )
+	void Unsubscribe( T* p )
 	{
-		typename set<T*>::iterator iter = s_pSubscribers->find( p );
-		ASSERT( iter != s_pSubscribers->end() );
-		s_pSubscribers->erase( iter );
+		typename set<T*>::iterator iter = m_pSubscribers->find( p );
+		ASSERT( iter != m_pSubscribers->end() );
+		m_pSubscribers->erase( iter );
 	}
-	
 };
 
 #endif

@@ -7,7 +7,7 @@
 
 // utilities for the crypto handling
 #include "aes/aes.h"
-#include "ibutton/ibutton.h"
+#include "iButton.h"
 #include "crypto/CryptSH512.h"
 
 /* Register all the file drivers we're going to be using */

@@ -54,10 +54,7 @@ CryptManager::CryptManager()
 	}
 }
 
-CryptManager::~CryptManager()
-{
-
-}
+CryptManager::~CryptManager() {}
 
 static bool WriteFile( CString sFile, CString sBuf )
 {

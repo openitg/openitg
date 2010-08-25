@@ -1103,7 +1103,7 @@ void ScreenGameplay::LoadLights()
 		CString sGroup = GAMESTATE->m_pCurSong->m_sGroupName;
 		sGroup.MakeLower();
 
-		if( sGroup.Find("dance dance revolution") != -1 || sGroup.Find("ddr") != -1 )
+		if( sGroup.find("dance dance revolution") != -1 || sGroup.find("ddr") != -1 )
 		{
 			m_bEasterEgg = true;
 			pSteps = GAMESTATE->m_pCurSong->GetClosestNotes( STEPS_TYPE_DANCE_SINGLE, DIFFICULTY_MEDIUM );

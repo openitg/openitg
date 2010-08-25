@@ -63,7 +63,7 @@ void ScreenProfileOptions::Init()
 		FOREACH_PlayerNumber( pn )
 			g_ProfileOptionsLines[i].m_vEnabledForPlayers.insert( pn );
 
-	vector<OptionRowDefinition> vDefs( &g_ProfileOptionsLines[0], &g_ProfileOptionsLines[ARRAYSIZE(g_ProfileOptionsLines)] );
+	vector<OptionRowDefinition> vDefs( &g_ProfileOptionsLines[0], &g_ProfileOptionsLines[ARRAYLEN(g_ProfileOptionsLines)] );
 	vector<OptionRowHandler*> vHands( vDefs.size(), NULL );
 	InitMenu( INPUTMODE_SHARE_CURSOR, vDefs, vHands );
 

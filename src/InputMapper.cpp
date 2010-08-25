@@ -435,7 +435,7 @@ void InputMapper::AutoMapJoysticksForCurrentGame()
 	{
 		InputDevice device = vDevices[i];
 		CString sDescription = vDescriptions[i];
-		for( unsigned j=0; j<ARRAYSIZE(g_AutoJoyMappings); j++ )
+		for( unsigned j=0; j<ARRAYLEN(g_AutoJoyMappings); j++ )
 		{
 			const AutoJoyMapping& mapping = g_AutoJoyMappings[j];
 

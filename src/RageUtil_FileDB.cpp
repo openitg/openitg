@@ -10,7 +10,7 @@ void FileSet::GetFilesMatching(const CString &beginning, const CString &containi
 	/* "files" is a case-insensitive mapping, by filename.  Use lower_bound to figure
 	 * out where to start. */
 	CString containing_lower = containing;
-	containing_lower.ToLower();
+	containing_lower.MakeLower();
 
 	set<File>::const_iterator i = files.lower_bound( File(beginning) );
 	for( ; i != files.end(); ++i)
@@ -41,7 +41,7 @@ void FileSet::GetFilesMatching(const CString &beginning, const CString &containi
 		if( containing.size() )
 		{
 			CString name = f.name;
-			name.ToLower();
+			name.MakeLower();
 
 			size_t pos = name.find( containing_lower, beginning.size() );
 			if( pos == name.npos )

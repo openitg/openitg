@@ -8,7 +8,7 @@
 
 #define ZERO(x)	memset(&x, 0, sizeof(x))
 #define COPY(a,b) { ASSERT(sizeof(a)==sizeof(b)); memcpy(&(a), &(b), sizeof(a)); }
-#define ARRAYSIZE(a) (sizeof(a) / sizeof((a)[0]))
+#define ARRAYLEN(a) (sizeof(a) / sizeof((a)[0]))
 
 /* Common harmless mismatches.  All min(T,T) and max(T,T) cases are handled
  * by the generic template we get from <algorithm>. */
@@ -294,6 +294,7 @@ extern const wchar_t INVALID_CHAR;
 
 int utf8_get_char_len( char p );
 bool utf8_to_wchar( const CString &s, unsigned &start, wchar_t &ch );
+bool utf8_to_wchar( const char *s, size_t iLength, unsigned &start, wchar_t &ch );
 bool utf8_to_wchar_ec( const CString &s, unsigned &start, wchar_t &ch );
 void wchar_to_utf8( wchar_t ch, CString &out );
 wchar_t utf8_get_char( const CString &s );

@@ -231,7 +231,7 @@ int BMSLoader::GetMeasureStartRow( const MeasureToTimeSig_t &sigs, int iMeasureN
 
 void BMSLoader::SearchForDifficulty( CString sTag, Steps *pOut )
 {
-	sTag.ToLower();
+	sTag.MakeLower();
 
 	/* Only match "Light" in parentheses. */
 	if( sTag.find( "(light" ) != sTag.npos )
@@ -276,7 +276,7 @@ bool BMSLoader::LoadFromBMSFile( const CString &sPath, const NameToData_t &mapNa
 			sData = sData.substr( iOpenBracket+1, iCloseBracket-iOpenBracket-1 );
 
 		// if there's a 6 in the description, it's probably part of "6panel" or "6-panel"
-		if( sData.Find("6") != -1 )
+		if( sData.find("6") != -1 )
 			out.m_StepsType = STEPS_TYPE_DANCE_SOLO;
 	}
 
@@ -303,7 +303,7 @@ bool BMSLoader::LoadFromBMSFile( const CString &sPath, const NameToData_t &mapNa
 		const CString &sNoteData = it->second;
 
 		vector<TapNote> vTapNotes;
-		for( int i=0; i+1<sNoteData.GetLength(); i+=2 )
+		for( int i=0; i+1<sNoteData.length(); i+=2 )
 		{
 			CString sNoteId = sNoteData.substr(i,2);
 			if( sNoteId != "00" )
@@ -809,7 +809,7 @@ void BMSLoader::SetTimeSigAdjustments( const MeasureToTimeSig_t &sigs, Song *pOu
 		};
 
 		bool bValidTimeSignature = false;
-		for( unsigned i = 0; i < ARRAYSIZE(ValidFactors); ++i )
+		for( unsigned i = 0; i < ARRAYLEN(ValidFactors); ++i )
 			if( fabsf(fFactor-ValidFactors[i]) < 0.001 )
 				bValidTimeSignature = true;
 
@@ -893,7 +893,7 @@ bool BMSLoader::LoadFromDir( CString sDir, Song &out )
 		if( GetTagFromMap( aBMSData[i], "#title", sTag ) && sTag.size() != commonSubstring.size() )
 		{
 			sTag = sTag.substr( commonSubstring.size(), sTag.size() - commonSubstring.size() );
-			sTag.ToLower();
+			sTag.MakeLower();
 
 			// XXX: Someone find me some DDR BMS examples!
 

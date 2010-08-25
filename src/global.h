@@ -1,5 +1,3 @@
-#if !defined(SM_PCH) || SM_PCH == FALSE
-
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
@@ -10,6 +8,9 @@
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
+
+#define __STDC_LIMIT_MACROS // for INT8_MIN, etc
+#define __STDC_CONSTANT_MACROS // for INT64_C, etc
 
 /* Platform-specific fixes. */
 #if defined(WIN32)
@@ -60,6 +61,15 @@
 #endif
 #if !defined(MISSING_STDINT_H) /* need to define int64_t if so */
 #include <stdint.h>
+#endif
+
+/* Branch optimizations: */
+#if defined(__GNUC__)
+#define likely(x) (__builtin_expect(!!(x), 1))
+#define unlikely(x) (__builtin_expect(!!(x), 0))
+#else
+#define likely(x) (x)
+#define unlikely(x) (x)
 #endif
 
 #if defined(NEED_CSTDLIB_WORKAROUND)
@@ -144,6 +154,8 @@ void ShowWarning( const char *file, int line, const char *message ); // don't pu
 
 /* Use CStdString: */
 #include "StdString.h"
+typedef StdString::CStdString CString;
+typedef vector<CString> CStringArray;
 
 typedef const CString& CCStringRef;
 
@@ -198,8 +210,6 @@ inline float strtof( const char *s, char **se ) { return (float) strtod( s, se )
 /* Don't include our own headers here, since they tend to change often. */
 
 #endif
-
-#endif /* SM_PCH */
 
 /*
  * (c) 2001-2004 Chris Danford, Glenn Maynard

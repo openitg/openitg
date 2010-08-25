@@ -60,7 +60,7 @@ void ScreenNetworkOptions::Init()
 		FOREACH_PlayerNumber( pn )
 			g_NetworkOptionsLines[i].m_vEnabledForPlayers.insert( pn );
 
-	vector<OptionRowDefinition> vDefs( &g_NetworkOptionsLines[0], &g_NetworkOptionsLines[ARRAYSIZE(g_NetworkOptionsLines)] );
+	vector<OptionRowDefinition> vDefs( &g_NetworkOptionsLines[0], &g_NetworkOptionsLines[ARRAYLEN(g_NetworkOptionsLines)] );
 	vector<OptionRowHandler*> vHands( vDefs.size(), NULL );
 
 	InitMenu( INPUTMODE_SHARE_CURSOR, vDefs, vHands );

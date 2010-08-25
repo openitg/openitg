@@ -14,13 +14,13 @@ void NotesLoader::GetMainAndSubTitlesFromFullTitle( const CString sFullTitle, CS
 {
 	const CString sLeftSeps[]  = { " -", " ~", " (", " [" };
 
-	for( unsigned i=0; i<ARRAYSIZE(sLeftSeps); i++ )
+	for( unsigned i=0; i<ARRAYLEN(sLeftSeps); i++ )
 	{
-		int iBeginIndex = sFullTitle.Find( sLeftSeps[i] );
+		int iBeginIndex = sFullTitle.find( sLeftSeps[i] );
 		if( iBeginIndex == -1 )
 			continue;
 		sMainTitleOut = sFullTitle.Left( iBeginIndex );
-		sSubTitleOut = sFullTitle.substr( iBeginIndex+1, sFullTitle.GetLength()-iBeginIndex+1 );
+		sSubTitleOut = sFullTitle.substr( iBeginIndex+1, sFullTitle.length()-iBeginIndex+1 );
 		return;
 	}
 	sMainTitleOut = sFullTitle; 

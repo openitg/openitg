@@ -86,7 +86,7 @@ void GraphDisplay::LoadFromStageStats( const StageStats &ss, const PlayerStageSt
 	memcpy( m_LastValues, m_CurValues, sizeof(m_CurValues) );
 	m_Position = 0;
 	pss.GetLifeRecord( m_DestValues, VALUE_RESOLUTION, ss.GetTotalPossibleStepsSeconds() );
-	for( unsigned i=0; i<ARRAYSIZE(m_DestValues); i++ )
+	for( unsigned i=0; i<ARRAYLEN(m_DestValues); i++ )
 		CLAMP( m_DestValues[i], 0.f, 1.f );
 
 	if ( m_bColorize )
@@ -310,7 +310,7 @@ void GraphDisplay::UpdateVerts()
 	}
 
 	const RectF *tex = m_pTexture->GetTextureCoordRect( 0 );
-	for( unsigned i = 0; i < ARRAYSIZE(m_Slices); ++i )
+	for( unsigned i = 0; i < ARRAYLEN(m_Slices); ++i )
 	{
 		m_Slices[i].t = RageVector2( 
 			SCALE( m_Slices[i].p.x, m_quadVertices.left, m_quadVertices.right, tex->left, tex->right ),
@@ -320,21 +320,21 @@ void GraphDisplay::UpdateVerts()
 
 	if (m_bColorize)
 	{
-		for( unsigned i = 0; i < ARRAYSIZE(m_Slices); ++i )
+		for( unsigned i = 0; i < ARRAYLEN(m_Slices); ++i )
 		{
 			m_SlicesFFC[i].t = RageVector2( 
 				SCALE( m_SlicesFFC[i].p.x, m_quadVertices.left, m_quadVertices.right, tex->left, tex->right ),
 				SCALE( m_SlicesFFC[i].p.y, m_quadVertices.top, m_quadVertices.bottom, tex->top, tex->bottom )
 				);
 		}
-		for( unsigned i = 0; i < ARRAYSIZE(m_Slices); ++i )
+		for( unsigned i = 0; i < ARRAYLEN(m_Slices); ++i )
 		{
 			m_SlicesFEC[i].t = RageVector2( 
 				SCALE( m_SlicesFEC[i].p.x, m_quadVertices.left, m_quadVertices.right, tex->left, tex->right ),
 				SCALE( m_SlicesFEC[i].p.y, m_quadVertices.top, m_quadVertices.bottom, tex->top, tex->bottom )
 				);
 		}
-		for( unsigned i = 0; i < ARRAYSIZE(m_Slices); ++i )
+		for( unsigned i = 0; i < ARRAYLEN(m_Slices); ++i )
 		{
 			m_SlicesFGC[i].t = RageVector2( 
 				SCALE( m_SlicesFGC[i].p.x, m_quadVertices.left, m_quadVertices.right, tex->left, tex->right ),
@@ -367,17 +367,17 @@ void GraphDisplay::DrawPrimitives()
 	if (m_bColorize)
 	{
 		DISPLAY->SetTexture( 0, m_pTextureFFC );
-		DISPLAY->DrawQuads( m_SlicesFFC, ARRAYSIZE(m_SlicesFFC) );
+		DISPLAY->DrawQuads( m_SlicesFFC, ARRAYLEN(m_SlicesFFC) );
 
 		DISPLAY->SetTexture( 0, m_pTextureFEC );
-		DISPLAY->DrawQuads( m_SlicesFEC, ARRAYSIZE(m_SlicesFEC) );
+		DISPLAY->DrawQuads( m_SlicesFEC, ARRAYLEN(m_SlicesFEC) );
 
 		DISPLAY->SetTexture( 0, m_pTextureFGC );
-		DISPLAY->DrawQuads( m_SlicesFGC, ARRAYSIZE(m_SlicesFGC) );
+		DISPLAY->DrawQuads( m_SlicesFGC, ARRAYLEN(m_SlicesFGC) );
 	}
 
 	DISPLAY->SetTexture( 0, m_pTexture );
-	DISPLAY->DrawQuads( m_Slices, ARRAYSIZE(m_Slices) );
+	DISPLAY->DrawQuads( m_Slices, ARRAYLEN(m_Slices) );
 
 	DISPLAY->SetTexture( 0, NULL );
 

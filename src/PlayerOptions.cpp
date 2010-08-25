@@ -14,7 +14,7 @@
 #include "GameConstantsAndTypes.h"
 #include "arch/Dialog/Dialog.h"
 
-#define ONE( arr ) { for( unsigned Z = 0; Z < ARRAYSIZE(arr); ++Z ) arr[Z]=1.0f; }
+#define ONE( arr ) { for( unsigned Z = 0; Z < ARRAYLEN(arr); ++Z ) arr[Z]=1.0f; }
 
 void PlayerOptions::Init()
 {
@@ -98,12 +98,12 @@ void PlayerOptions::GetMods( vector<CString> &AddTo ) const
 		{
 			/* -> 1.00 */
 			CString s = ssprintf( "%2.2f", m_fScrollSpeed );
-			if( s[s.GetLength()-1] == '0' ) {
+			if( s[s.length()-1] == '0' ) {
 				/* -> 1.0 */
-				s.erase(s.GetLength()-1);	// delete last char
-				if( s[s.GetLength()-1] == '0' ) {
+				s.erase(s.length()-1);	// delete last char
+				if( s[s.length()-1] == '0' ) {
 					/* -> 1 */
-					s.erase(s.GetLength()-2);	// delete last 2 chars
+					s.erase(s.length()-2);	// delete last 2 chars
 				}
 			}
 			AddTo.push_back( s + "x" );

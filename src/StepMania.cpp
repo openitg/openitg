@@ -351,7 +351,7 @@ static bool ChangeAppPri()
 		vector<CString> vDescriptions;
 		INPUTMAN->GetDevicesAndDescriptions(vDevices,vDescriptions);
 		CString sInputDevices = join( ",", vDescriptions );
-		if( sInputDevices.Find("NTPAD") != -1 )
+		if( sInputDevices.find("NTPAD") != -1 )
 		{
 			LOG->Trace( "Using NTPAD.  Don't boost priority." );
 			return false;
@@ -629,7 +629,7 @@ static void CheckVideoDefaultSettings()
 
 	const VideoCardDefaults* pDefaults = NULL;
 	
-	for( unsigned i=0; i<ARRAYSIZE(g_VideoCardDefaults); i++ )
+	for( unsigned i=0; i<ARRAYLEN(g_VideoCardDefaults); i++ )
 	{
 		pDefaults = &g_VideoCardDefaults[i];
 

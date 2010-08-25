@@ -30,32 +30,39 @@ typedef multimap<CString,XNode*> XNodes;
 
 #define FOREACH_Attr( pNode, Var ) \
 	XAttrs::iterator Var##Iter; \
+	XAttrs::const_iterator Var##IterEnd = (pNode)->m_attrs.end(); \
 	XAttr *Var = NULL; \
-	for( Var##Iter = (pNode)->m_attrs.begin(), Var = Var##Iter->second; \
-		Var##Iter != (pNode)->m_attrs.end(); \
-		++Var##Iter, Var = Var##Iter->second )
+	for( Var##Iter = (pNode)->m_attrs.begin(); \
+		Var = (Var##Iter != Var##IterEnd)?Var##Iter->second : NULL, \
+		Var##Iter != Var##IterEnd; \
+		++Var##Iter )
 
 #define FOREACH_CONST_Attr( pNode, Var ) \
 	XAttrs::const_iterator Var##Iter; \
+	XAttrs::const_iterator Var##IterEnd = (pNode)->m_attrs.end(); \
 	const XAttr *Var = NULL; \
-	for( Var##Iter = (pNode)->m_attrs.begin(), Var = Var##Iter->second; \
-		Var##Iter != (pNode)->m_attrs.end(); \
-		++Var##Iter, Var = Var##Iter->second )
+	for( Var##Iter = (pNode)->m_attrs.begin(); \
+		Var = (Var##Iter != Var##IterEnd)?Var##Iter->second : NULL, \
+		Var##Iter != Var##IterEnd; \
+		++Var##Iter )
 
 #define FOREACH_Child( pNode, Var ) \
 	XNodes::iterator Var##Iter; \
+	XNodes::const_iterator Var##IterEnd = (pNode)->m_childs.end(); \
 	XNode *Var = NULL; \
-	for( Var##Iter = (pNode)->m_childs.begin(), Var = Var##Iter->second; \
-		Var##Iter != (pNode)->m_childs.end(); \
-		++Var##Iter, Var = Var##Iter->second )
+	for( Var##Iter = (pNode)->m_childs.begin(); \
+		Var = (Var##Iter != Var##IterEnd) ? Var##Iter->second : NULL, \
+		Var##Iter != Var##IterEnd; \
+		++Var##Iter )
 
 #define FOREACH_CONST_Child( pNode, Var ) \
 	XNodes::const_iterator Var##Iter; \
+	XNodes::const_iterator Var##IterEnd = (pNode)->m_childs.end(); \
 	const XNode *Var = NULL; \
-	for( Var##Iter = (pNode)->m_childs.begin(), Var = Var##Iter->second; \
-		Var##Iter != (pNode)->m_childs.end(); \
-		++Var##Iter, Var = Var##Iter->second )
-
+	for( Var##Iter = (pNode)->m_childs.begin(); \
+		Var = (Var##Iter != Var##IterEnd) ? Var##Iter->second : NULL, \
+		Var##Iter != Var##IterEnd; \
+		++Var##Iter )
 
 // Entity Encode/Decode Support
 struct XENTITY

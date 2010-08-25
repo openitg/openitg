@@ -98,7 +98,7 @@ void ThemeManager::ClearThemePathCache()
 void FileNameToClassAndElement( const CString &sFileName, CString &sClassNameOut, CString &sElementOut )
 {
 	// split into class name and file name
-	int iIndexOfFirstSpace = sFileName.Find(" ");
+	int iIndexOfFirstSpace = sFileName.find(" ");
 	if( iIndexOfFirstSpace == -1 )	// no space
 	{
 		sClassNameOut = "";

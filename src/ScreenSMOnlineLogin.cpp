@@ -1,4 +1,4 @@
-#if !defined(WITHOUT_NETWORKING)
+//#if !defined(WITHOUT_NETWORKING)
 #include "global.h"
 #include "ScreenSMOnlineLogin.h"
 #include "RageLog.h"
@@ -47,7 +47,7 @@ void ScreenSMOnlineLogin::Init()
 		FOREACH_PlayerNumber( pn )
 			g_ProfileLine[0].m_vEnabledForPlayers.insert( pn );
 
-		vector<OptionRowDefinition> vDefs( &g_ProfileLine[0], &g_ProfileLine[ARRAYSIZE(g_ProfileLine)] );
+		vector<OptionRowDefinition> vDefs( &g_ProfileLine[0], &g_ProfileLine[ARRAYLEN(g_ProfileLine)] );
 		vector<OptionRowHandler*> vHands( vDefs.size(), NULL );
 
 		InitMenu( INPUTMODE_SHARE_CURSOR, vDefs, vHands );
@@ -201,7 +201,7 @@ void ScreenSMOnlineLogin::SendLogin(CString sPassword)
 	NSMAN->SendSMOnline( );
 }
 
-#endif
+//#endif
 
 /*
  * (c) 2004 Charles Lohr Adam Lowman

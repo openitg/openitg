@@ -119,8 +119,8 @@ void NetworkSyncManager::PostStartUp(const CString& ServerIP)
 	CString sAddress;
 	short iPort;
 	
-	int cLoc = ServerIP.Find( ":" );
-	if ( ServerIP.Find( ":" ) > 0 )
+	int cLoc = ServerIP.find( ":" );
+	if ( ServerIP.find( ":" ) > 0 )
 	{
 		iPort = (short) atoi( ServerIP.substr( cLoc + 1 ).c_str() );
 		sAddress = ServerIP.substr( 0, cLoc );
@@ -821,7 +821,7 @@ void PacketFunctions::Write4(uint32_t data)
 void PacketFunctions::WriteNT(const CString& data)
 {
 	int index=0;
-	while ((Position<NETMAXBUFFERSIZE)&&(index<data.GetLength()))
+	while ((Position<NETMAXBUFFERSIZE)&&(index<data.length()))
 		Data[Position++] = (unsigned char)(data.c_str()[index++]);
 	Data[Position++] = 0;
 }

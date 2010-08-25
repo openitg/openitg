@@ -1,5 +1,5 @@
-#include "../../global.h"
-#include "../../RageUtil.h"
+#include "global.h"
+#include "RageUtil.h"
 
 #include "LoadingWindow_Win32.h"
 #include "RageFileManager.h"

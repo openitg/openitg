@@ -352,6 +352,7 @@ void PrefsManager::ResetToFactoryDefaults()
 void PrefsManager::ReadPrefsFromFile( CString sIni )
 {
 	IniFile ini;
+
 	if( !ini.ReadFile(sIni) )
 		return;
 

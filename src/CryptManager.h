@@ -1,6 +1,8 @@
 #ifndef CryptManager_H
 #define CryptManager_H
 
+#include "libtomcrypt/src/headers/tomcrypt.h" // TODO: cleanup
+
 class RageFileBasic;
 
 const CString SIGNATURE_APPEND = ".sig";

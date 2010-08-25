@@ -50,18 +50,18 @@ bool IniFile::ReadFile( RageFileBasic &f )
 		if( line.size() > 1 && line[0] == '/' && line[1] == '/' )
 			continue; /* comment */
 
-		if( line[0] == '[' && line[line.GetLength()-1] == ']'  )
+		if( line[0] == '[' && line[line.length()-1] == ']'  )
 		{
 			/* New section. */
 			keyname = line.substr(1, line.size()-2);
 		}
 		else //if a value
 		{
-			int iEqualIndex = line.Find("=");
+			int iEqualIndex = line.find("=");
 			if( iEqualIndex != -1 )
 			{
 				CString valuename = line.Left(iEqualIndex);
-				CString value = line.Right(line.GetLength()-valuename.GetLength()-1);
+				CString value = line.Right(line.length()-valuename.length()-1);
 				if( keyname.size() && valuename.size() )
 					SetValue(keyname,valuename,value);
 			}

@@ -47,7 +47,7 @@ SoundReader *RageSoundReader_Chain::Copy() const
  * read it more than once at a time. */
 bool RageSoundReader_Chain::AddSound( CString sPath, float fOffsetSecs, float fPan )
 {
-	sPath.ToLower();
+	sPath.MakeLower();
 
 	map<CString, SoundReader *>::const_iterator it;
 	it = m_apLoadedSounds.find( sPath );
@@ -275,7 +275,7 @@ int RageSoundReader_Chain::ReadBlock( int16_t *pBuffer, int iFrames )
 		{
 			ActiveSound &s = m_apActiveSounds[i];
 			SoundReader *pSound = s.pSound;
-			int iSamples = min( iFramesToRead * pSound->GetNumChannels(), ARRAYSIZE(Buffer) );
+			int iSamples = min( iFramesToRead * pSound->GetNumChannels(), ARRAYLEN(Buffer) );
 			int iBytesRead = pSound->Read( (char *) Buffer, iSamples*sizeof(int16_t) );
 			if( iBytesRead == -1 || iBytesRead == 0 )
 			{

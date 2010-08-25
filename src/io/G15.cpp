@@ -35,7 +35,7 @@ const ID DeviceIDs[2] =
 
 bool G15::Matches( int idVendor, int idProduct ) const
 {
-	for( unsigned i = 0; i < ARRAYSIZE(DeviceIDs); ++i )
+	for( unsigned i = 0; i < ARRAYLEN(DeviceIDs); ++i )
 		if( idVendor == DeviceIDs[i].VID && idProduct == DeviceIDs[i].PID )
 			return true;
 

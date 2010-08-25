@@ -162,7 +162,7 @@ void ScreenTextEntry::UpdateAnswerText()
 	CString txt = WStringToCString(m_sAnswer);
 	if( m_bPassword )
 	{
-		int len = txt.GetLength();
+		int len = txt.length();
 		txt = "";
 		for( int i=0; i<len; ++i )
 			txt += "*";

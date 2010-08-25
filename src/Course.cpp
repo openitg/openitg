@@ -159,7 +159,7 @@ void Course::LoadFromCRSFile( CString sPath, bool bIsCustom )
 		{
 			CString str = sParams[1];
 			str.MakeLower();
-			if( str.Find("yes") != -1 )
+			if( str.find("yes") != -1 )
 				m_bRepeat = true;
 		}
 

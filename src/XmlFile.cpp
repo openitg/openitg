@@ -157,12 +157,23 @@ XNode::~XNode()
 
 void XNode::Clear()
 {
-	FOREACH_Child( this, p )
-		SAFE_DELETE( p );
+	//FOREACH_Child_2( this, p )
+	//	delete p;
+	//FOREACH_Attr( this, pAttr )
+	//	delete p2;
+	XNodes::iterator iterChildBegin = m_childs.begin();
+	for( ; iterChildBegin != m_childs.end(); iterChildBegin++ )
+	{
+		delete iterChildBegin->second;
+	}
+
+	XAttrs::iterator iterAttrBegin = m_attrs.begin();
+	for( ; iterAttrBegin != m_attrs.end(); iterAttrBegin++ )
+	{
+		delete iterAttrBegin->second;
+	}
+
 	m_childs.clear();
-	
-	FOREACH_Attr( this, p2 )
-		SAFE_DELETE( p2 );
 	m_attrs.clear();
 }
 	
@@ -795,7 +806,17 @@ const char* XNode::GetChildAttrValue( const char* name, const char* attrname )
 // Coder    Date                      Desc
 // bro      2002-10-29
 //========================================================
-XNode *XNode::AppendChild( const char* name, const char* value )		{ XNode *p = new XNode; p->m_sName = name; p->m_sValue = value; return AppendChild( p ); }
+XNode *XNode::AppendChild( const char* name, const char* value )
+{
+	XNode *p = new XNode;
+	ASSERT(name);
+	p->m_sName = CString(name);
+	if ( value == NULL )
+		p->m_sValue = "";
+	else
+		p->m_sValue = value;
+	return AppendChild( p );
+}
 XNode *XNode::AppendChild( const char* name, float value )				{ XNode *p = new XNode; p->m_sName = name; p->SetValue( value ); return AppendChild( p ); }
 XNode *XNode::AppendChild( const char* name, int value )				{ XNode *p = new XNode; p->m_sName = name; p->SetValue( value ); return AppendChild( p ); }
 XNode *XNode::AppendChild( const char* name, unsigned value )			{ XNode *p = new XNode; p->m_sName = name; p->SetValue( value ); return AppendChild( p ); }

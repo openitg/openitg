@@ -13,7 +13,7 @@
 #include "io/ITGIO.h"
 #include "io/USBDevice.h"
 
-#include "ibutton/ibutton.h"
+#include "iButton.h"
 
 #define PATCH_XML_PATH "Data/patch/patch.xml"
 #define STATS_XML_PATH "Data/MachineProfile/Stats.xml"

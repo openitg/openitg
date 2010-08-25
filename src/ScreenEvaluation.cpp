@@ -249,7 +249,7 @@ void ScreenEvaluation::Init()
 		if( PREFSMAN->m_ScoringType == PrefsManager::SCORING_5TH )
 		{
 			const int ScoreBonuses[] = { 10000000, 10000000, 1000000, 100000, 10000, 1000, 100 };
-			if( grade[p] < (int) ARRAYSIZE(ScoreBonuses) )
+			if( grade[p] < (int) ARRAYLEN(ScoreBonuses) )
 			{
 				STATSMAN->m_CurStageStats.m_player[p].iBonus += ScoreBonuses[(int)grade[p] ];
 				stageStats.m_player[p].iBonus += ScoreBonuses[(int)grade[p] ];

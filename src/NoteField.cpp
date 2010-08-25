@@ -58,7 +58,7 @@ void NoteField::Unload()
 void NoteField::CacheNoteSkin( const CString &sNoteSkin_ )
 {
 	CString sNoteSkin = sNoteSkin_;
-	sNoteSkin.ToLower();
+	sNoteSkin.MakeLower();
 
 	if( m_NoteDisplays.find(sNoteSkin) != m_NoteDisplays.end() )
 		return;

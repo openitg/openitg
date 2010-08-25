@@ -68,13 +68,13 @@ const OptionColumnEntry g_OptionColumnEntries[] =
 int OptionToPreferredColumn( CString sOptionText )
 {
 	/* Speedups always go in column 0. digit ... x */
-	if(sOptionText.GetLength() > 1 &&
+	if(sOptionText.length() > 1 &&
 		isdigit(sOptionText[0])    &&
-		tolower(sOptionText[sOptionText.GetLength()-1]) == 'x') {
+		tolower(sOptionText[sOptionText.length()-1]) == 'x') {
 			return 0;
 	}
 
-	for( unsigned i=0; i<ARRAYSIZE(g_OptionColumnEntries); i++ )
+	for( unsigned i=0; i<ARRAYLEN(g_OptionColumnEntries); i++ )
 		if( g_OptionColumnEntries[i].szString == sOptionText )
 			return g_OptionColumnEntries[i].iSlotIndex;
 

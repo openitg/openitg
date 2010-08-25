@@ -5,13 +5,13 @@
 #include "RageLog.h"
 
 // crypt headers
-#include "crypto51/files.h"
-#include "crypto51/filters.h"
-#include "crypto51/cryptlib.h"
-#include "crypto51/files.h"
-#include "crypto51/sha.h"
-#include "crypto51/rsa.h"
-#include "crypto51/osrng.h"
+#include <typeinfo>
+#include "crypto561/files.h"
+#include "crypto561/filters.h"
+#include "crypto561/cryptlib.h"
+#include "crypto561/sha.h"
+#include "crypto561/rsa.h"
+#include "crypto561/osrng.h"
 
 using namespace CryptoPP;
 
@@ -29,12 +29,12 @@ public:
 	RageFileStore( RageFileBasic *pFile ); /* pFile will be deleted */
 	~RageFileStore();
 	RageFileStore( const RageFileStore &cpy );
-	RageFileStore(const char *filename)
+	RageFileStore( const char *filename )
 		{StoreInitialize(MakeParameters("InputFileName", filename));}
 
-	unsigned long MaxRetrievable() const;
-	unsigned int TransferTo2(BufferedTransformation &target, unsigned long &transferBytes, const std::string &channel=NULL_CHANNEL, bool blocking=true);
-	unsigned int CopyRangeTo2(BufferedTransformation &target, unsigned long &begin, unsigned long end=ULONG_MAX, const std::string &channel=NULL_CHANNEL, bool blocking=true) const;
+	lword MaxRetrievable() const;
+	unsigned int TransferTo2(BufferedTransformation &target, lword &transferBytes, const std::string &channel=NULL_CHANNEL, bool blocking=true);
+	unsigned int CopyRangeTo2(BufferedTransformation &target, lword &begin, lword end=LWORD_MAX, const std::string &channel=NULL_CHANNEL, bool blocking=true) const;
 
 private:
 	void StoreInitialize(const NameValuePairs &parameters);
@@ -52,8 +52,8 @@ public:
 	typedef FileStore::OpenErr OpenErr;
 	typedef FileStore::ReadErr ReadErr;
 
-	RageFileSource( RageFileBasic *pFile, bool pumpAll, BufferedTransformation *attachment = NULL, bool binary=true )
-		: SourceTemplate<RageFileStore>(attachment,RageFileStore(pFile)) {SourceInitialize(pumpAll, MakeParameters("InputBinaryMode", binary));}
+	RageFileSource( RageFileBasic *pFile, bool pumpAll, BufferedTransformation *attachment = NULL )
+		: SourceTemplate<RageFileStore>(attachment,RageFileStore(pFile)) {SourceInitialize(pumpAll, MakeParameters("InputBinaryMode", true, false));}
 };
 
 RageFileStore::ReadErr::ReadErr( const RageFileBasic &f ):
@@ -92,7 +92,7 @@ void RageFileStore::StoreInitialize(const NameValuePairs &parameters)
 	m_waiting = false;
 }
 
-unsigned long RageFileStore::MaxRetrievable() const
+lword RageFileStore::MaxRetrievable() const
 {
 	if( m_pFile == NULL || m_pFile->AtEOF() || !m_pFile->GetError().empty() )
 		return 0;
@@ -100,7 +100,7 @@ unsigned long RageFileStore::MaxRetrievable() const
 	return m_pFile->GetFileSize() - m_pFile->Tell();
 }
 
-unsigned int RageFileStore::TransferTo2(BufferedTransformation &target, unsigned long &transferBytes, const std::string &channel, bool blocking)
+unsigned int RageFileStore::TransferTo2(BufferedTransformation &target, lword &transferBytes, const std::string &channel, bool blocking)
 {
 	if( m_pFile == NULL || m_pFile->AtEOF() || !m_pFile->GetError().empty() )
 	{
@@ -138,7 +138,7 @@ output:
 }
 
 
-unsigned int RageFileStore::CopyRangeTo2(BufferedTransformation &target, unsigned long &begin, unsigned long end, const std::string &channel, bool blocking) const
+unsigned int RageFileStore::CopyRangeTo2(BufferedTransformation &target, lword &begin, lword end, const std::string &channel, bool blocking) const
 {
 	if( m_pFile == NULL || m_pFile->AtEOF() || !m_pFile->GetError().empty() )
 		return 0;
@@ -169,7 +169,7 @@ unsigned int RageFileStore::CopyRangeTo2(BufferedTransformation &target, unsigne
 	try
 	{
 		ASSERT( !m_waiting );
-		unsigned long copyMax = end-begin;
+		lword copyMax = end-begin;
 		unsigned int blockedBytes = const_cast<RageFileStore *>(this)->TransferTo2( target, copyMax, channel, blocking );
 		begin += copyMax;
 		if( blockedBytes )

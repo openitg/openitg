@@ -58,10 +58,10 @@ void NoteDataUtil::LoadFromSMNoteDataString( NoteData &out, CString sSMNoteData 
 	out.SetNumTracks( iNumTracks );
 
 	// strip comments out of sSMNoteData
-	while( sSMNoteData.Find("//") != -1 )
+	while( sSMNoteData.find("//") != -1 )
 	{
-		int iIndexCommentStart = sSMNoteData.Find("//");
-		int iIndexCommentEnd = sSMNoteData.Find("\n", iIndexCommentStart);
+		int iIndexCommentStart = sSMNoteData.find("//");
+		int iIndexCommentEnd = sSMNoteData.find("\n", iIndexCommentStart);
 		if( iIndexCommentEnd == -1 )	// comment doesn't have an end?
 			sSMNoteData.erase( iIndexCommentStart, 2 );
 		else
@@ -1754,7 +1754,7 @@ const ValidRow g_ValidRows[] =
 void NoteDataUtil::RemoveStretch( NoteData &inout, StepsType st, int iStartIndex, int iEndIndex )
 {
 	vector<const ValidRow*> vpValidRowsToCheck;
-	for( unsigned i=0; i<ARRAYSIZE(g_ValidRows); i++ )
+	for( unsigned i=0; i<ARRAYLEN(g_ValidRows); i++ )
 	{
 		if( g_ValidRows[i].st == st )
 			vpValidRowsToCheck.push_back( &g_ValidRows[i] );
@@ -1893,7 +1893,7 @@ void NoteDataUtil::AddTapAttacks( NoteData &nd, Song* pSong )
 			TapNote::attack,
 			TapNote::SubType_invalid,
 			TapNote::original, 
-			szAttacks[rand()%ARRAYSIZE(szAttacks)],
+			szAttacks[rand()%ARRAYLEN(szAttacks)],
 			15.0f, 
 			false,
 			0 );

@@ -119,7 +119,7 @@ int GetCoprFromRawData(SHACopr* copr, uchar* raw, int length)
    auxlen = raw[57];
 
    // read in provider name as null-terminated string
-   copr->providerName = malloc(namelen+1);
+   copr->providerName = (uchar *)malloc(namelen+1);
    memcpy(copr->providerName, &raw[58], namelen);
    copr->providerName[namelen] = '\0';
 
@@ -128,7 +128,7 @@ int GetCoprFromRawData(SHACopr* copr, uchar* raw, int length)
             (siglen>20?20:siglen) );
 
    // read in auxilliary data as null-terminated string
-   copr->auxilliaryData = malloc(auxlen+1);
+   copr->auxilliaryData = (uchar *)malloc(auxlen+1);
    memcpy(copr->auxilliaryData,
             &raw[58+namelen+siglen], auxlen);
    copr->auxilliaryData[auxlen] = '\0';

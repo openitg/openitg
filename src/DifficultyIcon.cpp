@@ -24,7 +24,7 @@ bool DifficultyIcon::Load( CString sPath )
 	Sprite::Load( sPath );
 	int iStates = GetNumStates();
 	bool bWarn = iStates != NUM_DIFFICULTIES  &&  iStates != NUM_DIFFICULTIES*2;
-	if( sPath.Find("_blank") != -1 )
+	if( sPath.find("_blank") != -1 )
 		bWarn = false;
 	if( bWarn )
 	{

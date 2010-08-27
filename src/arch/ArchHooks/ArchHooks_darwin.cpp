@@ -251,7 +251,7 @@ void ArchHooks_darwin::EnterTimeCriticalSection()
 	TimeCritMutex->Lock();
 
 	int mib[] = { CTL_HW, HW_BUS_FREQ };
-	int miblen = ARRAYSIZE( mib );
+	int miblen = ARRAYLEN( mib );
 	int bus_speed;
 	size_t len = sizeof (bus_speed);
 	if( sysctl( mib, miblen, &bus_speed, &len, NULL, 0 ) == -1 )

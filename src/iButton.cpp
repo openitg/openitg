@@ -1,7 +1,7 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-#include "ibutton.h"
+#include "iButton.h"
 
 extern "C" {
 #include "ibutton/ownet.h"

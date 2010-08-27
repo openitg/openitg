@@ -17,7 +17,7 @@ OBJS = \
 	src/resamplesubs.c.o \
 	src/filterkit.c.o
 
-TARGETS = libresample.a tests/testresample
+TARGETS = libresample.a tests/testresample tests/resample-sndfile tests/compareresample
 DIRS=tests
 
 all: $(TARGETS)

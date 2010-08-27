@@ -18,6 +18,9 @@
 #  endif // _MSC_VER
 #else
 #  include <png.h>
+#  if ( PNG_LIBPNG_VER_MINOR > 3 )
+#    define png_set_gray_1_2_4_to_8(p) png_set_expand(p)
+#  endif
 #endif
 
 #if defined(_XBOX)

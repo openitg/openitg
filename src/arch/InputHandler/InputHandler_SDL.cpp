@@ -50,7 +50,7 @@ static RageKeySym SDLSymToKeySym( SDLKey key )
 	};
 
 	/* 0...127: */
-	if( key < int(ARRAYSIZE(ASCIIKeySyms)) )
+	if( key < int(ARRAYLEN(ASCIIKeySyms)) )
 		return ASCIIKeySyms[key];
 
 	/* SDLK_WORLD_0 ... SDLK_WORLD_95 to KEY_OTHER_0 ... KEY_OTHER_0 + 95 */

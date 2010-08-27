@@ -38,6 +38,9 @@ verstub.cpp:
 $(srcdir)/libresample/libresample.a:
 	cd $(srcdir)/libresample && autoconf && sh ./configure && make
 
+$(srcdir)/crypto561/libcryptopp.a:
+	cd $(srcdir)/crypto561 && make -f GNUmakefile
+
 Screens = \
 Screen.cpp Screen.h \
 ScreenArcadeDiagnostics.cpp ScreenArcadeDiagnostics.h ScreenArcadePatch.cpp ScreenArcadePatch.h \
@@ -393,7 +396,7 @@ ibutton = \
 ibutton/owerr.c ibutton/ownetu.c ibutton/ownet.h ibutton/owllu.c \
 ibutton/owsesu.c ibutton/owtrnu.c ibutton/owfile.h ibutton/crcutil.c \
 ibutton/ds2480ut.c ibutton/ds2480.h ibutton/linuxlnk.c ibutton/sha18.c \
-ibutton/shaib.c ibutton/shaib.h ibutton/ibutton.cpp ibutton/ibutton.h
+ibutton/shaib.c ibutton/shaib.h iButton.cpp iButton.h
 
 aes = \
 aes/aescrypt.c aes/aeskey.c aes/aestab.c aes/aesopt.h aes/aes.h
@@ -404,16 +407,25 @@ crypto/CryptPrime.cpp crypto/CryptPrime.h crypto/CryptRSA.cpp crypto/CryptRSA.h 
 crypto/CryptRand.cpp crypto/CryptRand.h crypto/CryptSH512.cpp crypto/CryptSH512.h \
 crypto/CryptSHA.cpp crypto/CryptSHA.h
 
+#crypto561/cpu.cpp crypto561/cpu.h \
+#crypto561/secblock.h crypto561/integer.cpp crypto561/integer.h \
+#crypto561/simple.cpp crypto561/simple.h \
+#crypto561/algparam.cpp crypto561/algparam.h \
+#crypto561/misc.cpp crypto561/misc.h \
+#crypto561/algebra.cpp crypto561/algebra.h \
+#crypto561/filters.cpp crypto561/filters.h \
+#crypto561/pkcspad.cpp crypto561/pkcspad.h \
+#crypto561/cryptlib.cpp crypto561/cryptlib.h \
+#crypto561/nbtheory.cpp crypto561/nbtheory.h \
+#crypto561/sha.cpp crypto561/sha.h \
+#crypto561/pssr.cpp crypto561/pssr.h \
+#crypto561/pubkey.cpp crypto561/pubkey.h \
+#crypto561/rsa.cpp crypto561/rsa.h \
+#crypto561/osrng.cpp crypto561/osrng.h \
+#crypto561/queue.cpp crypto561/queue.h \
+#crypto561/asn.cpp crypto561/asn.h
+
 cryptopp = \
-crypto51/algebra.cpp crypto51/algebra.h crypto51/algparam.cpp crypto51/algparam.h crypto51/argnames.h \
-crypto51/asn.cpp crypto51/asn.h crypto51/config.h crypto51/cryptlib.cpp crypto51/cryptlib.h crypto51/files.cpp \
-crypto51/files.h crypto51/filters.cpp crypto51/filters.h crypto51/fltrimpl.h crypto51/integer.cpp crypto51/integer.h \
-crypto51/iterhash.cpp crypto51/iterhash.h crypto51/misc.cpp crypto51/misc.h crypto51/modarith.h \
-crypto51/mqueue.cpp crypto51/mqueue.h crypto51/nbtheory.cpp crypto51/nbtheory.h \
-crypto51/oids.h crypto51/osrng.cpp crypto51/osrng.h crypto51/pch.h crypto51/pkcspad.cpp \
-crypto51/pkcspad.h crypto51/pubkey.cpp crypto51/pubkey.h crypto51/queue.cpp crypto51/queue.h \
-crypto51/rsa.cpp crypto51/rsa.h crypto51/secblock.h crypto51/seckey.h crypto51/sha.cpp \
-crypto51/sha.h crypto51/simple.h crypto51/smartptr.h crypto51/words.h \
 CryptHelpers.cpp CryptHelpers.h
 
 main_SOURCES = $(Screens) \
@@ -436,7 +448,8 @@ main_LDADD = \
 		  $(AUDIO_LIBS) \
 		  $(SDL_LIBS) \
 		  $(XLIBS) \
-		  $(srcdir)/libresample/libresample.a
+		  $(srcdir)/libresample/libresample.a \
+		  $(srcdir)/crypto561/libcryptopp.a
 
 nodist_openitg_SOURCES = verstub.cpp
 openitg_SOURCES = $(main_SOURCES)
@@ -502,6 +515,7 @@ test_file_errors_SOURCES = \
 		tests/test_file_errors.cpp \
 		MsdFile.cpp MsdFile.h \
 		XmlFile.cpp XmlFile.h \
+		$(srcdir)/crypto561/libcryptopp.a \
 		CryptManager.cpp CryptManager.h $(cryptopp) $(crypto)
 
 TESTS += test_timing_data

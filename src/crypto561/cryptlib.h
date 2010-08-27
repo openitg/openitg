@@ -222,6 +222,10 @@ struct CRYPTOPP_DLL DecodingResult
 	alternatively, call GetIntValue() with the value name, and if the type is not int, a
 	ValueTypeMismatch exception will be thrown and you can get the actual type from the exception object.
 */
+#if !defined(_MSC_VER)
+using namespace std;
+#endif
+
 class CRYPTOPP_NO_VTABLE NameValuePairs
 {
 public:

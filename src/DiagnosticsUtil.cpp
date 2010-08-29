@@ -127,67 +127,63 @@ CString DiagnosticsUtil::GetProductName()
 	return CString(PRODUCT_NAME_VER);
 }
 
-CString DiagnosticsUtil::GetSerialNumber()
+namespace
 {
-	static CString g_SerialNum;
+	/* this allows us to use the serial numbers on home builds for
+	 * debugging information. VersionDate and VersionNumber are extern'd
+	 * from verstub. */
+	CString GenerateDebugSerial()
+	{
+		char system, type;
 
-	if ( !g_SerialNum.empty() )
-		return g_SerialNum;
+	// set the compilation OS
+	#if defined(WIN32)
+		system = 'W'; /* Windows */
+	#elif defined(LINUX)
+		if( VersionSVN )
+			system = 'S'; /*nix, with SVN */
+		else
+			system = 'L'; /*nix, no SVN */
+	#elif defined(DARWIN)
+		system = 'M'; /* Mac OS */
+	#else
+		system = 'U'; /* unknown */
+	#endif
 
-/* Try to grab a serial number from a dongle;
- * otherwise generate a fake one. */
-	g_SerialNum = iButton::GetSerialNumber();
+	// set the compilation arcade type
+	#ifdef ITG_ARCADE
+		type = 'A';
+	#else
+		type = 'P';
+	#endif
 
-	if( g_SerialNum.empty() )
-		g_SerialNum = GenerateDebugSerial();
-
-	return g_SerialNum;
+		// if SVN, display revision: "OITG-W-20090409-600-P"
+		// if no SVN, display build in hex: "OITG-W-20090409-08A-P"
+		if( VersionSVN )
+			return ssprintf( "OITG-%c-%s-%03lu-%c", system, 
+				VersionDate, VersionNumber, type );
+		else
+			return ssprintf( "OITG-%c-%s-%03lX-%c", system, 
+				VersionDate, VersionNumber, type );
+	}
 }
 
-/* this allows us to use the serial numbers on builds for
- * more helpful debugging information. PRODUCT_BUILD_DATE
- * is defined in ProductInfo.h */
-CString DiagnosticsUtil::GenerateDebugSerial()
+CString DiagnosticsUtil::GetSerialNumber()
 {
-	char system, type;
+	/* Attempt to get a serial number from the dongle */
+	CString sSerial = iButton::GetSerialNumber();
 
-// set the compilation OS
-#if defined(WIN32)
-	system = 'W'; /* Windows */
-#elif defined(LINUX)
-	if( VersionSVN )
-		system = 'S'; /*nix, with SVN */
-	else
-		system = 'L'; /*nix, no SVN */
-#elif defined(DARWIN)
-	system = 'M'; /* Mac OS */
-#else
-	system = 'U'; /* unknown */
-#endif
+	/* If the dongle failed to read, generate a debug serial. */
+	if( sSerial.empty() )
+		sSerial = GenerateDebugSerial();
 
-// set the compilation arcade type
-#ifdef ITG_ARCADE
-	type = 'A';
-#else
-	type = 'P';
-#endif
-
-	// if SVN, display the version regularly: "OITG-W-20090409-600-P"
-	// if no SVN, display the version in hex: "OITG-W-20090409-08A-P"
-	if( VersionSVN )
-		return ssprintf( "OITG-%c-%s-%03lu-%c", system, VersionDate, VersionNumber, type );
-	else
-		return ssprintf( "OITG-%c-%s-%03lX-%c", system, VersionDate, VersionNumber, type );
+	return sSerial;
 }
 
 bool DiagnosticsUtil::HubIsConnected()
 {
 	vector<USBDevice> vDevices;
 	GetUSBDeviceList( vDevices );
-
-	/* Hub can't be connected if there are no devices. */
-	if( vDevices.size() == 0 )
-		return false;
 
 	for( unsigned i = 0; i < vDevices.size(); i++ )
 		if( vDevices[i].IsHub() )
@@ -196,23 +192,26 @@ bool DiagnosticsUtil::HubIsConnected()
 	return false;
 }
 
-CString m_sInputType = "";
+CString g_sInputType = "";
 
 CString DiagnosticsUtil::GetInputType()
 {
-	return m_sInputType;
+	return g_sInputType;
 }
 
-void DiagnosticsUtil::SetInputType( CString sType )
+void DiagnosticsUtil::SetInputType( const CString &sType )
 {
-	m_sInputType = sType;
+	g_sInputType = sType;
 }
 
+// set OPENITG LUA variables from here
 void SetProgramGlobals( lua_State* L )
 {
 	LUA->SetGlobal( "OPENITG", true );
 	LUA->SetGlobal( "OPENITG_VERSION", PRODUCT_TOKEN );
 }
+
+REGISTER_WITH_LUA_FUNCTION( SetProgramGlobals );
 
 // LUA bindings for diagnostics functions
 
@@ -236,8 +235,6 @@ LuaFunction_NoArgs( GetSerialNumber,		DiagnosticsUtil::GetSerialNumber() );
 LuaFunction_NoArgs( HubIsConnected,		DiagnosticsUtil::HubIsConnected() );
 LuaFunction_NoArgs( GetInputType,		DiagnosticsUtil::GetInputType() );
 
-// set OPENITG LUA variables from here
-REGISTER_WITH_LUA_FUNCTION( SetProgramGlobals );
 /*
  * (c) 2008 BoXoRRoXoRs
  * All rights reserved.

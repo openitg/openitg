@@ -11,15 +11,14 @@ namespace DiagnosticsUtil
 	int GetRevision();
 
 	CString GetIP();
-	CString GetInputType();
 	CString GetProductName();
 
+	CString GetInputType();
+	void SetInputType( const CString &sType );
+
 	CString GetSerialNumber();
-	CString GenerateDebugSerial();
 
 	bool HubIsConnected();
-
-	void SetInputType( CString sType );
 }
 
 

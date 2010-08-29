@@ -10,67 +10,6 @@
 #include "arch_platform.h"
 #include "Foreach.h"
 
-#include "InputHandler/Selector_InputHandler.h"
-void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add)
-{
-	CStringArray DriversToTry;
-	split(drivers, ",", DriversToTry, true);
-
-	ASSERT( DriversToTry.size() != 0 );
-
-	CString Driver;
-
-	FOREACH_CONST( CString, DriversToTry, s )
-	{
-		InputHandler *ret = NULL;
-
-#ifdef USE_INPUT_HANDLER_DIRECTINPUT
-		if(!s->CompareNoCase("DirectInput") )	ret = new InputHandler_DInput;
-#endif
-#ifdef USE_INPUT_HANDLER_LINUX_JOYSTICK
-		if(!s->CompareNoCase("Joystick") )		ret = new InputHandler_Linux_Joystick;
-#endif
-#ifdef USE_INPUT_HANDLER_LINUX_TTY
-		if(!s->CompareNoCase("tty") )		ret = new InputHandler_Linux_tty;
-#endif
-#ifdef USE_INPUT_HANDLER_SDL
-		if(!s->CompareNoCase("SDL") )		ret = new InputHandler_SDL;
-#endif
-#ifdef USE_INPUT_HANDLER_WIN32_PARA
-		if(!s->CompareNoCase("Para") )		ret = new InputHandler_Win32_Para;
-#endif
-#ifdef USE_INPUT_HANDLER_WIN32_PUMP
-		if(!s->CompareNoCase("Pump") )		ret = new InputHandler_Win32_Pump;
-#endif
-#ifdef USE_INPUT_HANDLER_WIN32_MIDI
-		if(!s->CompareNoCase("MIDI") )	ret = new InputHandler_Win32_MIDI;
-#endif
-#ifdef USE_INPUT_HANDLER_X11
-		if(!s->CompareNoCase("X11") )		ret = new InputHandler_X11;
-#endif
-#ifdef USE_INPUT_HANDLER_XBOX
-		if(!s->CompareNoCase("Xbox") )		ret = new InputHandler_Xbox;
-#endif
-#ifdef USE_INPUT_HANDLER_PIUIO
-		if(!s->CompareNoCase("PIUIO") )		ret = new InputHandler_PIUIO;
-#endif
-#ifdef USE_INPUT_HANDLER_IOW
-		if(!s->CompareNoCase("IOW") )		ret = new InputHandler_Iow;
-#endif
-#ifdef USE_INPUT_HANDLER_MK3
-		if(!s->CompareNoCase("MK3") )		ret = new InputHandler_MK3;
-#endif
-
-		if( ret == NULL )
-			LOG->Warn( "Unknown input handler name: %s", s->c_str() );
-		else
-			Add.push_back( ret );
-	}
-
-	// Always add
-	Add.push_back(new InputHandler_MonkeyKeyboard);
-}
-
 #include "Lights/Selector_LightsDriver.h"
 void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add)
 {

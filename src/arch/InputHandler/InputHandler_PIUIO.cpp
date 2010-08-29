@@ -8,7 +8,8 @@
 #include "InputHandler_PIUIO.h"
 #include "InputHandler_PIUIO_Helper.h"
 
-// initialize the global usage flag
+REGISTER_INPUT_HANDLER( PIUIO );
+
 bool InputHandler_PIUIO::s_bInitialized = false;
 
 InputHandler_PIUIO::InputHandler_PIUIO()

@@ -1,52 +1,34 @@
-#ifndef SELECTOR_INPUT_HANDLER_H
-#define SELECTOR_INPUT_HANDLER_H
+#ifndef RAGE_DRIVER_H
+#define RAGE_DRIVER_H
 
-#include "arch/arch_platform.h"
+#include "RageUtil.h"
+#include <map>
 
-/* InputHandler drivers selector. */
-#if defined(HAVE_DIRECTX) && !defined(XBOX)
-#include "InputHandler_DirectInput.h"
+class RageDriver
+{
+public:
+	virtual ~RageDriver() { }
+};
+
+typedef RageDriver *(*CreateRageDriverFn)();
+
+/* This is created and accessed during C++ static initialization; it must be a POD. */
+struct DriverList
+{
+	void Add( const istring &sName, CreateRageDriverFn pfn );
+	RageDriver *Create( const CString &sDriverName );
+	map<istring, CreateRageDriverFn> *m_pRegistrees;
+};
+
+struct RegisterRageDriver
+{
+	RegisterRageDriver( DriverList *pDriverList, const istring &sName, CreateRageDriverFn pfn );
+};
+
 #endif
-
-// not supported for Xbox just yet
-#ifndef XBOX
-/* USB input drivers; cross-platform for any system with libusb */
-#include "InputHandler_Iow.h"
-#include "InputHandler_PIUIO.h"
-
-/* ISA input driver; cross-platform, with some asterisks. */
-#include "InputHandler_MK3.h"
-#endif
-
-#ifdef HAVE_LINUXKERNEL
-#include "InputHandler_Linux_Joystick.h"
-// XXX: Useless! Depends on SDL, which we'd use for input if it was available!
-// #include "InputHandler_Linux_tty.h"
-#endif
-
-#include "InputHandler_MonkeyKeyboard.h"
-
-// NOTE: If X11 is available, we don't use LLW_SDL, which IH_SDL depends on.
-#if defined(HAVE_X11)
-#include "InputHandler_X11.h"
-#elif defined(HAVE_SDL)
-#include "InputHandler_SDL.h"
-#endif
-
-#ifdef HAVE_WIN32
-#include "InputHandler_Win32_Pump.h"
-#include "InputHandler_Win32_Para.h"
-#include "InputHandler_Win32_MIDI.h"
-#endif
-
-#ifdef HAVE_XBOX
-#include "InputHandler_Xbox.h"
-#endif
-
-#endif // header
 
 /*
- * (c) 2005 Ben Anderson.
+ * (c) 2006 Glenn Maynard
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

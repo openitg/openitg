@@ -15,6 +15,7 @@
 #include "RageLog.h"
 #include "RageDisplay.h"
 
+REGISTER_INPUT_HANDLER( SDL );
 
 static RageKeySym SDLSymToKeySym( SDLKey key )
 {

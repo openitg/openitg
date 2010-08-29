@@ -296,7 +296,6 @@ PrefsManager::PrefsManager() :
 	m_iSoundWriteAhead				( "SoundWriteAhead",			0 ),
 	m_iSoundDevice					( "SoundDevice",				"" ),
 	m_SoundResampleQuality			( "SoundResampleQuality",		RageSoundReader_Resample::RESAMP_NORMAL ),
-	m_sInputDrivers					( "InputDrivers",				"" ),
 	m_sLightsDriver					( "LightsDriver",				"" ),
 	m_sMovieDrivers					( "MovieDrivers",				"" ),
 	m_sLightsStepsDifficulty		( "LightsStepsDifficulty",		"medium" ),
@@ -423,13 +422,6 @@ float PrefsManager::GetSoundVolumeAttract()
 		return GetSoundVolume();
 
 	return m_fSoundVolumeAttract;
-}
-
-CString PrefsManager::GetInputDrivers()	{
-	if( m_sInputDrivers.Get().empty() )
-		return (CString)DEFAULT_INPUT_DRIVER_LIST;
-	else
-		return m_sInputDrivers;
 }
 
 CString PrefsManager::GetMovieDrivers()

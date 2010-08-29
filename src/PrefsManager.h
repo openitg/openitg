@@ -311,7 +311,6 @@ public:
 	Preference<CString>	m_iSoundDevice;	
 	Preference<RageSoundReader_Resample::ResampleQuality>	m_SoundResampleQuality;
 private:
-	Preference<CString>	m_sInputDrivers;	// "" == default
 	Preference<CString>	m_sLightsDriver;	// "" == default
 public:
 	Preference<CString>	m_sMovieDrivers;	// "" == default
@@ -355,7 +354,6 @@ public:
 	CString GetSoundDrivers();
 	float GetSoundVolume();
 	float GetSoundVolumeAttract();
-	CString GetInputDrivers();
 	CString GetMovieDrivers();
 	CString GetLightsDriver();
 

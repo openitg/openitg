@@ -11,6 +11,8 @@
 
 #include "InputHandler_DirectInputHelper.h"
 
+REGISTER_INPUT_HANDLER2( DirectInput, DInput );
+
 static vector<DIDevice> Devices;
 
 /* Number of joysticks found: */

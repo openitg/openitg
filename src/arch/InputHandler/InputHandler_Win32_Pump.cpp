@@ -7,6 +7,8 @@
 #include "RageInputDevice.h"
 #include "archutils/Win32/USB.h"
 
+REGISTER_INPUT_HANDLER2( Pump, Win32_Pump );
+
 InputHandler_Win32_Pump::InputHandler_Win32_Pump()
 {
 	m_bShutdown = false;

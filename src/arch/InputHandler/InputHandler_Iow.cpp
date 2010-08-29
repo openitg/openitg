@@ -13,6 +13,8 @@
 #include "RageUtil.h"
 #include "ScreenManager.h"
 
+REGISTER_INPUT_HANDLER( Iow );
+
 bool InputHandler_Iow::s_bInitialized = false;
 
 InputHandler_Iow::InputHandler_Iow()

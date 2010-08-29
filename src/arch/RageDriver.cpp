@@ -1,39 +1,35 @@
-/* RageInput - Starts up InputHandlers, which generate InputEvents. */
+#include "global.h"
+#include "RageDriver.h"
 
-#ifndef RAGEINPUT_H
-#define RAGEINPUT_H
-
-#include "RageInputDevice.h"
-
-struct lua_State;
-class InputHandler;
-
-class RageInput
+void DriverList::Add( const istring &sName, CreateRageDriverFn pfn )
 {
-public:
-	RageInput();
-	~RageInput();
+	if( m_pRegistrees == NULL )
+		m_pRegistrees = new map<istring, CreateRageDriverFn>;
+	
+	ASSERT( m_pRegistrees->find(sName) == m_pRegistrees->end() );
+	(*m_pRegistrees)[sName] = pfn;
+}
 
-	void Update( float fDeltaTime );
-	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vsDescriptionsOut );
-	void WindowReset();
-	void AddHandler( InputHandler *pHandler );
+RageDriver *DriverList::Create( const CString &sDriverName )
+{
+	if( m_pRegistrees == NULL )
+		return NULL;
 
-	// Lua
-	void PushSelf( lua_State *L );
+	map<istring, CreateRageDriverFn>::const_iterator iter = m_pRegistrees->find( istring(sDriverName) );
+	if( iter == m_pRegistrees->end() )
+		return NULL;
+	return (iter->second)();
+}
 
-private:
-	vector<InputHandler *> m_pDevices;
-};
-
-extern RageInput*			INPUTMAN;	// global and accessable from anywhere in our program
-
-#endif
+RegisterRageDriver::RegisterRageDriver( DriverList *pDriverList, const istring &sName, CreateRageDriverFn pfn )
+{
+	pDriverList->Add( sName, pfn );
+}
 
 /*
- * Copyright (c) 2001-2004 Chris Danford, Glenn Maynard
+ * (c) 2006 Glenn Maynard
  * All rights reserved.
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -43,7 +39,7 @@ extern RageInput*			INPUTMAN;	// global and accessable from anywhere in our prog
  * copyright notice(s) and this permission notice appear in all copies of
  * the Software and that both the above copyright notice(s) and this
  * permission notice appear in supporting documentation.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
  * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF

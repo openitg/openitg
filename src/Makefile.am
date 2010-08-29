@@ -257,7 +257,8 @@ endif
 
 Arch = $(LoadingWindow) $(Sound) $(ArchHooks) $(InputHandler) $(MovieTexture) \
 	   $(Lights) $(MemoryCard) $(LowLevelWindow) $(ArchUtils) $(Dialog) $(Threads) \
-	   arch/arch.h arch/arch.cpp arch/arch_default.h arch/arch_platform.h
+	   arch/arch.h arch/arch.cpp arch/arch_default.h arch/arch_platform.h \
+	   arch/RageDriver.h arch/RageDriver.cpp
 
 RageSoundFileReaders = RageSoundReader_WAV.cpp RageSoundReader_WAV.h 
 

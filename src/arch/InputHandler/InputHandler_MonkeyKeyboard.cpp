@@ -3,6 +3,7 @@
 #include "RageUtil.h"
 #include "PrefsManager.h"
 
+REGISTER_INPUT_HANDLER( MonkeyKeyboard );
 
 InputHandler_MonkeyKeyboard::InputHandler_MonkeyKeyboard() :
 	m_diLast(DEVICE_KEYBOARD,KEY_SPACE)

@@ -95,6 +95,44 @@ void CircularShift( vector<T> &v, int dist )
 	}
 }
 
+template<typename Type, typename Ret>
+static Ret *CreateClass() { return new Type; }
+
+
+/* Helper for ConvertValue(). */
+template<typename TO, typename FROM>
+struct ConvertValueHelper
+{
+	explicit ConvertValueHelper( FROM *pVal ): m_pFromValue(pVal)
+	{
+		m_ToValue = static_cast<TO>( *m_pFromValue );
+	}
+
+	~ConvertValueHelper()
+	{
+		*m_pFromValue = static_cast<FROM>( m_ToValue );
+	}
+
+	TO &operator *() { return m_ToValue; }
+	operator TO *() { return &m_ToValue; }
+
+private:
+	FROM *m_pFromValue;
+	TO m_ToValue;
+};
+
+/*
+ * Safely temporarily convert between types.  For example,
+ *
+ * float f = 10.5;
+ * *ConvertValue<int>(&f) = 12;
+ */
+template<typename TO, typename FROM>
+ConvertValueHelper<TO, FROM> ConvertValue( FROM *pValue )
+{
+	return ConvertValueHelper<TO, FROM>( pValue );
+}
+
 /*
  * We only have unsigned swaps; byte swapping a signed value doesn't make sense. 
  *
@@ -256,6 +294,7 @@ extern const wchar_t INVALID_CHAR;
 
 int utf8_get_char_len( char p );
 bool utf8_to_wchar( const CString &s, unsigned &start, wchar_t &ch );
+bool utf8_to_wchar( const char *s, size_t iLength, unsigned &start, wchar_t &ch );
 bool utf8_to_wchar_ec( const CString &s, unsigned &start, wchar_t &ch );
 void wchar_to_utf8( wchar_t ch, CString &out );
 wchar_t utf8_get_char( const CString &s );
@@ -316,6 +355,8 @@ inline T Decrement( T a ) { --a; return a; }
 void TrimLeft(CString &str, const char *s = "\r\n\t ");
 void TrimRight(CString &str, const char *s = "\r\n\t ");
 void StripCrnl(CString &s);
+bool BeginsWith( const CString &sTestThis, const CString &sBeginning );
+bool EndsWith( const CString &sTestThis, const CString &sEnding );
 
 CString DerefRedir( const CString &sPath );
 bool GetFileContents( const CString &sPath, CString &sOut, bool bOneLine = false );

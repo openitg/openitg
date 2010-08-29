@@ -9,6 +9,8 @@
 #include "arch/ArchHooks/ArchHooks.h"
 #include "InputHandler_MK3Helper.h"
 
+REGISTER_INPUT_HANDLER( MK3 );
+
 InputHandler_MK3::InputHandler_MK3()
 {
 	m_bFoundDevice = false;

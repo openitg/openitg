@@ -19,23 +19,24 @@ InputHandler_Iow::InputHandler_Iow()
 {
 	if( s_bInitialized )
 	{
-		LOG->Warn( "Redundant Iow driver loaded. Disabling..." );
+		LOG->Warn( "InputHandler_Iow: Redundant driver loaded. Disabling..." );
 		return;
 	}
 
-	m_bShutdown = false;
-	DiagnosticsUtil::SetInputType("ITGIO");
-
+	// attempt to open the I/O device
 	if( !Board.Open() )
 	{
-		LOG->Warn( "OpenITG could not establish a connection with ITGIO." );
+		LOG->Warn( "InputHandler_Iow: could not establish a connection with the I/O device." );
 		return;
 	}
-	// set our board lock
-	s_bInitialized = true;
 
 	LOG->Trace( "Opened ITGIO board." );
+
+	s_bInitialized = true;
 	m_bFoundDevice = true;
+	m_bShutdown = false;
+
+	DiagnosticsUtil::SetInputType("ITGIO");
 
 	// set any alternate lights mappings, if they exist
 	SetLightsMappings();
@@ -124,7 +125,11 @@ void InputHandler_Iow::InputThreadMain()
 
 		UpdateLights();
 
-		// this appears to be AND'd over input (bits 1-16)
+		/* XXX: the first 16 bits seem to manually trigger inputs;
+		 * ITGIO opens high, so writing a 0 bit counts as a press.
+		 * I have no idea what use that could possibly be, but we need
+		 * to write 0xFFFF0000 to not trigger input on a write... */
+
 		Board.Write( 0xFFFF0000 | m_iWriteData );
 
 		// ITGIO opens high - flip the bit values
@@ -158,10 +163,8 @@ void InputHandler_Iow::HandleInput()
 	}
 }
 
-/* Requires LightsDriver_External. */
 void InputHandler_Iow::UpdateLights()
 {
-	// set a pointer to the LightsState for access
 	static const LightsState *m_LightsState = LightsDriver_External::Get();
 
 	ZERO( m_iWriteData );

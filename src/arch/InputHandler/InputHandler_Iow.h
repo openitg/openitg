@@ -14,8 +14,9 @@ public:
 
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 private:
-	// in case several handlers exist for some reason, allow only one
-	// to claim the device and run I/O, so we waste memory and not cycles.
+	/* Allow only one handler to control the board at a time. More than one
+	 * handler may be loaded due to startup and Static.ini interactions, so
+	 * we need this to prevent obscure I/O problems. */
 	static bool s_bInitialized;
 
 	ITGIO Board;

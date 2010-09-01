@@ -163,9 +163,9 @@ fi
 AM_CONDITIONAL(WITHOUT_NETWORKING, test "$with_network" = "no")
 
 
-AC_ARG_ENABLE(itg-arcade, AC_HELP_STRING([--enable-itg-arcade], [Tailor game behavior to mimic ITG2 Arcade exactly]), itg_arcade=$withval, itg_arcade=no)
+AC_ARG_ENABLE(itg-arcade, AC_HELP_STRING([--enable-itg-arcade], [Enable arcade-specific behavior]), itg_arcade=$enableval, itg_arcade=no)
 if test "$itg_arcade" = "yes"; then
-	AC_DEFINE(ITG_ARCADE, 1, [ITG Arcade specification])
+	AC_DEFINE(ITG_ARCADE, 1, [Use arcade mountpoints and behavior])
 fi
 AM_CONDITIONAL(ITG_ARCADE, test "$itg_arcade" = "yes")
 

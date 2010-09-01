@@ -55,33 +55,35 @@ namespace
 	unsigned KILOBYTE = 1024;
 	unsigned MEGABYTE = 1024*KILOBYTE;
 	unsigned GIGABYTE = 1024*MEGABYTE;
+}
 
-	CString FormatByteValue( uint64_t iBytes )
+CString FormatByteValue( uint64_t iBytes )
+{
+	double fShownSpace = 0.0f;
+	CString sSuffix;
+
+	if( iBytes > GIGABYTE )
 	{
-		double fShownSpace = 0.0f;
-
-		if( iBytes > GIGABYTE )
-		{
-			fShownSpace = iBytes / GIGABYTE;
-			sSuffix = "GB";
-		}
-		else if( iBytes > MEGABYTE )
-		{
-			fShownSpace = iBytes / MEGABYTE;
-			sSuffix = "MB";
-		}
-		else if( iBytes > KILOBYTE )
-		{
-			fShownSpace = iByte / KILOBYTE;
-			sSuffix = "KB";
-		}
-		else
-		{
-			fShownSpace = double(iBytes);
-			sSuffix = "bytes";
-
-		return ssprintf( "%.02f %s", fShownSpace, sSuffix.c_str() );
+		fShownSpace = iBytes / GIGABYTE;
+		sSuffix = "GB";
 	}
+	else if( iBytes > MEGABYTE )
+	{
+		fShownSpace = iBytes / MEGABYTE;
+		sSuffix = "MB";
+	}
+	else if( iBytes > KILOBYTE )
+	{
+		fShownSpace = iBytes / KILOBYTE;
+		sSuffix = "KB";
+	}
+	else
+	{
+		fShownSpace = double(iBytes);
+		sSuffix = "bytes";
+	}
+
+	return ssprintf( "%.02f %s", fShownSpace, sSuffix.c_str() );
 }
 
 // XXX: we should probably take a parameter for these later on.

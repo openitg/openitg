@@ -11,7 +11,7 @@ namespace DiagnosticsUtil
 	int GetRevision();
 
 	CString GetDiskSpaceFree();
-	CString GetDiskSpacetotal();
+	CString GetDiskSpaceTotal();
 
 	CString GetIP();
 	CString GetProductName();

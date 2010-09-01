@@ -7,6 +7,7 @@
 #include "LuaManager.h"
 #include "DiagnosticsUtil.h"
 #include "arch/ArchHooks/ArchHooks.h"
+#include "UserPackManager.h"	// for USER_PACK_SAVE_PATH
 
 #include "XmlFile.h"
 #include "ProductInfo.h"
@@ -47,6 +48,57 @@ CString DiagnosticsUtil::GetIP()
 		return ssprintf( "%s, Netmask: %s", sAddress.c_str(), sNetmask.c_str() );
 	else
 		return sError;
+}
+
+namespace
+{
+	unsigned KILOBYTE = 1024;
+	unsigned MEGABYTE = 1024*KILOBYTE;
+	unsigned GIGABYTE = 1024*MEGABYTE;
+
+	CString FormatByteValue( uint64_t iBytes )
+	{
+		CString sSuffix;
+		double fShownSpace = 0.0f;
+
+		if( iBytes > GIGABYTE )
+		{
+			fShownSpace = iBytes / GIGABYTE;
+			sSuffix = "GB";
+		}
+		else if( iBytes > MEGABYTE )
+		{
+			fShownSpace = iBytes / MEGABYTE;
+			sSuffix = "MB";
+		}
+		else if( iBytes > KILOBYTE )
+		{
+			fShownSpace = iBytes / KILOBYTE;
+			sSuffix = "KB";
+		}
+		else
+		{
+			fShownSpace = double(iBytes);
+			sSuffix = "bytes";
+		}
+
+		return ssprintf( "%.02f %s", fShownSpace, sSuffix.c_str() );
+	}
+}
+
+// XXX: we should probably take a parameter for these later on.
+// for now, return the only disk space value that matters to us.
+
+CString DiagnosticsUtil::GetDiskSpaceFree()
+{
+	uint64_t iBytes = HOOKS->GetDiskSpaceFree( USER_PACK_SAVE_PATH );
+	return FormatByteValue( iBytes );
+}
+
+CString DiagnosticsUtil::GetDiskSpaceTotal()
+{
+	uint64_t iBytes = HOOKS->GetDiskSpaceTotal( USER_PACK_SAVE_PATH );
+	return FormatByteValue( iBytes );
 }
 
 int DiagnosticsUtil::GetRevision()
@@ -219,6 +271,10 @@ REGISTER_WITH_LUA_FUNCTION( SetProgramGlobals );
 
 LuaFunction_NoArgs( GetUptime,			SecondsToHHMMSS( (int)RageTimer::GetTimeSinceStart() ) ); 
 LuaFunction_NoArgs( GetNumIOErrors,		ITGIO::m_iInputErrorCount );
+
+// disk space functions
+LuaFunction_NoArgs( GetDiskSpaceFree,		DiagnosticsUtil::GetDiskSpaceFree() );
+LuaFunction_NoArgs( GetDiskSpaceTotal,		DiagnosticsUtil::GetDiskSpaceTotal() );
 
 // product name function
 LuaFunction_NoArgs( GetProductName,		DiagnosticsUtil::GetProductName() );

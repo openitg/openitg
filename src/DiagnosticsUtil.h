@@ -10,6 +10,9 @@ namespace DiagnosticsUtil
 	int GetNumMachineScores();
 	int GetRevision();
 
+	CString GetDiskSpaceFree();
+	CString GetDiskSpaceTotal();
+
 	CString GetIP();
 	CString GetProductName();
 
@@ -20,7 +23,6 @@ namespace DiagnosticsUtil
 
 	bool HubIsConnected();
 }
-
 
 #endif // DIAGNOSTICS_UTIL_H
 

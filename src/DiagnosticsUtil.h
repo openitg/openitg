@@ -10,19 +10,19 @@ namespace DiagnosticsUtil
 	int GetNumMachineScores();
 	int GetRevision();
 
+	CString GetDiskSpaceFree();
+	CString GetDiskSpacetotal();
+
 	CString GetIP();
-	CString GetFreeDiskSpace();
-	CString GetInputType();
 	CString GetProductName();
 
-	const CString& GetSerialNumber();
-	CString GenerateDebugSerial();
+	CString GetInputType();
+	void SetInputType( const CString &sType );
+
+	CString GetSerialNumber();
 
 	bool HubIsConnected();
-
-	void SetInputType( CString sType );
 }
-
 
 #endif // DIAGNOSTICS_UTIL_H
 

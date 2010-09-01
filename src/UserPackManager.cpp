@@ -40,8 +40,8 @@ void UserPackManager::MountAll()
 bool UserPackManager::Remove( const CString &sPack )
 {
 	/* it's okay if either one of these fails */
-	FILEMAN->Unmount("zip", sPack, "/Songs");
-	FILEMAN->Unmount("zip", sPack, "/");
+	FILEMAN->Unmount( "zip", sPack, "/Songs" );
+	FILEMAN->Unmount( "zip", sPack, "/" );
 
 #if defined(LINUX) && defined(ITG_ARCADE)
 	system( "mount -o remount,rw /itgdata" );
@@ -112,34 +112,50 @@ bool UserPackManager::IsPackMountable( const CString &sPack, CString &sError )
 	return true;
 }
 
-bool UserPackManager::IsPackTransferable( const CString sPack, CString &sError )
+bool UserPackManager::IsPackTransferable( const CString &sPack, CString &sError )
 {
-	
-
-	CStringArray asSavedPacks;
-	GetUserPacks( asSavedPacks );
-	for ( unsigned i = 0; i < asSavedPacks.size(); i++ )
+	/* Check for duplicate names. */
 	{
-		if ( asSavedPacks[i].CompareNoCase(sPack) == 0 )
+		CStringArray asSavedPacks;
+		GetUserPacks( asSavedPacks );
+
+		for( unsigned i = 0; i < asSavedPacks.size(); ++i )
 		{
-			sError = ssprintf("%s is already on the machine", asSavedPacks[i].c_str());
+			if ( asSavedPacks[i].CompareNoCase(sPack) == 0 )
+			{
+				sError = ssprintf("%s is already on the machine", asSavedPacks[i].c_str());
+				return false;
+			}
+		}
+	}
+
+	/* Do we have enough disk space? */
+	{
+		const CString sPath = USER_PACK_SAVE_PATH + "/" + sPack;
+		uint64_t iFree = HOOKS->GetDiskSpaceFree( USER_PACK_SAVE_PATH );
+		uint64_t iFileSize = FILEMAN->GetFileSizeInBytes( sPath );
+
+		if( iFree < iFileSize )
+		{
+			sError = "Insufficient disk space";
 			return false;
 		}
 	}
+
 	return true;
 }
 
-bool UserPackManager::TransferPack( const CString sPack, const CString sDestPack, void(*OnUpdate)(unsigned long, unsigned long), CString &sError )
+bool UserPackManager::TransferPack( const CString &sPack, const CString &sDestPack, void(*OnUpdate)(unsigned long, unsigned long), CString &sError )
 {
 	return FileCopy( sPack, USER_PACK_SAVE_PATH + "/" + sDestPack, sError, OnUpdate );
 }
 
-#define ROOT_DIRS_SIZE 8
-const CString asRootDirs[ROOT_DIRS_SIZE] = { "Themes", "Songs", "BackgroundEffects", "BGAnimations", "BackgroundTransitions", 
-					"Courses", "NoteSkins", "RandomMovies" };
+/* use "" as a sentinel for the end of the list */
+const CString asRootDirs[] = { "Themes", "Songs", "BackgroundEffects", "BGAnimations", "BackgroundTransitions", 
+				"Courses", "NoteSkins", "RandomMovies", "" };
 
 /* seemingly good start of an automagical way to mount a user pack based on the folder structure */
-CString UserPackManager::GetPackMountPoint( const CString sPack )
+CString UserPackManager::GetPackMountPoint( const CString &sPack )
 {
 	enum UserPackMountType { UPACK_MOUNT_ROOT, UPACK_MOUNT_SONGS };
 
@@ -154,10 +170,9 @@ CString UserPackManager::GetPackMountPoint( const CString sPack )
 	SAFE_DELETE( pZip );
 
 	// if we find a StepMania root folder, mount it as one
-	for( unsigned i = 0; i < ROOT_DIRS_SIZE; i++ )
-		for( unsigned j = 0; j < asRootEntries.size(); j++ )
-			if ( asRootEntries[j].CompareNoCase( asRootDirs[i] ) == 0 )
-				return "/";
+	for( unsigned i = 0; !asRootEntries[i].empty(); ++i )
+		if ( asRootEntries[i].CompareNoCase( asRootDirs[i] ) == 0 )
+			return "/";
 
 	/* for now, assume a Songs-only pack if the root dirs aren't there */
 	return "/Songs";

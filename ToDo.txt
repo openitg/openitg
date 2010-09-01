@@ -1,23 +1,25 @@
-/* More-or-less in order of priority. */
+Core engine stuff
+-----------------
+- Implement/test Ridiculous timing logic
+  (note to self: make sure there are at least 3 inputs in the window)
 
-/* Major bug fixing */
--Switching modes on the main menu causes OpenITG to hang (out-of-memory error)
--Figure out what the hell's up with saving USB stats
+DiagnosticsUtil
+---------------
+- Figure out why GetNumMachineScores is returning values that are too low
 
-/* Minor bug fixing */
--"Random" selections for non-existant BGVids always return the same video
--Recalculate precentages correctly with removal mods and negative BPMs
--[Linux] Full Screen -> Full Screen switch does not actually reset resolution, rather just the window size
--"Perspective" modifiers aren't saved on cards between sessions
+UserPackManager
+---------------
+- Test disk space limiting (i.e. reject packs that are too big for the disk)
+- Allow cancelling a pack transfer (but require a dialog to confirm)
+- Implement/test ETA reports for completion of pack transfer
 
-/* Minor feature additions */
--Include ThemeInfo.ini support (is this still needed?)
--Write .edit files directly to USB cards from editor
--Add Windows code for network diagnostics
--Implement "CustomSongsUseGraphics" (use song BG/banner, not fallbacks)
+Autotools (Linux)
+-----------------
+- Add an option to compile ffmpeg statically
+    - Add ffmpeg's source to SVN and compile it in place
+- Compile audio libraries statically on ITG_ARCADE
 
-/* Major feature additions */
--Implement custom courses from USB drive
--Implement "lifebar graph shows FFC/FEC"
--Fix up/rewrite network gameplay screens for arcade support
--Improve code behind ITG2's beginner helper
+Pipe dreams
+-----------
+- Compile a USB 2.0 kernel module for ITG's kernel
+    - Selectively load it for custom song reading and pack management

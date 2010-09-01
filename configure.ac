@@ -88,6 +88,17 @@ AC_C_BIGENDIAN(
 	AC_DEFINE(ENDIAN_LITTLE, 1, [Little endian]),
 	AC_MSG_ERROR([Can't determine endianness]) )
 
+# If we're compiling with the SSE2 build flag, add that flag to CFLAGS and CXXFLAGS.
+# (Handwritten SSE/SSE2 code isn't in the binary, but GCC's heuristics optimize enough
+# vector arithmetic in Rage that this produces a noticeable speedup on SSE2 processors.)
+
+AC_ARG_WITH(sse2, AC_HELP_STRING([--with-sse2], [Enable SSE2 optimization]), with_sse2=$withval, with_sse2=no)
+
+if test "$with_sse2" = "yes"; then
+	CFLAGS="$CFLAGS -msse2"
+	CXXFLAGS="$CXXFLAGS -msse2"
+fi
+
 AC_ARG_WITH(prof, AC_HELP_STRING([--with-prof], [Enable profiling]), with_prof=$withval, with_prof=no)
 if test "$with_prof" = "yes"; then
 	test "$DEFAULT_CFLAGS" = "yes" && CFLAGS="$CFLAGS -pg"
@@ -152,11 +163,11 @@ fi
 AM_CONDITIONAL(WITHOUT_NETWORKING, test "$with_network" = "no")
 
 
-AC_ARG_ENABLE(itg-arcade, AC_HELP_STRING([--enable-itg-arcade], [Tailor game behavior to mimic ITG2 Arcade exactly]), itg_arcade=$enableval, itg_arcade=no)
-if test "x$itg_arcade" = "xyes"; then
-	AC_DEFINE(ITG_ARCADE, 1, [ITG Arcade specification])
+AC_ARG_ENABLE(itg-arcade, AC_HELP_STRING([--enable-itg-arcade], [Enable arcade-specific behavior]), itg_arcade=$enableval, itg_arcade=no)
+if test "$itg_arcade" = "yes"; then
+	AC_DEFINE(ITG_ARCADE, 1, [Use arcade mountpoints and behavior])
 fi
-AM_CONDITIONAL(ITG_ARCADE, test "x$itg_arcade" = "xyes")
+AM_CONDITIONAL(ITG_ARCADE, test "$itg_arcade" = "yes")
 
 SM_LUA
 SM_ZLIB

@@ -28,7 +28,7 @@
 				Optimization="0"
 				OptimizeForProcessor="3"
 				AdditionalIncludeDirectories="libusb\include;.;vorbis;libjpeg;&quot;lua-5.0\include&quot;;libusb\include"
-				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,WINDOWS,DEBUG"
+				PreprocessorDefinitions="WIN32,_DEBUG,_WINDOWS,WINDOWS,DEBUG,HAVE_CRYPTOPP"
 				ExceptionHandling="FALSE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
@@ -1802,6 +1802,12 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 					RelativePath="archutils\Win32\DebugInfoHunt.h">
 				</File>
 				<File
+					RelativePath=".\archutils\Win32\ErrorStrings.cpp">
+				</File>
+				<File
+					RelativePath=".\archutils\Win32\ErrorStrings.h">
+				</File>
+				<File
 					RelativePath="archutils\Win32\GetFileInformation.cpp">
 				</File>
 				<File
@@ -3217,9 +3223,6 @@ cl /Zl /nologo /c verstub.cpp /Fo&quot;$(IntDir)&quot;\
 				</File>
 				<File
 					RelativePath="crypto51\queue.h">
-				</File>
-				<File
-					RelativePath="crypto51\rng.h">
 				</File>
 				<File
 					RelativePath="crypto51\rsa.cpp">

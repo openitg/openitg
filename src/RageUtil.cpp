@@ -105,6 +105,20 @@ bool IsHexVal( const CString &s )
 	return true;
 }
 
+bool BeginsWith( const CString &sTestThis, const CString &sBeginning )
+{
+	ASSERT( !sBeginning.empty() );
+	return sTestThis.compare( 0, sBeginning.length(), sBeginning ) == 0;
+}
+
+bool EndsWith( const CString &sTestThis, const CString &sEnding )
+{
+	ASSERT( !sEnding.empty() );
+	if( sTestThis.size() < sEnding.size() )
+		return false;
+	return sTestThis.compare( sTestThis.length()-sEnding.length(), sEnding.length(), sEnding ) == 0;
+}
+
 float HHMMSSToSeconds( const CString &sHHMMSS )
 {
 	CStringArray arrayBits;

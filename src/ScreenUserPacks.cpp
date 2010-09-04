@@ -246,7 +246,6 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 {
 	if ( SM == SM_LinkedMenuChange )
 	{
-		Dialog::OK( "SM_LinkedMenuChange" );
 		m_pCurLOM = m_pCurLOM->SwitchToNextMenu();
 		return;
 	}
@@ -268,11 +267,10 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 			m_SoundDelete.Play();
 			ReloadZips();
 			m_bRestart = true;
-
 		}
 		else
 		{
-			SCREENMAN->SystemMessage( "Failed to delete zip file from machine. Check your file permissions" );
+			SCREENMAN->SystemMessage( "Failed to delete zip file from machine. Check your file permissions." );
 		}
 	}
 	if ( SM == SM_ConfirmAddZip )
@@ -314,7 +312,7 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 			bSkip = false;
 
 			g_CurXferFile = MEM_CARD_MOUNT_POINT[m_CurPlayer] + "/" + USER_PACK_TRANSFER_PATH + sSelection;
-			if ( !UPACKMAN->IsPackTransferable( sSelection, sError ) || !UPACKMAN->IsPackMountable( g_CurXferFile, sError ) )
+			if ( !UPACKMAN->IsPackTransferable( sSelection, g_CurXferFile, sError ) || !UPACKMAN->IsPackMountable( g_CurXferFile, sError ) )
 			{
 				SCREENMAN->SystemMessage( "Could not add pack to machine:\n" + sError );
 				XFER_CLEANUP;

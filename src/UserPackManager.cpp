@@ -112,7 +112,7 @@ bool UserPackManager::IsPackMountable( const CString &sPack, CString &sError )
 	return true;
 }
 
-bool UserPackManager::IsPackTransferable( const CString &sPack, CString &sError )
+bool UserPackManager::IsPackTransferable( const CString &sPack, const CString &sPath, CString &sError )
 {
 	/* Check for duplicate names. */
 	{
@@ -131,10 +131,8 @@ bool UserPackManager::IsPackTransferable( const CString &sPack, CString &sError 
 
 	/* Do we have enough disk space? */
 	{
-		const CString sPath = USER_PACK_SAVE_PATH + "/" + sPack;
-		uint64_t iFree = HOOKS->GetDiskSpaceFree( USER_PACK_SAVE_PATH );
-		uint64_t iFileSize = FILEMAN->GetFileSizeInBytes( sPath );
-
+		uint64_t iFree = HOOKS->GetDiskSpaceFree( USER_PACK_TRANSFER_PATH );
+		uint64_t iFileSize = (uint64_t) FILEMAN->GetFileSizeInBytes( sPath );
 		if( iFree < iFileSize )
 		{
 			sError = "Insufficient disk space";
@@ -170,9 +168,14 @@ CString UserPackManager::GetPackMountPoint( const CString &sPack )
 	SAFE_DELETE( pZip );
 
 	// if we find a StepMania root folder, mount it as one
-	for( unsigned i = 0; !asRootEntries[i].empty(); ++i )
-		if ( asRootEntries[i].CompareNoCase( asRootDirs[i] ) == 0 )
-			return "/";
+	for( unsigned i = 0; i < asRootEntries.size(); ++i )
+	{
+		for( unsigned j = 0; j < ARRAYLEN(asRootDirs); j++ )
+		{
+			if ( asRootEntries[i].CompareNoCase( asRootDirs[j] ) == 0 )
+				return "/";
+		}
+	}
 
 	/* for now, assume a Songs-only pack if the root dirs aren't there */
 	return "/Songs";

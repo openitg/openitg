@@ -15,7 +15,7 @@ public:
 
 	void MountAll();
 	bool IsPackMountable( const CString &sPack, CString &sError );
-	bool IsPackTransferable( const CString &sPack, CString &sError );
+	bool IsPackTransferable( const CString &sPack, const CString &sPath, CString &sError );
 
 	bool TransferPack( const CString &sPack, const CString &sDest, void(*OnUpdate)(unsigned long, unsigned long), CString &sError );
 	bool Remove( const CString &sPack );

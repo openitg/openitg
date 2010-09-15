@@ -346,7 +346,7 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 
 	FOREACH( Steps*, m_vpSteps, s )
 	{
-		(*s)->SetFile( NULL ); // avoid loading from cache
+		(*s)->SetFile( "" ); // avoid loading from cache
 		(*s)->Compress();
 	}
 

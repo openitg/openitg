@@ -145,7 +145,14 @@ bool UserPackManager::IsPackTransferable( const CString &sPack, const CString &s
 
 bool UserPackManager::TransferPack( const CString &sPack, const CString &sDestPack, void(*OnUpdate)(unsigned long, unsigned long), CString &sError )
 {
-	return FileCopy( sPack, USER_PACK_SAVE_PATH + "/" + sDestPack, sError, OnUpdate );
+	bool bSuccess = FileCopy( sPack, USER_PACK_SAVE_PATH + "/" + sDestPack, sError, OnUpdate );
+	if (!bSuccess)
+	{
+		FILEMAN->FlushDirCache( USER_PACK_SAVE_PATH );
+		FILEMAN->Remove( USER_PACK_SAVE_PATH + "/" + sDestPack );
+	}
+
+	return bSuccess;
 }
 
 /* use "" as a sentinel for the end of the list */

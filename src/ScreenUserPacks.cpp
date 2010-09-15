@@ -16,7 +16,10 @@
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "ProfileManager.h"
+#include "InputMapper.h"
 #include "UserPackManager.h"
+#include "ThemeManager.h"
+#include "DiagnosticsUtil.h"
 #include "RageUtil_FileDB.h" /* defines FileSet */
 #include "RageFileDriverDirect.h" /* defines DirectFilenameDB */
 #include "arch/ArchHooks/ArchHooks.h"
@@ -24,6 +27,9 @@
 
 #define NEXT_SCREEN					THEME->GetMetric (m_sName,"NextScreen")
 #define PREV_SCREEN					THEME->GetMetric (m_sName,"PrevScreen")
+
+ThemeMetric<CString> USER_PACK_WAIT_TEXT( "ScreenUserPacks", "TransferWaitText" );
+ThemeMetric<CString> USER_PACK_CANCEL_TEXT( "ScreenUserPacks", "TransferCancelText" );
 
 static RageMutex MountMutex("ITGDataMount");
 
@@ -34,6 +40,7 @@ AutoScreenMessage( SM_AnswerConfirmAddZip );
 AutoScreenMessage( SM_ConfirmDeleteZip );
 AutoScreenMessage( SM_AnswerConfirmDeleteZip );
 AutoScreenMessage( SM_LinkedMenuChange );
+AutoScreenMessage( SM_CancelTransfer );
 
 /* draw transfer updates six frames a second */
 static RageTimer DrawTimer;
@@ -79,6 +86,15 @@ int InitSASSongThread( void *pSAS )
 void ScreenUserPacks::Init()
 {
 	ScreenWithMenuElements::Init();
+
+	if ( USER_PACK_WAIT_TEXT.GetValue().empty() )
+		USER_PACK_WAIT_TEXT.SetValue("Please Wait...");
+
+	if ( USER_PACK_CANCEL_TEXT.GetValue().empty() )
+	{
+		USER_PACK_CANCEL_TEXT.SetValue(ssprintf( "Pressing %s will cancel this selection.",
+			DiagnosticsUtil::GetInputType() == "ITGIO" ? "&MENULEFT;+&MENURIGHT;" : "&SELECT;" ));
+	}
 
 	m_SoundDelete.Load( THEME->GetPathS( m_sName, "delete" ) );
 	m_SoundTransferDone.Load( THEME->GetPathS( m_sName, "transfer done" ) );
@@ -230,13 +246,36 @@ CString g_CurSelection;
 
 void UpdateXferProgress( unsigned long iCurrent, unsigned long iTotal )
 {
-	float fPercent = iCurrent / (iTotal/100);
-	CString sMessage = ssprintf( "Please wait ...\n%.2f%%\n\n%s\n", fPercent, g_CurSelection.c_str() );
-	SCREENMAN->OverlayMessage( sMessage );
+	bool bInterrupt = false;
+
+	FOREACH_EnabledPlayer(pn)
+	{
+		bInterrupt |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
+
+		bInterrupt |= INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) &&
+			INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT));
+	}
+
+	if ( bInterrupt )
+	{
+		InterruptCopy();
+
+		InputEventArray throwaway;
+		INPUTFILTER->GetInputEvents( throwaway );
+	}
 
 	// Draw() is very expensive: only do it on occasion.
 	if( DrawTimer.Ago() < DRAW_UPDATE_TIME )
 		return;
+
+	float fPercent = iCurrent / (iTotal/100);
+	CString sMessage = ssprintf( "\n\n%s\n%.2f%%\n\n%s",
+		USER_PACK_WAIT_TEXT.GetValue().c_str(),
+		fPercent,
+		USER_PACK_CANCEL_TEXT.GetValue().c_str()
+	);
+	SCREENMAN->OverlayMessage( sMessage );
+
 
 	SCREENMAN->Draw();
 	DrawTimer.Touch();
@@ -244,6 +283,17 @@ void UpdateXferProgress( unsigned long iCurrent, unsigned long iTotal )
 
 void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 {
+	if ( SM == SM_CancelTransfer )
+	{
+		Dialog::OK("SM_CancelTransfer");
+
+		InterruptCopy();
+
+		InputEventArray throwaway;
+		INPUTFILTER->GetInputEvents( throwaway );
+
+		LOG->Warn("Cancelled Transfer of user pack.");
+	}
 	if ( SM == SM_LinkedMenuChange )
 	{
 		m_pCurLOM = m_pCurLOM->SwitchToNextMenu();
@@ -326,6 +376,8 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 			{
 				SCREENMAN->SystemMessage( "Transfer error:\n" + sError );
 				XFER_CLEANUP;
+				SCREENMAN->HideOverlayMessage();
+				SCREENMAN->ZeroNextUpdate();
 				return;
 			}
 			LOG->Debug( "Transferred %s in %f seconds.", g_CurXferFile.c_str(), start.Ago() );

@@ -1857,6 +1857,7 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnU
 	/* handle any interrupts if they occurred. */
 	if( g_bInterruptCopy )
 	{
+		sError = "Cancelled by user";
 		LOG->Warn( "Copying interrupted (%lu/%lu).", read, total );
 		g_bInterruptCopy = false;
 

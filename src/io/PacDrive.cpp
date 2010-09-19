@@ -16,7 +16,7 @@ bool PacDrive::Matches( int idVendor, int idProduct ) const
 
 /* While waiting for this to reconnect, we would likely run into a condition
  * where LightsDriver::Set() is being called constantly and none of the calls
- * actually terminate. If this write fails, assume it's lost and don't reconnect.
+ * actually terminate. If this write fails, assume it's lost; don't reconnect.
  */
 bool PacDrive::Write( const uint16_t iData )
 {

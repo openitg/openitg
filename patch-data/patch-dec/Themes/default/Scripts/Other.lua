@@ -350,7 +350,7 @@ function Get2PlayerJoinMessage()
 	if remaining <= 0 then return "2 Player mode available" end
 
 	-- OpenITG: split based on CreditType preference	
-	local type = GetCustomPref("CreditType")
+	local type = CustomPrefs.Get("CreditType")
 
 	local s = "For 2 players,"
 	if type == "Card" then

@@ -19,7 +19,7 @@
 				end 
 			end"
 		InsertCoinTextCommand="%function(self)
-			local type = GetCustomPref('CreditType')
+			local type = CustomPrefs.Get('CreditType')
 			if string.lower(type) == 'card' then
 				self:settext('SWIPE CARD' )
 			else

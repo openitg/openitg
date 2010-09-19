@@ -18,30 +18,59 @@ if not MachineTable.CustomPrefs then MachineTable.CustomPrefs = {} end
 -- the global table that holds all preference data
 local PrefsTable = MachineTable.CustomPrefs
 
-function GetCustomPref( name )
-	-- we should never request a pref that isn't here
-	if not PrefsTable[name] then return nil end
+-- Set up our public namespace and associated functions
+CustomPrefs =
+{
+	NeedToSaveMachineProfile = false,
 
-	return PrefsTable[name]
-end
+	Get = function(name)
+		return PrefsTable[name]
+	end,
 
--- TODO: conserve disk saves by saving once, after
--- setting all preferences. How can we do that?
-function SetCustomPref( name, value )
-	PrefsTable[name] = value
-	PROFILEMAN:SaveMachineProfile()
-end
+	-- don't save the machine profile when initializing prefs
+	Set = function(name, value)
+		PrefsTable[name] = value
+		NeedToSaveMachineProfile = true
+	end,
 
--- this is used to initialize a custom preference,
--- but won't clobber pre-set values.
+	SaveMachineProfileIfNeeded = function()
+		Debug( "Called SaveMachineProfileIfNeeded" )
+		if NeedToSaveMachineProfile == true then
+			PROFILEMAN:SaveMachineProfile()
+			NeedToSaveMachineProfile = false
+			Debug( "Needed to save profile" )
+		end
+	end,
+}
+
+-- initialize a custom preference without clobbering any existing values
 local function InitCustomPref( name, value )
-	if PrefsTable[name] then return end
-	SetCustomPref( name, value )
+	if PrefsTable[name] == nil then
+		CustomPrefs.Set( name, value, true )
+	end
 end
 
--- This is the official list of custom mods.
--- Anything not here will be ignored.
--- TODO: change into a table and init dynamically
-InitCustomPref( "MusicSelectSeconds", 50 )
-InitCustomPref( "CreditType", "Coin" )
-InitCustomPref( "UseOldLogo", false )
+-- This is the list of custom mods, settable from "OpenITG Options".
+local Prefs =
+{
+	-- Amount of seconds to be used on the Select Music screen
+	{ "MusicSelectSeconds",	50 },
+
+	-- Type of credit used, which adjusts attract sequence text
+	{ "CreditType",		"Coin" },
+
+	-- Use the ITG2 logo instead of the OpenITG logo
+	{ "UseOldLogo",		false },
+}
+
+--[[
+Initialize the list of preferences
+--]]
+
+for num,tbl in ipairs(Prefs) do
+	InitCustomPref( tbl[1], tbl[2] )
+end
+
+-- OPTIMIZATION: don't save default values. We'll re-create them if need be,
+-- but saving to the disk is an expensive operation on ITG cabinets.
+CustomPrefs.NeedToSaveMachineProfile = false

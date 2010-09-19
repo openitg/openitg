@@ -14,7 +14,7 @@ function CustomPrefsRow( Params, Names, Values, PrefName )
 	Params.Name = PrefName
 
 	local amt = table.getn(Names)
-	local val = GetCustomPref( PrefName )
+	local val = CustomPrefs.Get( PrefName )
 
 	local function Load(self, list, pn)
 		for i=1,amt do
@@ -25,7 +25,7 @@ function CustomPrefsRow( Params, Names, Values, PrefName )
 
 	local function Save(self, list, pn)
 		for i=1,amt do if list[i] then
-			SetCustomPref( PrefName, Values[i] )
+			CustomPrefs.Set( PrefName, Values[i] )
 			return end
 		end
 	end

@@ -95,6 +95,9 @@
 #else
 #define PATCH_DIR	"Data/patch"
 #define PATCH_FILE	"Data/patch/patch.zip"
+
+/* If it exists, this dir is mounted as a patch in lieu of patch.zip */
+#define PATCH_DATA_DIR	"Data/patch/patch"
 #endif
 
 #define ZIPS_DIR "Packages/"
@@ -1047,17 +1050,22 @@ int main(int argc, char* argv[])
 
 	MountTreeOfZips( "Packages/", false );
 
-	/* Mount patch data, if any. */
-	if ( IsAFile( PATCH_FILE ) )
+	/* Mount patch data. If PATCH_DATA_DIR exists, use it instead 
+	 * of PATCH_FILE (easier testing and mucking about, etc.) */
+	if( IsADirectory(PATCH_DATA_DIR) )
 	{
-		LOG->Info( "VFS: mounting patch.zip" );
+		LOG->Info( "VFS: mounting Data/patch/patch/." );
+		FILEMAN->Mount( "dir", PATCH_DATA_DIR, "/", false );
+	}
+	else if( IsAFile(PATCH_FILE) )
+	{
+		LOG->Info( "VFS: mounting patch.zip." );
 		FILEMAN->Mount( "patch", PATCH_DIR, "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
-		// MountTreeOfZips( PATCH_DIR, "patch" );
 	}
 	else
 	{
-		LOG->Trace("VFS: No patch file found");
+		LOG->Info("VFS: No patch data found");
 	}
 
 #if 0
@@ -1197,7 +1205,7 @@ int main(int argc, char* argv[])
 
 	/* This initializes objects that change the SDL event mask, and has other
 	 * dependencies on the SDL video subsystem, so it must be initialized after DISPLAY. */
-	INPUTMAN	= new RageInput();
+	INPUTMAN	= new RageInput;
 
 	// These things depend on the TextureManager, so do them after!
 	FONT		= new FontManager;

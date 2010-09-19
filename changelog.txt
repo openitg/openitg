@@ -4,6 +4,7 @@ OpenITG, beta 3 (in development)
      "clearmachinelogs" - clears crash logs from machine.
      "transferlogsfrommachine" - transfers crash logs to a USB drive.
 -Miscellaneous changes:
+     Allow mounting the directory "Data/patch/patch/" as a patch instead of patch.zip
      Changed OptionsList behavior (Exit on multiple selection, don't insta-exit on button)
      Changed "DebugTheme" preference to "ShowThemeErrors"
      Added blinking for GAME_BUTTON_START on LIGHTSMODE_MENU

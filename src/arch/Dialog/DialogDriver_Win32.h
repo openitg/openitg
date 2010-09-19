@@ -11,7 +11,6 @@ public:
 	Dialog::Result AbortRetryIgnore( CString sMessage, CString sID );
 	Dialog::Result AbortRetry( CString sMessage, CString sID );
 };
-#define USE_DIALOG_DRIVER_WIN32
 
 #endif
 

@@ -5,6 +5,8 @@
 #include <Carbon/Carbon.h>
 #undef Random_
 
+REGISTER_DIALOG_DRIVER( Cocoa );
+
 static SInt16 ShowAlert( int type, CFStringRef message, CFStringRef OK, CFStringRef cancel = NULL )
 {
 	struct AlertStdCFStringAlertParamRec params =
@@ -45,6 +47,9 @@ void DialogDriver_Cocoa::Error( CString sError, CString sID )
 // XXX: should show three options, not two
 Dialog::Result DialogDriver_Cocoa::AbortRetryIgnore( CString sMessage, CString sID )
 {
+	if( !g_bShowThemeErrors )
+		return Dialog::ignore;
+
 	CFStringRef error = CFStringCreateWithCString( NULL, sMessage, kCFStringEncodingASCII );
 	SInt16 iResult = ShowAlert( kAlertNoteAlert, error, CFSTR("Retry"), CFSTR("Ignore") );
 	Dialog::Result ret;

@@ -205,7 +205,8 @@ LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.cpp arch/LowLevelWindow/LowL
 
 ArchUtils =
 
-Dialog = arch/Dialog/Dialog.cpp arch/Dialog/Dialog.h arch/Dialog/DialogDriver.h
+Dialog = arch/Dialog/Dialog.cpp arch/Dialog/Dialog.h \
+	arch/Dialog/DialogDriver.cpp arch/Dialog/DialogDriver.h
 
 Threads = arch/Threads/Threads.h
 

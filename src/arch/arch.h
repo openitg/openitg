@@ -13,15 +13,6 @@
 #define SUPPORT_OPENGL
 #endif
 
-class DialogDriver;
-DialogDriver *MakeDialogDriver();
-
-class InputHandler;
-void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add);
-
-class MemoryCardDriver;
-MemoryCardDriver *MakeMemoryCardDriver();
-
 class RageMovieTexture;
 RageMovieTexture *MakeRageMovieTexture(RageTextureID ID);
 

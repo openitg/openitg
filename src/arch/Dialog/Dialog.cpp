@@ -5,50 +5,9 @@
 #include "RageUtil.h"
 #include "RageLog.h"
 
-#include "arch/arch.h"
+/* the old identifier should maintain backwards compatibility. */
+static Preference<CString> g_sIgnoredDialogs( "IgnoredMessageWindows", "" );
 
-#include "Selector_Dialog.h"
-DialogDriver *MakeDialogDriver()
-{
-	CString sDrivers = "win32,cocoa,null";
-	CStringArray asDriversToTry;
-	split( sDrivers, ",", asDriversToTry, true );
-
-	ASSERT( asDriversToTry.size() != 0 );
-
-	CString sDriver;
-	DialogDriver *pRet = NULL;
-
-	for( unsigned i = 0; pRet == NULL && i < asDriversToTry.size(); ++i )
-	{
-		sDriver = asDriversToTry[i];
-
-#ifdef USE_DIALOG_DRIVER_COCOA
-		if( !asDriversToTry[i].CompareNoCase("Cocoa") )	pRet = new DialogDriver_Cocoa;
-#endif
-#ifdef USE_DIALOG_DRIVER_NULL
-		if( !asDriversToTry[i].CompareNoCase("Null") )	pRet = new DialogDriver_Null;
-#endif
-#ifdef USE_DIALOG_DRIVER_WIN32
-		if( !asDriversToTry[i].CompareNoCase("Win32") )	pRet = new DialogDriver_Win32;
-#endif
-
-		if( pRet == NULL )
-		{
-			continue;
-		}
-
-		CString sError = pRet->Init();
-		if( sError != "" )
-		{
-			if( LOG )
-				LOG->Info( "Couldn't load driver %s: %s", asDriversToTry[i].c_str(), sError.c_str() );
-			SAFE_DELETE( pRet );
-		}
-	}
-
-	return pRet;
-}
 
 static DialogDriver *g_pImpl = NULL;
 static DialogDriver_Null g_NullDriver;
@@ -60,7 +19,7 @@ void Dialog::Init()
 	if( g_pImpl != NULL )
 		return;
 
-	g_pImpl = MakeDialogDriver();
+	g_pImpl = DialogDriver::Create();
 
 	/* DialogDriver_Null should have worked, at least. */
 	ASSERT( g_pImpl != NULL );
@@ -80,7 +39,7 @@ bool Dialog::IsShowingDialog()
 static bool MessageIsIgnored( CString sID )
 {
 	vector<CString> asList;
-	split( PREFSMAN->m_sIgnoredMessageWindows, ",", asList );
+	split( g_sIgnoredDialogs, ",", asList );
 	for( unsigned i = 0; i < asList.size(); ++i )
 		if( !sID.CompareNoCase(asList[i]) )
 			return true;
@@ -105,9 +64,9 @@ void Dialog::IgnoreMessage( CString sID )
 		return;
 
 	vector<CString> asList;
-	split( PREFSMAN->m_sIgnoredMessageWindows, ",", asList );
+	split( g_sIgnoredDialogs, ",", asList );
 	asList.push_back( sID );
-	PREFSMAN->m_sIgnoredMessageWindows.Set( join(",",asList) );
+	g_sIgnoredDialogs.Set( join(",",asList) );
 	PREFSMAN->SaveGlobalPrefsToDisk();
 }
 

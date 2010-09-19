@@ -11,10 +11,11 @@
 #include "archutils/win32/WindowsResources.h"
 #include "archutils/win32/GraphicsWindow.h"
 
+REGISTER_DIALOG_DRIVER( Win32 );
+
 static bool g_bHush;
 static CString g_sMessage;
 static bool g_bAllowHush;
-static Preference<bool> g_bDebugTheme( "DebugTheme", 0 );
 
 static BOOL CALLBACK OKWndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
@@ -146,7 +147,8 @@ Dialog::Result DialogDriver_Win32::AbortRetryIgnore( CString sMessage, CString I
 {
 	CString sWindowTitle = WINDOW_TITLE.IsLoaded() ? WINDOW_TITLE.GetValue() : "";
 
-	if ( g_bDebugTheme.Get() == false ) return Dialog::ignore;
+	if ( !g_bShowThemeErrors )
+		return Dialog::ignore;
 
 	switch( MessageBox(GraphicsWindow::GetHwnd(), sMessage, sWindowTitle, MB_ABORTRETRYIGNORE|MB_DEFBUTTON3 ) )
 	{

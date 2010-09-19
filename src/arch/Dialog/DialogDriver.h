@@ -2,21 +2,36 @@
 #define DIALOG_BOX_DRIVER_H
 
 #include "Dialog.h"
+#include "Preference.h"
+#include "RageUtil.h"
+#include <map>
+
+extern Preference<bool> g_bShowThemeErrors;
 
 class DialogDriver
 {
 public:
+	static DialogDriver *Create();
+
 	virtual void Error( CString sMessage, CString sID ) { printf("Error: %s\n", sMessage.c_str()); }
 	virtual void OK( CString sMessage, CString sID ) {}
 	virtual Dialog::Result AbortRetryIgnore( CString sMessage, CString sID ) { return Dialog::ignore; } 
 	virtual Dialog::Result AbortRetry( CString sMessage, CString sID ) { return Dialog::abort; } 
 
-	virtual CString Init() { return ""; }
+	virtual CString Init() { return CString(); }
 	virtual ~DialogDriver() { }
 };
 
-class DialogDriver_Null: public DialogDriver { };
-#define USE_DIALOG_DRIVER_NULL
+class DialogDriver_Null : public DialogDriver { };
+
+typedef DialogDriver *(*CreateDialogDriverFn)();
+struct RegisterDialogDriver
+{
+	static map<istring, CreateDialogDriverFn> *g_pRegistrees;
+	RegisterDialogDriver( const istring &sName, CreateDialogDriverFn pfn );
+};
+#define REGISTER_DIALOG_DRIVER( name ) \
+	static RegisterDialogDriver register_##name( #name, CreateClass<DialogDriver_##name, DialogDriver> )
 
 #endif
 

@@ -77,7 +77,7 @@ void LightsDriver_PacDrive::Set( const LightsState *ls )
 	FOREACH_GameController( gc )
 		FOREACH_GameButton( gb )
 			if( ls->m_bGameButtonLights[gc][gb] )
-				iWriteData |= m_LightsMappings.m_iButtonLights[gc][gb];
+				iWriteData |= m_LightsMappings.m_iGameLights[gc][gb];
 
 
 	// write the data - if it fails, stop updating

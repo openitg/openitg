@@ -14,7 +14,7 @@ struct LightsMapping
 	LightsMapping()
 	{
 		ZERO(m_iCabinetLights);
-		ZERO(m_iButtonLights);
+		ZERO(m_iGameLights);
 		ZERO(m_iCoinCounter);
 	}
 
@@ -24,22 +24,22 @@ struct LightsMapping
 			m_iCabinetLights[i] = array[i];
 	}
 
-	void SetButtonLights( uint32_t array[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] )
+	void SetGameLights( uint32_t array[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] )
 	{
 		FOREACH_GameController( gc )
 			FOREACH_GameButton( gb )
-				m_iButtonLights[gc][gb] = array[gc][gb];
+				m_iGameLights[gc][gb] = array[gc][gb];
 	}
 
-	/* like the above, but only modifies custom button lights */
-	void SetGameLights( uint32_t array[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] )
+	/* like the above, but only modifies custom lights */
+	void SetCustomGameLights( uint32_t array[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] )
 	{
 		FOREACH_GameController( gc )
 		{
 			FOREACH_GameButton_Custom( gb )
 			{
 				unsigned int iIndex = gb - GAME_BUTTON_NEXT;
-				m_iButtonLights[gc][gb] = array[gc][iIndex];
+				m_iGameLights[gc][gb] = array[gc][iIndex];
 			}
 		}
 	}
@@ -51,7 +51,7 @@ struct LightsMapping
 	}
 
 	uint32_t	m_iCabinetLights[NUM_CABINET_LIGHTS];
-	uint32_t	m_iButtonLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];
+	uint32_t	m_iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];
 	uint32_t	m_iCoinCounter[2];	// off, on
 };
 

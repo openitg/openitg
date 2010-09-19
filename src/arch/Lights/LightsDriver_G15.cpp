@@ -122,7 +122,7 @@ void LightsDriver_G15::Set( const LightsState *ls )
 	FOREACH_GameController( gc )
 		FOREACH_GameButton( gb )
 			if( ls->m_bGameButtonLights[gc][gb] )
-				iWriteData |= m_LightsMappings.m_iButtonLights[gc][gb];
+				iWriteData |= m_LightsMappings.m_iGameLights[gc][gb];
 
 	g_G15LightMutex.Lock();
 	m_iSavedLightData = iWriteData;

@@ -98,7 +98,7 @@ void LightsMapper::LoadMappings( const CString &sDeviceName, LightsMapping &mapp
 		FOREACH_ENUM( GameButton, pGame->ButtonNameToIndex("Operator"), gb )
 		{
 			ini.GetValue( sPlayerKey, GameButtonToString(pGame, gb), sBuffer );
-			ToMapping( sBuffer, mapping.m_iButtonLights[gc][gb] );
+			ToMapping( sBuffer, mapping.m_iGameLights[gc][gb] );
 		}
 	}
 
@@ -131,7 +131,7 @@ void LightsMapper::WriteMappings( const CString &sDeviceName, LightsMapping &map
 		// only read up to the last-set game button, which is the operator button
 		FOREACH_ENUM( GameButton, pGame->ButtonNameToIndex("Operator"), gb )
 			ini.SetValue( sPlayerKey, GameButtonToString(pGame, gb),
-				FromMapping(mapping.m_iButtonLights[gc][gb]) );
+				FromMapping(mapping.m_iGameLights[gc][gb]) );
 	}
 
 	ini.WriteFile( LIGHTS_INI_PATH );

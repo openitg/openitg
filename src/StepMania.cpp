@@ -1102,7 +1102,7 @@ int main(int argc, char* argv[])
 	GAMESTATE	= new GameState;
 
 	/* This requires PREFSMAN, for PREFSMAN->m_bShowLoadingWindow. */
-	LoadingWindow *loading_window = MakeLoadingWindow();
+	LoadingWindow *loading_window = LoadingWindow::Create();
 	if( loading_window == NULL )
 		RageException::Throw( "Couldn't open any loading windows." );
 

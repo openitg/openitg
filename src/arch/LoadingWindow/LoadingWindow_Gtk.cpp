@@ -6,6 +6,8 @@
 #include "LoadingWindow_Gtk.h"
 #include "LoadingWindow_GtkModule.h"
 
+REGISTER_LOADING_WINDOW( Gtk );
+
 #include <dlfcn.h>
 
 static void *Handle = NULL;

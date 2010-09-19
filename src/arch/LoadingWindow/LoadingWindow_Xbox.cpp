@@ -4,6 +4,8 @@
 
 #include "ProductInfo.h"
 
+REGISTER_LOADING_WINDOW( Xbox );
+
 LPDIRECT3D8 g_pD3D = NULL; // DirectX Object
 LPDIRECT3DDEVICE8 g_pD3DDevice = NULL; // Screen Object
 LPDIRECT3DTEXTURE8 splash = NULL; // splash texture

@@ -26,9 +26,6 @@ void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add);
 class LightsDriver;
 void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add);
 
-class LoadingWindow;
-LoadingWindow *MakeLoadingWindow();
-
 class MemoryCardDriver;
 MemoryCardDriver *MakeMemoryCardDriver();
 

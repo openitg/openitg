@@ -127,7 +127,8 @@ StepMania = StdString.h \
 		StepMania.cpp StepMania.h \
 		global.cpp global.h
 
-LoadingWindow = arch/LoadingWindow/LoadingWindow.h \
+LoadingWindow = arch/LoadingWindow/LoadingWindow.cpp \
+		arch/LoadingWindow/LoadingWindow.h \
 		arch/LoadingWindow/LoadingWindow_Null.h
 
 

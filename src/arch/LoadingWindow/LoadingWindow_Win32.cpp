@@ -1,5 +1,5 @@
-#include "../../global.h"
-#include "../../RageUtil.h"
+#include "global.h"
+#include "RageUtil.h"
 
 #include "LoadingWindow_Win32.h"
 #include "RageFileManager.h"
@@ -9,6 +9,8 @@
 #include "RageSurface_Load.h"
 #include "RageSurface.h"
 #include "RageSurfaceUtils.h"
+
+REGISTER_LOADING_WINDOW( Win32 );
 
 static HBITMAP g_hBitmap = NULL;
 

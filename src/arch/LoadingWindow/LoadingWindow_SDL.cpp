@@ -10,6 +10,8 @@
 #include "RageSurfaceUtils.h"
 #include "RageSurfaceUtils_Zoom.h"
 
+REGISTER_LOADING_WINDOW( SDL );
+
 LoadingWindow_SDL::LoadingWindow_SDL()
 {
 	/* There's no consistent way to hint SDL that we want a centered

@@ -62,64 +62,6 @@ void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add)
 	Add.push_back( new LightsDriver_External );
 }
 
-#include "LoadingWindow/Selector_LoadingWindow.h"
-LoadingWindow *MakeLoadingWindow()
-{
-	if( !PREFSMAN->m_bShowLoadingWindow )
-		return new LoadingWindow_Null;
-
-	/* Don't load NULL by default.  On most systems, if we can't load the SDL
-	 * loading window, we won't be able to init OpenGL, either, so don't bother. */
-	CString drivers = "xbox,win32,cocoa,gtk,sdl";
-	CStringArray DriversToTry;
-	split(drivers, ",", DriversToTry, true);
-
-	ASSERT( DriversToTry.size() != 0 );
-
-	CString Driver;
-	LoadingWindow *ret = NULL;
-
-	for(unsigned i = 0; ret == NULL && i < DriversToTry.size(); ++i)
-	{
-		Driver = DriversToTry[i];
-
-#ifdef USE_LOADING_WINDOW_COCOA
-		if(!DriversToTry[i].CompareNoCase("Cocoa") )	ret = new LoadingWindow_Cocoa;
-#endif
-#ifdef USE_LOADING_WINDOW_GTK
-		if(!DriversToTry[i].CompareNoCase("Gtk") )	ret = new LoadingWindow_Gtk;
-#endif
-#ifdef USE_LOADING_WINDOW_NULL
-		if(!DriversToTry[i].CompareNoCase("Null") )	ret = new LoadingWindow_Null;
-#endif
-#ifdef USE_LOADING_WINDOW_SDL
-		if(!DriversToTry[i].CompareNoCase("SDL") )	ret = new LoadingWindow_SDL;
-#endif
-#ifdef USE_LOADING_WINDOW_WIN32
-		if(!DriversToTry[i].CompareNoCase("Win32") )	ret = new LoadingWindow_Win32;
-#endif
-#ifdef USE_LOADING_WINDOW_XBOX
-		if(!DriversToTry[i].CompareNoCase("Xbox") )	ret = new LoadingWindow_Xbox;
-#endif
-
-			
-		if( ret == NULL )
-			continue;
-
-		CString sError = ret->Init();
-		if( sError != "" )
-		{
-			LOG->Info("Couldn't load driver %s: %s", DriversToTry[i].c_str(), sError.c_str());
-			SAFE_DELETE( ret );
-		}
-	}
-	
-	if(ret)
-		LOG->Info("Loading window: %s", Driver.c_str());
-	
-	return ret;
-}
-
 #include "MemoryCard/MemoryCardDriver_Null.h"
 #include "MemoryCard/Selector_MemoryCardDriver.h"
 MemoryCardDriver *MakeMemoryCardDriver()

@@ -22,6 +22,7 @@
  */
 
 static RageMutex g_SoundManMutex("SoundMan");
+
 static Preference<CString> g_sSoundDrivers( "SoundDrivers", "" ); // "" = DEFAULT_SOUND_DRIVER_LIST
 
 RageSoundManager *SOUNDMAN = NULL;

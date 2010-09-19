@@ -163,10 +163,9 @@ void Steps::CalculateRadarValues( float fMusicLengthSeconds )
 	if( parent != NULL )
 		return;
 
-	// If we're an edit, leave the RadarValues invalid.
-	// Vyhd sez: calculate them anyway if they're on the machine
-//	if( IsAPlayerEdit() )
-//		return;
+	// If this is a non-machine edit, don't calculate radar values.
+	if( IsAPlayerEdit() )
+		return;
 
 	NoteData tempNoteData;
 	this->GetNoteData( tempNoteData );

@@ -1,0 +1,14 @@
+<ActorFrame><children>
+	<BitmapText
+		Font="_eurostile normal"
+		InitCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-120;zoom,0.7"
+		OnCommand="playcommand,Set"
+		SetCommand="%function(self) self:settext('Free space: ' .. GetDiskSpaceFree() ) end"
+	/>
+	<BitmapText
+		Font="_eurostile normal"
+		InitCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-100;zoom,0.7"
+		OnCommand="playcommand,Set"
+		SetCommand="%function(self) self:settext('Total space: ' .. GetDiskSpaceTotal() ) end"
+	/>
+</children></ActorFrame>

@@ -55,35 +55,35 @@ namespace
 	unsigned KILOBYTE = 1024;
 	unsigned MEGABYTE = 1024*KILOBYTE;
 	unsigned GIGABYTE = 1024*MEGABYTE;
-}
 
-CString FormatByteValue( uint64_t iBytes )
-{
-	double fShownSpace = 0.0f;
-	CString sSuffix;
+	CString FormatByteValue( uint64_t iBytes )
+	{
+		CString sSuffix;
+		double fShownSpace = 0.0f;
 
-	if( iBytes > GIGABYTE )
-	{
-		fShownSpace = iBytes / GIGABYTE;
-		sSuffix = "GB";
-	}
-	else if( iBytes > MEGABYTE )
-	{
-		fShownSpace = iBytes / MEGABYTE;
-		sSuffix = "MB";
-	}
-	else if( iBytes > KILOBYTE )
-	{
-		fShownSpace = iBytes / KILOBYTE;
-		sSuffix = "KB";
-	}
-	else
-	{
-		fShownSpace = double(iBytes);
-		sSuffix = "bytes";
-	}
+		if( iBytes > GIGABYTE )
+		{
+			fShownSpace = iBytes / GIGABYTE;
+			sSuffix = "GB";
+		}
+		else if( iBytes > MEGABYTE )
+		{
+			fShownSpace = iBytes / MEGABYTE;
+			sSuffix = "MB";
+		}
+		else if( iBytes > KILOBYTE )
+		{
+			fShownSpace = iBytes / KILOBYTE;
+			sSuffix = "KB";
+		}
+		else
+		{
+			fShownSpace = double(iBytes);
+			sSuffix = "bytes";
+		}
 
-	return ssprintf( "%.02f %s", fShownSpace, sSuffix.c_str() );
+		return ssprintf( "%.02f %s", fShownSpace, sSuffix.c_str() );
+	}
 }
 
 // XXX: we should probably take a parameter for these later on.
@@ -177,6 +177,11 @@ CString DiagnosticsUtil::GetProductName()
 		return CString(PRODUCT_NAME_VER) + " " + ssprintf( "r%lu", VersionNumber);
 
 	return CString(PRODUCT_NAME_VER);
+}
+
+CString DiagnosticsUtil::GetProductVer()
+{
+	return CString(PRODUCT_VER);
 }
 
 namespace
@@ -276,14 +281,15 @@ LuaFunction_NoArgs( GetNumIOErrors,		ITGIO::m_iInputErrorCount );
 LuaFunction_NoArgs( GetDiskSpaceFree,		DiagnosticsUtil::GetDiskSpaceFree() );
 LuaFunction_NoArgs( GetDiskSpaceTotal,		DiagnosticsUtil::GetDiskSpaceTotal() );
 
-// product name function
+// versioning functions
+LuaFunction_NoArgs( GetRevision,		DiagnosticsUtil::GetRevision() );
 LuaFunction_NoArgs( GetProductName,		DiagnosticsUtil::GetProductName() );
+LuaFunction_NoArgs( GetProductVer,		DiagnosticsUtil::GetProductVer() );
 
 // diagnostics enumeration functions
 LuaFunction_NoArgs( GetNumCrashLogs,		DiagnosticsUtil::GetNumCrashLogs() );
 LuaFunction_NoArgs( GetNumMachineScores,	DiagnosticsUtil::GetNumMachineScores() );
 LuaFunction_NoArgs( GetNumMachineEdits, 	DiagnosticsUtil::GetNumMachineEdits() );
-LuaFunction_NoArgs( GetRevision,		DiagnosticsUtil::GetRevision() );
 
 // arcade diagnostics
 LuaFunction_NoArgs( GetIP,			DiagnosticsUtil::GetIP() );

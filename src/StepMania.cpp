@@ -34,7 +34,6 @@
 #include "Game.h"
 #include "RageSurface.h"
 #include "RageSurface_Load.h"
-#include "arch/arch.h"
 #include "CatalogXml.h"
 #include "DiagnosticsUtil.h"
 
@@ -95,6 +94,9 @@
 #else
 #define PATCH_DIR	"Data/patch"
 #define PATCH_FILE	"Data/patch/patch.zip"
+
+/* If it exists, this dir is mounted as a patch in lieu of patch.zip */
+#define PATCH_DATA_DIR	"Data/patch/patch"
 #endif
 
 #define ZIPS_DIR "Packages/"
@@ -895,18 +897,15 @@ static void WriteLogHeader()
 	LOG->Info( PRODUCT_NAME_VER );
 	LOG->Info( "Compiled %s (%s %lu)", VersionTime, 
 		VersionSVN ? "revision" : "build", VersionNumber );
-	LOG->Info( "Serial number: %s", DiagnosticsUtil::GetSerialNumber().c_str() );
 
 	time_t cur_time;
 	time(&cur_time);
 	struct tm now;
 	localtime_r( &cur_time, &now );
-	CHECKPOINT;
 
 	LOG->Info( "Log starting %.4d-%.2d-%.2d %.2d:%.2d:%.2d", 
 		1900+now.tm_year, now.tm_mon+1, now.tm_mday, now.tm_hour, now.tm_min, now.tm_sec );
 	LOG->Trace( " " );
-	CHECKPOINT;
 
 	if( g_argc > 1 )
 	{
@@ -1032,12 +1031,6 @@ int main(int argc, char* argv[])
 
 	WriteLogHeader();
 
-	uint64_t iSpaceTotal = HOOKS->GetDiskSpaceTotal( "/UserPacks" );
-	uint64_t iSpaceFree = HOOKS->GetDiskSpaceFree( "/UserPacks" );
-
-	LOG->Info( "%llu bytes total", iSpaceTotal );
-	LOG->Info( "%llu bytes remaining", iSpaceFree );
-
 	/* Set up alternative filesystem trees. */
 	if( PREFSMAN->m_sAdditionalFolders.Get() != "" )
 	{
@@ -1056,25 +1049,32 @@ int main(int argc, char* argv[])
 
 	MountTreeOfZips( "Packages/", false );
 
-	/* Mount patch data, if any. */
-	if ( IsAFile( PATCH_FILE ) )
+	/* Mount patch data. If PATCH_DATA_DIR exists, use it instead 
+	 * of PATCH_FILE (easier testing and mucking about, etc.) */
+	if( IsADirectory(PATCH_DATA_DIR) )
 	{
-		LOG->Info( "VFS: mounting patch.zip" );
+		LOG->Info( "VFS: mounting Data/patch/patch/." );
+		FILEMAN->Mount( "dir", PATCH_DATA_DIR, "/", false );
+	}
+	else if( IsAFile(PATCH_FILE) )
+	{
+		LOG->Info( "VFS: mounting patch.zip." );
 		FILEMAN->Mount( "patch", PATCH_DIR, "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
-		// MountTreeOfZips( PATCH_DIR, "patch" );
 	}
 	else
 	{
-		LOG->Trace("VFS: No patch file found");
+		LOG->Info("VFS: No patch data found");
 	}
 
+#if 0
 	LOG->Info("======= MOUNTPOINTS =========");
 	vector<RageFileManager::DriverLocation> mymounts;
 	FILEMAN->GetLoadedDrivers(mymounts);
 	for (unsigned i = 0; i < mymounts.size(); i++)
 		LOG->Info("%s ..... %s ..... %s", mymounts[i].Type.c_str(), mymounts[i].Root.c_str(), mymounts[i].MountPoint.c_str() );
 	LOG->Info("=============================");
+#endif
 
 	/* One of the above filesystems might contain files that affect preferences, eg Data/Static.ini.
 	 * Re-read preferences. */

@@ -40,8 +40,6 @@
 #include "RageDisplay.h"
 #include "Foreach.h"
 
-#include "arch/arch.h"
-
 RageTextureManager*		TEXTUREMAN		= NULL;
 
 RageTextureManager::RageTextureManager()

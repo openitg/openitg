@@ -120,14 +120,6 @@ LoadingWindow *MakeLoadingWindow()
 	return ret;
 }
 
-#if defined(SUPPORT_OPENGL)
-#include "LowLevelWindow/Selector_LowLevelWindow.h"
-LowLevelWindow *MakeLowLevelWindow()
-{
-	return new ARCH_LOW_LEVEL_WINDOW;
-}
-#endif
-
 #include "MemoryCard/MemoryCardDriver_Null.h"
 #include "MemoryCard/Selector_MemoryCardDriver.h"
 MemoryCardDriver *MakeMemoryCardDriver()

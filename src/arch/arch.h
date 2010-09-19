@@ -29,11 +29,6 @@ void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add);
 class LoadingWindow;
 LoadingWindow *MakeLoadingWindow();
 
-#if defined(SUPPORT_OPENGL)
-class LowLevelWindow;
-LowLevelWindow *MakeLowLevelWindow();
-#endif
-
 class MemoryCardDriver;
 MemoryCardDriver *MakeMemoryCardDriver();
 

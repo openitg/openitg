@@ -200,7 +200,7 @@ Lights = arch/Lights/LightsDriver.h \
 MemoryCard = arch/MemoryCard/MemoryCardDriver.cpp arch/MemoryCard/MemoryCardDriver.h \
 	arch/MemoryCard/MemoryCardDriver_Null.h
 
-LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.h
+LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.cpp arch/LowLevelWindow/LowLevelWindow.h
 
 ArchUtils =
 

@@ -11,6 +11,8 @@
 class LowLevelWindow
 {
 public:
+	static LowLevelWindow *Create();
+
 	virtual ~LowLevelWindow() { }
 
 	virtual void *GetProcAddress(CString s) = 0;

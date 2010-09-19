@@ -53,8 +53,6 @@ private:
 	uint32_t m_iLightData;
 };
 
-#define USE_INPUT_HANDLER_PIUIO
-
 #endif
 
 /*

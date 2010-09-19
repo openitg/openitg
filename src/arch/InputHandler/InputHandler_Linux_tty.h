@@ -14,7 +14,6 @@ public:
 	~InputHandler_Linux_tty();
 	void GetDevicesAndDescriptions(vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut);
 };
-#define USE_INPUT_HANDLER_LINUX_TTY
 
 #endif
 

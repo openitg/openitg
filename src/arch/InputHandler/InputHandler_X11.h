@@ -14,8 +14,6 @@ public:
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 };
 
-#define USE_INPUT_HANDLER_X11
-
 #endif
 
 /*

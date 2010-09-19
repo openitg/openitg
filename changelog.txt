@@ -10,6 +10,7 @@ OpenITG, beta 3 (in development)
      Added StartRoulette and StartRandom messages for themes
      Win32: Crash dialog shows OpenITG logo/text in place of StepMania (thanks, Wanny)
 -New LUA bindings:
+     "GetProductVer" - returns the OpenITG version (e.g. "beta 3")
      ProfileManager: "IsSongNew(Song)"
 -Fixed Linux bugs:
      USB devices would occasionally not be accpted

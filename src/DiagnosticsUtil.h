@@ -8,17 +8,18 @@ namespace DiagnosticsUtil
 	int GetNumCrashLogs();
 	int GetNumMachineEdits();
 	int GetNumMachineScores();
-	int GetRevision();
 
 	CString GetDiskSpaceFree();
 	CString GetDiskSpaceTotal();
 
-	CString GetIP();
 	CString GetProductName();
+	CString GetProductVer();
+	int GetRevision();
 
 	CString GetInputType();
 	void SetInputType( const CString &sType );
 
+	CString GetIP();
 	CString GetSerialNumber();
 
 	bool HubIsConnected();

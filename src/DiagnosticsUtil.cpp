@@ -179,6 +179,11 @@ CString DiagnosticsUtil::GetProductName()
 	return CString(PRODUCT_NAME_VER);
 }
 
+CString DiagnosticsUtil::GetProductVer()
+{
+	return CString(PRODUCT_VER);
+}
+
 namespace
 {
 	/* this allows us to use the serial numbers on home builds for
@@ -276,14 +281,15 @@ LuaFunction_NoArgs( GetNumIOErrors,		ITGIO::m_iInputErrorCount );
 LuaFunction_NoArgs( GetDiskSpaceFree,		DiagnosticsUtil::GetDiskSpaceFree() );
 LuaFunction_NoArgs( GetDiskSpaceTotal,		DiagnosticsUtil::GetDiskSpaceTotal() );
 
-// product name function
+// versioning functions
+LuaFunction_NoArgs( GetRevision,		DiagnosticsUtil::GetRevision() );
 LuaFunction_NoArgs( GetProductName,		DiagnosticsUtil::GetProductName() );
+LuaFunction_NoArgs( GetProductVer,		DiagnosticsUtil::GetProductVer() );
 
 // diagnostics enumeration functions
 LuaFunction_NoArgs( GetNumCrashLogs,		DiagnosticsUtil::GetNumCrashLogs() );
 LuaFunction_NoArgs( GetNumMachineScores,	DiagnosticsUtil::GetNumMachineScores() );
 LuaFunction_NoArgs( GetNumMachineEdits, 	DiagnosticsUtil::GetNumMachineEdits() );
-LuaFunction_NoArgs( GetRevision,		DiagnosticsUtil::GetRevision() );
 
 // arcade diagnostics
 LuaFunction_NoArgs( GetIP,			DiagnosticsUtil::GetIP() );

@@ -8,6 +8,7 @@
 #include "RageSound.h"
 #include "RageLog.h"
 #include "RageTimer.h"
+#include "Preference.h"
 
 #include "arch/Sound/RageSoundDriver.h"
 
@@ -22,6 +23,8 @@
 
 static RageMutex g_SoundManMutex("SoundMan");
 
+static Preference<CString> g_sSoundDrivers( "SoundDrivers", "" ); // "" = DEFAULT_SOUND_DRIVER_LIST
+
 RageSoundManager *SOUNDMAN = NULL;
 
 RageSoundManager::RageSoundManager()
@@ -30,9 +33,9 @@ RageSoundManager::RageSoundManager()
 	MixVolume = 1.0f;
 }
 
-void RageSoundManager::Init( const CString &sDrivers )
+void RageSoundManager::Init()
 {
-	driver = RageSoundDriver::Create( sDrivers );
+	driver = RageSoundDriver::Create( g_sSoundDrivers );
 	if( driver == NULL )
 		RageException::Throw( "Couldn't find a sound driver that works" );
 }

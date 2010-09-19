@@ -7,11 +7,15 @@ OpenITG, beta 3 (in development)
      Allow mounting the directory "Data/patch/patch/" as a patch instead of patch.zip
      Changed OptionsList behavior (Exit on multiple selection, don't insta-exit on button)
      Changed "DebugTheme" preference to "ShowThemeErrors"
+     Radar values (including step counts) now calculated for machine edits
      Added blinking for GAME_BUTTON_START on LIGHTSMODE_MENU
      Added StartRoulette and StartRandom messages for themes
      Win32: Crash dialog shows OpenITG logo/text in place of StepMania (thanks, Wanny)
 -New LUA bindings:
+     "GetDiskSpaceTotal", "GetDiskSpaceFree" - returns a string describing the
+          total or available disk space on the partition with UserPacks
      "GetProductVer" - returns the OpenITG version (e.g. "beta 3")
+     HighScore: "GetModifiers"
      ProfileManager: "IsSongNew(Song)"
 -Fixed Linux bugs:
      USB devices would occasionally not be accepted

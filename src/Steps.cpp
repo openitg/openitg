@@ -163,8 +163,8 @@ void Steps::CalculateRadarValues( float fMusicLengthSeconds )
 	if( parent != NULL )
 		return;
 
-	// If we're an edit, leave the RadarValues invalid.
-	if( IsAnEdit() )
+	// If this is a non-machine edit, don't calculate radar values.
+	if( IsAPlayerEdit() )
 		return;
 
 	NoteData tempNoteData;

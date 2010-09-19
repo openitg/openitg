@@ -7,7 +7,7 @@
 #include "RageUtil_CircularBuffer.h"
 
 static const int samples_per_block = 512;
-class RageSound_Generic_Software: public RageSoundDriver
+class RageSoundDriver_Generic_Software: public RageSoundDriver
 {
 public:
 	virtual void Update(float delta);
@@ -16,8 +16,8 @@ public:
 	void StopMixing( RageSoundBase *snd );		/* used by RageSound */
 	bool PauseMixing( RageSoundBase *snd, bool bStop );
 
-	RageSound_Generic_Software();
-	virtual ~RageSound_Generic_Software();
+	RageSoundDriver_Generic_Software();
+	virtual ~RageSoundDriver_Generic_Software();
 
 protected:
 	/* Start the decoding.  This should be called once the hardware is set up and

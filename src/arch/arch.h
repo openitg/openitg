@@ -16,9 +16,6 @@
 class RageMovieTexture;
 RageMovieTexture *MakeRageMovieTexture(RageTextureID ID);
 
-class RageSoundDriver;
-RageSoundDriver *MakeRageSoundDriver(CString drivers);
-
 #endif
 
 /*

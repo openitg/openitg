@@ -14,6 +14,8 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
+REGISTER_SOUND_DRIVER2( ALSA-sw, ALSA9_Software );
+
 static const int channels = 2;
 int samplerate = 44100;
 
@@ -27,13 +29,13 @@ static const unsigned safe_writeahead = 1024*4;
 static unsigned max_writeahead;
 const int num_chunks = 8;
 
-int RageSound_ALSA9_Software::MixerThread_start(void *p)
+int RageSoundDriver_ALSA9_Software::MixerThread_start(void *p)
 {
-	((RageSound_ALSA9_Software *) p)->MixerThread();
+	((RageSoundDriver_ALSA9_Software *) p)->MixerThread();
 	return 0;
 }
 
-void RageSound_ALSA9_Software::MixerThread()
+void RageSoundDriver_ALSA9_Software::MixerThread()
 {
 	setpriority( PRIO_PROCESS, 0, -15 );
 
@@ -47,7 +49,7 @@ void RageSound_ALSA9_Software::MixerThread()
 }
 
 /* Returns the number of frames processed */
-bool RageSound_ALSA9_Software::GetData()
+bool RageSoundDriver_ALSA9_Software::GetData()
 {
 	const int frames_to_fill = pcm->GetNumFramesToFill();
 	if( frames_to_fill <= 0 )
@@ -67,24 +69,24 @@ bool RageSound_ALSA9_Software::GetData()
 }
 
 
-int64_t RageSound_ALSA9_Software::GetPosition(const RageSoundBase *snd) const
+int64_t RageSoundDriver_ALSA9_Software::GetPosition(const RageSoundBase *snd) const
 {
 	return pcm->GetPosition();
 }       
 
-void RageSound_ALSA9_Software::SetupDecodingThread()
+void RageSoundDriver_ALSA9_Software::SetupDecodingThread()
 {
 	setpriority( PRIO_PROCESS, 0, -5 );
 }
 
 
-RageSound_ALSA9_Software::RageSound_ALSA9_Software()
+RageSoundDriver_ALSA9_Software::RageSoundDriver_ALSA9_Software()
 {
 	pcm = NULL;
 	shutdown = false;
 }
 
-CString RageSound_ALSA9_Software::Init()
+CString RageSoundDriver_ALSA9_Software::Init()
 {
 	CString sError = LoadALSA();
 	if( sError != "" )
@@ -116,13 +118,13 @@ CString RageSound_ALSA9_Software::Init()
 	
 	StartDecodeThread();
 	
-	MixingThread.SetName( "RageSound_ALSA9_Software" );
+	MixingThread.SetName( "RageSoundDriver_ALSA9_Software" );
 	MixingThread.Create( MixerThread_start, this );
 
 	return "";
 }
 
-RageSound_ALSA9_Software::~RageSound_ALSA9_Software()
+RageSoundDriver_ALSA9_Software::~RageSoundDriver_ALSA9_Software()
 {
 	if( MixingThread.IsCreated() )
 	{
@@ -138,12 +140,12 @@ RageSound_ALSA9_Software::~RageSound_ALSA9_Software()
 	UnloadALSA();
 }
 
-float RageSound_ALSA9_Software::GetPlayLatency() const
+float RageSoundDriver_ALSA9_Software::GetPlayLatency() const
 {
 	return float(max_writeahead)/samplerate;
 }
 
-int RageSound_ALSA9_Software::GetSampleRate( int rate ) const
+int RageSoundDriver_ALSA9_Software::GetSampleRate( int rate ) const
 {
 	return samplerate;
 }

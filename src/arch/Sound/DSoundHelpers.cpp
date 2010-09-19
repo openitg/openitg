@@ -305,9 +305,12 @@ void DSoundBuf::SetSampleRate( int hz )
 
 void DSoundBuf::SetVolume( float fVolume )
 {
-	ASSERT( fVolume >= 0 );
-	ASSERT( fVolume <= 1 );
-	
+	if ( fVolume < 0 )
+		fVolume = 0;
+
+	if ( fVolume > 1 )
+		fVolume = 1;
+
 	if( fVolume == 0 )
 		fVolume = 0.001f;		// fix log10f(0) == -INF
 	float iVolumeLog2 = log10f(fVolume) / log10f(2); /* vol log 2 */

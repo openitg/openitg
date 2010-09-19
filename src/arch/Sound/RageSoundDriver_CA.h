@@ -15,7 +15,7 @@ typedef long OSStatus;
 class CAAudioHardwareDevice;
 class RageSoundBase;
 
-class RageSound_CA : public RageSound_Generic_Software
+class RageSoundDriver_CA : public RageSoundDriver_Generic_Software
 {
 private:
     int64_t mDecodePos;
@@ -38,14 +38,13 @@ private:
                                      void *inData);
                               
 public:
-    RageSound_CA();
+    RageSoundDriver_CA();
     CString Init();
-    ~RageSound_CA();
+    ~RageSoundDriver_CA();
     float GetPlayLatency() const { return mLatency; }
     int64_t GetPosition(const RageSoundBase *sound) const;
     void SetupDecodingThread();
 };
-#define USE_RAGE_SOUND_CA
 
 #endif
 

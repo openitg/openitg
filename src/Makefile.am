@@ -152,7 +152,7 @@ if HAVE_GTK
 LoadingWindow += arch/LoadingWindow/LoadingWindow_Gtk.cpp arch/LoadingWindow/LoadingWindow_Gtk.h
 endif
 
-Sound = arch/Sound/RageSoundDriver.h \
+Sound = arch/Sound/RageSoundDriver.cpp arch/Sound/RageSoundDriver.h \
 	arch/Sound/RageSoundDriver_Null.cpp arch/Sound/RageSoundDriver_Null.h \
 	arch/Sound/RageSoundDriver_Generic_Software.cpp arch/Sound/RageSoundDriver_Generic_Software.h
 

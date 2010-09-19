@@ -32,9 +32,9 @@ RageSoundManager::RageSoundManager()
 	MixVolume = 1.0f;
 }
 
-void RageSoundManager::Init( CString drivers )
+void RageSoundManager::Init( const CString &sDrivers )
 {
-	driver = MakeRageSoundDriver(drivers);
+	driver = RageSoundDriver::Create( sDrivers );
 	if( driver == NULL )
 		RageException::Throw( "Couldn't find a sound driver that works" );
 }

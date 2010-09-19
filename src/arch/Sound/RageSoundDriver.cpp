@@ -1,37 +1,44 @@
-#ifndef SELECTOR_RAGE_SOUND_DRIVER_H
-#define SELECTOR_RAGE_SOUND_DRIVER_H
+#include "global.h"
+#include "RageSoundDriver.h"
+#include "RageLog.h"
+#include "RageUtil.h"
+#include "Foreach.h"
+#include "arch/arch_default.h"
 
-#include "arch/arch_platform.h"
+DriverList RageSoundDriver::m_pDriverList;
 
-/* RageSoundDriver selector. */
-#ifdef HAVE_ALSA
-#include "RageSoundDriver_ALSA9.h"
-#include "RageSoundDriver_ALSA9_Software.h"
-#endif
+RageSoundDriver *RageSoundDriver::Create( const CString &sDrivers )
+{
+	vector<CString> DriversToTry;
+	split( sDrivers.empty()? DEFAULT_SOUND_DRIVER_LIST:sDrivers, ",", DriversToTry, true );
+	
+	FOREACH_CONST( CString, DriversToTry, Driver )
+	{
+		RageDriver *pDriver = m_pDriverList.Create( *Driver );
+		if( pDriver == NULL )
+		{
+			LOG->Warn( "Unknown sound driver: %s", Driver->c_str() );
+			continue;
+		}
 
-#ifdef HAVE_COREAUDIO
-#include "RageSoundDriver_CA.h"
-#endif
+		RageSoundDriver *pRet = dynamic_cast<RageSoundDriver *>( pDriver );
+		ASSERT( pRet != NULL );
 
-#ifdef HAVE_DIRECTX
-#include "RageSoundDriver_DSound.h"
-#include "RageSoundDriver_DSound_Software.h"
-#endif
+		const CString sError = pRet->Init();
+		if( sError.empty() )
+		{
+			LOG->Info( "Sound driver: %s", Driver->c_str() );
+			return pRet;
+		}
+		LOG->Info( "Couldn't load driver %s: %s", Driver->c_str(), sError.c_str() );
+		SAFE_DELETE( pRet );
+	}
 
-#include "RageSoundDriver_Null.h"
-
-#ifdef HAVE_OSS
-#include "RageSoundDriver_OSS.h"
-#endif
-
-#ifdef HAVE_WIN32
-#include "RageSoundDriver_WaveOut.h"
-#endif
-
-#endif
+	return NULL;
+}
 
 /*
- * (c) 2005 Ben Anderson
+ * (c) 2002-2006 Glenn Maynard, Steve Checkoway
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

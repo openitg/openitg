@@ -9,6 +9,8 @@
 #include "RageSoundManager.h"
 #include "PrefsManager.h"
 
+REGISTER_SOUND_DRIVER2( DirectSound-sw, DSound_Software );
+
 static const int channels = 2;
 static const int bytes_per_frame = channels*2; /* 16-bit */
 static const int samplerate = 44100;
@@ -19,7 +21,7 @@ static int max_writeahead;
 static const int num_chunks = 8;
 static int chunksize() { return max_writeahead / num_chunks; }
 
-void RageSound_DSound_Software::MixerThread()
+void RageSoundDriver_DSound_Software::MixerThread()
 {
 	if( !SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL) )
 		if( !SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL) )
@@ -47,24 +49,24 @@ void RageSound_DSound_Software::MixerThread()
 	pcm->Stop();
 }
 
-int64_t RageSound_DSound_Software::GetPosition( const RageSoundBase *snd ) const
+int64_t RageSoundDriver_DSound_Software::GetPosition( const RageSoundBase *snd ) const
 {
 	return pcm->GetPosition();
 }
 
-int RageSound_DSound_Software::MixerThread_start(void *p)
+int RageSoundDriver_DSound_Software::MixerThread_start(void *p)
 {
-	((RageSound_DSound_Software *) p)->MixerThread();
+	((RageSoundDriver_DSound_Software *) p)->MixerThread();
 	return 0;
 }
 
-RageSound_DSound_Software::RageSound_DSound_Software()
+RageSoundDriver_DSound_Software::RageSoundDriver_DSound_Software()
 {
 	shutdown_mixer_thread = false;
 	pcm = NULL;
 }
 
-CString RageSound_DSound_Software::Init()
+CString RageSoundDriver_DSound_Software::Init()
 {
 	CString sError = ds.Init();
 	if( sError != "" )
@@ -106,7 +108,7 @@ CString RageSound_DSound_Software::Init()
 	return "";
 }
 
-RageSound_DSound_Software::~RageSound_DSound_Software()
+RageSoundDriver_DSound_Software::~RageSoundDriver_DSound_Software()
 {
 	/* Signal the mixing thread to quit. */
 	if( MixingThread.IsCreated() )
@@ -122,18 +124,18 @@ RageSound_DSound_Software::~RageSound_DSound_Software()
 	delete pcm;
 }
 
-void RageSound_DSound_Software::SetupDecodingThread()
+void RageSoundDriver_DSound_Software::SetupDecodingThread()
 {
 	if( !SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL) )
 		LOG->Warn( werr_ssprintf(GetLastError(), "Failed to set decoding thread priority") );
 }
 
-float RageSound_DSound_Software::GetPlayLatency() const
+float RageSoundDriver_DSound_Software::GetPlayLatency() const
 {
 	return (1.0f / samplerate) * max_writeahead;
 }
 
-int RageSound_DSound_Software::GetSampleRate( int rate ) const
+int RageSoundDriver_DSound_Software::GetSampleRate( int rate ) const
 {
 	return samplerate;
 }

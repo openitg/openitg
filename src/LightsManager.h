@@ -60,7 +60,7 @@ class LightsDriver;
 class LightsManager
 {
 public:
-	LightsManager(CString sDriver);
+	LightsManager();
 	~LightsManager();
 	
 	void Update( float fDeltaTime );

@@ -1148,7 +1148,7 @@ int main(int argc, char* argv[])
 	SOUNDMAN->SetPrefs( PREFSMAN->GetSoundVolume() );
 	SOUND		= new GameSoundManager;
 	BOOKKEEPER	= new Bookkeeper;
-	LIGHTSMAN	= new LightsManager( PREFSMAN->GetLightsDriver() );
+	LIGHTSMAN	= new LightsManager;
 	INPUTFILTER	= new InputFilter;
 	INPUTMAPPER	= new InputMapper;
 	INPUTQUEUE	= new InputQueue;

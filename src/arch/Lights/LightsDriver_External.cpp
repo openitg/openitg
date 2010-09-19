@@ -6,6 +6,8 @@
 #include "RageUtil.h"
 #include "LightsDriver_External.h"
 
+REGISTER_LIGHTS_DRIVER( External );
+
 LightsState LightsDriver_External::m_LightsState;
 
 LightsDriver_External::LightsDriver_External()

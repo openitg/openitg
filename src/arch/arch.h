@@ -13,18 +13,11 @@
 #define SUPPORT_OPENGL
 #endif
 
-/* Include this file if you need to create an instance of a driver object.  */
-class ArchHooks;
-ArchHooks *MakeArchHooks();
-
 class DialogDriver;
 DialogDriver *MakeDialogDriver();
 
 class InputHandler;
 void MakeInputHandlers(CString drivers, vector<InputHandler *> &Add);
-
-class LightsDriver;
-void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add);
 
 class MemoryCardDriver;
 MemoryCardDriver *MakeMemoryCardDriver();

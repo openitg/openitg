@@ -192,7 +192,7 @@ MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture
 		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h \
 		arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h
 
-Lights = arch/Lights/LightsDriver.h \
+Lights = arch/Lights/LightsDriver.cpp arch/Lights/LightsDriver.h \
 		arch/Lights/LightsDriver_SystemMessage.cpp arch/Lights/LightsDriver_SystemMessage.h \
 		arch/Lights/LightsDriver_External.cpp arch/Lights/LightsDriver_External.h \
 		arch/Lights/LightsDriver_PacDrive.cpp arch/Lights/LightsDriver_PacDrive.h \

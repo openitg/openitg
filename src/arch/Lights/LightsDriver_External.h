@@ -24,8 +24,6 @@ private:
 	static LightsState m_LightsState;
 };
 
-#define USE_LIGHTS_DRIVER_EXTERNAL
-
 #endif
 
 /*

@@ -10,58 +10,6 @@
 #include "arch_platform.h"
 #include "Foreach.h"
 
-#include "Lights/Selector_LightsDriver.h"
-void MakeLightsDrivers(CString drivers, vector<LightsDriver *> &Add)
-{
-	CStringArray DriversToTry;
-	split(drivers, ",", DriversToTry, true);
-
-	ASSERT( DriversToTry.size() != 0 );
-
-	FOREACH_CONST( CString, DriversToTry, s )
-	{
-		LOG->Trace( "Initializing lights driver: %s", s->c_str() );
-		LightsDriver *ret = NULL;
-
-#ifdef USE_LIGHTS_DRIVER_PACDRIVE
-		if( !s->CompareNoCase("PacDrive") )
-			ret = new LightsDriver_PacDrive;
-#endif
-#ifdef USE_LIGHTS_DRIVER_G15
-		if (!s->CompareNoCase("G15") )
-			ret = new LightsDriver_G15;
-#endif
-#ifdef USE_LIGHTS_DRIVER_LINUX_PARALLEL
-		if( !s->CompareNoCase("LinuxParallel") )
-			ret = new LightsDriver_LinuxParallel;
-#endif
-#ifdef USE_LIGHTS_DRIVER_LINUX_WEEDTECH
-		if( !s->CompareNoCase("WeedTech") )
-			ret = new LightsDriver_LinuxWeedTech;
-#endif
-#ifdef USE_LIGHTS_DRIVER_WIN32_PARALLEL
-		if( !s->CompareNoCase("Parallel") )
-			ret = new LightsDriver_Win32Parallel;
-#endif
-
-		// HACK: we auto-load external, but don't freak people out.
-		// don't tell them it's unknown, since it's the default.
-		if( !s->CompareNoCase("Ext") )
-			continue;
-
-		if( ret == NULL )
-			LOG->Warn( "Unknown lights driver name: %s", s->c_str() );
-		else
-			Add.push_back( ret );
-	}
-
-	// always add system message, for lights debug
-	Add.push_back( new LightsDriver_SystemMessage );
-
-	// always add ext, so we never need to worry about I/O lights not working
-	Add.push_back( new LightsDriver_External );
-}
-
 #include "MemoryCard/MemoryCardDriver_Null.h"
 #include "MemoryCard/Selector_MemoryCardDriver.h"
 MemoryCardDriver *MakeMemoryCardDriver()

@@ -7,6 +7,8 @@
 #include <sys/io.h>
 #include "LightsDriver_LinuxParallel.h"
 
+REGISTER_LIGHTS_DRIVER( LinuxParallel );
+
 static unsigned const int MAX_PORTS = 3;
 static const short PORT_ADDRESS[MAX_PORTS] =
 {

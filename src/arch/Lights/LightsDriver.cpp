@@ -1,30 +1,46 @@
-#ifndef SELECTOR_LIGHTS_DRIVER_H
-#define SELECTOR_LIGHTS_DRIVER_H
+#include "global.h"
+#include "LightsDriver.h"
+#include "RageLog.h"
+#include "Foreach.h"
+#include "arch/arch_default.h"
 
-#include "arch/arch_platform.h"
+#include "arch/Lights/LightsDriver_SystemMessage.h"
+#include "arch/Lights/LightsDriver_External.h"
 
-/* LightsDriver selector. */
-#ifdef HAVE_WIN32
-#include "LightsDriver_Win32Parallel.h"
-#endif
-#ifdef HAVE_LINUXKERNEL
-#include "LightsDriver_LinuxParallel.h"
-#include "LightsDriver_LinuxWeedTech.h"
-#endif
-#include "LightsDriver_External.h"
-#include "LightsDriver_SystemMessage.h"
+DriverList LightsDriver::m_pDriverList;
 
-#ifndef XBOX
-#include "LightsDriver_PacDrive.h"
-#include "LightsDriver_G15.h"
-#endif
+void LightsDriver::Create( const CString &sDrivers, vector<LightsDriver *> &Add )
+{
+	LOG->Trace( "Initializing lights drivers: %s", sDrivers.c_str() );
 
-#include "LightsDriver_Null.h"
+	vector<CString> asDriversToTry;
+	split( sDrivers, ",", asDriversToTry, true );
+	
+	FOREACH_CONST( CString, asDriversToTry, Driver )
+	{
+		RageDriver *pRet = m_pDriverList.Create( *Driver );
 
-#endif
+		if( pRet == NULL )
+		{
+			LOG->Trace( "Unknown lights driver: %s", Driver->c_str() );
+			continue;
+		}
+
+		LightsDriver *pDriver = dynamic_cast<LightsDriver *>( pRet );
+		ASSERT( pDriver != NULL );
+
+		LOG->Info( "Lights driver: %s", Driver->c_str() );
+		Add.push_back( pDriver );
+	}
+
+	/* always add these drivers: system message for lights debugging,
+	 * and ext to avoid any weird problems with I/O lights not working. */
+	Add.push_back( new LightsDriver_SystemMessage );
+	Add.push_back( new LightsDriver_External );
+}
 
 /*
- * (c) 2005 Ben Anderson.
+ * (c) 2002-2005 Glenn Maynard, 2010 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

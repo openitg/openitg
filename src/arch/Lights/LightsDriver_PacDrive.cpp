@@ -7,6 +7,8 @@
 #include "io/PacDrive.h"
 #include "LightsDriver_PacDrive.h"
 
+REGISTER_LIGHTS_DRIVER( PacDrive );
+
 LightsDriver_PacDrive::LightsDriver_PacDrive()
 {
 	m_bHasDevice = Board.Open();

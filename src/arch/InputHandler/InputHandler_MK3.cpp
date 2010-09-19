@@ -71,7 +71,7 @@ void InputHandler_MK3::SetLightsMappings()
 	uint32_t iCoinCounter[2] = { (1 << 27), (1 << 28) };
 
 	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights );
+	m_LightsMappings.SetCustomGameLights( iGameLights );
 	m_LightsMappings.SetCoinCounter( iCoinCounter );
 	
 	LightsMapper::LoadMappings( "MK3", m_LightsMappings );
@@ -153,7 +153,7 @@ void InputHandler_MK3::UpdateLights()
 	FOREACH_GameController( gc )
 		FOREACH_GameButton( gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iLightData |= m_LightsMappings.m_iButtonLights[gc][gb];
+				m_iLightData |= m_LightsMappings.m_iGameLights[gc][gb];
 
 /* doesn't work, as far as I can tell
 	m_iLightData |= m_LightsState->m_bCoinCounter ?

@@ -21,23 +21,24 @@ InputHandler_Iow::InputHandler_Iow()
 {
 	if( s_bInitialized )
 	{
-		LOG->Warn( "Redundant Iow driver loaded. Disabling..." );
+		LOG->Warn( "InputHandler_Iow: Redundant driver loaded. Disabling..." );
 		return;
 	}
 
-	m_bShutdown = false;
-	DiagnosticsUtil::SetInputType("ITGIO");
-
+	// attempt to open the I/O device
 	if( !Board.Open() )
 	{
-		LOG->Warn( "OpenITG could not establish a connection with ITGIO." );
+		LOG->Warn( "InputHandler_Iow: could not establish a connection with the I/O device." );
 		return;
 	}
-	// set our board lock
-	s_bInitialized = true;
 
 	LOG->Trace( "Opened ITGIO board." );
+
+	s_bInitialized = true;
 	m_bFoundDevice = true;
+	m_bShutdown = false;
+
+	DiagnosticsUtil::SetInputType("ITGIO");
 
 	// set any alternate lights mappings, if they exist
 	SetLightsMappings();
@@ -93,7 +94,7 @@ void InputHandler_Iow::SetLightsMappings()
 		(1 << 13), (1 << 12), (1 << 15), (1 << 15)
 	};
 
-	uint32_t iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] =
+	uint32_t iCustomGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] =
 	{
 		/* Left, right, up, down */
 		{ (1 << 1), (1 << 0), (1 << 3), (1 << 2) }, /* Player 1 */
@@ -101,7 +102,7 @@ void InputHandler_Iow::SetLightsMappings()
 	};
 
 	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights );
+	m_LightsMappings.SetCustomGameLights( iCustomGameLights );
 
 	// if there are any alternate mappings, set them here now
 	LightsMapper::LoadMappings( "ITGIO", m_LightsMappings );
@@ -125,7 +126,11 @@ void InputHandler_Iow::InputThreadMain()
 
 		UpdateLights();
 
-		// this appears to be AND'd over input (bits 1-16)
+		/* XXX: the first 16 bits seem to manually trigger inputs;
+		 * ITGIO opens high, so writing a 0 bit counts as a press.
+		 * I have no idea what use that could possibly be, but we need
+		 * to write 0xFFFF0000 to not trigger input on a write... */
+
 		Board.Write( 0xFFFF0000 | m_iWriteData );
 
 		// ITGIO opens high - flip the bit values
@@ -155,18 +160,12 @@ void InputHandler_Iow::HandleInput()
 		if( InputThread.IsCreated() )
 			di.ts.Touch();
 
-		bool bIsPressed = m_iReadData & (1 << (31-iButton));
-
-		if( di.button == JOY_1 && bIsPressed )
-			LOG->Warn( "%s: coin event detected!", __FUNCTION__ );
-
-		ButtonPressed( di, bIsPressed );
+		ButtonPressed( di, m_iReadData & (1 << (31-iButton)) );
 	}
 }
 
 void InputHandler_Iow::UpdateLights()
 {
-	// set a pointer to the LightsState for access
 	static const LightsState *m_LightsState = LightsDriver_External::Get();
 
 	ZERO( m_iWriteData );
@@ -179,16 +178,14 @@ void InputHandler_Iow::UpdateLights()
 	FOREACH_GameController( gc )
 		FOREACH_GameButton( gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iWriteData |= m_LightsMappings.m_iButtonLights[gc][gb];
+				m_iWriteData |= m_LightsMappings.m_iGameLights[gc][gb];
 
-	if( m_LightsState->m_bCoinCounter )
-		m_iWriteData |= m_LightsMappings.m_iCoinCounter[1];
-	else
-		m_iWriteData |= m_LightsMappings.m_iCoinCounter[0];
+	m_iWriteData |= m_LightsState->m_bCoinCounter ?
+		m_LightsMappings.m_iCoinCounter[0] : m_LightsMappings.m_iCoinCounter[1];
 }
 
 /*
- * Copyright (c) 2008 BoXoRRoXoRs
+ * Copyright (c) 2008-10 BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

@@ -15,7 +15,6 @@
 #include "Style.h"
 
 #include "arch/Lights/LightsDriver.h"
-#include "arch/arch.h"
 
 /* UGLY: to maintain compatibility, we need to use 'LightsDriver',
  * even though our system allows more than one to be instantiated... */

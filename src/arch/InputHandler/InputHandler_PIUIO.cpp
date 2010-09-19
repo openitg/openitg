@@ -10,25 +10,20 @@
 
 REGISTER_INPUT_HANDLER( PIUIO );
 
-// initialize the global usage flag
 bool InputHandler_PIUIO::s_bInitialized = false;
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
 	if( s_bInitialized )
 	{
-		LOG->Warn( "Redundant PIUIO driver loaded. Disabling..." );
+		LOG->Warn( "InputHandler_PIUIO: Redundant driver loaded. Disabling..." );
 		return;
 	}
 
-	m_bShutdown = false;
-
-	// attempt to open and initialize the board
-	m_bFoundDevice = Board.Open();
-
-	if( m_bFoundDevice == false )
+	// attempt to connect to the I/O board
+	if( !Board.Open() )
 	{
-		LOG->Warn( "Could not establish a connection with PIUIO." );
+		LOG->Warn( "InputHandler_PIUIO: Could not establish a connection with the I/O device." );
 		return;
 	}
 
@@ -36,13 +31,12 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 
 	// set the relevant global flags (static flag, input type)
 	s_bInitialized = true;
+	m_bShutdown = false;
+
 	DiagnosticsUtil::SetInputType( "PIUIO" );
 
-	// set the low-level I/O handler, use r16 kernel hack if available
-	InternalInputHandler = &InputHandler_PIUIO::HandleInputNormal;
-
-	if( MK6Helper::HasKernelPatch() )
-		InternalInputHandler = &InputHandler_PIUIO::HandleInputKernel;
+	/* If using the R16 kernel hack, low-level input is handled differently. */
+	m_InputType = MK6Helper::HasKernelPatch() ? INPUT_KERNEL : INPUT_NORMAL;
 
 	SetLightsMappings();
 
@@ -73,6 +67,7 @@ InputHandler_PIUIO::~InputHandler_PIUIO()
 	{
 		Board.Write( 0 );
 		Board.Close();
+
 		s_bInitialized = false;
 	}
 }
@@ -104,14 +99,15 @@ void InputHandler_PIUIO::SetLightsMappings()
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
-	/* off, on */
-	uint32_t iCoinCounter[2] = { (1 << 27), (1 << 28) };
+	/* The coin counter moves halfway if we send bit 4, then the rest of
+	 * the way when we send bit 5. If bit 5 is sent without bit 4 prior,
+	 * the coin counter doesn't do anything. */
+	uint32_t iCoinTriggers[2] = { (1 << 27), (1 << 28) };
 
 	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights );
-
-	m_LightsMappings.SetCoinCounter( iCoinCounter );
-
+	m_LightsMappings.SetCustomGameLights( iGameLights );
+	m_LightsMappings.SetCoinCounter( iCoinTriggers );
+ 
 	LightsMapper::LoadMappings( "PIUIO", m_LightsMappings );
 }
 
@@ -132,7 +128,7 @@ void InputHandler_PIUIO::InputThreadMain()
 
 		m_DebugTimer.EndUpdate();
 
-		/* export the I/O values to the helper, for LUA exporting */
+		/* export the I/O values to the helper, for LUA binding */
 		MK6Helper::Import( m_iInputData, m_iLightData );
 
 		/* dispatch debug messages if we're debugging */
@@ -145,66 +141,77 @@ void InputHandler_PIUIO::InputThreadMain()
 
 	HOOKS->UnBoostThreadPriority();
 }
-
-/* WARNING: SCIENCE CONTENT!
- * We write each output set in members 0, 2, 4, and 6 of a uint32_t array.
- * The BulkReadWrite sends four asynchronous write/read requests that end
- * up overwriting the data we write with the data that's read.
- *
- * I'm not sure why we need an 8-member array. Oh well. */
-void InputHandler_PIUIO::HandleInputKernel()
-{
-	ZERO( m_iBulkReadData );
-
-	// zero the sensor bits
-	m_iLightData &= 0xFFFCFFFC;
-
-	// write each light state at once - array members 0, 2, 4, and 6
-	for (uint32_t i = 0; i < 4; i++)
-		m_iBulkReadData[i*2] = m_iLightData | (i | (i << 16));
-
-	Board.BulkReadWrite( m_iBulkReadData );
-
-	// translate the sensor data to m_iInputData, and invert
-	for (uint32_t i = 0; i < 4; i++)
-		m_iInputData[i] = ~m_iBulkReadData[i*2];
-}
-
-/* this is the input-reading logic that we know works */
-void InputHandler_PIUIO::HandleInputNormal()
-{
-	for (uint32_t i = 0; i < 4; i++)
-	{
-		// write which sensors to report from
-		m_iLightData &= 0xFFFCFFFC;
-		m_iLightData |= (i | (i << 16));
-
-		// do one write/read cycle to get this set of sensors
-		Board.Write( m_iLightData );
-		Board.Read( &m_iInputData[i] );
-
-		/* PIUIO opens high - for more logical processing, invert it */
-		m_iInputData[i] = ~m_iInputData[i];
-	}
-}
-
 void InputHandler_PIUIO::HandleInput()
 {
 	// reset our reading data
 	ZERO( m_iInputField );
 	ZERO( m_iInputData );
 
-	// sets up m_iInputData for usage
-	(this->*InternalInputHandler)();
+	/* PIU02 only reports one set of sensors (with four total sets) on each
+	 * I/O request. In order to report all sensors for all arrows, we must:
+	 *
+	 * 1. Specify the requested set at bits 15-16 and 31-32 of the output
+	 * 2. Write lights data and sensor selection to PIUIO
+	 * 3. Read from PIUIO and save that set of sensor data
+	 * 4. Repeat 2-3 until all four sets of sensor data are obtained
+	 * 5. Bitwise OR the sensor data together to produce the final input
+	 *
+	 * The R16 kernel hack simply does all of this in kernel space, instead
+	 * of alternating between kernel space and user space on each call.
+	 * We pass it an 8-member uint32_t array with the lights data and get
+	 * input in its place. (Why 8? I have no clue. We just RE'd it...)
+	 */
+
+	switch( m_InputType )
+	{
+	case INPUT_NORMAL:
+		/* Normal input: write light data (with requested sensor set);
+		 * perform one Write/Read cycle to get input; invert. */
+		{
+			for ( uint32_t i = 0; i < 4; ++i )
+			{
+				// write a set of sensors to request
+				m_iLightData &= 0xFFFCFFFC;
+				m_iLightData |= (i | (i << 16));
+
+				// read from this set of sensors
+				Board.Write( m_iLightData );
+				Board.Read( &m_iInputData[i] );
+
+				// PIUIO opens high; invert the input
+				m_iInputData[i] = ~m_iInputData[i];
+			}
+		}
+		break;
+	case INPUT_KERNEL:
+		/* Kernel input: write light data (with desired sensor set)
+		 * in array members 0, 2, 4, 6; call BulkReadWrite; invert
+		 * input and copy it to our central data array. */
+		{
+			ZERO( m_iBulkReadData );
+
+			m_iLightData &= 0xFFFCFFFC;
+
+			for( uint32_t i = 0; i < 4; ++i )
+				m_iBulkReadData[i*2] = m_iLightData | (i | (i << 16));
+
+			Board.BulkReadWrite( m_iBulkReadData );
+
+			/* PIUIO opens high, so invert the input data. */
+			for ( uint32_t i = 0; i < 4; ++i )
+				m_iInputData[i] = ~m_iBulkReadData[i*2];
+		}
+		break;
+	}
 
 	// combine the read data into a single field
-	for( int i = 0; i < 4; i++ )
+	for( int i = 0; i < 4; ++i )
 		m_iInputField |= m_iInputData[i];
 
-	// construct outside the loop, to save some processor time
+	// Construct outside the loop and reassign as needed (it's cheaper).
 	DeviceInput di(DEVICE_JOY1, JOY_1);
 
-	for( short iButton = 0; iButton < 32; iButton++ )
+	for( short iButton = 0; iButton < 32; ++iButton )
 	{
 		di.button = JOY_1+iButton;
 		di.ts.Touch();
@@ -214,22 +221,16 @@ void InputHandler_PIUIO::HandleInput()
 
 		/* Is the button we're looking for flagged in the input data? */
 		/* Incremented by one, since IsBitSet uses 1-32 and this uses 0-31. */
-		bool bIsPressed = IsBitSet( m_iInputField, iButton+1 );
-
-		if( di.button == JOY_22 && bIsPressed )
-			LOG->Warn( "%s: detected coin event!", __FUNCTION__ );
-
-		ButtonPressed( di, bIsPressed );
+		ButtonPressed( di, IsBitSet(m_iInputField,iButton+1) );
 	}
 }
 
-/* Requires LightsDriver_External. */
 void InputHandler_PIUIO::UpdateLights()
 {
 	// set a const pointer to the "ext" LightsState to read from
 	static const LightsState *m_LightsState = LightsDriver_External::Get();
 
-	// reset
+	// reset lights data
 	ZERO( m_iLightData );
 
 	// update marquee lights
@@ -238,19 +239,16 @@ void InputHandler_PIUIO::UpdateLights()
 			m_iLightData |= m_LightsMappings.m_iCabinetLights[cl];
 
 	FOREACH_GameController( gc )
-		FOREACH_GameButton_Custom( gb )
+		FOREACH_GameButton( gb )
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iLightData |= m_LightsMappings.m_iButtonLights[gc][gb];
+				m_iLightData |= m_LightsMappings.m_iGameLights[gc][gb];
 
-	/* The coin counter moves halfway if we send bit 4, then the
-	 * rest of the way (or not at all) if we send bit 5. Send bit
-	 * 5 unless we have a coin event being recorded. */
-	m_iLightData |= m_LightsState->m_bCoinCounter ? m_LightsMappings.m_iCoinCounter[1]
-		: m_LightsMappings.m_iCoinCounter[0];
+	m_iLightData |= m_LightsState->m_bCoinCounter ?
+		m_LightsMappings.m_iCoinCounter[1] : m_LightsMappings.m_iCoinCounter[0];
 }
 
 /*
- * (c) 2005 Chris Danford, Glenn Maynard.  Re-implemented by vyhd, infamouspat
+ * (c) 2010 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

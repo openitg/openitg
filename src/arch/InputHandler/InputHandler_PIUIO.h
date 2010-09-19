@@ -19,8 +19,9 @@ public:
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 
 private:
-	// allow only one handler to control the board at a time, in case
-	// several are loaded. this should prevent bizarre collision errors.
+	/* Allow only one handler to control the board at a time. More than one
+	 * handler may be loaded due to startup and Static.ini interactions, so
+	 * we need this to prevent obscure I/O problems. */
 	static bool s_bInitialized;
 
 	PIUIO Board;
@@ -29,14 +30,11 @@ private:
 	void SetLightsMappings();
 	LightsMapping m_LightsMappings;
 
+	/* Low-level processing changes if using the R16 kernel hack. */
+	enum InputType { INPUT_NORMAL, INPUT_KERNEL } m_InputType;
+
 	void HandleInput();
 	void UpdateLights();
-
-	// HandleInputKernel() uses the r16 kernel hack if available; the
-	// function pointer below points to whichever function is used.
-	void HandleInputNormal();
-	void HandleInputKernel();
-	void (InputHandler_PIUIO::*InternalInputHandler)();
 
 	void InputThreadMain();
 	static int InputThread_Start( void *p ) { ((InputHandler_PIUIO *) p)->InputThreadMain(); return 0; }

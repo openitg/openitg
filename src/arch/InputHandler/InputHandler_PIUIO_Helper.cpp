@@ -7,11 +7,11 @@
 #include "InputHandler_PIUIO_Helper.h"
 
 // keep these in local scope
-static uint32_t g_iSensors[4];
-static uint32_t g_iLights;
+uint32_t g_iSensors[4];
+uint32_t g_iLights;
 
-static bool g_bReportSensors[32];
-static bool g_bSensorMapInitialized = false;
+bool g_bReportSensors[32];
+bool g_bSensorMapInitialized = false;
 
 /* determine which inputs are used for gameplay and
  * cache them, so we have a quick reference later. */
@@ -126,7 +126,7 @@ int GetSensors( lua_State *L )
 	// create subtables
 	for( unsigned i = 0; i < 4; i++ )
 	{
-		lua_newtable( L );			// create a base table 
+		lua_newtable( L );		// create a base table 
 		lua_pushnumber( L, i+1 );	// set the index on the table
 		lua_pushvalue( L, -2 );		// move the table reference to the top
 		lua_settable( L, -4 );		// set the new table to the base table
@@ -146,8 +146,6 @@ int GetSensors( lua_State *L )
 	return 1;
 }
 
-// since the above manually manipulates the LUA table,
-// we need to manually register it with a hack. Go figure.
 void MK6_Register( lua_State *L )
 {
 	lua_register( L, "MK6_GetSensors", GetSensors );

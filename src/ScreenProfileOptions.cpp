@@ -17,8 +17,6 @@ enum {
 	PO_CREATE_NEW,
 	PO_DELETE_,
 	PO_RENAME_,
-	PO_OS_MOUNT_1,
-	PO_OS_MOUNT_2,
 	NUM_PROFILE_OPTIONS_LINES
 };
 
@@ -28,8 +26,6 @@ OptionRowDefinition g_ProfileOptionsLines[NUM_PROFILE_OPTIONS_LINES] = {
 	OptionRowDefinition( "CreateNew",		true, "PRESS START" ),
 	OptionRowDefinition( "Delete",			true ),
 	OptionRowDefinition( "Rename",			true ),
-	OptionRowDefinition( "OsMountPlayer1",	true, "" ),
-	OptionRowDefinition( "OsMountPlayer2",	true, "" ),
 };
 
 AutoScreenMessage( SM_DoneCreating )
@@ -61,16 +57,6 @@ void ScreenProfileOptions::Init()
 	g_ProfileOptionsLines[PO_RENAME_].choices.clear();
 	g_ProfileOptionsLines[PO_RENAME_].choices.push_back( "-NONE-" );
 	PROFILEMAN->GetLocalProfileNames( g_ProfileOptionsLines[PO_RENAME_].choices );
-
-	if( PREFSMAN->GetMemoryCardOsMountPoint(PLAYER_1).Get().empty() )
-		g_ProfileOptionsLines[PO_OS_MOUNT_1].choices[0] = "-NOT SET IN INI-";
-	else
-		g_ProfileOptionsLines[PO_OS_MOUNT_1].choices[0] = PREFSMAN->GetMemoryCardOsMountPoint(PLAYER_1).Get();
-
-	if( PREFSMAN->GetMemoryCardOsMountPoint(PLAYER_2).Get().empty() )
-		g_ProfileOptionsLines[PO_OS_MOUNT_2].choices[0] = "-NOT SET IN INI-";
-	else
-		g_ProfileOptionsLines[PO_OS_MOUNT_2].choices[0] = PREFSMAN->GetMemoryCardOsMountPoint(PLAYER_2).Get();
 
 	//Enable all lines for all players
 	for ( unsigned int i = 0; i < NUM_PROFILE_OPTIONS_LINES; i++ )

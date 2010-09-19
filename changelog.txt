@@ -14,7 +14,7 @@ OpenITG, beta 3 (in development)
      "GetProductVer" - returns the OpenITG version (e.g. "beta 3")
      ProfileManager: "IsSongNew(Song)"
 -Fixed Linux bugs:
-     USB devices would occasionally not be accpted
+     USB devices would occasionally not be accepted
 -Fixed minor cross-platform bugs:
      BPMDisplay: display BPM multiplied by music rate twice instead of once
      NoteDisplay: Twirl would render strangely with Flip, Tornado, etc.
@@ -26,6 +26,8 @@ OpenITG, beta 3 (in development)
      Boost ITGIO/PIUIO thread priority (tentative fix for coin nomming)
      Use read/write buffers for RageFile (tentative fix for slow memcard reading)
      Switched to SM4-style button enumerations
+-Compile chain updates:
+     Added "--with-sse2" flag to configure to enable SSE2 heuristic optimization
 
 OpenITG, beta 2 (August 10th, 2009)
 --------------------------------

@@ -225,19 +225,6 @@ public:
 	Preference<CString>	m_sDefaultLocalProfileIDP1, m_sDefaultLocalProfileIDP2;
 	Preference<CString>& GetDefaultLocalProfileID( PlayerNumber pn )
 	{ switch(pn) { case PLAYER_1: return m_sDefaultLocalProfileIDP1; case PLAYER_2: return m_sDefaultLocalProfileIDP2;	default: ASSERT(0); } }
-	Preference<bool>	m_bMemoryCards;
-	Preference<CString>	m_sMemoryCardOsMountPointP1, m_sMemoryCardOsMountPointP2;	// if set, always use the device that mounts to this point
-	Preference<CString>& GetMemoryCardOsMountPoint( PlayerNumber pn )
-	{ switch(pn) { case PLAYER_1: return m_sMemoryCardOsMountPointP1; case PLAYER_2: return m_sMemoryCardOsMountPointP2;	default: ASSERT(0); } }
-	Preference<int>		m_iMemoryCardUsbBusP1, m_iMemoryCardUsbBusP2;	// look for this bus when assigning cards.  -1 = match any
-	Preference<int>& GetMemoryCardUsbBus( PlayerNumber pn )
-	{ switch(pn) { case PLAYER_1: return m_iMemoryCardUsbBusP1; case PLAYER_2: return m_iMemoryCardUsbBusP2;	default: ASSERT(0); } }
-	Preference<int>		m_iMemoryCardUsbPortP1, m_iMemoryCardUsbPortP2;	// look for this port when assigning cards.  -1 = match any
-	Preference<int>& GetMemoryCardUsbPort( PlayerNumber pn )
-	{ switch(pn) { case PLAYER_1: return m_iMemoryCardUsbPortP1; case PLAYER_2: return m_iMemoryCardUsbPortP2;	default: ASSERT(0); } }
-	Preference<int>		m_iMemoryCardUsbLevelP1, m_iMemoryCardUsbLevelP2;	// look for this level when assigning cards.  -1 = match any
-	Preference<int>& GetMemoryCardUsbLevel( PlayerNumber pn )
-	{ switch(pn) { case PLAYER_1: return m_iMemoryCardUsbLevelP1; case PLAYER_2: return m_iMemoryCardUsbLevelP2;	default: ASSERT(0); } }
 	Preference<int>		m_iCenterImageTranslateX;
 	Preference<int>		m_iCenterImageTranslateY;
 	Preference<int>		m_fCenterImageAddWidth;

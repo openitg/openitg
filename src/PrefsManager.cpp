@@ -243,15 +243,6 @@ PrefsManager::PrefsManager() :
 	m_iProductID					( "ProductID",					1 ),	
 	m_sDefaultLocalProfileIDP1		( "DefaultLocalProfileIDP1",	"" ),
 	m_sDefaultLocalProfileIDP2		( "DefaultLocalProfileIDP2",	"" ),
-	m_bMemoryCards					( "MemoryCards",				false ),
-	m_sMemoryCardOsMountPointP1		( "MemoryCardOsMountPointP1",	"" ),
-	m_sMemoryCardOsMountPointP2		( "MemoryCardOsMountPointP2",	"" ),
-	m_iMemoryCardUsbBusP1			( "MemoryCardUsbBusP1",			-1 ),
-	m_iMemoryCardUsbBusP2			( "MemoryCardUsbBusP2",			-1 ),
-	m_iMemoryCardUsbPortP1			( "MemoryCardUsbPortP1",		-1 ),
-	m_iMemoryCardUsbPortP2			( "MemoryCardUsbPortP2",		-1 ),
-	m_iMemoryCardUsbLevelP1			( "MemoryCardUsbLevelP1",		-1 ),
-	m_iMemoryCardUsbLevelP2			( "MemoryCardUsbLevelP2",		-1 ),
 	m_iCenterImageTranslateX		( "CenterImageTranslateX",		0 ),
 	m_iCenterImageTranslateY		( "CenterImageTranslateY",		0 ),
 	m_fCenterImageAddWidth			( "CenterImageAddWidth",		0 ),
@@ -380,8 +371,6 @@ void PrefsManager::ReadGlobalPrefsFromIni( const IniFile &ini )
 
 	// validate
 	m_iSongsPerPlay.Set( clamp(m_iSongsPerPlay.Get(),0,MAX_SONGS_PER_PLAY) );
-	FOREACH_PlayerNumber( pn )
-		GetMemoryCardOsMountPoint(pn).Set( FixSlashes(GetMemoryCardOsMountPoint(pn)) );
 	m_BackgroundMode.Set( (BackgroundMode)clamp((int)m_BackgroundMode.Get(),0,(int)NUM_BackgroundMode-1) );
 }
 

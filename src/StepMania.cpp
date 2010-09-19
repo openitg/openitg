@@ -37,6 +37,10 @@
 #include "CatalogXml.h"
 #include "DiagnosticsUtil.h"
 
+#if !defined(SUPPORT_OPENGL) && !defined(SUPPORT_D3D)
+#define SUPPORT_OPENGL
+#endif
+
 //
 // StepMania global classes
 //

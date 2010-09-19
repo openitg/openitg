@@ -38,8 +38,6 @@ private:
 	void UpdateLights();
 };
 
-#define USE_INPUT_HANDLER_IOW
-
 #endif // INPUT_HANDLER_IOW
 
 /*

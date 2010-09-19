@@ -45,7 +45,7 @@ void LightsDriver_PacDrive::SetLightsMappings()
 	};
 
 	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights );
+	m_LightsMappings.SetCustomGameLights( iGameLights );
 
 	LightsMapper::LoadMappings( "PacDrive", m_LightsMappings );
 }

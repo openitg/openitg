@@ -52,14 +52,15 @@ CString DiagnosticsUtil::GetIP()
 
 namespace
 {
-	unsigned KILOBYTE = 1024;
-	unsigned MEGABYTE = 1024*KILOBYTE;
-	unsigned GIGABYTE = 1024*MEGABYTE;
+	/* declared as floats so the division isn't implicitly cast to int */
+	float KILOBYTE = 1024;
+	float MEGABYTE = 1024*KILOBYTE;
+	float GIGABYTE = 1024*MEGABYTE;
 
 	CString FormatByteValue( uint64_t iBytes )
 	{
 		CString sSuffix;
-		double fShownSpace = 0.0f;
+		float fShownSpace = 0.0f;
 
 		if( iBytes > GIGABYTE )
 		{
@@ -78,7 +79,7 @@ namespace
 		}
 		else
 		{
-			fShownSpace = double(iBytes);
+			fShownSpace = float(iBytes);
 			sSuffix = "bytes";
 		}
 

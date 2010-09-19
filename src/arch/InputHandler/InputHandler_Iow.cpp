@@ -94,7 +94,7 @@ void InputHandler_Iow::SetLightsMappings()
 		(1 << 13), (1 << 12), (1 << 15), (1 << 15)
 	};
 
-	uint32_t iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] =
+	uint32_t iCustomGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] =
 	{
 		/* Left, right, up, down */
 		{ (1 << 1), (1 << 0), (1 << 3), (1 << 2) }, /* Player 1 */
@@ -102,8 +102,7 @@ void InputHandler_Iow::SetLightsMappings()
 	};
 
 	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
-		iGameLights[GAME_CONTROLLER_2] );
+	m_LightsMappings.SetCustomGameLights( iCustomGameLights );
 
 	// if there are any alternate mappings, set them here now
 	LightsMapper::LoadMappings( "ITGIO", m_LightsMappings );
@@ -182,11 +181,11 @@ void InputHandler_Iow::UpdateLights()
 				m_iWriteData |= m_LightsMappings.m_iGameLights[gc][gb];
 
 	m_iWriteData |= m_LightsState->m_bCoinCounter ?
-		m_LightsMappings.m_iCoinCounterOn : m_LightsMappings.m_iCoinCounterOff;
+		m_LightsMappings.m_iCoinCounter[0] : m_LightsMappings.m_iCoinCounter[1];
 }
 
 /*
- * Copyright (c) 2008 BoXoRRoXoRs
+ * Copyright (c) 2008-10 BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

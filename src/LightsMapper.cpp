@@ -82,9 +82,9 @@ void LightsMapper::LoadMappings( const CString &sDeviceName, LightsMapping &mapp
 	}
 
 	ini.GetValue( sDeviceName, "CoinCounterOn", sBuffer );
-	ToMapping( sBuffer, mapping.m_iCoinCounterOn );
+	ToMapping( sBuffer, mapping.m_iCoinCounter[1] );
 	ini.GetValue( sDeviceName, "CoinCounterOff", sBuffer );
-	ToMapping( sBuffer, mapping.m_iCoinCounterOff );
+	ToMapping( sBuffer, mapping.m_iCoinCounter[0] );
 
 	// "PIUIO-dance-", "PIUIO-pump-", etc.
 	CString sBaseKey = sDeviceName + "-" + pGame->m_szName + "-";
@@ -114,8 +114,8 @@ void LightsMapper::WriteMappings( const CString &sDeviceName, LightsMapping &map
 	const Game* pGame = GAMESTATE->GetCurrentGame();
 
 	// set cabinet and counter data
-	ini.SetValue( sDeviceName, "CoinCounterOn", FromMapping(mapping.m_iCoinCounterOn) );
-	ini.SetValue( sDeviceName, "CoinCounterOff", FromMapping(mapping.m_iCoinCounterOff) );
+	ini.SetValue( sDeviceName, "CoinCounterOn", FromMapping(mapping.m_iCoinCounter[1]) );
+	ini.SetValue( sDeviceName, "CoinCounterOff", FromMapping(mapping.m_iCoinCounter[0]) );
 
 	FOREACH_CabinetLight( cl )
 		ini.SetValue( sDeviceName, CabinetLightToString(cl), FromMapping(mapping.m_iCabinetLights[cl]) );

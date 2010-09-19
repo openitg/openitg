@@ -68,14 +68,13 @@ void InputHandler_MK3::SetLightsMappings()
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
-	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
-		iGameLights[GAME_CONTROLLER_2] );
-	
-	m_LightsMappings.m_iCoinCounterOn = (1 << 28);
-	m_LightsMappings.m_iCoinCounterOff = (1 << 27);
+	uint32_t iCoinCounter[2] = { (1 << 27), (1 << 28) };
 
-	LightsMapper::LoadMappings( "PIUIO", m_LightsMappings );
+	m_LightsMappings.SetCabinetLights( iCabinetLights );
+	m_LightsMappings.SetCustomGameLights( iGameLights );
+	m_LightsMappings.SetCoinCounter( iCoinCounter );
+	
+	LightsMapper::LoadMappings( "MK3", m_LightsMappings );
 }
 
 void InputHandler_MK3::GetDevicesAndDescriptions( vector<InputDevice> &vDevicesOut, vector<CString> &vDescriptionsOut )
@@ -156,11 +155,10 @@ void InputHandler_MK3::UpdateLights()
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
 				m_iLightData |= m_LightsMappings.m_iGameLights[gc][gb];
 
-	/* The coin counter moves halfway if we send bit 4, then the
-	 * rest of the way (or not at all) if we send bit 5. Send bit
-	 * 5 unless we have a coin event being recorded. */
+/* doesn't work, as far as I can tell
 	m_iLightData |= m_LightsState->m_bCoinCounter ?
 		m_LightsMappings.m_iCoinCounterOn : m_LightsMappings.m_iCoinCounterOff;
+*/
 }
 
 /*

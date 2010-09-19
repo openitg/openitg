@@ -99,13 +99,15 @@ void InputHandler_PIUIO::SetLightsMappings()
 		{ (1 << 4), (1 << 5), (1 << 2), (1 << 3) }	/* Player 2 */
 	};
 
-	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
-		iGameLights[GAME_CONTROLLER_2] );
-	
-	m_LightsMappings.m_iCoinCounterOn = (1 << 28);
-	m_LightsMappings.m_iCoinCounterOff = (1 << 27);
+	/* The coin counter moves halfway if we send bit 4, then the rest of
+	 * the way when we send bit 5. If bit 5 is sent without bit 4 prior,
+	 * the coin counter doesn't do anything. */
+	uint32_t iCoinTriggers[2] = { (1 << 27), (1 << 28) };
 
+	m_LightsMappings.SetCabinetLights( iCabinetLights );
+	m_LightsMappings.SetCustomGameLights( iGameLights );
+	m_LightsMappings.SetCoinCounter( iCoinTriggers );
+ 
 	LightsMapper::LoadMappings( "PIUIO", m_LightsMappings );
 }
 
@@ -241,15 +243,12 @@ void InputHandler_PIUIO::UpdateLights()
 			if( m_LightsState->m_bGameButtonLights[gc][gb] )
 				m_iLightData |= m_LightsMappings.m_iGameLights[gc][gb];
 
-	/* The coin counter moves halfway if we send bit 4, then the
-	 * rest of the way (or not at all) if we send bit 5. Send bit
-	 * 5 unless we have a coin event being recorded. */
 	m_iLightData |= m_LightsState->m_bCoinCounter ?
-		m_LightsMappings.m_iCoinCounterOn : m_LightsMappings.m_iCoinCounterOff;
+		m_LightsMappings.m_iCoinCounter[1] : m_LightsMappings.m_iCoinCounter[0];
 }
 
 /*
- * (c) 2005 Chris Danford, Glenn Maynard.  Re-implemented by vyhd, infamouspat
+ * (c) 2008 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

@@ -76,8 +76,7 @@ void LightsDriver_G15::SetLightsMappings()
 	};
 
 	m_LightsMappings.SetCabinetLights( iCabinetLights );
-	m_LightsMappings.SetGameLights( iGameLights[GAME_CONTROLLER_1],
-		iGameLights[GAME_CONTROLLER_2] );
+	m_LightsMappings.SetGameLights( iGameLights );
 
 	LightsMapper::LoadMappings( "G15", m_LightsMappings );
 }
@@ -109,7 +108,7 @@ void LightsDriver_G15::Set( const LightsState *ls )
 		return;
 	}
 
-	uint32_t iWriteData = 0;
+	uint16_t iWriteData = 0;
 
 	// Lights 1 - 8 are used for the cabinet lights
 	FOREACH_CabinetLight( cl )

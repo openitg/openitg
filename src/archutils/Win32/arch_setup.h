@@ -3,6 +3,12 @@
 
 #define HAVE_FFMPEG
 
+#if !defined(XBOX)
+#define SUPPORT_OPENGL
+#endif
+
+#define SUPPORT_D3D
+
 /* Fix VC breakage. */
 #define PATH_MAX _MAX_PATH
 

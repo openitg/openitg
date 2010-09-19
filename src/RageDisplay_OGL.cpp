@@ -53,8 +53,6 @@
 
 #include "arch/LowLevelWindow/LowLevelWindow.h"
 
-#include "arch/arch.h"
-
 #if defined(_MSC_VER)
 #pragma comment(lib, "opengl32.lib")
 #pragma comment(lib, "glu32.lib")

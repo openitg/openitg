@@ -1360,10 +1360,9 @@ void InsertCredit( bool bRecord )
 // -- Matt1360
 void ClearCredits()
 {
-	int iLost = GAMESTATE->m_iCoins;
+	LOG->Warn( "ClearCredits: %i coins discarded", GAMESTATE->m_iCoins );
 	GAMESTATE->m_iCoins = 0;
 	SCREENMAN->RefreshCreditsMessages();
-	LOG->Trace( "%i Coins discarded" , iLost );
 }
 
 /* Returns true if the key has been handled and should be discarded, false if

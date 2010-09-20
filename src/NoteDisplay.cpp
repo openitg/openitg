@@ -593,6 +593,7 @@ void NoteDisplay::DrawHoldTopCap( const TapNote& tn, int iCol, int iRow, bool bI
 		// if we're rotating, we need to modify the X and Z coords for the outer edges.
 		const float fRotOffsetX		= fFrameWidth/2 * RageFastCos(fRotationY);
 		const float fRotOffsetZ		= fFrameWidth/2 * RageFastSin(fRotationY);
+
 		const float fXLeft		= fX - fRotOffsetX;
 		const float fXRight		= fX + fRotOffsetX;
 		const float fZLeft		= fZ - fRotOffsetZ;
@@ -696,6 +697,7 @@ void NoteDisplay::DrawHoldBody( const TapNote& tn, int iCol, int iRow, bool bIsB
 		// if we're rotating, we need to modify the X and Z coords for the outer edges.
 		const float fRotOffsetX		= fFrameWidth/2 * RageFastCos(fRotationY);
 		const float fRotOffsetZ		= fFrameWidth/2 * RageFastSin(fRotationY);
+
 		const float fXLeft		= fX - fRotOffsetX;
 		const float fXRight		= fX + fRotOffsetX;
 		const float fZLeft		= fZ - fRotOffsetZ;
@@ -797,6 +799,7 @@ void NoteDisplay::DrawHoldBottomCap( const TapNote& tn, int iCol, int iRow, bool
 		// if we're rotating, we need to modify the X and Z coords for the outer edges.
 		const float fRotOffsetX		= fFrameWidth/2 * RageFastCos(fRotationY);
 		const float fRotOffsetZ		= fFrameWidth/2 * RageFastSin(fRotationY);
+
 		const float fXLeft		= fX - fRotOffsetX;
 		const float fXRight		= fX + fRotOffsetX;
 		const float fZLeft		= fZ - fRotOffsetZ;

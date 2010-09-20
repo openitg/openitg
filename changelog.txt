@@ -10,7 +10,7 @@ OpenITG, beta 3 (in development)
      Radar values (including step counts) now calculated for machine edits
      Added blinking for GAME_BUTTON_START on LIGHTSMODE_MENU
      Added StartRoulette and StartRandom messages for themes
-     Win32: Crash dialog shows OpenITG logo/text in place of StepMania (thanks, Wanny)
+     Win32: Crash dialog shows OpenITG logo/text in place of StepMania (Wanny)
 -New LUA bindings:
      "GetDiskSpaceTotal", "GetDiskSpaceFree" - returns a string describing the
           total or available disk space on the partition with UserPacks
@@ -22,8 +22,9 @@ OpenITG, beta 3 (in development)
 -Fixed minor cross-platform bugs:
      BPMDisplay: display BPM multiplied by music rate twice instead of once
      NoteDisplay: Twirl would render strangely with Flip, Tornado, etc.
-     ScreenGameplay: announcers actually work (thanks, Wanny)
-     ScreenDebugOverlay can now override used font (thanks, Wanny)
+     ScreenGameplay: announcers actually work (Wanny)
+     ScreenDebugOverlay can now override used font (Wanny)
+     SongManager: fixed potential crash from random songs including customs
 -Backend updates:
      Arch updated to use SM4's RageDriver structure
      Cleaned up LightsMapping structs so all mappings take arrays
@@ -82,7 +83,7 @@ OpenITG, beta 1 (May 15th, 2009)
 --------------------------------
 -Obligatory code cleanup
 -Windows additions:
-     OpenITG icon (thanks, Lightning)
+     OpenITG icon (Lightning)
      Updated version information
 -New Preferences:
      "DebugInputDrivers" - additional debugging info for various I/O drivers
@@ -138,8 +139,8 @@ OpenITG, beta 1 (May 15th, 2009)
      Inaccurate crashlog count in System Diagnostics
      RageDisplay_D3D: fixed texture material issues, texture translation issues, and noteskin rendering
 -Fixed Linux bugs:
-     Tentative fix for memory card mounting issues (thanks, Matt1360)
-     64-bit crash on RageCryptInterface_ITG2 (thanks, dawnwolf)
+     Tentative fix for memory card mounting issues (Matt1360)
+     64-bit crash on RageCryptInterface_ITG2 (dawnwolf)
      Screensaver disable code didn't work for X11
 -Fixed minor cross-platform bugs:
      Custom song data not deallocated after the end of a round
@@ -171,9 +172,9 @@ OpenITG, prebeta (November 25th, 2008)
 --------------------------------------
 -Lots more code cleanup
 -Compilation updates:
-     Added SVN revision script for Linux make (thanks, SM devs)
-     Added patch to compile on GCC 4.3 (thanks dawnwolf)
-     Added patch to compile against LUA 5.1 (thanks to cyt0plas, Spectere)
+     Added SVN revision script for Linux make (SM devs)
+     Added patch to compile on GCC 4.3 (dawnwolf)
+     Added patch to compile against LUA 5.1 (cyt0plas, Spectere)
 -New features:
      Preliminary "M-mod" support (same format as C-mods, e.g. "M600")
      Added custom courses ( /ProfileFolder/Courses/ )

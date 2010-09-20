@@ -2,6 +2,7 @@ Core engine stuff
 -----------------
 - Implement/test Ridiculous timing logic
   (note to self: make sure there are at least 3 inputs in the window)
+- Clean up horrendous custom song logic in SongManager
 
 DiagnosticsUtil
 ---------------
@@ -10,16 +11,16 @@ DiagnosticsUtil
 UserPackManager
 ---------------
 - Test disk space limiting (i.e. reject packs that are too big for the disk)
-- Allow cancelling a pack transfer (but require a dialog to confirm)
 - Implement/test ETA reports for completion of pack transfer
 
 Autotools (Linux)
 -----------------
 - Add an option to compile ffmpeg statically
     - Add ffmpeg's source to SVN and compile it in place
-- Compile audio libraries statically on ITG_ARCADE
+- Compile against glibc 2.3.2 on ITG_ARCADE (what is this I don't even...)
 
 Pipe dreams
 -----------
+- Figure out a nice way to handle remounting itgdata on ITG_ARCADE
 - Compile a USB 2.0 kernel module for ITG's kernel
     - Selectively load it for custom song reading and pack management

@@ -65,7 +65,7 @@ bool MK6Helper::HasKernelPatch()
 	return false;
 }
 
-void MK6Helper::Import( const uint32_t iSensorsIn[], const uint32_t iLightsIn )
+void MK6Helper::Import( const uint32_t iSensorsIn[4], const uint32_t iLightsIn )
 {
 	for( int i = 0; i < 4; i++ )
 		g_iSensors[i] = iSensorsIn[i];

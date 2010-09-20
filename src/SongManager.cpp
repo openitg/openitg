@@ -1397,7 +1397,7 @@ void SongManager::UpdateBest()
 void SongManager::UpdateShuffled()
 {
 	// update shuffled
-	m_pShuffledSongs = m_pSongs;
+	m_pShuffledSongs = m_pMachineSongs;
 	random_shuffle( m_pShuffledSongs.begin(), m_pShuffledSongs.end() );
 
 	m_pShuffledCourses = m_pCourses;

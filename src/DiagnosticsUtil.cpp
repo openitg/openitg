@@ -50,43 +50,6 @@ CString DiagnosticsUtil::GetIP()
 		return sError;
 }
 
-namespace
-{
-	/* declared as floats so the division isn't implicitly cast to int */
-	float KILOBYTE = 1024;
-	float MEGABYTE = 1024*KILOBYTE;
-	float GIGABYTE = 1024*MEGABYTE;
-
-	CString FormatByteValue( uint64_t iBytes )
-	{
-		CString sSuffix;
-		float fShownSpace = 0.0f;
-
-		if( iBytes > GIGABYTE )
-		{
-			fShownSpace = iBytes / GIGABYTE;
-			sSuffix = "GB";
-		}
-		else if( iBytes > MEGABYTE )
-		{
-			fShownSpace = iBytes / MEGABYTE;
-			sSuffix = "MB";
-		}
-		else if( iBytes > KILOBYTE )
-		{
-			fShownSpace = iBytes / KILOBYTE;
-			sSuffix = "KB";
-		}
-		else
-		{
-			fShownSpace = float(iBytes);
-			sSuffix = "bytes";
-		}
-
-		return ssprintf( "%.02f %s", fShownSpace, sSuffix.c_str() );
-	}
-}
-
 // XXX: we should probably take a parameter for these later on.
 // for now, return the only disk space value that matters to us.
 

@@ -593,7 +593,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="2"
 				AdditionalIncludeDirectories=".;vorbis;libjpeg;&quot;lua-5.0\include&quot;;libusb\include;BaseClasses"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WINDOWS;RELEASE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WINDOWS;RELEASE;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				MinimalRebuild="false"
 				ExceptionHandling="0"

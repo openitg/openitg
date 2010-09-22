@@ -243,6 +243,8 @@ void ScreenUserPacks::Input( const DeviceInput& DeviceI, const InputEventType ty
 
 CString g_CurXferFile;
 CString g_CurSelection;
+unsigned long g_iLastCurrentBytes;
+RageTimer g_UpdateDuration;
 
 void UpdateXferProgress( unsigned long iCurrent, unsigned long iTotal )
 {
@@ -268,10 +270,13 @@ void UpdateXferProgress( unsigned long iCurrent, unsigned long iTotal )
 	if( DrawTimer.Ago() < DRAW_UPDATE_TIME )
 		return;
 
+	float fXferRate = (iCurrent / g_UpdateDuration.Ago()) / 1024.0;
 	float fPercent = iCurrent / (iTotal/100);
-	CString sMessage = ssprintf( "\n\n%s\n%.2f%%\n\n%s",
+
+	CString sMessage = ssprintf( "\n\n%s\n%.2f%% %s\n\n%s",
 		USER_PACK_WAIT_TEXT.GetValue().c_str(),
 		fPercent,
+		FormatByteRateValue(fXferRate).c_str(),
 		USER_PACK_CANCEL_TEXT.GetValue().c_str()
 	);
 	SCREENMAN->OverlayMessage( sMessage );
@@ -372,6 +377,8 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 			sError = ""; //  ??
 			RageTimer start;
 			DrawTimer.Touch();
+			g_iLastCurrentBytes = 0;
+			g_UpdateDuration.Touch();
 			if (!UPACKMAN->TransferPack( g_CurXferFile, sSelection, UpdateXferProgress, sError ) )
 			{
 				SCREENMAN->SystemMessage( "Transfer error:\n" + sError );

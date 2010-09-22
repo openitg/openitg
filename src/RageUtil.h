@@ -267,6 +267,9 @@ inline CString PrettyPercent( int fNumerator, int fDenominator ) { return Pretty
 CString Commify( int iNum );
 CString FormatNumberAndSuffix( int i );
 
+CString FormatByteValue( uint64_t iBytes );
+CString FormatByteRateValue( float fRate );
+
 
 struct tm GetLocalTime();
 

@@ -212,57 +212,44 @@ CString FormatNumberAndSuffix( int i )
 
 namespace
 {
-	/* declared as floats so the division isn't implicitly cast to int */
-	float KILOBYTE = 1024;
-	float MEGABYTE = 1024*KILOBYTE;
-	float GIGABYTE = 1024*MEGABYTE;
+	/* declared as doubles so the division isn't implicitly cast to int */
+	double KILOBYTE = 1024;
+	double MEGABYTE = 1024*KILOBYTE;
+	double GIGABYTE = 1024*MEGABYTE;
 }
 
 CString FormatByteValue( uint64_t iBytes )
 {
 	CString sSuffix;
 	float fShownSpace = 0.0f;
-		if( iBytes > GIGABYTE )
+
+	/* this loses precision with large ints, but not enough to
+	 * worry about it for now...just keep it in mind for later */
+
+	double fBytes = double(iBytes);
+
+	if( fBytes > GIGABYTE )
 	{
-		fShownSpace = iBytes / GIGABYTE;
+		fShownSpace = fBytes / GIGABYTE;
 		sSuffix = "GB";
 	}
-	else if( iBytes > MEGABYTE )
+	else if( fBytes > MEGABYTE )
 	{
-		fShownSpace = iBytes / MEGABYTE;
+		fShownSpace = fBytes / MEGABYTE;
 		sSuffix = "MB";
 	}
-	else if( iBytes > KILOBYTE )
+	else if( fBytes > KILOBYTE )
 	{
-		fShownSpace = iBytes / KILOBYTE;
+		fShownSpace = fBytes / KILOBYTE;
 		sSuffix = "KB";
 	}
 	else
 	{
-		fShownSpace = float(iBytes);
+		fShownSpace = fBytes;
 		sSuffix = "bytes";
 	}
-		return ssprintf( "%.02f %s", fShownSpace, sSuffix.c_str() );
-}
 
-CString FormatByteRateValue( float fRate )
-{
-	CString sSuffix;
-	if( fRate > MEGABYTE )
-	{
-		fRate /= MEGABYTE;
-		sSuffix = "MB/s";
-	}
-	else if( fRate > KILOBYTE )
-	{
-		fRate /= KILOBYTE;
-		sSuffix = "kb/s";
-	}
-	else
-	{
-		sSuffix = "bytes/s";
-	}
-		return ssprintf( "%.02f %s", fRate, sSuffix.c_str() );
+	return ssprintf( "%.02f %s", fShownSpace, sSuffix.c_str() );
 }
 
 struct tm GetLocalTime()

@@ -246,7 +246,7 @@ CString g_CurSelection;
 unsigned long g_iLastCurrentBytes;
 RageTimer g_UpdateDuration;
 
-void UpdateXferProgress( unsigned long iCurrent, unsigned long iTotal )
+void UpdateXferProgress( unsigned long iBytesCurrent, unsigned long iBytesTotal )
 {
 	bool bInterrupt = false;
 
@@ -270,13 +270,17 @@ void UpdateXferProgress( unsigned long iCurrent, unsigned long iTotal )
 	if( DrawTimer.Ago() < DRAW_UPDATE_TIME )
 		return;
 
-	float fXferRate = (iCurrent / g_UpdateDuration.Ago()) / 1024.0;
-	float fPercent = iCurrent / (iTotal/100);
+	/* this truncates to int, but that's okay for our purposes */
+	float iTransferRate = iBytesCurrent / g_UpdateDuration.Ago();
+
+	float fPercent = iBytesCurrent / (iBytesTotal/100);
+
+	const CString sRate = FormatByteValue( iTransferRate ) + "/sec";
 
 	CString sMessage = ssprintf( "\n\n%s\n%.2f%% %s\n\n%s",
 		USER_PACK_WAIT_TEXT.GetValue().c_str(),
 		fPercent,
-		FormatByteRateValue(fXferRate).c_str(),
+		sRate.c_str(),
 		USER_PACK_CANCEL_TEXT.GetValue().c_str()
 	);
 	SCREENMAN->OverlayMessage( sMessage );

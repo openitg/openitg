@@ -266,6 +266,7 @@ CString PrettyPercent( float fNumerator, float fDenominator );
 inline CString PrettyPercent( int fNumerator, int fDenominator ) { return PrettyPercent( float(fNumerator), float(fDenominator) ); }
 CString Commify( int iNum );
 CString FormatNumberAndSuffix( int i );
+CString FormatByteValue( uint64_t iBytes );
 
 
 struct tm GetLocalTime();

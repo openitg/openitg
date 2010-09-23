@@ -210,6 +210,48 @@ CString FormatNumberAndSuffix( int i )
 	return ssprintf("%i", i) + sSuffix;
 }
 
+namespace
+{
+	/* declared as doubles so the division isn't implicitly cast to int */
+	double KILOBYTE = 1024;
+	double MEGABYTE = 1024*KILOBYTE;
+	double GIGABYTE = 1024*MEGABYTE;
+}
+
+CString FormatByteValue( uint64_t iBytes )
+{
+	CString sSuffix;
+	float fShownSpace = 0.0f;
+
+	/* this loses precision with large ints, but not enough to
+	 * worry about it for now...just keep it in mind for later */
+
+	double fBytes = double(iBytes);
+
+	if( fBytes > GIGABYTE )
+	{
+		fShownSpace = fBytes / GIGABYTE;
+		sSuffix = "GB";
+	}
+	else if( fBytes > MEGABYTE )
+	{
+		fShownSpace = fBytes / MEGABYTE;
+		sSuffix = "MB";
+	}
+	else if( fBytes > KILOBYTE )
+	{
+		fShownSpace = fBytes / KILOBYTE;
+		sSuffix = "KB";
+	}
+	else
+	{
+		fShownSpace = fBytes;
+		sSuffix = "bytes";
+	}
+
+	return ssprintf( "%.02f %s", fShownSpace, sSuffix.c_str() );
+}
+
 struct tm GetLocalTime()
 {
 	const time_t t = time(NULL);

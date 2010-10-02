@@ -34,6 +34,7 @@ void PlayerOptions::Init()
 	m_fSkew = 0;				m_SpeedfSkew = 1.0f;
 	m_fPassmark = 0;			m_SpeedfPassmark = 1.0f;
 	m_fRandomSpeed = 0;			m_SpeedfRandomSpeed = 1.0f;
+	m_fTimingScale = 1.0f;		m_SpeedfTimingScale = 1.0f;
 	ZERO( m_bTurns );
 	ZERO( m_bTransforms );
 	m_ScoreDisplay = SCORING_ADD;
@@ -64,6 +65,7 @@ void PlayerOptions::Approach( const PlayerOptions& other, float fDeltaSeconds )
 	APP( fSkew );
 	APP( fPassmark );
 	APP( fRandomSpeed );
+	APP( fTimingScale );
 }
 
 static void AddPart( vector<CString> &AddTo, float level, CString name )
@@ -153,6 +155,7 @@ void PlayerOptions::GetMods( vector<CString> &AddTo ) const
 	AddPart( AddTo, m_fCover,	"Cover" );
 
 	AddPart( AddTo, m_fPassmark, "Passmark" );
+	AddPart( AddTo, m_fTimingScale, "Timing" );
 
 	AddPart( AddTo, m_fRandomSpeed, "RandomSpeed" );
 
@@ -345,6 +348,7 @@ void PlayerOptions::FromString( CString sOptions, bool bWarnOnInvalid )
 		else if( sBit == "blind" )		SET_FLOAT( fBlind )
 		else if( sBit == "cover" )		SET_FLOAT( fCover )
 		else if( sBit == "passmark" )	SET_FLOAT( fPassmark )
+		else if( sBit == "judgescale" || sBit == "timing" )	SET_FLOAT( fTimingScale )
 		else if( sBit == "overhead" )	{ m_bSetTiltOrSkew = true; m_fSkew = 0;		m_fPerspectiveTilt = 0;			m_SpeedfSkew = m_SpeedfPerspectiveTilt = speed; }
 		else if( sBit == "incoming" )	{ m_bSetTiltOrSkew = true; m_fSkew = level; m_fPerspectiveTilt = -level;	m_SpeedfSkew = m_SpeedfPerspectiveTilt = speed; }
 		else if( sBit == "space" )		{ m_bSetTiltOrSkew = true; m_fSkew = level; m_fPerspectiveTilt = +level;	m_SpeedfSkew = m_SpeedfPerspectiveTilt = speed; }
@@ -569,6 +573,8 @@ bool PlayerOptions::operator==( const PlayerOptions &other ) const
 	COMPARE(m_fMaxScrollBPM);
 	COMPARE(m_fRandomSpeed);
 	COMPARE(m_ScoreDisplay);
+	COMPARE(m_fPassmark);
+	COMPARE(m_fTimingScale);
 	COMPARE(m_fDark);
 	COMPARE(m_fBlind);
 	COMPARE(m_fCover);
@@ -608,6 +614,8 @@ bool PlayerOptions::IsEasierForSongAndSteps( Song* pSong, Steps* pSteps )
 	if( m_bTransforms[TRANSFORM_NOJUMPS] && pSteps->GetRadarValues()[RADAR_NUM_JUMPS]>0 )
 		return true;
 	if( m_bTransforms[TRANSFORM_NOSTRETCH] )
+		return true;
+	if( m_fTimingScale > 1.0f )
 		return true;
 
 	// Inserted holds can be really easy on some songs, and scores will be 
@@ -744,6 +752,7 @@ void PlayerOptions::ResetSavedPrefs()
 	CPY( m_fScrollBPM );
 	CPY( m_fMaxScrollBPM );
 	CPY( m_fScrolls[SCROLL_REVERSE] );
+	CPY( m_fTimingScale );
 	CPY( m_fPerspectiveTilt );
 	CPY( m_fSkew );
 	CPY( m_bTransforms[TRANSFORM_NOHOLDS] );

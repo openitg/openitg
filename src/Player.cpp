@@ -49,7 +49,7 @@ enum HoldWindow { HW_OK, HW_Roll };
 enum TapWindow { TW_Marvelous, TW_Perfect, TW_Great, TW_Good, TW_Boo, TW_Mine, TW_Attack };
 
 
-float AdjustedWindowTap( TapWindow tw, bool bIsPlayingBeginner )
+float AdjustedWindowTap( TapWindow tw, float fJudgeScale, bool bIsPlayingBeginner )
 {
 	float fSecs = 0;
 	switch( tw )
@@ -58,19 +58,23 @@ float AdjustedWindowTap( TapWindow tw, bool bIsPlayingBeginner )
 	case TW_Perfect:	fSecs = PREFSMAN->m_fJudgeWindowSecondsPerfect;		break;
 	case TW_Great:		fSecs = PREFSMAN->m_fJudgeWindowSecondsGreat;		break;
 	case TW_Good:		fSecs = PREFSMAN->m_fJudgeWindowSecondsGood;		break;
-	case TW_Boo:		fSecs = PREFSMAN->m_fJudgeWindowSecondsBoo;			break;
+	case TW_Boo:		fSecs = PREFSMAN->m_fJudgeWindowSecondsBoo;		break;
 	case TW_Mine:		fSecs = PREFSMAN->m_fJudgeWindowSecondsMine;		break;
 	case TW_Attack:		fSecs = PREFSMAN->m_fJudgeWindowSecondsAttack;		break;
 	default:	ASSERT(0);
 	}
 	fSecs *= PREFSMAN->m_fJudgeWindowScale;
 	fSecs += PREFSMAN->m_fJudgeWindowAdd;
+
+	// apply this last, so it overlays on the above scaling
+	fSecs *= fJudgeScale;
+
 	if( bIsPlayingBeginner && PREFSMAN->m_bMercifulBeginner && tw==TW_Boo )
 		fSecs += 0.5f;
 	return fSecs;
 }
 
-float AdjustedWindowHold( HoldWindow hw, bool bIsPlayingBeginner )
+float AdjustedWindowHold( HoldWindow hw, float fJudgeScale, bool bIsPlayingBeginner )
 {
 	float fSecs = 0;
 	switch( hw )
@@ -81,12 +85,16 @@ float AdjustedWindowHold( HoldWindow hw, bool bIsPlayingBeginner )
 	}
 	fSecs *= PREFSMAN->m_fJudgeWindowScale;
 	fSecs += PREFSMAN->m_fJudgeWindowAdd;
+
+	/* don't scale roll timing; that could get annoying pretty quickly. */
+	if( hw == HW_OK )
+		fSecs *= fJudgeScale;
+
 	return fSecs;
 }
 
-#define ADJUSTED_WINDOW_TAP( tw )	AdjustedWindowTap( tw, IsPlayingBeginner() )
-#define ADJUSTED_WINDOW_HOLD( hw )	AdjustedWindowHold( hw, IsPlayingBeginner() )
-
+#define ADJUSTED_WINDOW_TAP( tw )	AdjustedWindowTap( tw, m_pPlayerState->m_CurrentPlayerOptions.m_fTimingScale, IsPlayingBeginner() )
+#define ADJUSTED_WINDOW_HOLD( hw )	AdjustedWindowHold( hw, m_pPlayerState->m_CurrentPlayerOptions.m_fTimingScale, IsPlayingBeginner() )
 
 Player::Player()
 {

@@ -131,6 +131,8 @@ struct PlayerOptions
 	/* If this is > 0, then the player must have life above this value at the end of
 	 * the song to pass.  This is independent of SongOptions::m_FailType. */
 	float		m_fPassmark,			m_SpeedfPassmark;
+
+	float	m_fTimingScale,		m_SpeedfTimingScale;
 	
 	bool		m_bTurns[NUM_TURNS];
 	bool		m_bTransforms[NUM_TRANSFORMS];

@@ -20,10 +20,14 @@
 #pragma comment(lib, "vorbis/xbox/vorbis_static.lib")
 #pragma comment(lib, "vorbis/xbox/vorbisfile_static.lib")
 #endif
-#elif defined(_MSC_VER) && !defined(_XBOX)
+#elif defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER >= 1400 // Visual Studio 2005+
 #pragma comment(lib, "vorbis/win32/ogg_static.lib")
 #pragma comment(lib, "vorbis/win32/vorbis_static.lib")
 #pragma comment(lib, "vorbis/win32/vorbisfile_static.lib")
+#elif defined(_MSC_VER) && !defined(_XBOX) // Visual Studio 2003
+#pragma comment(lib, "vorbis/win32/vs2003/ogg_static.lib")
+#pragma comment(lib, "vorbis/win32/vs2003/vorbis_static.lib")
+#pragma comment(lib, "vorbis/win32/vs2003/vorbisfile_static.lib")
 #endif
 
 #include <cstring>

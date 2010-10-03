@@ -12,6 +12,13 @@
 #include "crypto561/sha.h"
 #include "crypto561/rsa.h"
 #include "crypto561/osrng.h"
+#if defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER <= 1310
+#if defined(_DEBUG)
+#pragma comment(lib, "crypto561/cryptlib_vs2003/Win32/output/debug/cryptlib_vs2003.lib")
+#else
+#pragma comment(lib, "crypto561/cryptlib_vs2003/Win32/output/release/cryptlib_vs2003.lib")
+#endif /* defined(_DEBUG) */
+#endif /* defined(_MSC_VER) */
 
 using namespace CryptoPP;
 

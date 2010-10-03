@@ -445,8 +445,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release-Home|Win32"
-			OutputDirectory="./../Program"
-			IntermediateDirectory="./../Release-home"
+			OutputDirectory="$(TargetDir)"
+			IntermediateDirectory="$(SolutionDir)/build-vs2008/$(ProjectName)/$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
@@ -481,8 +481,8 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories=".;vorbis;libjpeg;&quot;lua-5.0\include&quot;;libusb\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WINDOWS;RELEASE"
+				AdditionalIncludeDirectories=".;vorbis;libjpeg;&quot;lua-5.0\include&quot;;libusb\include;BaseClasses"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WINDOWS;RELEASE;_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				MinimalRebuild="false"
 				ExceptionHandling="0"

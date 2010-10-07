@@ -63,6 +63,7 @@ float AdjustedWindowTap( TapWindow tw, float fJudgeScale, bool bIsPlayingBeginne
 	case TW_Attack:		fSecs = PREFSMAN->m_fJudgeWindowSecondsAttack;		break;
 	default:	ASSERT(0);
 	}
+
 	fSecs *= PREFSMAN->m_fJudgeWindowScale;
 	fSecs += PREFSMAN->m_fJudgeWindowAdd;
 
@@ -79,15 +80,16 @@ float AdjustedWindowHold( HoldWindow hw, float fJudgeScale, bool bIsPlayingBegin
 	float fSecs = 0;
 	switch( hw )
 	{
-	case HW_OK:		fSecs = PREFSMAN->m_fJudgeWindowSecondsOK;		break;
+	case HW_OK:	fSecs = PREFSMAN->m_fJudgeWindowSecondsOK;	break;
 	case HW_Roll:	fSecs = PREFSMAN->m_fJudgeWindowSecondsRoll;	break;
 	default:	ASSERT(0);
 	}
+
 	fSecs *= PREFSMAN->m_fJudgeWindowScale;
 	fSecs += PREFSMAN->m_fJudgeWindowAdd;
 
-	/* don't scale roll timing; that could get annoying pretty quickly. */
-	if( hw == HW_OK )
+	// don't scale roll timing
+	if( hw != HW_Roll )
 		fSecs *= fJudgeScale;
 
 	return fSecs;
@@ -203,7 +205,7 @@ void Player::Init(
 
 	// calculate M-mod speed here, so we can adjust properly on a per-song basis.
 	// XXX: can we find a better location for this?
-	if( GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fMaxScrollBPM != 0 )
+	if( m_pPlayerState->m_StoredPlayerOptions.m_fMaxScrollBPM != 0 )
 	{
 		DisplayBpms bpms;
 
@@ -252,8 +254,8 @@ void Player::Init(
 		ASSERT( fMaxBPM > 0 );
 
 		// set an X-mod equal to Mnum / fMaxBPM (e.g. M600 with 150 becomes 4x)
-		GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fScrollSpeed =
-			( GAMESTATE->m_pPlayerState[pn]->m_StoredPlayerOptions.m_fMaxScrollBPM / fMaxBPM );
+		m_pPlayerState->m_StoredPlayerOptions.m_fScrollSpeed =
+			( m_pPlayerState->m_StoredPlayerOptions.m_fMaxScrollBPM / fMaxBPM );
 	}
 
 	RageSoundParams p;

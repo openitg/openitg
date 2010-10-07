@@ -155,7 +155,7 @@ void PlayerOptions::GetMods( vector<CString> &AddTo ) const
 	AddPart( AddTo, m_fCover,	"Cover" );
 
 	AddPart( AddTo, m_fPassmark, "Passmark" );
-	AddPart( AddTo, m_fTimingScale, "Timing" );
+	AddPart( AddTo, m_fTimingScale, "JudgeScale" );
 
 	AddPart( AddTo, m_fRandomSpeed, "RandomSpeed" );
 

@@ -97,7 +97,7 @@ void Dialog::OK( CString sMessage, CString sID )
 	Dialog::Init();
 
 	if( LOG )
-		LOG->Trace( "Dialog: \"%s\" [%s]", sMessage.c_str(), sID.c_str() );
+		LOG->Debug( "Dialog: \"%s\" [%s]", sMessage.c_str(), sID.c_str() );
 
 	if( sID != "" && MessageIsIgnored(sID) )
 		return;

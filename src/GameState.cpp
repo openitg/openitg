@@ -2017,6 +2017,7 @@ public:
 
 	static int IsPlayerEnabled( T* p, lua_State *L )		{ lua_pushboolean(L, p->IsPlayerEnabled((PlayerNumber)IArg(1)) ); return 1; }
 	static int IsHumanPlayer( T* p, lua_State *L )			{ lua_pushboolean(L, p->IsHumanPlayer((PlayerNumber)IArg(1)) ); return 1; }
+	static int IsDisqualified( T* p, lua_State *L )		{ lua_pushboolean(L, p->IsDisqualified( (PlayerNumber)IArg(1)) ); return 1; }
 	static int GetPlayerDisplayName( T* p, lua_State *L )	{ lua_pushstring(L, p->GetPlayerDisplayName((PlayerNumber)IArg(1)) ); return 1; }
 	static int GetMasterPlayerNumber( T* p, lua_State *L )	{ lua_pushnumber(L, p->m_MasterPlayerNumber ); return 1; }
 	static int ApplyGameCommand( T* p, lua_State *L )
@@ -2129,6 +2130,7 @@ public:
 	{
 		ADD_METHOD( IsPlayerEnabled )
 		ADD_METHOD( IsHumanPlayer )
+		ADD_METHOD( IsDisqualified )
 		ADD_METHOD( GetPlayerDisplayName )
 		ADD_METHOD( GetMasterPlayerNumber )
 		ADD_METHOD( ApplyGameCommand )

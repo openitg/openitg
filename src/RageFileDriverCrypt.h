@@ -24,10 +24,10 @@ public:
 	virtual int GetFileSize() const;
 };
 
-class RageFileDriverCrypt: public RageFileDriverDirect
+class RageFileDriverCrypt: public RageFileDriverDirectReadOnly
 {
 public:
-	RageFileDriverCrypt( const CString &root ) : RageFileDriverDirect(root) { }
+	RageFileDriverCrypt( const CString &root ) : RageFileDriverDirectReadOnly(root) { }
 
 protected:
 	// attempts to open and return a file of a derivative type

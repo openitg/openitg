@@ -10,7 +10,7 @@
 	{	\
 		FileDriverEntry_##name(): FileDriverEntry( type ) { } \
 		RageFileDriver *Create( const CString &sRoot ) const { return new RageFileDriver##name( sRoot ); } \
-	} const g_RegisterDriver;
+	} const g_Register##name##Driver;
 
 class RageFileBasic;
 class FilenameDB;

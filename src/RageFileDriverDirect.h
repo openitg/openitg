@@ -60,6 +60,15 @@ protected:
 	CString m_sRoot;
 };
 
+class RageFileDriverDirectReadOnly: public RageFileDriverDirect
+{
+public:
+	RageFileDriverDirectReadOnly( const CString &sRoot );
+	RageFileBasic *Open( const CString &sPath, int iMode, int &iError );
+	bool Move( const CString &sOldPath, const CString &sNewPath );
+	bool Remove( const CString &sPath );
+};
+
 #endif
 
 /*

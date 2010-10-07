@@ -56,11 +56,11 @@ void ArchHooks_Unix::MountInitialFilesystems( const CString &sDirOfExecutable )
 {
 	/* Mount the root filesystem, so we can read files in /proc, /etc, and so on.
 	 * This is /rootfs, not /root, to avoid confusion with root's home directory. */
-	FILEMAN->Mount( "dir", "/", "/rootfs" );
+	FILEMAN->Mount( "dirro", "/", "/rootfs" );
 
 	/* Mount /proc, so Alsa9Buf::GetSoundCardDebugInfo() and others can access it.
 	 * (Deprecated; use rootfs.) */
-	FILEMAN->Mount( "dir", "/proc", "/proc" );
+	FILEMAN->Mount( "dirro", "/proc", "/proc" );
 
 	/* FileDB cannot accept relative paths, so Root must be absolute */
 	/* using DirOfExecutable for now  --infamouspat */

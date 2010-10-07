@@ -21,6 +21,7 @@
 #endif
 
 REGISTER_FILE_DRIVER( Direct, "DIR" );
+REGISTER_FILE_DRIVER( DirectReadOnly, "DIRRO" );
 
 // 64 KB buffer
 static const unsigned int BUFFER_SIZE = 1024*64;
@@ -123,6 +124,24 @@ bool RageFileDriverDirect::Remove( const CString &sPath_ )
 	default: ASSERT(0); return false;
 	}
 }
+
+/* The DIRRO driver is just like DIR, except writes are disallowed. */
+RageFileDriverDirectReadOnly::RageFileDriverDirectReadOnly( const CString &sRoot ) :
+	RageFileDriverDirect( sRoot ) { }
+
+RageFileBasic *RageFileDriverDirectReadOnly::Open( const CString &sPath, int iMode, int &iError )
+{
+	if( iMode & RageFile::WRITE )
+	{
+		iError = EROFS;
+		return NULL;
+	}
+
+	return RageFileDriverDirect::Open( sPath, iMode, iError );
+}
+bool RageFileDriverDirectReadOnly::Move( const CString &sOldPath, const CString &sNewPath ) { return false; }
+bool RageFileDriverDirectReadOnly::Remove( const CString &sPath ) { return false; }
+
 
 bool RageFileObjDirect::OpenInternal( const CString &sPath, int iMode, int &iError )
 {

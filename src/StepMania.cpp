@@ -1058,7 +1058,7 @@ int main(int argc, char* argv[])
 	if( IsADirectory(PATCH_DATA_DIR) )
 	{
 		LOG->Info( "VFS: mounting Data/patch/patch/." );
-		FILEMAN->Mount( "dir", PATCH_DATA_DIR, "/", false );
+		FILEMAN->Mount( "dirro", PATCH_DATA_DIR, "/", false );
 	}
 	else if( IsAFile(PATCH_FILE) )
 	{

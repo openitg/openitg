@@ -329,7 +329,8 @@ function ActorFrame:difficultyoffset()
 end
 
 -- OpenITG: diffuse an Actor from a hexadecimal string value
-function Actor:diffusestring( param )
+-- TODO: stuff this into the Actor namespace and make it work...
+function diffusestring( self, param )
 	local f = { 1, 1, 1, 1 }
 
 	-- number of hexadecimal characters available
@@ -337,15 +338,14 @@ function Actor:diffusestring( param )
 
 	-- store our return values in a table, so we can ignore
 	-- results we don't want and iterate over results we do
-	local results = { param:find("^#(%x%x)(%x%x)(%x%x)(%x?%x?)$") }
+	local results = { string.find(param, "^#(%x%x)(%x%x)(%x%x)(%x?%x?)$") }
 
 	-- convert the hex strings to floating-point values
 	-- (0..255 -> 0..1)
-	for i = 1, num do f[i] = tonumber(results[i+2], 16 / 255 end
+	for i = 1, num do f[i] = tonumber(results[i+2], 16) / 255 end
 
 	self:diffuse( f[1], f[2], f[3], f[4] )
 end
-
 
 function GameState:PlayerDifficulty( pn )
 	if GAMESTATE:IsCourseMode() then

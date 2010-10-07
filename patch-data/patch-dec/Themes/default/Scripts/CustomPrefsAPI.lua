@@ -36,9 +36,11 @@ CustomPrefs =
 	SaveMachineProfileIfNeeded = function()
 		Debug( "Called SaveMachineProfileIfNeeded" )
 		if NeedToSaveMachineProfile == true then
+			Debug( "Needed to save profile, saving now" )
+			SCREENMAN:OverlayMessage( "Saving profile..." )
 			PROFILEMAN:SaveMachineProfile()
+			SCREENMAN:HideOverlayMessage()
 			NeedToSaveMachineProfile = false
-			Debug( "Needed to save profile" )
 		end
 	end,
 }

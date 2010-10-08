@@ -1,0 +1,8 @@
+debian squeeze/sid packages:
+libsdl1.2-dev
+libglu1-mesa-dev
+liblualib50-dev
+libvorbis-dev
+libmad0-dev # only needed for mp3 support
+libusb-dev # note that libusb 0.1 is best, 1.0 is broke.
+libgtk2.0-dev # needed for loading window in linux

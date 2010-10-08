@@ -1,1 +1,2 @@
-to be done later
+1. Make build work on Linux x86_64
+2. Build standalone cache generator app

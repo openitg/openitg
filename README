@@ -1,0 +1,11 @@
+To build:
+
+1. Install all dependencies (see dependencies.txt)
+2. ./autogen.sh
+3. ./configure
+4. make
+
+
+5. pray
+
+

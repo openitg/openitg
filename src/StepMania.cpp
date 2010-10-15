@@ -87,21 +87,23 @@
 #endif
 
 #if defined(UNIX)
-#include <sys/reboot.h>
 #include <cerrno>
 #endif
 
-/* Only use Linux-specific arcade fixups if needed. */
+/* TODO: this toggle probably isn't necessary, since these -should- resolve
+ * to the same directory in the VFS. I just don't want to break patch data
+ * for arcade cabinets without testing it first... -- vyhd */
+
 #if defined(ITG_ARCADE) && defined(LINUX)
 #define PATCH_DIR	"/stats/patch"
 #define PATCH_FILE	"/rootfs/stats/patch/patch.zip"
 #else
 #define PATCH_DIR	"Data/patch"
 #define PATCH_FILE	"Data/patch/patch.zip"
-
-/* If it exists, this dir is mounted as a patch in lieu of patch.zip */
-#define PATCH_DATA_DIR	"Data/patch/patch"
 #endif
+
+/* If it exists, this dir is mounted as a patch instead of patch.zip */
+#define PATCH_DATA_DIR	"Data/patch/patch"
 
 #define ZIPS_DIR "Packages/"
 
@@ -1166,7 +1168,7 @@ int main(int argc, char* argv[])
 	//    it would fill up all of stats if the user has too many songs
 	//       --infamouspat
 	//
-#ifdef ITG_ARCADE	
+#ifdef ITG_ARCADE
 	system( "mount -o remount,rw /itgdata" );
 #endif
 	SONGMAN->InitAll( loading_window );		// this takes a long time

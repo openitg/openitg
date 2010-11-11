@@ -2238,6 +2238,9 @@ void ScreenEdit::HandleMainMenuChoice( MainMenuChoice c, const vector<int> &iAns
 				//
 				// Fill in option names
 				//
+				if( g_CurrentBGChangeLayer == BACKGROUND_LAYER_INVALID )
+					g_CurrentBGChangeLayer = BACKGROUND_LAYER_1;
+
 				vector<CString> vThrowAway;
 
 				g_BackgroundChange.rows[layer].choices[0] = ssprintf("%d",g_CurrentBGChangeLayer);

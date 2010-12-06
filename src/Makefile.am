@@ -16,10 +16,9 @@ AM_CXXFLAGS += -finline-limit=300
 AM_CXXFLAGS += $(XCFLAGS)
 
 if !ITG_ARCADE
-LIBS += $(LUA_LIBS)
-LIBS += -lpthread
+LIBS += -lpthread -Wl,-Bstatic $(LUA_LIBS) -Wl,-Bdynamic 
 else
-LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ -llua -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
+LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ $(LUA_LIBS) -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
 endif
 
 .PHONY: build_version

@@ -156,7 +156,8 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 			 * Is the /sys/block/{device} file a symlink itself?  On newer kernels,
 			 * the /device symlink is useless for obtaining USB location info
 			 */
-			char szLink[256];
+			char szLink[512];
+			memset(szLink, 0, 512);
 			int iUsbInfoIndex = 7;
 			if ( (buf.st_mode & S_IFMT) == S_IFLNK )
 			{
@@ -165,7 +166,6 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 				 *
 				 * sdd -> ../devices/pci0000:00/0000:00:1d.7/usb2/2-2/2-2:1.0/host47/target47:0:0/47:0:0:0/block/sdd
 				 */
-				LOG->Debug( "%s: is a symlink.", sPath.c_str() );
 				iRet = readlink( sPath, szLink, sizeof(szLink) );
 
 				/*
@@ -175,14 +175,10 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 				 * uba -> ../devices/pci0000:00/0000:00:1d.7/usb2/2-2/2-2:1.0/block/uba
 				 */
 				if ( sDevice.substr(0,2) == "ub" )
-				{
-					LOG->Debug( "%s: Device handled by ub driver", sPath.c_str() );
 			 		iUsbInfoIndex = 4;
-				}
 			}
 			else
 			{
-
 				/*
 				 * sPath/device should be a symlink to the actual device.  For USB
 				 * devices, it looks like this:
@@ -191,9 +187,12 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 				 *
 				 * "2-1" is "bus-port".
 				 */
-				LOG->Debug( "%s: is not a symlink, checking %s/device...", sPath.c_str(), sPath.c_str() );
 				iRet = readlink( sPath + "/device", szLink, sizeof(szLink) );
-				iUsbInfoIndex = 2;
+				if ( strstr(szLink, "target") != NULL )
+					// device -> ../../devices/pci0000:00/0000:00:1d.7/usb1/1-3/1-3.1/1-3.1:1.0/host3/target3:0:0/3:0:0:0
+					iUsbInfoIndex = 5;
+				else
+					iUsbInfoIndex = 2;
 			}
 			sPath += "/";
 			if( iRet == -1 )

@@ -113,9 +113,10 @@ void RageWorkerThread::WorkerMain()
 	{
 		bool bTimeToRunHeartbeat = false;
 		m_WorkerEvent.Lock();
+
 		while( m_iRequest == REQ_NONE && !bTimeToRunHeartbeat )
 		{
-			if( !m_WorkerEvent.Wait( m_fHeartbeat != -1? &m_NextHeartbeat:NULL ) )
+			if( !m_WorkerEvent.Wait( m_fHeartbeat > 0 ? &m_NextHeartbeat:NULL ) )
 				bTimeToRunHeartbeat = true;
 		}
 		const int iRequest = m_iRequest;
@@ -189,7 +190,7 @@ void RageWorkerThread::WorkerMain()
 bool RageWorkerThread::WaitForOneHeartbeat()
 {
 	/* It doesn't make sense to wait for a heartbeat if there is no heartbeat. */
-	ASSERT( m_fHeartbeat != -1 );
+	ASSERT( m_fHeartbeat > 0 );
 
 	m_HeartbeatEvent.Lock();
 	bool bTimedOut = !m_HeartbeatEvent.Wait( &m_Timeout );

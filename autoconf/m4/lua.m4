@@ -31,14 +31,28 @@ else
 	if test "$LIB_LUA" = ""; then
 		LUA_MISSING=yes
 	fi
+
+	# TODO: lualib50 much?
+
 	LUA_CFLAGS=
-	LUA_LIBS="$LIB_LUA $LIB_LUA_LIB"
+	LUA_LIBS="$LIB_LUA"
 fi
 if test "$LUA_MISSING" = "yes"; then
 	LUA_CFLAGS=
 	LUA_LIBS=
-	PKG_PROG_PKG_CONFIG
-	PKG_CHECK_MODULES(LUA, lua >= 5.1, [LUA_MISSING=no])
+	#PKG_PROG_PKG_CONFIG
+	#PKG_CHECK_MODULES(LUA, lua >= 5.1, [LUA_MISSING=no])
+
+	if test "$LUA_MISSING" = "yes"; then
+		## http://lua-users.org/lists/lua-l/2006-07/msg00329.html
+		AC_CHECK_LIB(lua5.1, luaL_newstate, LUA_MISSING=no)
+		if test "$LUA_MISSING" = "no"; then
+			LUA_LIBS=-llua5.1
+			if test -d /usr/include/lua5.1; then
+				LUA_CFLAGS="-I/usr/include/lua5.1"
+			fi
+		fi
+	fi
 
 	if test "$LUA_MISSING" = "yes"; then
 		echo

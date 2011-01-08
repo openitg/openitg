@@ -202,6 +202,12 @@ void GraphDisplay::UpdateVerts()
 		iRangeFGC[0] = iRangeFEC[1];
 		iRangeFGC[1] = m_iPulseStopPoint;
 	}
+	else
+	{
+		iRangeFFC[0] = iRangeFFC[1] = 0;
+		iRangeFEC[0] = iRangeFEC[1] = 0;
+		iRangeFGC[0] = iRangeFGC[1] = 0;
+	}
 #undef COMPARE_POINT
 
 	for( int i = 0; i < NumSlices; ++i )

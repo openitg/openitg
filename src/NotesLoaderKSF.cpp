@@ -101,17 +101,17 @@ bool KSFLoader::LoadFromKSFFile( const CString &sPath, Steps &out, const Song &s
 		sFName.MakeLower();
 
 		out.SetDescription(sFName);
-		if( sFName.find("crazy")!=-1 )
+		if( sFName.find("crazy")!=CString::npos )
 		{
 			out.SetDifficulty(DIFFICULTY_HARD);
 			if(!out.GetMeter()) out.SetMeter(8);
 		}
-		else if( sFName.find("hard")!=-1 )
+		else if( sFName.find("hard")!=CString::npos )
 		{
 			out.SetDifficulty(DIFFICULTY_MEDIUM);
 			if(!out.GetMeter()) out.SetMeter(5);
 		}
-		else if( sFName.find("easy")!=-1 )
+		else if( sFName.find("easy")!=CString::npos )
 		{
 			out.SetDifficulty(DIFFICULTY_EASY);
 			if(!out.GetMeter()) out.SetMeter(2);
@@ -125,13 +125,13 @@ bool KSFLoader::LoadFromKSFFile( const CString &sPath, Steps &out, const Song &s
 		out.m_StepsType = STEPS_TYPE_PUMP_SINGLE;
 
 		/* Check for "halfdouble" before "double". */
-		if( sFName.find("halfdouble") != -1 || sFName.find("h_double") != -1 )
+		if( sFName.find("halfdouble") != CString::npos || sFName.find("h_double") != CString::npos )
 			out.m_StepsType = STEPS_TYPE_PUMP_HALFDOUBLE;
-		else if( sFName.find("double") != -1 )
+		else if( sFName.find("double") != CString::npos )
 			out.m_StepsType = STEPS_TYPE_PUMP_DOUBLE;
-		else if( sFName.find("_1") != -1 )
+		else if( sFName.find("_1") != CString::npos )
 			out.m_StepsType = STEPS_TYPE_PUMP_SINGLE;
-		else if( sFName.find("_2") != -1 )
+		else if( sFName.find("_2") != CString::npos )
 			out.m_StepsType = STEPS_TYPE_PUMP_COUPLE;
 	}
 

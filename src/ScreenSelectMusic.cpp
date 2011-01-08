@@ -1362,7 +1362,7 @@ void UpdateLoadProgress( unsigned long iCurrent, unsigned long iTotal )
 	unsigned long iPercent = iCurrent / (iTotal/100);
 
 	// XXX: kind of voodoo
-	CString sMessage = ssprintf( "\n\n%s\n%i%%\n%s",
+	CString sMessage = ssprintf( "\n\n%s\n%lu%%\n%s",
 		CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
 		iPercent,
 		CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
@@ -1962,10 +1962,12 @@ void ScreenSelectMusic::AfterMusicChange()
 			/* Please note: displaying banners if CustomSongPreviews
 			 * is for testing only and is not intended behaviour. */
 			if ( PREFSMAN->m_bShowBanners )
+			{
 				if( pSong->IsCustomSong() && !PREFSMAN->m_bCustomSongPreviews )
 					g_sBannerPath = THEME->GetPathG("Banner","custom");
 				else
 					g_sBannerPath = pSong->GetBannerPath();
+			}
 
 			if( GAMESTATE->IsExtraStage() || GAMESTATE->IsExtraStage2() )
 			{

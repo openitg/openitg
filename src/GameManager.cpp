@@ -69,7 +69,7 @@ const int PNM5_COL_SPACING = 32;
 const int PNM9_COL_SPACING = 32;
 
 struct {
-	char *name;
+	const char *name;
 	int NumTracks;
 } const StepsTypes[NUM_STEPS_TYPES] = {
 	{ "dance-single",	4 },

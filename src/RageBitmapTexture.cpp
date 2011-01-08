@@ -96,21 +96,21 @@ void RageBitmapTexture::Create()
 	CString HintString = GetID().filename + actualID.AdditionalTextureHints;
 	HintString.MakeLower();
 
-	if( HintString.find("32bpp") != -1 )			actualID.iColorDepth = 32;
-	else if( HintString.find("16bpp") != -1 )		actualID.iColorDepth = 16;
-	if( HintString.find("dither") != -1 )			actualID.bDither = true;
-	if( HintString.find("stretch") != -1 )			actualID.bStretch = true;
-	if( HintString.find("mipmaps") != -1 )			actualID.bMipMaps = true;
-	if( HintString.find("nomipmaps") != -1 )		actualID.bMipMaps = false;	// check for "nomipmaps" after "mipmaps"
+	if( HintString.find("32bpp") != CString::npos )			actualID.iColorDepth = 32;
+	else if( HintString.find("16bpp") != CString::npos )		actualID.iColorDepth = 16;
+	if( HintString.find("dither") != CString::npos )		actualID.bDither = true;
+	if( HintString.find("stretch") != CString::npos )		actualID.bStretch = true;
+	if( HintString.find("mipmaps") != CString::npos )		actualID.bMipMaps = true;
+	if( HintString.find("nomipmaps") != CString::npos )		actualID.bMipMaps = false;	// check for "nomipmaps" after "mipmaps"
 
 	/* If the image is marked grayscale, then use all bits not used for alpha
 	 * for the intensity.  This way, if an image has no alpha, you get an 8-bit
 	 * grayscale; if it only has boolean transparency, you get a 7-bit grayscale. */
-	if( HintString.find("grayscale") != -1 )		actualID.iGrayscaleBits = 8-actualID.iAlphaBits;
+	if( HintString.find("grayscale") != CString::npos )		actualID.iGrayscaleBits = 8-actualID.iAlphaBits;
 
 	/* This indicates that the only component in the texture is alpha; assume all
 	 * color is white. */
-	if( HintString.find("alphamap") != -1 )			actualID.iGrayscaleBits = 0;
+	if( HintString.find("alphamap") != CString::npos )		actualID.iGrayscaleBits = 0;
 
 	/* No iGrayscaleBits for images that are already paletted.  We don't support
 	 * that; and that hint is intended for use on images that are already grayscale,

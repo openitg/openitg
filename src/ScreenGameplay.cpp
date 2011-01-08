@@ -1103,7 +1103,7 @@ void ScreenGameplay::LoadLights()
 		CString sGroup = GAMESTATE->m_pCurSong->m_sGroupName;
 		sGroup.MakeLower();
 
-		if( sGroup.find("dance dance revolution") != -1 || sGroup.find("ddr") != -1 )
+		if( sGroup.find("dance dance revolution") != CString::npos || sGroup.find("ddr") != CString::npos )
 		{
 			m_bEasterEgg = true;
 			pSteps = GAMESTATE->m_pCurSong->GetClosestNotes( STEPS_TYPE_DANCE_SINGLE, DIFFICULTY_MEDIUM );
@@ -2217,8 +2217,8 @@ void ScreenGameplay::HandleScreenMessage( const ScreenMessage SM )
 
 			/* Mark failure.  This hasn't been done yet if m_bTwoPlayerRecovery is set. */
 			if( GAMESTATE->GetPlayerFailType(p) != SongOptions::FAIL_OFF &&
-				(m_pLifeMeter[p] && m_pLifeMeter[p]->IsFailing()) || 
-				(m_pCombinedLifeMeter && m_pCombinedLifeMeter->IsFailing(p)) )
+				((m_pLifeMeter[p] && m_pLifeMeter[p]->IsFailing()) || 
+				(m_pCombinedLifeMeter && m_pCombinedLifeMeter->IsFailing(p))) )
 				STATSMAN->m_CurStageStats.m_player[p].bFailed = true;
 
 			if( !STATSMAN->m_CurStageStats.m_player[p].bFailed )

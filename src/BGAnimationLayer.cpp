@@ -156,7 +156,7 @@ void BGAnimationLayer::LoadFromAniLayerFile( const CString& sPath )
 	Effect effect = EFFECT_CENTER;
 
 	for( int i=0; i<NUM_EFFECTS; i++ )
-		if( lcPath.find(EFFECT_STRING[i]) != -1 )
+		if( lcPath.find(EFFECT_STRING[i]) != CString::npos )
 			effect = (Effect)i;
 
 	switch( effect )
@@ -338,23 +338,23 @@ void BGAnimationLayer::LoadFromAniLayerFile( const CString& sPath )
 	CString sHint = sPath;
 	sHint.MakeLower();
 
-	if( sHint.find("cyclecolor") != -1 )
+	if( sHint.find("cyclecolor") != CString::npos )
 		for( unsigned i=0; i<m_SubActors.size(); i++ )
 			m_SubActors[i]->SetEffectRainbow( 5 );
 
-	if( sHint.find("cyclealpha") != -1 )
+	if( sHint.find("cyclealpha") != CString::npos )
 		for( unsigned i=0; i<m_SubActors.size(); i++ )
 			m_SubActors[i]->SetEffectDiffuseShift( 2, RageColor(1,1,1,1), RageColor(1,1,1,0) );
 
-	if( sHint.find("startonrandomframe") != -1 )
+	if( sHint.find("startonrandomframe") != CString::npos )
 		for( unsigned i=0; i<m_SubActors.size(); i++ )
 			m_SubActors[i]->SetState( rand()%m_SubActors[i]->GetNumStates() );
 
-	if( sHint.find("dontanimate") != -1 )
+	if( sHint.find("dontanimate") != CString::npos )
 		for( unsigned i=0; i<m_SubActors.size(); i++ )
 			m_SubActors[i]->StopAnimating();
 
-	if( sHint.find("add") != -1 )
+	if( sHint.find("add") != CString::npos )
 		for( unsigned i=0; i<m_SubActors.size(); i++ )
 			m_SubActors[i]->SetBlendMode( BLEND_ADD );
 }

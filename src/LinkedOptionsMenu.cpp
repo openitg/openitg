@@ -9,9 +9,11 @@
 #include "ScreenManager.h"
 #include "CodeDetector.h"
 
+#ifdef MSVC
 /* It's going to be a pain to fix these. Disable for now. */
 #pragma warning( disable : 4018 )	// signed/unsigned mismatch
 #pragma warning( disable : 4244 )	// conversion, possible loss of data
+#endif
 
 void LinkedOptionsMenu::Load( LinkedOptionsMenu *prev, LinkedOptionsMenu *next )
 {
@@ -111,12 +113,12 @@ void LinkedOptionsMenu::SetChoices( const CStringArray &asChoices )
 	}
 
 	// show first page of choices
-	for( unsigned i = 0; i < asChoices.size() && i < ROWS_PER_PAGE; i++ )
+	for( unsigned i = 0; i < asChoices.size() && i < (unsigned)ROWS_PER_PAGE; i++ )
 	{
 		m_Rows[i]->PlayCommand("TweenOn");
 	}
 	m_iCurPage = 0;
-	if ( asChoices.size() > ROWS_PER_PAGE )
+	if ( asChoices.size() > (unsigned)ROWS_PER_PAGE )
 	{
 		m_sprIndicatorDown.PlayCommand("TweenOn");
 		m_bIndTweenedOn[1] = true;
@@ -141,7 +143,7 @@ void LinkedOptionsMenu::SetChoices( const CStringArray &asChoices )
 CString LinkedOptionsMenu::GetCurrentSelection()
 {
 	ASSERT( m_iCurrentSelection >= 0 );
-	ASSERT( m_iCurrentSelection < m_Rows.size() );
+	ASSERT( (unsigned)m_iCurrentSelection < m_Rows.size() );
 	return m_Rows[m_iCurrentSelection]->GetText();
 }
 
@@ -151,7 +153,7 @@ LinkedInputResponseType LinkedOptionsMenu::MoveRow(int iDirection)
 	ASSERT( iDirection != 0 );
 	iDirection = iDirection / abs(iDirection);
 	int iNewSelection = m_iCurrentSelection + iDirection;
-	if (iNewSelection >= m_Rows.size() && iNewSelection > 0) // user chose beyond last option
+	if (iNewSelection > 0 && (unsigned)iNewSelection >= m_Rows.size()) // user chose beyond last option
 	{
 		if ( GetNextMenu() != this && MENU_WRAPPING )
 		{
@@ -182,7 +184,7 @@ LinkedInputResponseType LinkedOptionsMenu::MoveRow(int iDirection)
 void LinkedOptionsMenu::SetChoiceIndex( int iNewSelection )
 {
 	ASSERT( iNewSelection >= 0 );
-	ASSERT( iNewSelection < m_Rows.size() );
+	ASSERT( (unsigned)iNewSelection < m_Rows.size() );
 	int iSavedSelection = m_iCurrentSelection;
 	m_iCurrentSelection = iNewSelection;
 	if (iNewSelection / ROWS_PER_PAGE != m_iCurPage) // new page
@@ -197,12 +199,12 @@ void LinkedOptionsMenu::SetChoiceIndex( int iNewSelection )
 void LinkedOptionsMenu::SetPage(int iPage)
 {
 	int iSavedPage = m_iCurPage;
-	for( unsigned i = m_iCurPage*ROWS_PER_PAGE; i < (m_iCurPage+1)*ROWS_PER_PAGE && i < m_Rows.size(); i++ )
+	for( unsigned i = m_iCurPage*ROWS_PER_PAGE; i < (unsigned)(m_iCurPage+1)*ROWS_PER_PAGE && i < m_Rows.size(); i++ )
 	{
 		m_Rows[i]->PlayCommand("TweenOff");
 	}
 	m_iCurPage = iPage;
-	for( unsigned i = m_iCurPage*ROWS_PER_PAGE; i < (m_iCurPage+1)*ROWS_PER_PAGE && i < m_Rows.size(); i++ )
+	for( unsigned i = m_iCurPage*ROWS_PER_PAGE; i < (unsigned)(m_iCurPage+1)*ROWS_PER_PAGE && i < m_Rows.size(); i++ )
 	{
 		m_Rows[i]->PlayCommand("TweenOn");
 	}
@@ -210,7 +212,7 @@ void LinkedOptionsMenu::SetPage(int iPage)
 	{
 		m_sprIndicatorUp.PlayCommand("TweenOn");
 		m_bIndTweenedOn[0] = true;
-		if ( m_iCurPage+1 == m_Rows.size()/ROWS_PER_PAGE + ( (m_Rows.size()%ROWS_PER_PAGE > 0) ? 1 : 0 ) ) // on last page
+		if ( (unsigned)m_iCurPage+1 == m_Rows.size()/ROWS_PER_PAGE + ( (m_Rows.size()%ROWS_PER_PAGE > 0) ? 1 : 0 ) ) // on last page
 		{
 			m_sprIndicatorDown.PlayCommand("TweenOff");
 			m_bIndTweenedOn[1] = false;

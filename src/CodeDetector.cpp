@@ -103,8 +103,8 @@ bool CodeItem::Load( CString sButtonsNames )
 	const Game* pGame = GAMESTATE->GetCurrentGame();
 	CStringArray asButtonNames;
 
-	bool bHasAPlus = sButtonsNames.find( '+' ) != -1;
-	bool bHasADash = sButtonsNames.find( '-' ) != -1;
+	bool bHasAPlus = sButtonsNames.find( '+' ) != CString::npos;
+	bool bHasADash = sButtonsNames.find( '-' ) != CString::npos;
 
 	if( bHasAPlus )
 	{

@@ -371,7 +371,7 @@ public:
 	DeviceInput(): device(DEVICE_NONE), button(-1), level(0), bDown(false), ts(RageZeroTimer) { }
 	DeviceInput( InputDevice d, int b, float l=0 ): device(d), button(b), level(l), bDown(l > 0.5f), ts(RageZeroTimer) { }
 	DeviceInput( InputDevice d, int b, float l, const RageTimer &t ):
-		device(d), button(b), level(l), ts(t) { }
+		device(d), button(b), level(l), bDown(l > 0.5f), ts(t) { }
 
 	bool operator==( const DeviceInput &other ) const
 	{ 

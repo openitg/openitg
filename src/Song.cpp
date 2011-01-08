@@ -1364,7 +1364,7 @@ CString GetSongAssetPath( CString sPath, const CString &sSongPath )
 
 	/* If there's no path in the file, the file is in the same directory
 	 * as the song.  (This is the preferred configuration.) */
-	if( sPath.find('/') == -1 )
+	if( sPath.find('/') == CString::npos )
 		return sSongPath+sPath;
 
 	/* The song contains a path; treat it as relative to the top SM directory. */

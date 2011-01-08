@@ -850,7 +850,7 @@ void ColorBitmapText::SetMaxLines( int iNumLines, int iDirection )
 
 		//When we're cutting out text, we need to maintain the last
 		//color, so our text at the top doesn't become colorless.
-		RageColor LastColor;
+		RageColor LastColor(0, 0, 0, 0);
 
 		for ( unsigned i = 0; i < m_vColors.size(); i++ )
 		{

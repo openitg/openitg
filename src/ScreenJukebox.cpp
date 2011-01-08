@@ -128,8 +128,8 @@ void ScreenJukebox::SetSong()
 					{
 						CString s = a->sModifiers;
 						s.MakeLower();
-						if( s.find("dark") != -1 ||
-							s.find("stealth") != -1 )
+						if( s.find("dark") != CString::npos ||
+							s.find("stealth") != CString::npos )
 						{
 							bModsAreOkToShow = false;
 							break;

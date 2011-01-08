@@ -202,7 +202,7 @@ bool DWILoader::LoadFromDWITokens(
 		double fCurrentBeat = 0;
 		double fCurrentIncrementer = 1.0/8 * BEATS_PER_MEASURE;
 
-		for( int i=0; i<sStepData.length(); )
+		for( CString::size_type i=0; i<sStepData.length(); )
 		{
 			char c = sStepData[i++];
 			switch( c )
@@ -529,8 +529,9 @@ bool DWILoader::LoadFromDWIFile( CString sPath, Song &out )
 			}
 		}
 		else
+		{
 			// do nothing.  We don't care about this value name
-			;
+		}
 	}
 
 	return true;

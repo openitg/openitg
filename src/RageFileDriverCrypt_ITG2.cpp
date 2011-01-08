@@ -210,7 +210,9 @@ int RageFileObjCrypt_ITG2::ReadInternal( void *buffer, size_t bytes )
 
 	// seek to the file location and read it into the buffer
 	this->SeekInternal( m_iHeaderSize + startpos );
-	this->ReadDirect( crbuf, bufsize );
+	unsigned bytes_read = this->ReadDirect( crbuf, bufsize );
+	if(bytes_read<bufsize)
+		memset(crbuf+bytes_read, 0, bufsize-bytes_read);
 
 	// TODO (for Mark at least :P): understand this.
 	for (unsigned i = 0; i < bufsize/16; i++)

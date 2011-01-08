@@ -63,6 +63,7 @@ void ScreenEndlessBreak::Update(float fDeltaTime)
 {
 	m_textTimeRemaining.SetText( SecondsToMMSSMsMs(m_fCountdownSecs) );
 	if( !m_bExiting )
+	{
 		if(m_fCountdownSecs <= 0)
 		{		
 			m_bExiting = true;
@@ -73,6 +74,7 @@ void ScreenEndlessBreak::Update(float fDeltaTime)
 			//m_fCountdownSecs--;
 			m_fCountdownSecs = (m_fCountdownSecs - fDeltaTime);
 		Screen::Update( fDeltaTime );
+	}
 }
 
 void ScreenEndlessBreak::DrawPrimitives()

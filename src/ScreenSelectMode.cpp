@@ -212,9 +212,9 @@ void ScreenSelectMode::UpdateSelectableChoices()
 						INCLUDE_DOUBLE_IN_JP == 0 && 
 						(
 							GAMESTATE->GetNumSidesJoined() == SidesJoinedToPlay || 
-							(modename.substr(0, 6) == "DOUBLE" || modename.substr(0, 13) == "ARCADE-DOUBLE" ||
+							((modename.substr(0, 6) == "DOUBLE" || modename.substr(0, 13) == "ARCADE-DOUBLE" ||
 							modename.substr(0, 10) == "HALFDOUBLE" || modename.substr(0, 17) == "ARCADE-HALFDOUBLE") &&
-							GAMESTATE->GetNumSidesJoined() != 2
+							GAMESTATE->GetNumSidesJoined() != 2)
 						)
 					)
 				) 

@@ -694,7 +694,7 @@ void Sprite::SetState( int iNewState )
 	if( iNewState < 0  ||  iNewState >= (int)m_States.size() )
 	{
 		// Don't warn about number of states in "_blank".
-		if( !m_pTexture || m_pTexture->GetID().filename.find("_blank") == -1 )
+		if( !m_pTexture || m_pTexture->GetID().filename.find("_blank") == CString::npos )
 		{
 			CString sError;
 			if( m_pTexture )

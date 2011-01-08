@@ -29,8 +29,8 @@ void AnimatedTexture::Load( CString sTexOrIniPath )
 {
 	ASSERT( vFrames.empty() );	// don't load more than once
 
-	m_bSphereMapped = sTexOrIniPath.find("sphere") != -1;
-	if( sTexOrIniPath.find("add") != -1 )
+	m_bSphereMapped = sTexOrIniPath.find("sphere") != CString::npos;
+	if( sTexOrIniPath.find("add") != CString::npos )
 		m_BlendMode = BLEND_ADD;
 	else
 		m_BlendMode = BLEND_NORMAL;

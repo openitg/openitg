@@ -103,6 +103,9 @@ GameState::GameState() :
 	m_iCoins = 0;
 	m_timeGameStarted.SetZero();
 
+	m_bDemonstrationOrJukebox = false;
+	m_bTemporaryEventMode = false;
+
 	ReloadCharacters();
 
 	m_iNumTimesThroughAttract = -1;	// initial screen will bump this up to 0
@@ -1686,7 +1689,7 @@ void GameState::StoreRankingName( PlayerNumber pn, CString name )
 				}
 
 				line.MakeUpper();
-				if( !line.empty() && name.find(line) != -1 )	// name contains a bad word
+				if( !line.empty() && name.find(line) != CString::npos )	// name contains a bad word
 				{
 					LOG->Trace( "entered '%s' matches blacklisted item '%s'", name.c_str(), line.c_str() );
 					name = "";

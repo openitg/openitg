@@ -28,7 +28,7 @@ bool LightsDriver_Dynamic::LoadInternal()
 	if( LIGHTS_API_VERSION_MAJOR != info->mi_api_ver_major ||
 		LIGHTS_API_VERSION_MINOR != info->mi_api_ver_minor )
 	{
-		LOG->Warn( "LightsDriver \"%s\" uses API version %d%.%d, binary uses %d%.%d. Disabled.",
+		LOG->Warn( "LightsDriver \"%s\" uses API version %d.%d, binary uses %d.%d. Disabled.",
 			info->mi_name, info->mi_api_ver_major, info->mi_api_ver_minor,
 			LIGHTS_API_VERSION_MAJOR, LIGHTS_API_VERSION_MINOR );
 		return false;

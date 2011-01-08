@@ -277,7 +277,7 @@ bool UnlockEntry::IsValid() const
 
 bool UnlockEntry::IsLocked() const
 {
-	float fScores[NUM_UNLOCK_TYPES];
+	float fScores[NUM_UNLOCK_TYPES] = {};
 	UNLOCKMAN->GetPoints( PROFILEMAN->GetMachineProfile(), fScores );
 
 	for( int i = 0; i < NUM_UNLOCK_TYPES; ++i )

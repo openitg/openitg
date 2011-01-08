@@ -820,7 +820,7 @@ void PacketFunctions::Write4(uint32_t data)
 
 void PacketFunctions::WriteNT(const CString& data)
 {
-	int index=0;
+	CString::size_type index=0;
 	while ((Position<NETMAXBUFFERSIZE)&&(index<data.length()))
 		Data[Position++] = (unsigned char)(data.c_str()[index++]);
 	Data[Position++] = 0;

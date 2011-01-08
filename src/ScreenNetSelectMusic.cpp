@@ -317,10 +317,12 @@ void ScreenNetSelectMusic::MenuLeft( PlayerNumber pn, const InputEventType type 
 	bool bLeftAndRightPressed = bLeftPressed && bRightPressed;
 
 	if ( type == IET_FIRST_PRESS )
+	{
 		if ( bLeftAndRightPressed )
 			m_MusicWheel.ChangeSort( SORT_MODE_MENU );		
 		else
 			m_MusicWheel.Move( -1 );
+	}
 }
 
 void ScreenNetSelectMusic::MenuRight( PlayerNumber pn, const InputEventType type )
@@ -330,10 +332,12 @@ void ScreenNetSelectMusic::MenuRight( PlayerNumber pn, const InputEventType type
 	bool bLeftAndRightPressed = bLeftPressed && bRightPressed;
 
 	if ( type == IET_FIRST_PRESS )
+	{
 		if ( bLeftAndRightPressed )
 			m_MusicWheel.ChangeSort( SORT_MODE_MENU );		
 		else
 			m_MusicWheel.Move( +1 );
+	}
 }
 
 void ScreenNetSelectMusic::MenuUp( PlayerNumber pn, const InputEventType type )

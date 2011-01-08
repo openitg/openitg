@@ -1231,7 +1231,7 @@ bool utf8_to_wchar_ec( const CString &s, unsigned &start, wchar_t &ch )
 			start += i;
 			return false;
 		}
-		ch = (ch << 6) | byte & 0x3F;
+		ch = (ch << 6) | (byte & 0x3F);
 	}
 
 	bool bValid = true;
@@ -1517,7 +1517,7 @@ void Replace_Unicode_Markers( CString &Text )
 
 		int numdigits = 0;
 		while(p < Text.size() &&
-			(hex && isxdigit(Text[p])) || (!hex && isdigit(Text[p])))
+			((hex && isxdigit(Text[p])) || (!hex && isdigit(Text[p]))))
 		{
 		   p++;
 		   numdigits++;

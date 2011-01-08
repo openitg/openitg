@@ -276,7 +276,7 @@ bool BMSLoader::LoadFromBMSFile( const CString &sPath, const NameToData_t &mapNa
 			sData = sData.substr( iOpenBracket+1, iCloseBracket-iOpenBracket-1 );
 
 		// if there's a 6 in the description, it's probably part of "6panel" or "6-panel"
-		if( sData.find("6") != -1 )
+		if( sData.find("6") != CString::npos )
 			out.m_StepsType = STEPS_TYPE_DANCE_SOLO;
 	}
 
@@ -303,7 +303,7 @@ bool BMSLoader::LoadFromBMSFile( const CString &sPath, const NameToData_t &mapNa
 		const CString &sNoteData = it->second;
 
 		vector<TapNote> vTapNotes;
-		for( int i=0; i+1<sNoteData.length(); i+=2 )
+		for( CString::size_type i=0; i+1<sNoteData.length(); i+=2 )
 		{
 			CString sNoteId = sNoteData.substr(i,2);
 			if( sNoteId != "00" )

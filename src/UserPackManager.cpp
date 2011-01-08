@@ -60,7 +60,7 @@ bool UserPackManager::Remove( const CString &sPack )
 
 /* Any packs containing these folders will be rejected from addition
  * due to possible conflicts, problems, or stability issues, */
-static const int NUM_BLACKLISTED_FOLDERS = 4;
+static const unsigned NUM_BLACKLISTED_FOLDERS = 4;
 static const char *BLACKLISTED_FOLDERS[] = { "Data", "Program", "Themes/default", "Themes/home" };
 
 bool UserPackManager::IsPackMountable( const CString &sPack, CString &sError )

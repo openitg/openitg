@@ -118,6 +118,8 @@ public:
 	void  AddY( float y )			{ SetY( GetDestY()+y ); }
 	void  AddZ( float z )			{ SetZ( GetDestZ()+z ); }
 
+	virtual void SetPosition( float p )	{ return; }
+
 	// height and width vary depending on zoom
 	float GetUnzoomedWidth()		{ return m_size.x; }
 	float GetUnzoomedHeight()		{ return m_size.y; }
@@ -489,6 +491,7 @@ public:
 	static int zoomto( T* p, lua_State *L )			{ p->ZoomTo(FArg(1), FArg(2)); return 0; }
 	static int zoomtowidth( T* p, lua_State *L )	{ p->ZoomToWidth(FArg(1)); return 0; }
 	static int zoomtoheight( T* p, lua_State *L )	{ p->ZoomToHeight(FArg(1)); return 0; }
+	static int position( T* p, lua_State *L )		{ p->SetPosition(FArg(1)); return 0; }
 	static int basezoomx( T* p, lua_State *L )		{ p->SetBaseZoomX(FArg(1)); return 0; }
 	static int basezoomy( T* p, lua_State *L )		{ p->SetBaseZoomY(FArg(1)); return 0; }
 	static int stretchto( T* p, lua_State *L )		{ p->StretchTo( RectF(FArg(1),FArg(2),FArg(3),FArg(4)) ); return 0; }
@@ -701,6 +704,7 @@ public:
 		ADD_METHOD( queuecommand )
 		ADD_METHOD( queuemessage )
 		ADD_METHOD( addcommand )
+		ADD_METHOD( position )
 
 		ADD_METHOD( GetX )
 		ADD_METHOD( GetY )

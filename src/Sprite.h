@@ -54,7 +54,7 @@ public:
 	void StopUsingCustomCoords();
 	void GetActiveTextureCoords(float fTexCoordsOut[8]) const;
 	void StretchTexCoords( float fX, float fY );
-	void SetPosition( float f );
+	virtual void SetPosition( float f );
 	void SetLooping( bool b );
 	void SetPlaybackRate( float f );
 

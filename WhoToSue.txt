@@ -4,6 +4,7 @@ as awesome as they are.
 Lead Developers:
  - Vyhd
  - infamouspat
+ - cmyers
 
 Assistant Developer:
  - Matt1360

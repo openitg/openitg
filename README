@@ -43,7 +43,6 @@ Create an account at github.org
 4. git commit
 
 Very brief "how to build":
-
 1. Install all dependencies (see dependencies.txt)
 2. ./autogen.sh
 3. ./configure

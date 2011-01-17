@@ -1,0 +1,51 @@
+#COURSE:Caliente;
+#METER:Regular:8;
+#METER:Difficult:10;
+// cache tags:
+#RADAR:0:1:1.244,0.000,0.759,0.415,0.190,820.000,81.000,44.000,0.000,0.000,0.000;
+#RADAR:0:2:1.815,0.000,1.166,0.288,0.833,1229.000,127.000,31.000,22.000,0.000,0.000;
+#RADAR:0:3:2.354,0.000,1.545,0.350,1.479,1603.000,169.000,38.000,30.000,0.000,0.000;
+#RADAR:1:1:1.202,0.000,0.484,0.229,0.062,843.000,53.000,28.000,0.000,0.000,0.000;
+#RADAR:1:2:1.891,0.000,0.739,0.207,0.631,1357.000,81.000,25.000,21.000,3.000,0.000;
+#RADAR:1:3:2.483,0.000,0.857,0.120,1.716,1815.000,97.000,14.000,12.000,6.000,0.000;
+// end cache tags
+#MODS:
+  TIME=10.47:LEN=9.89:MODS=40% Drunk:
+  TIME=20.36:LEN=9.90:MODS=70% Tipsy:
+  TIME=30.26:LEN=9.90:MODS=Beat:
+  TIME=40.16:LEN=9.90:MODS=50% Beat, 30% Boost:
+  TIME=50.06:LEN=12.37:MODS=15% Tornado:
+  TIME=62.43:LEN=9.90:MODS=60% Drunk:
+  TIME=72.33:LEN=9.90:MODS=90% Tipsy:
+  TIME=82.23:LEN=9.89:MODS=Beat, 50% Sudden:
+  TIME=92.12:LEN=9.90:MODS=50% Beat, 30% Boost, 30% Sudden:
+  TIME=102.02:LEN=9.90:MODS=50% Beat, 50% Wave, 50% Drunk:
+  TIME=111.92:LEN=11.14:MODS=50% Beat, 30% Expand, Bumpy;
+#SONG:In The Groove/Hip Hop Jam:Medium:;
+#MODS:
+  TIME=14.99:LEN=14.43:MODS=30% Tornado:
+  TIME=29.42:LEN=13.54:MODS=25% Flip:
+  TIME=46.57:LEN=14.43:MODS=Wave, 70% Sudden:
+  TIME=61.00:LEN=14.44:MODS=70% Hidden, Beat:
+  TIME=77.24:LEN=29.78:MODS=20% Flip, 20% Tornado:
+  TIME=90.78:LEN=16.24:MODS=20% Drunk, 20% Tipsy;
+#SONG:In The Groove 2/Pick Me Up & Tango:Hard:;
+#MODS:
+  TIME=6.86:LEN=18.87:MODS=Bumpy, Beat:
+  TIME=25.73:LEN=13.72:MODS=20% Drunk, 10% Flip:
+  TIME=39.45:LEN=11.98:MODS=Brake:
+  TIME=53.17:LEN=20.59:MODS=50% Bumpy, 50% Beat:
+  TIME=60.03:LEN=13.73:MODS=Wave:
+  TIME=73.76:LEN=13.72:MODS=70% Bumpy, 70% Beat, 50% Tipsy:
+  TIME=87.48:LEN=15.22:MODS=15% Tornado, 15% Flip, 20% Beat;
+#SONG:In The Groove 2/Hispanic Panic:Hard:;
+#MODS:
+  TIME=0.00:LEN=101.34:MODS=Reverse:
+  TIME=7.24:LEN=14.55:MODS=70% Boost, Bumpy, 20% Drunk:
+  TIME=21.79:LEN=7.27:MODS=Wave, 10% Flip:
+  TIME=29.06:LEN=14.55:MODS=40% Mini, 50% Brake, 20% Sudden:
+  TIME=43.61:LEN=14.54:MODS=50% Mini, 30% Boost, Hallway, 30% Sudden:
+  TIME=58.15:LEN=14.55:MODS=Bumpy, 20% Mini, 20% Wave, 10% Tornado:
+  TIME=72.70:LEN=12.73:MODS=Boomerang, Sudden:
+  TIME=87.24:LEN=14.10:MODS=30% Expand, Beat, Sudden, Dark;
+#SONG:In The Groove 2/Fleadh Uncut:Hard:;

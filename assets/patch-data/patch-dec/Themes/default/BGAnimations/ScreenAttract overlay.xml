@@ -1,0 +1,59 @@
+<!-- OpenITG: support multiple types of credit input -->
+<ActorFrame><children>
+	<BitmapText
+		Font="_eurostile outline"
+		Text="???"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-86;shadowlength,2;zoom,1;PlayCommand,Refresh"
+		CoinModeChangedMessageCommand="PlayCommand,Refresh"		
+		RefreshCommand="%
+			function(self) 
+				if GAMESTATE:GetCoinMode()==COIN_MODE_HOME then self:settext(''); return end
+				local coins=GAMESTATE:GetCoins()
+				local coinsPerCredit=PREFSMAN:GetPreference('CoinsPerCredit')
+				if coins&gt;=coinsPerCredit or GAMESTATE:GetCoinMode()==COIN_MODE_FREE then 
+					self:playcommand('PressStartText')
+					self:playcommand('PressStartEffect')
+				else
+					self:playcommand('InsertCoinText')
+					self:playcommand('InsertCoinEffect')
+				end 
+			end"
+		InsertCoinTextCommand="%function(self)
+			local type = CustomPrefs.Get('CreditType')
+			if string.lower(type) == 'card' then
+				self:settext('SWIPE CARD' )
+			else
+				self:settext( 'INSERT ' .. string.upper(type) )
+			end
+		end"
+		InsertCoinEffectCommand="diffuseshift;EffectColor1,1,1,1,0;EffectColor2,1,1,1,1;EffectPeriod,2;EffectOffset,1;effectdelay,1"
+		PressStartTextCommand="%function(self) self:settext('PRESS &START;') end"
+		PressStartEffectCommand="%function(self)
+				self:diffuseblink()
+				self:effectcolor1(1,1,1,0)
+				self:effectcolor2(1,1,1,1)
+				self:effectperiod((GAMESTATE:GetCoinMode() == COIN_MODE_FREE) and 1.0 or 0.3)
+			end"
+	/>
+	<BitmapText
+		Font="_eurostile outline"
+		Text="???"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-56;shadowlength,2;zoom,0.8;diffuse,0.7,0.7,0.7,1;diffusebottomedge,#DFB629D0;PlayCommand,Refresh"
+		RefreshCommand="%
+			function(self)
+				if GAMESTATE:IsEventMode() then self:settext('EVENT MODE') return end
+				if GAMESTATE:GetCoinMode()==COIN_MODE_FREE then self:settext('FREE PLAY') return end
+				if GAMESTATE:GetCoinMode()==COIN_MODE_HOME then self:settext('') return end
+				local coins=GAMESTATE:GetCoins()
+				local coinsPerCredit=PREFSMAN:GetPreference('CoinsPerCredit')
+				local credits=math.floor(coins/coinsPerCredit)
+				local remainder=math.mod(coins,coinsPerCredit)
+				local s='CREDIT(S)  '
+				if credits&gt;0 then s=s..credits..'  ' end
+				s=s..remainder..'/'..coinsPerCredit
+				self:settext(s)
+			end"
+		CoinInsertedMessageCommand="PlayCommand,Refresh"		
+		CoinModeChangedMessageCommand="PlayCommand,Refresh"		
+	/>
+</children></ActorFrame>

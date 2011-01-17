@@ -1,0 +1,44 @@
+#COURSE:Chill Out;
+#METER:Regular:9;
+#METER:Difficult:10;
+// cache tags:
+#RADAR:0:1:1.494,0.000,1.180,0.462,0.553,968.000,130.000,51.000,26.000,4.000,0.000;
+#RADAR:0:2:1.993,0.000,1.314,1.037,1.150,1263.000,144.000,114.000,36.000,34.000,0.000;
+#RADAR:0:3:2.494,0.000,1.623,1.284,2.103,1594.000,178.000,142.000,60.000,34.000,0.000;
+#RADAR:1:1:1.521,0.000,0.744,0.540,0.474,1028.000,82.000,59.000,16.000,2.000,0.000;
+#RADAR:1:2:1.987,0.000,0.966,0.263,1.319,1393.000,107.000,29.000,14.000,22.000,0.000;
+#RADAR:1:3:2.603,0.000,1.292,0.291,2.680,1834.000,143.000,32.000,0.000,24.000,0.000;
+// end cache tags
+#MODS:
+  TIME=3.52:LEN=16.91:MODS=70% Tipsy, 70% Brake:
+  TIME=20.43:LEN=28.97:MODS=50% Brake, 20% Drunk:
+  TIME=49.40:LEN=14.12:MODS=Drunk, Tornado:
+  TIME=63.52:LEN=12.35:MODS=3x, Brake, Drunk, 60% Tornado:
+  TIME=77.63:LEN=14.12:MODS=70% Tipsy, 70% Brake:
+  TIME=91.75:LEN=14.12:MODS=50% Brake, 20% Drunk;
+#SONG:In The Groove 2/Ize Pie:Hard:;
+#MODS:
+  TIME=3.83:LEN=42.24:MODS=40% Wave, 40% Drunk, 25% Tipsy:
+  TIME=15.35:LEN=30.72:MODS=50% Boost:
+  TIME=46.07:LEN=18.96:MODS=40% Wave, 40% Drunk, 25% Tipsy, 30% Tornado:
+  TIME=65.03:LEN=6.96:MODS=Brake, Drunk, 150% Tornado:
+  TIME=72.95:LEN=15.36:MODS=40% Wave, 40% Drunk, 25% Tipsy:
+  TIME=88.31:LEN=16.32:MODS=85% Tipsy, 85% Drunk, 85% Boost, 40% Wave;
+#SONG:In The Groove 2/Reactor:Hard:;
+#MODS:
+  TIME=0.00:LEN=108.60:MODS=Space, Reverse, Dark:
+  TIME=0.00:LEN=36.33:MODS=30% Expand, 30% Tornado:
+  TIME=38.15:LEN=29.09:MODS=Tipsy, 40% Brake:
+  TIME=67.24:LEN=14.09:MODS=30% Expand, 30% Tornado, Dizzy:
+  TIME=83.60:LEN=21.82:MODS=Tipsy, 40% Brake:
+  TIME=105.42:LEN=3.18:MODS=50% Drunk, 40% Tornado;
+#SONG:In The Groove 2/Sweet World:Hard:;
+#MODS:
+  TIME=3.51:LEN=17.65:MODS=80% Brake, 80% Wave:
+  TIME=21.16:LEN=14.12:MODS=50% Mini, Dizzy, 20% Tornado:
+  TIME=35.28:LEN=14.11:MODS=40% Drunk, 30% Tornado:
+  TIME=49.39:LEN=14.12:MODS=70% Wave, 70% Drunk, 70% Tipsy, 70% Dark:
+  TIME=63.51:LEN=14.11:MODS=50% Mini, Dizzy, 20% Tornado:
+  TIME=77.62:LEN=14.12:MODS=40% Drunk, 30% Tornado:
+  TIME=91.74:LEN=14.11:MODS=50% Brake, 50% Wave, 50% Drunk, 20% Tornado, 50% Tipsy;
+#SONG:In The Groove 2/Twilight:Challenge:;

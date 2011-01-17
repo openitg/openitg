@@ -1,0 +1,19 @@
+#COURSE:Decelerated;
+#METER:Regular:9;
+#METER:Difficult:9;
+// cache tags:
+#RADAR:0:1:0.789,0.000,0.382,0.230,0.000,529.000,41.000,25.000,0.000,0.000,0.000;
+#RADAR:0:2:1.369,0.000,1.050,0.370,0.037,878.000,113.000,40.000,0.000,0.000,16.000;
+#RADAR:1:1:0.967,0.000,0.356,0.430,0.000,639.000,38.000,46.000,0.000,0.000,0.000;
+#RADAR:1:2:1.406,0.000,0.783,0.356,0.041,935.000,84.000,38.000,0.000,0.000,0.000;
+// end cache tags
+#GAINSECONDS:80.000000;
+#SONG:In The Groove 2/Bumble Bee:Easy:Brake,Overhead,1.5x,nodifficult;
+#GAINSECONDS:75.000000;
+#SONG:In The Groove 2/Life of a Butterfly:Easy:Brake,Overhead,1.5x,nodifficult;
+#GAINSECONDS:70.000000;
+#SONG:In The Groove 2/Renaissance:Medium:Brake,Overhead,1.5x,nodifficult;
+#GAINSECONDS:68.000000;
+#SONG:In The Groove 2/Ize Pie:Medium:Brake,Overhead,1.25x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/Amore:Medium:Brake,Overhead,1x,nodifficult;

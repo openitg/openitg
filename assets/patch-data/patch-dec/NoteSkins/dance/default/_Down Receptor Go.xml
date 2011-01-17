@@ -1,0 +1,34 @@
+<!-- "effectoffset,0.05" start the flash 5% before the beat -->
+<!-- OpenITG: set the highlight to 35% alpha, make it on beat. -->
+<ActorFrame><children>
+	<Sprite
+		Texture="_Down Receptor tex"
+		Frame0000="0"
+		Delay0000="0.95"
+		Frame0001="1"
+		Delay0001="1"
+		Frame0002="2"
+		Delay0002="1"
+		Frame0003="3"
+		Delay0003="1"
+		Frame0004="0"
+		Delay0004="0.05"
+		InitCommand="EffectClock,beat;DiffuseRamp;EffectColor1,0.4,0.4,0.4,1;EffectColor2,1,1,1,1,1;effectperiod,0.5;EffectDelay,0.5;EffectOffset,0.05"
+	/>
+	<Sprite
+		Texture="_Down Receptor tex"
+		Frame0000="0"
+		Delay0000="0.95"
+		Frame0001="1"
+		Delay0001="1"
+		Frame0002="2"
+		Delay0002="1"
+		Frame0003="3"
+		Delay0003="1"
+		Frame0004="0"
+		Delay0004="0.05"
+		InitCommand="EffectClock,beat;blend,add;diffusealpha,0"
+		PressCommand="diffusealpha,0.35"
+		LiftCommand="diffusealpha,0"
+	/>
+</children></ActorFrame>

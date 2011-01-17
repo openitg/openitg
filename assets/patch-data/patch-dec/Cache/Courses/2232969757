@@ -1,0 +1,19 @@
+#COURSE:Blinker;
+#METER:Regular:9;
+#METER:Difficult:9;
+// cache tags:
+#RADAR:0:1:1.657,0.000,0.988,0.673,0.014,1081.000,107.000,73.000,12.000,2.000,0.000;
+#RADAR:0:2:2.418,0.000,1.166,1.228,1.167,1585.000,127.000,131.000,72.000,8.000,0.000;
+#RADAR:1:1:1.828,0.000,1.247,0.607,0.114,1187.000,134.000,65.000,0.000,0.000,0.000;
+#RADAR:1:2:2.696,0.000,1.193,0.565,1.495,1861.000,128.000,60.000,24.000,3.000,0.000;
+// end cache tags
+#GAINSECONDS:70.000000;
+#SONG:In The Groove 2/Birdie:Hard:Blink,Overhead,1.5x,nodifficult;
+#GAINSECONDS:60.000000;
+#SONG:In The Groove 2/Funk Factory:Hard:Blink,Overhead,2x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/Lipstick Kiss:Hard:Blink,Overhead,1.5x,nodifficult;
+#GAINSECONDS:53.000000;
+#SONG:In The Groove 2/High:Hard:Blink,Overhead,Boost,2x,nodifficult;
+#GAINSECONDS:45.000000;
+#SONG:In The Groove 2/Tribal Style:Hard:Blink,Wave,Overhead,2.5x,nodifficult;

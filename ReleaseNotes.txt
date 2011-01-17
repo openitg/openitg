@@ -1,0 +1,437 @@
+OpenITG, beta 2 (August 9th, 2009)
+----------------------------------
+
+If you're already using beta 1.1, some of the changes will be familiar. For
+beta 1 users, this is all new. Regardless, there's a lot of new stuff for all.
+
+This build includes multiple tentative USB fixes for the arcade, and we're
+hoping it should prove to be more stable. My relatively short-term testing
+held up perfectly. The slow loading for USB songs is being looked into as
+well, and we expect a fix soon. There may be a minor incremental patch if so.
+In the meantime, thanks for sticking around; it means a lot to us that you
+guys stuck with it, even though it presented some major problems. Sorry
+about the trouble this has caused.
+
+For home users, this build features a lot of core engine optimizations that
+should greatly improve the general speed and stability of the system. We've
+overhauled RageFileManager and optimized the hell out of it, resulting in a
+lot of speed-ups across the board.
+
+A lot of minor tweaks have been added on top of the engine improvements and
+bug fixes: PercentageDisplay can now go past 100% (for Getting Started), the
+BPM meter on gameplay now scales to music rate, cancelled USB song loading
+no longer causes jittering, song length for Long/Marathon is determined off
+of steps length only, and we've added a ton of new Lua bindings (including
+SetUpdateCommand for ActorFrame). Try them out: they're pretty awesome.
+
+As for new stuff on the theme side, we've added preferences to tweak the Give
+Up Time on gameplay as well as theme toggles for songwheel timer length, type
+of credit (coin/token/card), and switching between logos. Just go into the
+OpenITG Options menu if you don't think we've been hard at work. :)
+
+As a final note, pat's added a probing driver that allows this build to work
+with any ITG setup, encrypted or decrypted. This only applies to the arcade
+version and /itgdata/, but that should make it work for everyone. Thanks for
+the support, see you next release!
+
+-New preferences:
+     "GiveUpTime" - amount of time that Start must be held to give up songs
+-New metrics:
+     ScreenTestInput - X, Y, On, and Off commands for text ("Inputs", "Devices")
+-Fixed Linux bugs:
+     USB devices that only reported as "sda" would stay in checking forever
+     Misdetection of partitions on USB devices caused some mounts to fail
+-Fixed cross-platform bugs:
+     BPM display on gameplay doesn't scale with Music Rate setting
+     Several stray PauseMountingThread() calls causing cards to respond slowly
+     Perspective setting is not properly saved on USB profiles
+     Custom song loading cancellation causes delayed input events
+     ScreenArcadeStart times out, even with missing I/O handler
+-New screen:
+     "ScreenUserPacks" - formerly ScreenAddSongs, manages USB-transferred game data.
+-Code Structure Additions:
+     UserPackManager - singleton for managing users' add-on packs for the machine
+-Miscellaneous changes:
+     Backported StepMania 4's RageFileManager, for better load handling
+     Backported Win32 renderer identification for display stats
+     Changed to StepMania 4 method of scaling screenshots
+     De-clamped PercentageDisplay (Getting Started displays properly now)
+     Long/Marathon calculated with steps length instead of music length
+     Moved "ScreenAddSongs" to "ScreenUserPacks", heavily updated interface
+     Improved Colorized Graph logic
+     Split bookkeeping into separate pages for machine v. service credits
+-New menu structures:
+     LinkedOptionsMenu - set of intertwined menus, example metrics in home folder
+-New file driver:
+     RageFileDriverProbe - heuristic-based file driver that allows en/decrypted ZIPs
+-New LUA bindings:
+     HighScore: "GetName", "GetScore", "GetPercentDP", "GetDate",
+          "GetSurvivalSeconds", "IsFillInMarker"
+     HighScoreList: "GetHighScores"
+-New LUA member bindings:
+     ActorFrame: "SetUpdateCommand" (called on each ::Update, with fDeltaTime)
+     Actor: "addcommand", "GetName"
+     Game: "GetName"
+     PlayerStageStats: too much stuff to list here
+     Song: "StepsLengthSeconds"
+-New LUA singleton bindings:
+     GameState: "GetCurrentGame"
+
+OpenITG, beta 1 (May 15th, 2009)
+--------------------------------
+-Obligatory code cleanup
+-Windows additions:
+     OpenITG icon (thanks, Lightning)
+     Updated version information
+-New Preferences:
+     "DebugInputDrivers" - additional debugging info for various I/O drivers
+     "EasterEggs2" - OpenITG-specific easter eggs (hint: play from a DDR group folder)
+-New LUA singleton bindings:
+     GameState: "GetCurBPS", "DelayedGameCommand" (required for "theme" GameCommands)
+     NoteSkin: "GetNoteSkinNames"
+     ThemeManager: "GetCurLanguage", "GetCurThemeName", "GetThemeNames"
+-New LUA bindings:
+     Course: "GetCourseDir"
+     PIUIO: "MK6_GetSensors"
+     RadarValues: "GetValue"
+     RageUtil: "SecondsToMMSS", "SecondsToHHMMSS", "SecondsToMSSMsMs"
+     Song: "IsLong", "IsMarathon", "IsCustomSong", "GetGroupName", and "MusicLengthSeconds"
+     Steps, Trail: "GetRadarValues"
+-New LUA globals:
+     "RADAR_CATEGORY_TAPS", "RADAR_CATEGORY_HOLDS", etc. for RadarValues
+     "OPENITG_VERSION" - returns a 3-digit token for version information
+          (xyy - x is build type, yy is version; also in Win32 "Properties")
+-New Screens:
+     "ScreenAddSongs" - allows addition of game data through operator menu (temp. disabled)
+     "ScreenPlayLights" - plays music, can run actors for cabinet/game lights
+-New InputHandler:
+     "MK3" - controls the Andamiro MK3 and MK5 ISA boards, for the heck of it
+-New LightsDriver:
+     "G15" - controls LCD on the G15 gaming keyboard, also for the heck of it
+-New GameCommands:
+     "ReloadTheme" - forces a complete reload of metrics and graphics
+-New metrics:
+     "MissComboCommand" metric for Combo display
+-New features:
+     Added "NoteWillCrossIn1Beat", "NoteWillCrossIn2Beats", etc. for beginner helper
+     ScreenTestInput and ScreenTestLights broadcast Messages to actors
+     Re-backported input debounce, except it works this time. :)
+     CodeDetector ties for opening the OptionsList on ScreenSelectMusic
+     Record service credits separately in MachineProfile and Coins.xml
+     ScreenTestInput now triggers lights when arrows are pressed
+     "SongLength" sort on the song wheel
+     More intelligent lights autogeneration for single charts
+     Separate bookkeeper counter for service credits in Bookkeeping
+          (divided in the menu by Regular Credits / Service Credits)
+     LightsMapper - set which bits are triggered on LIGHTSMAN events
+     Added LightsMapping structs to ITGIO, PIUIO, and PacDrive
+-New modifiers:
+     "Twirl" - rotates arrows (and holds!) around the Y axis
+     "Roll" - rotates arrows around the X axis
+-Compilation updates:
+     Added date/version text to ProductInfo and DiagnosticsUtil
+     Rewrote "archutils/Win32/verinc.c" to generate a new verinfo.h
+-Fixed Windows bugs:
+     Crashlogs saving in Program (were supposed to save in Data)
+     "View crash dump" working incorrectly on the crash dialog
+     Inaccurate crashlog count in System Diagnostics
+     RageDisplay_D3D: fixed texture material issues, texture translation issues, and noteskin rendering
+-Fixed Linux bugs:
+     Tentative fix for memory card mounting issues (thanks, Matt1360)
+     64-bit crash on RageCryptInterface_ITG2 (thanks, dawnwolf)
+     Screensaver disable code didn't work for X11
+-Fixed minor cross-platform bugs:
+     Custom song data not deallocated after the end of a round
+     Impressively inefficient method of re-creating the songs vector
+     "Disqualification" display showed for unjoined players on music rate
+     M-mod code didn't adjust to songs or courses with hidden BPMs
+     Slowdown on ScreenArcadeDiagnostics due to heavy device polling
+     No-timeout warning flood on custom song loading
+     Sensor reading problems with PIUIO on Test Input
+     Round text on ScreenSelectMusic not updating for non-song entries
+-Fixed major cross-platform bugs:
+     Infinite loop and crash on changing coin modes on ScreenTitleJoin
+     Crash when changing from Intense to Normal-only courses or vice versa
+     Patched OGG songs circumvented Long/Marathon song limits
+     Crash on machine Edit-only songs (not a bug, but...)
+     M-mods crashed on marathons and malfunctioned on gimmicks
+     Tentative fix for strange crashes on "theme" GameCommand
+-Misc. changes:
+     "Tiny" can be used in place of "Mini" (4.0 compatibility)
+     M-mods disqualify on songs with hidden BPMs
+          (because it makes it easier to select a 'safe' modifier)
+     Load USB profile songs into memory, instead of onto the disk
+     Complete crypto rewrite - should be much more flexible
+     LightsDriver_External always loaded, to prevent arcade I/O problems
+     ScreenOptionsMenu switched to "Menu" lights mode
+     Always grab a serial number from the dongle, and autogen on fallback
+
+OpenITG, prebeta (November 25th, 2008)
+--------------------------------------
+-Lots more code cleanup
+-Compilation updates:
+     Added SVN revision script for Linux make (thanks, SM devs)
+     Added patch to compile on GCC 4.3 (thanks dawnwolf)
+     Added patch to compile against LUA 5.1 (thanks to cyt0plas, Spectere)
+-New features:
+     Preliminary "M-mod" support (same format as C-mods, e.g. "M600")
+     Added custom courses ( /ProfileFolder/Courses/ )
+-Misc. changes:
+     Added coin counter functionality to LIGHTSMAN
+     Added RageCryptInterface for easier crypto implementations
+     Added code to enforce only one Iow or PIUIO handler
+     Fixed 'lights briefly flicker off on song start' annoyance
+-PIUIO changes:
+     Tentative fix for sensor-read problems
+     Added coin counter functionality
+-Fixed bugs:
+     Fixed overwrite of InputType with "Home"
+     Failed 'pTrail' assertion in Marathon mode
+     Accidental PIUIO coin counter activation
+     Linux: couldn't open GTK loading window
+     ITGIO - P1 Left and Right reversed
+     patch.zip mounted multiple times on start
+     Possible to load redundant arcade I/O drivers and cause problems
+
+OpenITG, alpha 8 (August 29th, 2008)
+------------------------------------
+-Lots of code cleanup
+-New LightsDriver:
+    PacDrive ("pacdrive") - run lights using an Ultimarc PacDrive
+-Misc. changes:
+    Allow multiple lights drivers (use at your own risk)
+    Disqualification for music rate under 1.0x
+-ITGIO changes:
+    Softcoded ITGIO input and added default mappings
+    Added mappings for all cabinet lighting
+    Fixed "no output on ITGIO" issue (read: full I/O support)
+-PIUIO changes:
+    Support for r16 kernel hack handling
+    Lots of misc. structural changes
+-New modifier:
+    HoldsToRolls, a reversed NoRolls (make Bend Your Mind a living hell!)
+-Fixed mistakes:
+    SCREENMAN doesn't zero update after custom song loading
+-Fixed bugs:
+    OptionsList crashes on load
+    Attract volume immediately resets after round
+    Attract volume isn't properly reset when entering operator menu
+    Crash on non-song wheel items after highlighted custom songs
+-Removals:
+    ThreadedLights and associated code (too many bugs)
+
+OpenITG, alpha 7 (July 11th, 2008)
+----------------------------------
+-Preliminary, hacky lights-cabinet support in theme SM files
+-Barebones work on tournament mode (it's still a while away)
+-Input changes:
+    Newer, more ITG-like input debouncing (half-working...)
+    "Select" or "MenuLeft+MenuRight" cancels custom song loading
+    Linux joystick driver is now threaded (and supports DebugUSBInput)
+    X11 input code backported from 4.0
+-New LUA functions:
+    IsUsingMemoryCard(PlayerNumber) - self-explanatory
+    Debug() - output debugging lines regardless of log settings
+-New LUA globals:
+    "OPENITG" (boolean) - can be used for compatibility with ITG2 AC scripts
+-New (major) code functions:
+    StepsUtil::RemoveStepsOutsideMeterRange()
+    StepsUtil::RemoveStepsOutsideDifficultyRange()
+    Song::HasStepsWithinMeterRange()
+-New messages:
+    "CardReadyP1", "CardReadyP2" - played when a card is verified ready
+-New preferences:
+    "DebugInputDrivers" - replaces DebugUSBInput, provides stats on I/O speed
+    "SoundVolumeAttract" - volume during attract sequences
+    "ThreadedLights" - run the lights outside the regular game loop, more accurate
+    "UseUnstablePIUIODriver" - set true to use the experimental I/O driver
+-New config options:
+    "SoundVolumeAttract" - see above
+-New metrics:
+    "CompareScores" (ScreenGameplay) - manually set whether to compare or not
+    "OptionsList" (ScreenSelectMusic) - add a side panel to change options
+	instead of the old options menu
+-New Screens:
+    "ScreenExitCommand" - Functions as ScreenExit, but with the ability to launch
+       	an executable file before exiting.  Must have 'ExecPath' and 'ExecParams' in the
+        metrics entry
+    "ScreenTextEntryArcade" - a more arcade-friendly text entry screen (WIP)
+-Fixed bugs:
+    BGCHANGES2 charts don't play properly
+    Timer is stuck at 0 if timer runs out on "Chance"
+    "nomines" and "nostretch" transforms have no effect in the editor menu
+    (OpenGL) Arrow shader fails on full-screen, causing scrolling brackets
+    Actor sounds ignore attract sound settings
+    After switching themes, OpenITG crashes on the songwheel
+    Theme switching sometimes causes failed asserts
+    Phantom input when canceling custom song loads
+    ScreenArcadeStart loops endlessly until manual exit
+    Without song previews, custom song lights don't properly load
+-Fixed mistakes:
+    Removed some personalized testing code
+    Removed some annoying opendir() error messages
+-Code structure changes:
+    "MiscITG" moved to "DiagnosticsUtil"
+
+OpenITG, alpha 6 (May 30th, 2008)
+---------------------------------
+-Code structure changes:
+    Reverted InputFilter - too little gain for too many problems
+-New metrics in ScreenGameplay:
+    (Note: must be in Event Mode, Versus, and playing the same chart)
+    "ScorePxAheadCommand" - played when player's score is higher
+    "ScorePxBehindCommand" - played when player's score is lower
+-New preferences:
+    "InputDebounceTime" - self-explanatory
+-New game commands:
+    "clearcredits" - clears credits on the machine (useful for testing)
+    "theme" - sets the theme, by name, when used (useful for theme switchers)
+-Linux changes:
+    Tentative fix for memory card port/bus detection on usb_storage
+-Win32 changes:
+    Added code to reboot on crashes for arcade builds (#define ITG_ARCADE)
+-Misc. changes:
+    Enabled pad lighting on ScreenDemonstration
+    Coins added by GameCommands are not counted toward bookkeeping totals
+    Round text on ScreenSelectMusic updates for long/marathon songs
+    Moved OpenITG-specific profile options to Extra.ini (caused ITG2 crashes)
+    Disabled autogeneration of new Public/Private RSA keys on load failure
+-Fixed bugs:
+    Some custom songs end immediately after start
+    Repeating menu input error on ScreenSelectMusic
+    Editor doesn't draw properly, causes failed asserts
+    Song wheel doesn't "budge" when attempting to move after Chance
+    "Revert from Disk" in editor causes duplicate charts, crashes
+    Crash on bookkeeping when switching to an undefined screen
+    In AutoplayCPU, rolls cause early judgments of arrows and mines
+
+OpenITG, alpha 5 (April 30th, 2008)
+-----------------------------------
+-New screens:
+    ScreenArcadeStart - implemented, functional, does stuff
+-Code structure changes:
+    Reboot-on-crash is disabled in non-arcade builds
+    Gameplay lights now autogen from dance-single only
+    InputHandler_Linux_Iow changed to InputHandler_Iow
+    InputHandler_Linux_PIUIO changed to InputHandler_PIUIO
+    InputFilter backported from 4.0, modified a bit
+-PIUIO changes:
+    Added timer for testing input speed
+    Partially added coin counter code (not functional yet)
+    Changed input from 64-bit datatype to 32-bit datatype
+-Fixed input bugs:
+    Input always auto-remaps on startup
+    Input sometimes locks up after song loading fails
+    Player 2 I/O board input is mapped to Player 1's side
+    PIUIO only reports arrow presses from right sensor
+-Fixed general bugs:
+    Edits for Single show on all difficulties
+    Some modifiers don't animate in the editor
+    Song wheel can be moved on Chance
+    Voltage doesn't calculate correctly (lol, DDR)
+-Fixed mistakes:
+    "ITGIO" and "PIUIO" were reversed in RageInputDevice
+-Mapping changes:
+    Added working Iow input mappings (output is still borked)
+    Added working service/test and coin mappings for PIUIO
+-New code functions:
+    LOG->Debug() - always displays to stdout, without logging
+    GetIP() - currently Linux-only, returns IP and subnet
+-New preferences:
+    "CustomSongPreviews" - play audio previews of custom songs
+    "InputDebounceTime" - self-explanatory; smooth out bouncing input
+-New USB profile features:
+    "AdditionalSpeedMods" - add specified speed modifiers
+
+OpenITG, alpha 4 (March 21st, 2008)
+-----------------------------------
+-Fixed Win32 bugs:
+    OpenITG hangs/crashes/<bad stuff> when custom songs sample plays
+    Backgrounds are centered on the top left during gameplay
+    (Maybe?) Color1 as boolean LUA parsing error
+-Fixed cross-platform bugs:
+    Editor's stepchart doesn't scroll properly
+-Fixed package mistakes:
+    data.zip causes "Assertion 'm_LockCnt == 0' failed" error
+
+OpenITG, alpha 3 (March 17th, 2008)
+-----------------------------------
+-Mapping changes:
+    Added PIUIO/IOW default mappings
+    Added default keyboard maps for Select (P1 = right Shift, P2 = numpad 0)
+-PrefsManager changes:
+    Removed "BrokenBGs" - binary plays BG scripts from all songs now
+    Added "DebugUSBInput" - output raw and formatted USB data to console
+    Backported "VisualDelaySeconds" on request
+-Fixed bugs:
+    Start sound doesn't play when course is selected
+    Potential memory leak (minor) on SongManager array
+-New Screens:
+    ScreenArcadeStart (unfinished/not implemented in the Makefiles)
+    ScreenArcadeDiagnostics - installation and diagnostic information
+    ScreenArcadePatch - update the game through USB patches
+-New data types:
+    USBDevice - a basic structure for reading USB hardware data
+    USBDriver - an abstracted USB I/O driver based off of libusb
+    ITGIO - a USBDriver specialised for ITG-IO JAMMA kits
+    PIUIO - a USBDriver specialised for ITG2 dedicated cabinet I/O boards
+-New LightsDriver:
+    External ("ext") - makes light data globally available for other drivers
+-New InputHandlers:
+    Linux_PIUIO ("piuio") - partially functional, not very usable
+    Linux_Iow ("iow") - untested, should be fully functional
+-New RageFileDrivers:
+    RFDCrypt - handles AES-encrypted .zip files
+    RFDPatch - handles AES-encrypted patches
+-New USB profile features:
+    Choose to save Catalog files ("UseCatalogXML") - default off
+-New licensed code:
+    -AES encryption/decryption schemes, by Brian Gladman
+    -Public domain iButton SDK from Maxim IC
+-New project files:
+    Patch-OpenITG.rsa - a new Patch verification sig for future OpenITG .bxr patches
+
+OpenITG, alpha 2 (January 27th, 2008)
+---------------------------------------------
+-New preference:
+    BrokenBGs	- Emulate R21-style background handling
+-Some code cleanup
+-Fixed bugs:
+    Windows: all of the weird bugs
+    Wheel changes songs even when Select is held down
+    Group banners do not load properly
+-Unfixed bugs:
+    Cancelling song selection through USB removal causes mount errors
+
+
+OpenITG, alpha 1.1 (December 5th, 2007)
+---------------------------------------------
+-Windows build, many thanks to Sniper257
+-Fixed bugs:
+    Forced random on customs does not select song
+    Bizarre behavior when Tab is held during forced random
+    MAJOR: Gameplay input locks up on some errors
+    MAJOR: Custom song loading crashes on Windows
+-Unfixed bugs:
+    Group banners do not load
+    Cancelling song selection through USB removal causes mount errors
+
+
+OpenITG, alpha 1 (December 2nd, 2007)
+---------------------------------------------
+-Revision 21-style song loading support, starting at PlayersFinalized().
+
+-Settable preferences (defaults in parentheses):
+    CustomMaxSeconds	- Maximum allowed song length (120 seconds)
+    CustomMaxSizeMB	- Maximum allowed song size (5 MB)
+    CustomMaxStepSizeKB	- Maximum allowed SM file size (100 KB)
+    CustomsLoadMax	- Limit amount of songs loaded (50 songs)
+    CustomsLoadTimeout	- Custom song loading timeout (5.00 seconds)
+    SongEdits		- Enable/disable custom songs. (0 [false])
+
+-Significant new code functions:
+    SCREENMAN->OverlayMessage()	  - message overlay on top of screen
+    SCREENMAN->HideOverlayMessage - remove message from screen
+    SONGMAN->LoadPlayerSongs()    - loads songs from a player's profile
+    (RageUtil) CopyWithProgress() - copy a file while sending progress
+				    (fPercent) to a function pointer

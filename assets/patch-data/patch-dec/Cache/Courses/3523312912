@@ -1,0 +1,55 @@
+#COURSE:Digital;
+#METER:Regular:10;
+#METER:Difficult:12;
+// cache tags:
+#RADAR:0:1:1.199,0.000,1.070,0.377,0.047,752.000,116.000,41.000,32.000,0.000,2.000;
+#RADAR:0:2:2.072,0.000,1.061,0.873,1.490,1359.000,116.000,95.000,94.000,0.000,2.000;
+#RADAR:0:3:3.012,0.000,1.617,1.136,3.568,1989.000,175.000,124.000,128.000,3.000,0.000;
+#RADAR:1:1:1.220,0.000,0.301,0.197,0.262,872.000,33.000,21.000,0.000,0.000,0.000;
+#RADAR:1:2:2.260,0.000,0.730,0.110,2.183,1623.000,80.000,12.000,16.000,0.000,0.000;
+#RADAR:1:3:2.830,0.000,0.814,0.166,3.455,2040.000,88.000,18.000,383.000,6.000,0.000;
+// end cache tags
+#MODS:
+  TIME=0.00:LEN=104.72:MODS=Hallway:
+  TIME=23.01:LEN=36.98:MODS=Reverse:
+  TIME=8.72:LEN=14.29:MODS=50% Beat:
+  TIME=23.01:LEN=31.09:MODS=Sudden, 20% Tornado:
+  TIME=40.13:LEN=13.97:MODS=25% Drunk:
+  TIME=54.10:LEN=6.11:MODS=50% Drunk, 50% Tipsy:
+  TIME=60.21:LEN=14.83:MODS=Hidden, 30% Beat:
+  TIME=75.04:LEN=13.97:MODS=Blink:
+  TIME=89.01:LEN=15.71:MODS=Wave, Dizzy;
+#SONG:In The Groove 2/High:Hard:;
+#MODS:
+  TIME=0.00:LEN=104.57:MODS=Reverse, 40% Dizzy:
+  TIME=6.86:LEN=13.71:MODS=50% Wave:
+  TIME=20.57:LEN=13.72:MODS=70% Mini, Hallway, 20% Bumpy:
+  TIME=34.29:LEN=13.71:MODS=-50% Mini, 10% Flip, 25% Expand:
+  TIME=48.00:LEN=15.43:MODS=Distant, 50% Hidden, 50% Drunk, 50% Tipsy:
+  TIME=63.43:LEN=13.71:MODS=Dark, 35% Tipsy:
+  TIME=77.14:LEN=13.72:MODS=70% Mini, 80% Drunk, 20% Bumpy:
+  TIME=90.86:LEN=13.71:MODS=-50% Mini, 10% Flip, 50% Brake, Hallway;
+#SONG:In The Groove 2/We Know What To Do:Hard:;
+#MODS:
+  TIME=0.00:LEN=103.38:MODS=50% Boost, Dark, 30% Beat:
+  TIME=5.55:LEN=16.61:MODS=50% Drunk, 10% Tipsy, 10% Bumpy:
+  TIME=22.16:LEN=14.77:MODS=10% Drunk, 50% Tipsy, 10% Bumpy:
+  TIME=36.93:LEN=14.77:MODS=10% Drunk, 10% Tipsy, 80% Bumpy:
+  TIME=51.70:LEN=14.76:MODS=20% Tornado:
+  TIME=66.46:LEN=14.77:MODS=10% Flip, 10% Drunk:
+  TIME=81.23:LEN=14.76:MODS=50% Mini, 50% Drunk, 10% Tipsy, 10% Bumpy:
+  TIME=95.99:LEN=7.39:MODS=20% Tornado, 30% Beat, 50% Bumpy;
+#SONG:In The Groove 2/Know Your Enemy:Hard:;
+#MODS:
+  TIME=0.00:LEN=111.19:MODS=5% Flip, Reverse, Dark:
+  TIME=0.00:LEN=32.00:MODS=50% Dizzy, 50% Bumpy, 50% Brake:
+  TIME=32.00:LEN=11.00:MODS=Brake:
+  TIME=32.00:LEN=25.60:MODS=Brake, Incoming, -100% Mini:
+  TIME=44.80:LEN=12.80:MODS=50% Brake, Incoming, 50% Bumpy:
+  TIME=57.60:LEN=13.98:MODS=flat, no roll, no twirl, Blind, 50% Expand:
+  TIME=57.58:LEN=7.92:MODS=Flip, 50% Cross, 50% Split, 50% Alternate, Drunk, Tipsy:
+  TIME=65.00:LEN=4.00:MODS=Reverse, -100% Flip, -100% Cross, -100% Split, -100% Alternate, Drunk, Tipsy:
+  TIME=71.60:LEN=12.00:MODS=40% Expand, 30% Tipsy, 30% Drunk:
+  TIME=83.60:LEN=12.80:MODS=80% Mini, 50% Wave, 15% Tornado:
+  TIME=96.40:LEN=14.79:MODS=50% Dizzy, 50% Bumpy, 50% Brake;
+#SONG:In The Groove 2/Robotix:Hard:;

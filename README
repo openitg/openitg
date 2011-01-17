@@ -1,11 +1,31 @@
-To build:
+
+OpenITG - an open-source rhythm dancing game which is a fork of StepMania 3.95
+with the goal of adding arcade-like ITG-style behavior and serving as a drop-in
+replacement for the ITG binary on arcade cabinents.
+
+TODOs:
+
+1. Getting Started Guide - build and development
+2. streamline build process - works out of box
+3. streamline arcade build process - works out of chroot
+4. test / bugfix beta-3 (currently master branch)
+5. arcade revision sign utility
+6. self-contained cache-rebuilding solution
+7. OpenGL Driver uses fix function pipeline rather than shader
+
+Very Long Term
+1. Kernel source with ITG patches to rebuild kernels (talk to us, should live in a separate repo)
+2. StepMania 4.0 LUA Bindings
+3. StepMania 4.0 Theme metrics
+
+
+
+Very brief "how to build":
 
 1. Install all dependencies (see dependencies.txt)
 2. ./autogen.sh
 3. ./configure
 4. make
-
-
 5. pray
 
 

@@ -1,4 +1,3 @@
-
 OpenITG - an open-source rhythm dancing game which is a fork of StepMania 3.95
 with the goal of adding arcade-like ITG-style behavior and serving as a drop-in
 replacement for the ITG binary on arcade cabinents.
@@ -43,7 +42,6 @@ Create an account at github.org
 3. git add <filename>
 4. git commit
 
-
 Very brief "how to build":
 
 1. Install all dependencies (see dependencies.txt)
@@ -51,5 +49,3 @@ Very brief "how to build":
 3. ./configure
 4. make
 5. pray
-
-

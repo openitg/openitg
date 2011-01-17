@@ -275,4 +275,8 @@ AM_CONDITIONAL(BUILD_TESTS, test "$enable_tests" = "yes" )
 
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(src/Makefile)
+
+# TODO: clean this up - kinda hacky...
+cd src/libresample && ./configure && cd ../..
+
 AC_OUTPUT

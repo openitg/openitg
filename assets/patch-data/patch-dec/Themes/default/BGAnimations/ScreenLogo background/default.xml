@@ -1,0 +1,113 @@
+<!-- OpenITG: include both logos and use a custom preference to switch them. -->
+<!-- TODO: clean this up somewhat. -->
+<ActorFrame><children>
+	<Layer
+		File="978_JumpBack"
+		InitCommand="draworder,-5"
+		OnCommand="rate,2;diffusealpha,0.7;stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM"
+	/>
+
+	<ActorFrame><children>
+		<BitmapText
+			Condition="Platform() == 'arcade'"
+			Font="ScreenOptions serial number"
+			Text="@GetSerialNumber()"
+			InitCommand="x,SCREEN_CENTER_X+282;y,SCREEN_CENTER_Y-213;shadowlength,2;horizalign,right;wrapwidthpixels,1000;zoom,0.5"
+			OnCommand="diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+		/>
+
+		<BitmapText
+			Condition="PREFSMAN:GetPreference('SongEdits')"
+			Font="_eurostile normal"
+			Text="Custom Songs Enabled"	
+			OnCommand="stoptweening;x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-17-17;zoom,0.5;shadowlength,2;diffusealpha,0.0;zoomy,0;sleep,1;decelerate,0.3;zoomy,.5;diffusealpha,0.8"
+		/>
+	</children></ActorFrame>
+
+
+	<ActorFrame Condition="CustomPrefs.Get('UseOldLogo') == true"><children>
+		<AutoActor
+			File="roxor"
+			OnCommand="x,SCREEN_LEFT+90;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+		/>
+
+		<ActorFrame OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+10"><children>
+			<AutoActor
+				File="2"
+				OnCommand="x,190;y,10;ZoomX,0;glow,1,1,1,1;sleep,0.8;ZoomY,3;BounceEnd,.3;Zoom,1;glow,1,1,1,0"
+			/>
+			<AutoActor
+				File="in"
+				OnCommand="x,-240;y,-70;zoom,0;sleep,0.1;bounceend,0.4;zoom,1"
+			/>
+			<AutoActor
+				File="the"
+				OnCommand="x,-106;y,-70;zoom,0;sleep,0.1;bounceend,0.4;zoom,1"
+			/>
+			<AutoActor
+				File="groove"
+				OnCommand="x,-50;y,26;zoom,0;sleep,0.1;bounceend,0.4;zoom,1"
+			/>
+			<AutoActor
+				File="trademark"
+				OnCommand="x,176;y,-24;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1;diffuse,#000000"
+			/>
+		</children></ActorFrame>
+
+		<BitmapText
+			Font="_eurostile normal"
+			Text="@'&xa9; 2005-2009 Roxor Games, Inc. r' .. GetRevision()"
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-17;zoom,0.5;shadowlength,2;diffusealpha,0.8"
+		/>
+
+		<Quad
+			OnCommand="stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffuse,#FFFFFF;diffusealpha,0;sleep,0.1;accelerate,0.5;diffusealpha,1;sleep,0.2;decelerate,0.5;diffusealpha,0"
+		/>
+	</children></ActorFrame>
+
+
+	<ActorFrame Condition="CustomPrefs.Get('UseOldLogo') == false"><children>
+		<AutoActor
+			File="roxor"
+			OnCommand="x,SCREEN_LEFT+200;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+		/>
+		<AutoActor
+			File="br"
+			OnCommand="x,SCREEN_LEFT+65;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+		/>
+
+		<ActorFrame OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y"><children>
+			<AutoActor
+				File="_otherred"
+				InitCommand="horizalign,left;zoomy,.3;addx,-120;addy,30;ZoomToWidth,430;faderight,1"
+				OnCommand="addx,-430;cropleft,1;sleep,.6;decelerate,.3;cropleft,0;addx,430"	
+			/>
+			<AutoActor
+				File="arrow"
+				InitCommand="zoom,.8;addx,-190;addy,-25"
+				OnCommand="glow,1,1,1,1;addx,SCREEN_WIDTH/2;addy,SCREEN_HEIGHT/1.2;sleep,.2;decelerate,.5;addx,-SCREEN_WIDTH/2;addy,-SCREEN_HEIGHT/1.2;glow,1,1,1,0"
+			/>
+			<AutoActor
+				File="oitg"
+				InitCommand="zoom,.8;addx,90;addy,30"
+				OnCommand="cropright,1;faderight,1;sleep,.7;linear,.3;cropright,0;faderight,.1;linear,.03;faderight,0"
+			/>
+			<AutoActor
+				File="oitgglow"
+				InitCommand="zoom,.8;addx,90;addy,30"
+				OnCommand="diffusealpha,.8;cropright,1;faderight,1;sleep,.7;linear,.3;cropright,0;faderight,.1;linear,.03;faderight,0;linear,.5;diffusealpha,0"
+			/>
+		</children></ActorFrame>
+
+		<BitmapText
+			Font="_eurostile normal"
+			Text="@string.format('&xa9; 2005-2010 BoXoRRoXoRs (%s - r%d)', GetProductVer(), GetRevision())"
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-17;zoom,0.5;shadowlength,2;diffusealpha,0.8"
+		/>
+
+		<Quad
+			OnCommand="stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffuse,#FFFFFF;diffusealpha,1;sleep,0.1;accelerate,0.5;diffusealpha,0"
+		/>
+	</children></ActorFrame>
+
+</children></ActorFrame>

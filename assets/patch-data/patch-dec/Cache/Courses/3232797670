@@ -1,0 +1,51 @@
+#COURSE:Funkitude;
+#METER:Regular:7;
+#METER:Difficult:10;
+// cache tags:
+#RADAR:0:1:1.486,0.000,1.660,0.555,0.157,874.000,177.000,60.000,16.000,2.000,0.000;
+#RADAR:0:2:2.183,0.000,1.270,0.865,1.382,1408.000,136.000,92.000,56.000,4.000,0.000;
+#RADAR:0:3:2.802,0.000,1.066,1.714,2.184,1719.000,115.000,265.000,38.000,1.000,0.000;
+#RADAR:1:1:1.533,0.000,1.126,0.418,0.083,986.000,121.000,44.000,2.000,0.000,0.000;
+#RADAR:1:2:2.255,0.000,1.445,1.064,1.323,1423.000,154.000,112.000,24.000,23.000,0.000;
+#RADAR:1:3:2.531,0.000,1.734,0.499,2.056,1654.000,186.000,53.000,7.000,38.000,0.000;
+// end cache tags
+#MODS:
+  TIME=7.38:LEN=7.39:MODS=Wave:
+  TIME=14.77:LEN=14.77:MODS=50% Expand:
+  TIME=29.54:LEN=29.54:MODS=40% Beat, Dark:
+  TIME=44.31:LEN=14.77:MODS=50% Sudden:
+  TIME=62.77:LEN=14.77:MODS=Hallway, Wave:
+  TIME=77.54:LEN=29.54:MODS=Sudden:
+  TIME=92.31:LEN=14.77:MODS=50% Beat, Dark;
+#SONG:In The Groove 2/Funk Factory:Hard:;
+#MODS:
+  TIME=0.10:LEN=17.67:MODS=incoming, 5% Alternate:
+  TIME=17.77:LEN=11.85:MODS=space, 20% Wave:
+  TIME=29.62:LEN=11.85:MODS=incoming, 10% Drunk:
+  TIME=41.47:LEN=23.71:MODS=space:
+  TIME=65.18:LEN=23.70:MODS=incoming:
+  TIME=88.88:LEN=6.22:MODS=space:
+  TIME=95.10:LEN=55.00:MODS=incoming;
+#SONG:In The Groove 2/Agent Blatant:Hard:;
+#MODS:
+  TIME=3.57:LEN=14.22:MODS=50% Beat:
+  TIME=17.79:LEN=14.21:MODS=50% Expand:
+  TIME=32.00:LEN=14.22:MODS=75% Beat:
+  TIME=46.22:LEN=14.22:MODS=70% Wave:
+  TIME=60.44:LEN=14.22:MODS=70% Brake:
+  TIME=74.66:LEN=14.22:MODS=3x, 40% Beat:
+  TIME=88.88:LEN=14.22:MODS=flat, no roll, no twirl, 50% beat;
+#SONG:In The Groove 2/Wake Up:Hard:;
+#MODS:
+  TIME=9.08:LEN=21.81:MODS=50% Beat:
+  TIME=16.35:LEN=14.54:MODS=Hallway:
+  TIME=30.89:LEN=10.91:MODS=flat, no roll, no twirl, 50% Stealth:
+  TIME=41.80:LEN=21.82:MODS=65% Beat, Distant:
+  TIME=49.08:LEN=14.54:MODS=Dark:
+  TIME=56.35:LEN=7.27:MODS=flat, no roll, no twirl:
+  TIME=63.62:LEN=5.46:MODS=Boomerang:
+  TIME=70.89:LEN=7.28:MODS=50% Beat, Boost:
+  TIME=78.17:LEN=12.72:MODS=Brake:
+  TIME=92.71:LEN=15.46:MODS=Hallway, 75% Beat, Dark:
+  TIME=99.99:LEN=8.18:MODS=70% Bumpy;
+#SONG:In The Groove 2/Spin Chicken:Challenge:;

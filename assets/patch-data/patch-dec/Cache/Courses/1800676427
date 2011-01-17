@@ -1,0 +1,19 @@
+#COURSE:Robot;
+#METER:Regular:8;
+#METER:Difficult:8;
+// cache tags:
+#RADAR:0:1:1.546,0.000,1.394,0.546,0.004,992.000,156.000,61.000,42.000,0.000,2.000;
+#RADAR:0:2:2.293,0.000,1.603,1.012,0.405,1501.000,179.000,113.000,140.000,0.000,2.000;
+#RADAR:1:1:1.553,0.000,0.795,0.313,0.004,1090.000,89.000,35.000,0.000,0.000,0.000;
+#RADAR:1:2:2.450,0.000,1.497,0.455,0.925,1698.000,168.000,51.000,39.000,6.000,0.000;
+// end cache tags
+#GAINSECONDS:80.000000;
+#SONG:In The Groove 2/Go 60 Go:Medium:Overhead,Robot,1.5x,nodifficult;
+#GAINSECONDS:75.000000;
+#SONG:In The Groove 2/Destiny:Medium:Overhead,Robot,1.5x,nodifficult;
+#GAINSECONDS:60.000000;
+#SONG:In The Groove 2/Psalm Pilot:Hard:Overhead,Robot,hidden,1.5x,nodifficult;
+#GAINSECONDS:60.000000;
+#SONG:In The Groove 2/Sweet World:Hard:Overhead,Robot,1.75x,80% drunk,45% dizzy,nodifficult;
+#GAINSECONDS:55.000000;
+#SONG:In The Groove 2/Robotix:Hard:Overhead,Robot,70% stealth,blink,beat,2x,nodifficult;

@@ -1,0 +1,52 @@
+#COURSE:Wildside;
+#METER:Regular:9;
+#METER:Difficult:10;
+// cache tags:
+#RADAR:0:1:1.700,0.000,0.868,0.512,0.093,1164.000,95.000,57.000,6.000,0.000,0.000;
+#RADAR:0:2:2.336,0.000,1.234,0.584,1.400,1613.000,136.000,64.000,105.000,4.000,0.000;
+#RADAR:0:3:3.152,0.000,1.284,1.198,3.088,2172.000,143.000,133.000,189.000,6.000,0.000;
+#RADAR:1:1:1.578,0.000,0.351,0.431,0.014,1135.000,39.000,48.000,0.000,0.000,0.000;
+#RADAR:1:2:2.528,0.000,0.911,0.350,1.575,1823.000,100.000,39.000,21.000,8.000,0.000;
+#RADAR:1:3:3.103,0.000,1.575,0.519,3.049,2161.000,175.000,58.000,42.000,61.000,0.000;
+// end cache tags
+#MODS:
+  TIME=6.56:LEN=4.52:MODS=200% Tornado:
+  TIME=12.73:LEN=0.41:MODS=Beat:
+  TIME=13.14:LEN=13.14:MODS=50% Drunk, 50% Tipsy:
+  TIME=26.28:LEN=13.15:MODS=30% Expand, 30% Boost, 50% Drunk, 50% Tipsy:
+  TIME=39.43:LEN=6.57:MODS=90% Hidden, 90% Sudden:
+  TIME=46.00:LEN=13.15:MODS=90% Hidden, 90% Sudden, 50% Drunk, 50% Tipsy:
+  TIME=59.15:LEN=13.14:MODS=50% Drunk, 50% Tipsy:
+  TIME=85.44:LEN=13.14:MODS=30% Expand, 30% Boost, 50% Drunk, 50% Tipsy:
+  TIME=98.58:LEN=6.58:MODS=35% Tornado;
+#SONG:In The Groove 2/Temple of Boom:Hard:;
+#MODS:
+  TIME=3.42:LEN=101.57:MODS=Incoming, 50% Sudden:
+  TIME=3.42:LEN=30.00:MODS=Wave, 50% Drunk, 50% Dizzy:
+  TIME=33.42:LEN=13.71:MODS=50% Dizzy, 70% Tipsy, 70% Drunk:
+  TIME=47.13:LEN=13.71:MODS=50% Dizzy, 70% Tipsy, 70% Drunk, 50% Wave:
+  TIME=64.27:LEN=20.57:MODS=Wave, 50% Drunk, 50% Dizzy:
+  TIME=84.84:LEN=6.86:MODS=50% Dizzy, 70% Tipsy, 70% Drunk:
+  TIME=91.70:LEN=13.29:MODS=50% Dizzy, 70% Tipsy, 70% Drunk, 50% Wave;
+#SONG:In The Groove 2/Holy Guacamole:Hard:;
+#MODS:
+  TIME=3.42:LEN=106.28:MODS=Reverse, Space:
+  TIME=3.42:LEN=10.28:MODS=20% Boost:
+  TIME=13.70:LEN=13.72:MODS=20% Boost, 50% Expand, Wave:
+  TIME=27.42:LEN=27.43:MODS=20% Boost, 60% Hidden, 50% Expand, Wave:
+  TIME=54.85:LEN=13.71:MODS=50% Boost, 50% Expand, 50% Drunk, 50% Tipsy:
+  TIME=68.56:LEN=13.72:MODS=Dark, 50% Boost, 30% Dizzy, 50% Sudden, 50% Hidden, 20% Drunk, 20% Tipsy:
+  TIME=82.28:LEN=27.42:MODS=50% Boost, 60% Hidden, 50% Expand, Wave;
+#SONG:In The Groove 2/Tribal Style:Hard:;
+#MODS:
+  TIME=0.00:LEN=105.29:MODS=1.5x, Reverse, Incoming:
+  TIME=0.00:LEN=7.95:MODS=50% Beat:
+  TIME=9.68:LEN=19.69:MODS=20% Beat, Expand, 110% Hidden:
+  TIME=31.82:LEN=19.60:MODS=40% Beat, 20% Tornado, Wave, Sudden:
+  TIME=51.42:LEN=9.03:MODS=20% Beat, Expand, Hidden:
+  TIME=61.22:LEN=9.80:MODS=20% Beat, 50% Dizzy, 50% Drunk, 90% Sudden, Wave:
+  TIME=71.02:LEN=8.57:MODS=Wave, Sudden, 20% Tornado:
+  TIME=80.80:LEN=19.60:MODS=40% Beat, 20% Tornado, Wave, Sudden:
+  TIME=100.40:LEN=7.65:MODS=20% Beat, 50% Dizzy, 50% Drunk, Hidden, Wave:
+  TIME=105.29:LEN=2.76:MODS=50% Beat;
+#SONG:In The Groove 2/Monolith:Hard:;

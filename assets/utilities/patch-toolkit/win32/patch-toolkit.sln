@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "patchdec", "patchdec.vcproj", "{F5BD18DE-D81A-46E2-9E05-27CE7A073DE5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "patchenc", "patchenc.vcproj", "{B8B67594-DAF1-48BF-AF4E-E6CE562E2FB3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5BD18DE-D81A-46E2-9E05-27CE7A073DE5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F5BD18DE-D81A-46E2-9E05-27CE7A073DE5}.Debug|Win32.Build.0 = Debug|Win32
+		{F5BD18DE-D81A-46E2-9E05-27CE7A073DE5}.Release|Win32.ActiveCfg = Release|Win32
+		{F5BD18DE-D81A-46E2-9E05-27CE7A073DE5}.Release|Win32.Build.0 = Release|Win32
+		{B8B67594-DAF1-48BF-AF4E-E6CE562E2FB3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B8B67594-DAF1-48BF-AF4E-E6CE562E2FB3}.Debug|Win32.Build.0 = Debug|Win32
+		{B8B67594-DAF1-48BF-AF4E-E6CE562E2FB3}.Release|Win32.ActiveCfg = Release|Win32
+		{B8B67594-DAF1-48BF-AF4E-E6CE562E2FB3}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

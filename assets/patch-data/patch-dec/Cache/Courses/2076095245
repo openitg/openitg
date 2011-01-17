@@ -1,0 +1,72 @@
+#COURSE:Nightmare;
+#METER:Regular:10;
+#METER:Difficult:13;
+// cache tags:
+#RADAR:0:1:2.052,0.000,0.698,0.475,0.251,1464.000,79.000,52.000,22.000,1.000,0.000;
+#RADAR:0:2:2.847,0.000,1.121,0.748,1.227,2003.000,127.000,82.000,124.000,3.000,4.000;
+#RADAR:0:3:3.847,0.000,2.201,2.137,2.886,2635.000,246.000,236.000,292.000,25.000,2.000;
+#RADAR:1:1:2.052,0.000,1.055,0.295,0.209,1449.000,116.000,33.000,19.000,1.000,0.000;
+#RADAR:1:2:2.992,0.000,1.277,0.507,1.343,2130.000,142.000,57.000,57.000,16.000,0.000;
+#RADAR:1:3:3.859,0.000,2.667,0.661,2.361,2659.000,298.000,74.000,37.000,36.000,0.000;
+// end cache tags
+#MODS:
+  TIME=0.00:LEN=107.00:MODS=Dark, Blind:
+  TIME=52.08:LEN=54.92:MODS=Reverse:
+  TIME=0.00:LEN=25.33:MODS=30% Beat:
+  TIME=12.65:LEN=12.68:MODS=50% Drunk, 30% Tipsy, 20% Beat:
+  TIME=25.33:LEN=6.33:MODS=25% Tornado, 20% Beat:
+  TIME=31.66:LEN=6.34:MODS=50% Brake, 30% Bumpy:
+  TIME=38.00:LEN=12.67:MODS=50% Drunk, 30% Tipsy, 20% Beat:
+  TIME=50.67:LEN=2.00:MODS=Stealth:
+  TIME=52.67:LEN=11.33:MODS=Sudden, 3x:
+  TIME=66.51:LEN=6.34:MODS=30% Beat, 50% Drunk, 30% Tipsy:
+  TIME=72.85:LEN=6.34:MODS=50% Brake, 30% Bumpy:
+  TIME=79.19:LEN=12.67:MODS=30% Beat, 50% Drunk, 30% Wave, 30% Tipsy:
+  TIME=91.86:LEN=12.67:MODS=30% Beat, 50% Drunk, 30% Wave, 30% Tipsy, 50% Sudden:
+  TIME=104.53:LEN=4.35:MODS=Tornado, *2 -500% Mini;
+#SONG:In The Groove 2/Energizer:Hard:;
+#MODS:
+  TIME=0.00:LEN=103.86:MODS=Dark, Blind:
+  TIME=4.53:LEN=1.15:MODS=*10000 1000% Dizzy:
+  TIME=5.72:LEN=12.51:MODS=40% Beat:
+  TIME=18.23:LEN=5.69:MODS=50% Wave, 40% Beat, 75% Bumpy, 25% Brake:
+  TIME=23.92:LEN=6.46:MODS=70% Bumpy:
+  TIME=30.38:LEN=12.13:MODS=150% Distant, 4x, 40% Bumpy:
+  TIME=42.51:LEN=10.66:MODS=4x, 50% Dizzy:
+  TIME=53.17:LEN=13.67:MODS=50% Wave, 50% Bumpy, Hallway, *10 Reverse:
+  TIME=66.84:LEN=12.15:MODS=2x, 50% Wave, 50% Bumpy, Hallway, Reverse, 5% Flip, -75% Mini:
+  TIME=78.99:LEN=24.87:MODS=50% Wave, 40% Beat, 75% Bumpy, 25% Brake, Reverse;
+#SONG:In The Groove 2/Bloodrush:Hard:;
+#MODS:
+  TIME=0.00:LEN=112.86:MODS=Dark, Blind:
+  TIME=65.81:LEN=47.05:MODS=Reverse:
+  TIME=5.40:LEN=23.24:MODS=50% Expand, 50% Tipsy, 50% Drunk:
+  TIME=28.64:LEN=12.39:MODS=20% Expand, 20% Tipsy, 20% Drunk, Hidden:
+  TIME=41.03:LEN=12.39:MODS=50% Expand, 50% Tipsy, 50% Drunk, 50% Bumpy:
+  TIME=53.42:LEN=12.39:MODS=Bumpy, 50% Tipsy, 50% Drunk:
+  TIME=65.81:LEN=17.03:MODS=40% Expand, 40% Tipsy, 40% Drunk, 40% Bumpy:
+  TIME=82.82:LEN=15.50:MODS=Bumpy, 50% Tipsy, 50% Drunk:
+  TIME=98.32:LEN=9.30:MODS=50% Tipsy, 40% Beat, 40% Bumpy, 30% Drunk:
+  TIME=107.62:LEN=5.24:MODS=50% Expand, 50% Tipsy, 50% Drunk, 50% Bumpy;
+#SONG:In The Groove 2/!:Hard:;
+#MODS:
+  TIME=0.00:LEN=114.00:MODS=Dark, Blind, Mirror:
+  TIME=47.97:LEN=66.03:MODS=*2 Reverse:
+  TIME=6.84:LEN=12.00:MODS=75% Wave:
+  TIME=18.84:LEN=2.90:MODS=75% Dizzy:
+  TIME=21.74:LEN=11.67:MODS=50% Brake:
+  TIME=33.41:LEN=14.56:MODS=2x, 50% Boost, 50% Expand:
+  TIME=47.97:LEN=1.40:MODS=Stealth:
+  TIME=49.37:LEN=7.67:MODS=20% Mini, 20% Tipsy, 20% Drunk, 20% Dizzy, 20% Bumpy, 20% Beat:
+  TIME=57.04:LEN=6.06:MODS=30% Mini, 30% Tipsy, 30% Drunk, 30% Dizzy, 30% Bumpy, 30% Beat:
+  TIME=63.10:LEN=5.72:MODS=40% Mini, 40% Tipsy, 40% Drunk, 40% Dizzy, 40% Bumpy, 40% Beat:
+  TIME=68.82:LEN=5.49:MODS=50% Mini, 50% Tipsy, 50% Drunk, 50% Dizzy, 50% Bumpy, 50% Beat:
+  TIME=74.31:LEN=7.52:MODS=-75% Mini, Drunk, Tornado:
+  TIME=83.56:LEN=3.77:MODS=60% Mini, 60% Tipsy, 60% Drunk, 60% Dizzy, 40% Bumpy, 40% Beat:
+  TIME=87.33:LEN=11.61:MODS=20% Dizzy:
+  TIME=98.94:LEN=4.69:MODS=50% Mini, Bumpy:
+  TIME=103.57:LEN=0.64:MODS=*10 60% Mini:
+  TIME=104.21:LEN=5.74:MODS=*10 70% Mini, 50% Beat:
+  TIME=109.95:LEN=1.08:MODS=*5 -500% Mini:
+  TIME=111.03:LEN=8.97:MODS=*10 150% Mini;
+#SONG:In The Groove 2/VerTex^2:Hard:;

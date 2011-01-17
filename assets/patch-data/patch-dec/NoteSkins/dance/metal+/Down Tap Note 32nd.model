@@ -1,0 +1,4 @@
+[Model]
+Meshes=arrowmesh.txt
+Materials=32nd.txt
+Bones=arrowmesh.txt

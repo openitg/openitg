@@ -19,24 +19,70 @@ public class SignFile
 	/* Instantiates the key paths and signature algorithm. */
 	public SignFile()
 	{
-		try {
+		try
+		{
 			// Get the instance of Signature Engine.
 			sign = Signature.getInstance("SHA1withRSA");
 		}
-		catch (NoSuchAlgorithmException	nsa) {
+		catch (NoSuchAlgorithmException	nsa)
+		{
 			System.out.println("" + nsa.getMessage());
 		}
 	}
 
-	public boolean loadPrivateKey(privatekey)
+	public boolean loadPrivateKey(byte[] privatekey)
 	{
-		// XXX STUB
+		KeyFactory kf;
+		try
+		{
+			kf = KeyFactory.getInstance("RSA");
+			EncodedKeySpec eks = new PKCS8EncodedKeySpec(privatekey);
+			privateKey = kf.generatePrivate(eks);
+		}
+		catch ( NoSuchAlgorithmException e )
+		{
+			System.err.println("Error creating RSA key factory: "+e.getMessage());
+			return false;
+		}
+		catch ( InvalidKeySpecException e )
+		{
+			System.err.println("Error decoding private key: "+e.getMessage());
+			return false;
+		}
 		return true;
 	}
 
-	public boolean signDataFile(data, privatekey, outputfn)
+	public boolean signDataFile(byte[] data, String outputfn)
 	{
-		// XXX STUB
+		FileOutputStream fos = null;
+		try
+		{
+			sign.initSign(privateKey);
+			fos = new FileOutputStream(outputfn);
+			sign.update(data);
+			fos.write( sign.sign() );
+			fos.close();
+		}
+		catch ( FileNotFoundException e )
+		{
+			System.err.println("Error opening file: "+e.getMessage());
+			return false;
+		}
+		catch ( InvalidKeyException e )
+		{
+			System.err.println("Invalid Key Exception: "+e.getMessage());
+			return false;
+		}
+		catch ( SignatureException e )
+		{
+			System.err.println("Signature exception: "+e.getMessage());
+			return false;
+		}
+		catch ( IOException e )
+		{
+			System.err.println("IOException: "+e.getMessage());
+			return false;
+		}	
 		return true;
 	}
 
@@ -63,7 +109,7 @@ public class SignFile
 			System.exit(1);
 		}
 
-		if( !sm.signDataFile(data,privatekey,signaturefn) )
+		if( !sm.signDataFile(data,signaturefn) )
 		{
 			System.err.println("Could not generate signature!");
 			System.exit(1);

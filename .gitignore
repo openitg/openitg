@@ -1,0 +1,6 @@
+# ignore build files, hidden directories (e.g. .deps),
+# and autoconf/automake output
+*.[oa]
+.*/
+Makefile
+*.in

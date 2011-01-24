@@ -5,7 +5,7 @@ SARGE_DIST_NAME="sarge"
 
 usage() {
 	echo "Usage: $0 <path to source code> <chroot location>"
-	exit
+	exit 1
 }
 
 # used to check for needed files/programs
@@ -13,14 +13,14 @@ verify_prog_requirements() {
 	# debootstrap is needed
 	if [ "x`which debootstrap`" = "x" ]; then
 		echo "$0: cannot continue, please install debootstrap on your system"
-		exit
+		exit 1
 	fi
 	echo "debootstrap location: `which debootstrap`"
 
 	# user must be root
 	if [ ! "x`whoami`" = "xroot" ]; then
 		echo "$0: you must be root to setup the chroot environment"
-		exit
+		exit 1
 	fi
 }
 
@@ -35,7 +35,7 @@ setup_chroot() {
 	debootstrap $SARGE_DIST_NAME $CHROOT_DIR $DEBIAN_SARGE_MIRROR/
 	if [ $? != 0 ]; then
 		echo "$0: debootstrap failed, exiting"
-		exit
+		exit 1
 	fi
 
 	mkdir $CHROOT_DIR/root/openitg-dev
@@ -81,7 +81,7 @@ fi
 
 if [ ! -d "$1" ]; then
 	echo "$0: Source code dir not found at $1"
-	exit
+	exit 1
 fi
 
 verify_prog_requirements
@@ -89,3 +89,4 @@ verify_prog_requirements
 SRC_DIR="`(cd $1; pwd)`"
 setup_chroot $2 $SRC_DIR
 
+exit 0;

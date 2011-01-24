@@ -43,13 +43,18 @@ Create an account at github.org
 3. git add <filename>
 4. git commit
 
+How to build for arcade:
+1. Choose a location for your chroot:  MY_CHROOT=/home/cmyers/chroot
+2. Install debootstrap and chroot (on debian/ubuntu, apt-get install chroot debootstrap)
+3. Set up chroot, from root dir of source, as the root user, run: ./chroot-arcade.sh `pwd` $MY_CHROOT
+4. cd /root/openitg-dev/ && ./build-arcade.sh
 
-Very brief "how to build":
+How to build for home:
+TODO
 
-1. Install all dependencies (see dependencies.txt)
-2. ./autogen.sh
-3. ./configure
-4. make
-5. pray
+How to build for home on 64-bit linux:
+TODO
 
+How to build for home on windows:
+TODO
 

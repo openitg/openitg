@@ -32,7 +32,7 @@ setup_chroot() {
 	echo "Setting up chroot at $CHROOT_DIR..."
 
 	mkdir -p $CHROOT_DIR
-	debootstrap $SARGE_DIST_NAME $CHROOT_DIR $DEBIAN_SARGE_MIRROR/
+	debootstrap --arch i386 $SARGE_DIST_NAME $CHROOT_DIR $DEBIAN_SARGE_MIRROR/
 	if [ $? != 0 ]; then
 		echo "$0: debootstrap failed, exiting"
 		exit 1

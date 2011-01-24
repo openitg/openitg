@@ -22,26 +22,20 @@ Very brief "how to checkout"
 1. git clone git://github.com/openitg/openitg.git
 
 Very brief "how to contribute"
-1. Create an account at github.org
+1. Create an account at github.com
 2. Goto https://github.com/openitg/openitg
 3. Click "fork"
 4. git clone git@github.com:<username>/openitg.git
 5. Edit files...
-6. git add <filename>
+6. git add <filename> for every file you add or edit
 7. git commit # now your change is committed locally
 8. git push # now your change is pushed to your github
-9. From github.org/<username>/openitg, click "pull request"
+9. From github.org/<username>/openitg, click "pull request".  Base branch is the
+branch you want to put your changes on, and head branch is the branch you made
+your changes to already.
 10. Write a short description of your change.  Be sure to include the goal, any
 bugs fixed, features added, etc, and any credit you wish to have.  Click "send
 pull request".
-
-Create an account at github.org
-2. Goto https://github.com/openitg/openitgCreate an account at github.org
-2. Goto https://github.com/openitg/openitgCreate an account at github.org
-2. Goto https://github.com/openitg/openitg1. git clone git://github.com/openitg/openitg.git
-2. Edit files...
-3. git add <filename>
-4. git commit
 
 How to build for arcade:
 1. Choose a location for your chroot:  MY_CHROOT=/home/cmyers/chroot

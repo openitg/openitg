@@ -3,25 +3,32 @@ OpenITG - an open-source rhythm dancing game which is a fork of StepMania 3.95
 with the goal of adding arcade-like ITG-style behavior and serving as a drop-in
 replacement for the ITG binary on arcade cabinents.
 
-TODOs:
+Project homepage: https://github.com/openitg/openitg/wiki
+Project bug tracker: http://wush.net/bugzilla/terabyte/
+Project IRC channel: #openitg on irc.badnik.com
+Project source code: https://github.com/openitg/openitg
 
+* TODOs
+
+Short-term
 1. Getting Started Guide - build and development
-2. streamline build process - works out of box
-3. streamline arcade build process - works out of chroot
-4. test / bugfix beta-3 (currently master branch)
-5. arcade revision sign utility
-6. self-contained cache-rebuilding solution
-7. OpenGL Driver uses fix function pipeline rather than shader
+2. streamline build and release process - works out of box for arcade and home
+3. test / bugfix beta-3 (currently master branch)
+4. self-contained cache-rebuilding solution
+5. OpenGL Driver uses fix function pipeline rather than shader
 
-Very Long Term
+Long-term
 1. Kernel source with ITG patches to rebuild kernels (talk to us, should live in a separate repo)
 2. StepMania 4.0 LUA Bindings
 3. StepMania 4.0 Theme metrics
 
-Very brief "how to checkout"
-1. git clone git://github.com/openitg/openitg.git
 
-Very brief "how to contribute"
+* How to check-out the source
+
+git clone git://github.com/openitg/openitg.git
+
+* How to contribute
+
 1. Create an account at github.com
 2. Goto https://github.com/openitg/openitg
 3. Click "fork"
@@ -37,18 +44,28 @@ your changes to already.
 bugs fixed, features added, etc, and any credit you wish to have.  Click "send
 pull request".
 
-How to build for arcade:
+* How to build for arcade
+
 1. Choose a location for your chroot:  MY_CHROOT=/home/cmyers/chroot
 2. Install debootstrap and chroot (on debian/ubuntu, apt-get install chroot debootstrap)
 3. Set up chroot, from root dir of source, as the root user, run: ./chroot-arcade.sh `pwd` $MY_CHROOT
 4. cd /root/openitg-dev/ && ./build-arcade.sh
 
-How to build for home:
-TODO
+NOTE: the chroot will be created in the location you choose for MY_CHROOT.  This
+will build an entire Debian Sarge Linux system (the same OS used by arcade
+machines).  This will take approximately 350MB.  A full clone of the repo is
+about 300MB after you build all artifacts, so expect to have at least 650MB of
+free space to work with.
 
-How to build for home on 64-bit linux:
-TODO
+* How to build for home on 32-bit linux:
 
-How to build for home on windows:
-TODO
+TODO: No chroot necessary, need script to install dependencies on various
+distributions...
+
+* How to build for home on 64-bit linux:
+TODO: Similar process to arcade, but create 32-bit chroot of modern debian
+
+* How to build for home on windows:
+TODO: Need someone to describe how to build in Visual Studio and produce
+releases.
 

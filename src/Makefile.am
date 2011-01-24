@@ -25,7 +25,7 @@ endif
 
 all: build_version
 
-build_version:
+build_version: $(srcdir)/libresample/libresample.a $(srcdir)/crypto561/libcryptopp.a
 	$(CC) -O2 archutils/Unix/verinc.c -o archutils/Unix/verinc
 	chmod +x archutils/Unix/verinc
 	archutils/Unix/verinc `svnversion`

@@ -9,7 +9,6 @@
 
 struct RoomWheelData : public WheelItemBaseData
 {
-	RoomWheelData() { WheelItemBaseData::WheelItemBaseData(); }
 	RoomWheelData( WheelItemType wit, CString title, CString SubTitle, RageColor color );
 
 	CString			m_sDesc;

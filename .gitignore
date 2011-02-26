@@ -18,3 +18,4 @@ src/archutils/Unix/verinc
 src/config.h
 src/version.bin
 src/verstub.cpp
+src/stamp-h1

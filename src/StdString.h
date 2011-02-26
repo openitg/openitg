@@ -105,6 +105,7 @@ typedef char*			PSTR;
 #include <cstdlib>
 #include <cstdarg>
 #include <cstring>
+#include <vector>
 
 // a very shorthand way of applying the fix for KB problem Q172398
 // (basic_string assignment bug)
@@ -780,6 +781,13 @@ struct StdStringEqualsNoCase
 #if defined(_MSC_VER) && (_MSC_VER > 1100)
 	#pragma warning (pop)
 #endif
+
+/* Use CStdString: */
+#include "StdString.h"
+typedef StdString::CStdString CString;
+typedef std::vector<CString> CStringArray;
+
+typedef const CString& CCStringRef;
 
 #endif	// #ifndef STDSTRING_H
 

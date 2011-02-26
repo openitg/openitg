@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <gcrypt.h>
 #include "keydump.h"
@@ -11,7 +12,7 @@ int keydump_itg2_encrypt_file(const char *srcFile, const char *destFile, const u
 	unsigned int numcrypts, got, fileSize;
 	int i,j;
 	aes_encrypt_ctx ctx[1];
-	unsigned char encbuf[4080], decbuf[4080], backbuffer[16], verifyBlock[16], *plaintext = ":Dc09infamouspat";
+	unsigned char encbuf[4080], decbuf[4080], backbuffer[16], verifyBlock[16], *plaintext = ":DSPIGWITMERDIKS";
 
 	aes_encrypt_key(aesKey, 24, ctx);
 
@@ -35,6 +36,7 @@ int keydump_itg2_encrypt_file(const char *srcFile, const char *destFile, const u
 	fwrite(&subkeySize, 1, 4, dfd);
 	fwrite(subkey, 1, subkeySize, dfd);
 	fwrite(verifyBlock, 1, 16, dfd);
+	printf("verifyBlock: %02X %02X %02X %02X\n", verifyBlock[0], verifyBlock[1], verifyBlock[2], verifyBlock[3]);
 
 	do {
 		if ((got = fread(decbuf, 1, 4080, fd)) == -1) {
@@ -79,17 +81,19 @@ int keydump_itg2_decrypt_file(const char *srcFile, const char *destFile, int typ
 		return -1;
 	}
 
-	fread(magic, 2, 1, fd);
+	fread(magic, 1, 2, fd);
 	if ( strncmp(magic, ITG2FileMagic[type], 2) ) {
 		fprintf(stderr, "%s: source file is not an ITG2 %s zip\n",  __FUNCTION__, ITG2FileDesc[type]);
 		fclose(fd);
 		return -1;
 	}
-	fread(&fileSize, 4, 1, fd);
-	fread(&subkeySize, 4, 1, fd);
+	fread(&fileSize, 1, 4, fd);
+	fread(&subkeySize, 1, 4, fd);
 	subkey = (unsigned char*)malloc(subkeySize * sizeof(unsigned char));
-	fread(subkey, 1, subkeySize, fd);
-	fread(verifyBlock, 16, 1, fd);
+	got = fread(subkey, 1, subkeySize, fd);
+	printf("got: %d\n",got);
+	printf("first 4 bytes of subkey: %02x %02x %02x %02x\n", subkey[0], subkey[1], subkey[2], subkey[3]);
+	fread(verifyBlock, 1, 16, fd);
 
 	if ( keydump_itg2_retrieve_aes_key(subkey, subkeySize, aesKey, type, keyFile) == -1 ) {
 		fprintf(stderr, "%s: could not retrieve AES key\n", __FUNCTION__);
@@ -106,9 +110,6 @@ int keydump_itg2_decrypt_file(const char *srcFile, const char *destFile, int typ
 		return -1;
 	}
 
-	printKey(aesKey);
-	printbuffer("verifyBlock",verifyBlock);
-	printbuffer("plaintext",plaintext);
 
 	if ((dfd = fopen(destFile, "wb")) == NULL) {
 		fprintf(stderr, "%s: fopen(%s) failed D=\n", __FUNCTION__, destFile);
@@ -152,7 +153,7 @@ int keydump_itg2_decrypt_file(const char *srcFile, const char *destFile, int typ
 
 int keydump_itg2_retrieve_aes_key(const unsigned char *subkey, const unsigned int subkeySize, unsigned char *out, int type, const char *keyFile) {
 	FILE *kfd;
-	unsigned char *SHAworkspace;
+	unsigned char *SHAworkspace, *SHAout;
 	
 	switch (type) {
 	case KEYDUMP_ITG2_FILE_DATA:
@@ -164,10 +165,12 @@ int keydump_itg2_retrieve_aes_key(const unsigned char *subkey, const unsigned in
 
 	case KEYDUMP_ITG2_FILE_PATCH:
 		SHAworkspace = (unsigned char*)malloc(sizeof(unsigned char) * (subkeySize+47));
+		SHAout = (unsigned char*)malloc(sizeof(unsigned char) * 64);
 		memcpy(SHAworkspace, subkey, subkeySize);
 		memcpy(SHAworkspace+subkeySize, ITG2SubkeySalt, 47);
-		gcry_md_hash_buffer(GCRY_MD_SHA512, out, SHAworkspace, subkeySize+47);
-		free(SHAworkspace);
+		gcry_md_hash_buffer(GCRY_MD_SHA512, SHAout, SHAworkspace, subkeySize+47);
+		memcpy(out, SHAout, 24);
+		free(SHAworkspace); free(SHAout);
 		break;
 
 	case KEYDUMP_ITG2_FILE_STATIC:

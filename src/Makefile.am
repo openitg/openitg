@@ -34,6 +34,11 @@ build_version: $(srcdir)/libresample/libresample.a $(srcdir)/crypto561/libcrypto
 verstub.cpp:
 	$(MAKE) build_version
 
+clean-local: clean_libresample
+
+clean_libresample:
+	cd libresample && $(MAKE) clean
+
 $(srcdir)/libresample/libresample.a:
 	cd $(srcdir)/libresample && autoconf && sh ./configure && make
 
@@ -539,3 +544,4 @@ test_threads_SOURCES = \
 		tests/test_threads.cpp
 
 INCLUDES = $(LUA_CFLAGS) $(SDL_CFLAGS)
+

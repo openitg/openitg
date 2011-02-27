@@ -1,0 +1,19 @@
+#COURSE:Slower;
+#METER:Regular:10;
+#METER:Difficult:10;
+// cache tags:
+#RADAR:0:1:1.347,0.000,0.650,0.549,0.034,881.000,70.000,59.000,0.000,0.000,0.000;
+#RADAR:0:2:2.016,0.000,0.999,0.480,0.194,1356.000,107.000,51.000,21.000,0.000,0.000;
+#RADAR:1:1:1.248,0.000,0.742,0.313,0.000,824.000,79.000,33.000,3.000,0.000,0.000;
+#RADAR:1:2:2.007,0.000,1.558,0.256,0.055,1312.000,166.000,27.000,16.000,0.000,0.000;
+// end cache tags
+#GAINSECONDS:72.000000;
+#SONG:In The Groove 2/Baby Baby:Medium:Overhead,1.5x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/Agent Blatant:Medium:Overhead,1.25x,nodifficult;
+#GAINSECONDS:60.000000;
+#SONG:In The Groove 2/Hillbilly Hardcore:Medium:Overhead,1x,nodifficult;
+#GAINSECONDS:55.000000;
+#SONG:In The Groove 2/Summer ~Speedy Mix~:Medium:Overhead,0.75x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/Energizer:Medium:Overhead,0.5x,nodifficult;

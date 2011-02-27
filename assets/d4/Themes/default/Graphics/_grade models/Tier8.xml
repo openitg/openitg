@@ -1,0 +1,14 @@
+<ActorFrame
+	InitCommand="zoom,0.7;rotationy,-90;spin;EffectMagnitude,0,40,0"
+>
+	<children>
+		<Actor
+			File="a.txt"
+			InitCommand="x,-20"
+		/>
+		<Actor
+			File="a plus.model"
+			InitCommand="x,35"
+		/>
+	</children>
+</ActorFrame>

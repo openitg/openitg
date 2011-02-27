@@ -1,0 +1,15 @@
+<ActorFrame> <children>
+	<BitmapText
+		Text="The memory&nbsp;card&nbsp;(PS2) in MEMORY&nbsp;CARD&nbsp;slot&nbsp;1::was removed."
+		File="Common Normal"
+		OnCommand="diffuse,#E0E0E0;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;diffusealpha,0;wrapwidthpixels,750;zoom,.8;linear,0.3;diffusealpha,1"
+		TweenOffCommand="decelerate,0.3;diffusealpha,0"
+	/>
+
+	<BitmapText
+		Text="Press &START; to exit."
+		File="Common Normal"
+		OnCommand="diffuse,#E0E0E0;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y*1.25;diffusealpha,0;wrapwidthpixels,800;linear,0.3;diffusealpha,1"
+		TweenOffCommand="decelerate,0.3;diffusealpha,0"
+	/>
+</children> </ActorFrame>

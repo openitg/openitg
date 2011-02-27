@@ -1,0 +1,6 @@
+<BitmapText
+	Text="Restore default game settings?"
+	File="Common Normal"
+	OnCommand="diffuse,#E0E0E0;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y*2/3;diffusealpha,0;linear,0.3;diffusealpha,1"
+	OffCommand="decelerate,0.3;diffusealpha,0"
+/>

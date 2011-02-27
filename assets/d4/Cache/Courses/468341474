@@ -1,0 +1,20 @@
+#COURSE:Perception;
+#METER:Regular:10;
+#METER:Difficult:10;
+// cache tags:
+#RADAR:0:1:0.831,0.000,0.322,0.398,0.009,551.000,35.000,43.000,12.000,0.000,0.000;
+#RADAR:0:2:1.249,0.000,1.153,0.718,0.137,745.000,124.000,78.000,39.000,0.000,0.000;
+#RADAR:1:1:0.997,0.000,0.511,0.300,0.144,668.000,55.000,32.000,0.000,0.000,0.000;
+#RADAR:1:2:1.393,0.000,0.978,0.319,0.153,913.000,105.000,34.000,2.000,0.000,0.000;
+#RADAR:27:2:1.000,0.000,1.000,0.000,0.153,500.000,386.000,0.000,0.000,295.000,0.000;
+// end cache tags
+#GAINSECONDS:95.000000;
+#SONG:In The Groove 2/We Know What To Do:Easy:alternate,Overhead,2x,nodifficult;
+#GAINSECONDS:85.000000;
+#SONG:In The Groove 2/Liquid Moon:Easy:90% sudden,90% hidden,dark,Overhead,drunk,2x,nodifficult;
+#GAINSECONDS:77.000000;
+#SONG:In The Groove 2/Spin Chicken:Easy:flip,Overhead,2x,nodifficult;
+#GAINSECONDS:70.000000;
+#SONG:In The Groove 2/Incognito:Medium:Boomerang,Blink,tipsy,Overhead,2x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/Clockwork Genesis:Medium:reverse,drunk,tipsy,Overhead,2x,nodifficult;

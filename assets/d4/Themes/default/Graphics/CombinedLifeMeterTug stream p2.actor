@@ -1,0 +1,4 @@
+[Actor]
+Type=Quad
+InitCommand=zoomy,14;diffuse,#20FD03
+

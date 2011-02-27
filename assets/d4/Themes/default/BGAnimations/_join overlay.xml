@@ -1,0 +1,13 @@
+<ActorFrame><children>
+	<BitmapText
+		Font="_eurostile outline"
+		Text="???"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-56;shadowlength,2;zoom,0.9;diffuseshift;EffectColor1,#FFE58BFF;EffectColor2,#FFE58B00;PlayCommand,Refresh"
+		RefreshCommand="%function(self) self:settext(Get2PlayerJoinMessage()) end"
+		SideJoinedP1MessageCommand="PlayCommand,Refresh"
+		SideJoinedP2MessageCommand="PlayCommand,Refresh"
+		CurrentStyleChangedMessageCommand="PlayCommand,Refresh"
+		CoinInsertedMessageCommand="PlayCommand,Refresh"
+		CoinModeChangedMessageCommand="PlayCommand,Refresh"
+	/>
+</children></ActorFrame>

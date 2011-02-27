@@ -1,0 +1,25 @@
+#COURSE:Speeder
+#METER:REGULAR:10;
+#METER:DIFFICULT:10;
+
+
+#MODs:;
+#GAINSECONDS:70;
+#SONG:July -Euromix-:Medium:Overhead, 3x, nodifficult;
+
+#MODS:;
+#GAINSECONDS:65;
+#SONG:Wake Up:Medium:Overhead, 3.5x, nodifficult;   
+
+#MODs:;
+#GAINSECONDS:65;
+#SONG:Bloodrush:Medium:Overhead, 4x, nodifficult;
+
+#MODS:;
+#GAINSECONDS:60;
+#SONG:Sweet World:Hard:Overhead, 4.5x, nodifficult; 
+
+#MODS:;
+#GAINSECONDS:65;
+#SONG:One False Move:Hard:Overhead, 5x, nodifficult; 
+

@@ -1,0 +1,36 @@
+#COURSE:Getting Started
+#METER:REGULAR:4;
+#METER:DIFFICULT:7;
+ 
+#MODS:
+  TIME=00.00:END=101.21:MODS=Little, NoHolds, NoMines, NoJumps:  
+  TIME=14.33:END=28.66:MODS=20% Beat:
+  TIME=42.99:END=57.31:MODS=20% Beat:
+  TIME=71.64:END=85.97:MODS=30% Boost: 
+#SONG:Baby Baby:Easy:;
+
+#MODS:
+  TIME=00.00:END=99.85:MODS=Little, NoHolds, NoMines:
+  TIME=14.67:END=30.09:MODS=50% Bumpy:
+  TIME=43.81:END=57.52:MODS=40% Wave:
+  TIME=71.24:END=84.95:MODS=40% Mini:
+  TIME=98.67:END=105.52:MODS=40% Beat:
+#SONG:My Life is so Crazy:Easy:; 
+
+#MODS:
+  TIME=00.00:END=99.85:MODS=NoJumps, NoMines:
+  TIME=16.24:END=30.68:MODS=40% Mini:
+  TIME=45.11:END=59.55:MODS=40% Beat:
+  TIME=58.65:END=66.32:MODS=2x:
+  TIME=73.98:END=88.42:MODS=25% Stealth:
+  TIME=88.42:END=102.41:MODS=40% Mini:
+#SONG:The Message:Medium:;
+
+#MODS:
+  TIME=00.00:END=99.85:MODS=NoMines:
+  TIME=23.10:END=44.43:MODS=50% Hallway:
+  TIME=44.43:END=58.65:MODS=20% Expand:
+  TIME=58.65:END=72.88:MODS=50% Distant:
+  TIME=72.88:END=81.76:MODS=40% Mini:
+  TIME=81.76:END=95.99:MODS=40% Wave:
+#SONG:Baby Don't You Want Me:Medium:; 

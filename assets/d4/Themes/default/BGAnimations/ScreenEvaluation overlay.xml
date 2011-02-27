@@ -1,0 +1,70 @@
+<ActorFrame>
+	<children>
+		<ActorFrame
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)"
+			OnCommand="x,SCREEN_CENTER_X-240;y,SCREEN_CENTER_Y-95;difficultyoffset;addx,-SCREEN_WIDTH/2;sleep,3;decelerate,0.3;addx,+SCREEN_WIDTH/2"
+			OffCommand="accelerate,0.3;addx,-SCREEN_WIDTH/2"
+		> <children>
+			<Actor
+				File="@THEME:GetPath(EC_GRAPHICS,'','_difficulty icons')"
+				OnCommand="animate,0;playcommand,Update"
+				UpdateCommand="%function(self,parent) SetDifficultyFrameFromGameState(self, PLAYER_1) end"
+			/>
+			<Actor
+				Class="DifficultyMeter"
+				Type="ScreenGameplay DifficultyMeterP1"
+				OnCommand="playcommand,Update"
+				UpdateCommand="%function(self) 
+						if GAMESTATE:GetCurrentTrail(PLAYER_1) then 
+							self:SetFromTrail(GAMESTATE:GetCurrentTrail(PLAYER_1)) 
+						else
+							self:SetFromSteps(GAMESTATE:GetCurrentSteps(PLAYER_1))
+						end
+					end"
+			/>
+		</children> </ActorFrame>
+
+		<ActorFrame
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_2)"
+			OnCommand="x,SCREEN_CENTER_X+238;y,SCREEN_CENTER_Y-95;difficultyoffset;addx,+SCREEN_WIDTH/2;sleep,3;decelerate,0.3;addx,-SCREEN_WIDTH/2"
+			OffCommand="accelerate,0.3;addx,+SCREEN_WIDTH/2"
+		> <children>
+			<Actor
+				File="@THEME:GetPath(EC_GRAPHICS,'','_difficulty icons')"
+				OnCommand="animate,0;playcommand,Update"
+				UpdateCommand="%function(self,parent) SetDifficultyFrameFromGameState(self, PLAYER_2) end"
+			/>
+			<Actor
+				Class="DifficultyMeter"
+				Type="ScreenGameplay DifficultyMeterP2"
+				OnCommand="playcommand,Update"
+				UpdateCommand="%function(self) 
+						if GAMESTATE:GetCurrentTrail(PLAYER_2) then 
+							self:SetFromTrail(GAMESTATE:GetCurrentTrail(PLAYER_2)) 
+						else
+							self:SetFromSteps(GAMESTATE:GetCurrentSteps(PLAYER_2))
+						end
+					end"
+			/>
+		</children> </ActorFrame>
+
+		<Layer
+			Type="ActorFrame"
+			OnCommand='@"x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-61;" .. GetUnlockCommand()'
+			>
+			<children>
+				<BitmapText
+					Text="text"
+					File="Common Normal"
+
+					UnlockSongCommand="settext,Unlocked a new song!"
+					UnlockCourseCommand="settext,Unlocked a new course!"
+					UnlockModifierCommand="settext,Unlocked a new modifier!"
+					OnCommand="ZoomX,0;sleep,1.0;ZoomY,6;BounceEnd,.3;Zoom,1;sleep,1.6;playcommand,Off"
+					OffCommand="Accelerate,.2;ZoomX,2;ZoomY,0;DiffuseAlpha,0"
+					NoUnlockCommand="hidden,1"
+				/>
+			</children>
+		</Layer>
+	</children>
+</ActorFrame>

@@ -1,0 +1,48 @@
+<ActorFrame>
+	<children>
+		<ActorFrame 
+			FOV="58"
+			OnCommand="x,-10;y,2;zoomy,0.985;rotationy,-20;addx,450;decelerate,0.75;addx,-450"
+			OffCommand="accelerate,0.75;addx,450" 
+		>
+			<children>
+				<AutoActor 
+					File="right frame edge"
+					OnCommand="x,-200;horizalign,left;zoomx,1"
+					 
+				/>
+				<AutoActor 
+					File="right frame middle" 
+					OnCommand="x,-200+158;horizalign,left;zoomx,40"
+				/>
+			</children>
+		</ActorFrame>
+		<ActorFrame 
+			OnCommand="y,1;addx,500;decelerate,0.75;addx,-500" 
+			OffCommand="accelerate,0.75;addx,500" 
+		>
+			<children>
+				<BitmapText
+					Text="ARTIST"
+					Font="_eurostile normal"
+					OnCommand="ShadowLength,2;zoom,0.5;x,-140;y,-38;DiffuseAlpha,0.5"
+				/>
+				<BitmapText
+					Text="BPM"
+					File="_eurostile normal"
+					OnCommand="ShadowLength,2;zoom,0.5;x,55;y,-32;DiffuseAlpha,0.5"
+				/>
+				<BitmapText
+					Text="POP"
+					File="_eurostile normal"
+					OnCommand="ShadowLength,2;zoom,0.5;x,150;y,-30;DiffuseAlpha,0.5"
+				/>
+			</children>
+		</ActorFrame>
+		<AutoActor 
+			File="left frame"
+			OnCommand="x,-380;y,1;addx,-150;decelerate,0.5;addx,150"
+			OffCommand="sleep,0.2;accelerate,0.6;addx,-150"
+		/>
+	</children>
+</ActorFrame>

@@ -1,0 +1,4 @@
+[Actor]
+File=@NOTESKIN:GetPath('Down','Hold Head active 12th')
+BaseRotationZDegrees=0
+

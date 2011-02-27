@@ -1,0 +1,12 @@
+<ActorFrame>
+	<children>
+		<ActorFrame OnCommand="x,SCREEN_CENTER_X+2;y,SCREEN_CENTER_Y+18">
+			<children>
+				<Layer Type="AutoActor" File="credits frame" />
+				<Layer Type="Quad" OnCommand="y,-226;zwrite,1;blend,noeffect;ZoomToWidth,340;ZoomToHeight,66" />
+				<Layer Type="Quad" OnCommand="y,+223;zwrite,1;blend,noeffect;ZoomToWidth,340;ZoomToHeight,66" />
+				<Layer Type="AutoActor" File="@THEME:GetPath(EC_BGANIMATIONS,'','_ITG credits text')" />
+			</children>
+		</ActorFrame>
+	</children>
+</ActorFrame>

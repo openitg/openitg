@@ -1,0 +1,11 @@
+<ActorFrame>
+	<children>
+		<BitmapText
+			Text="SELF-CHECK"
+			File="_eurostile blue glow"
+			InitCommand="%function(self) self:shadowlength(4); self:x(self:GetWidth()/2) self:skewx(-0.16) end"
+			OnCommand="ZoomX,0;ZoomY,6;BounceEnd,.3;Zoom,1"
+			OffCommand="Accelerate,.2;ZoomX,2;ZoomY,0;DiffuseAlpha,0"
+		/>
+	</children>
+</ActorFrame>

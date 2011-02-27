@@ -1,0 +1,40 @@
+#COURSE:The Legend
+#METER:REGULAR:7;
+#METER:DIFFICULT:9;
+ 
+
+#MODS:
+TIME=4.50:END=22.44:MODS=50% Wave, 50% Hidden:
+TIME=22.44:END=40.39:MODS=15% Tornado, 70% Tipsy:
+TIME=40.39:END=94.22:MODS=Space, 50% Dizzy:
+TIME=94.22:END=112.16:MODS=15% Tornado, 70% Tipsy:
+
+#SONG:Zodiac:Medium:;
+
+
+#MODS:
+TIME=6.95:END=41.73:MODS=50% Wave, 70% Tipsy:
+TIME=41.73:END=76.52:MODS=50% Dizzy, 15% Tornado:
+TIME=76.52:END=97.39:MODS=15% Brake, 50% Dizzy:
+TIME=97.39:END=125.22:MODS=Hallway, 40% Expand:
+
+#SONG:Mythology:Medium:; 
+
+
+#MODS:
+TIME=00.00:END=108.97:MODS=Distant:
+TIME=5.91:END=30.93:MODS=10% Beat, 15% Tornado, 15% Brake:
+TIME=30.93:END=83.94:MODS=30% Wave, 10% Expand:
+TIME=83.94:END=95.71:MODS=10% Beat, 15% Tornado, 15% Brake:
+TIME=95.71:END=108.97:MODS=30% Wave, 10% Expand:
+
+#SONG:Tell:Medium:;
+
+#MODS:
+TIME=6.96:END=20.87:MODS=50% Dizzy, 20% Drunk:
+TIME=20.87:END=48.70:MODS=15% Tornado, 50% Drunk:
+TIME=48.70:END=62.61:MODS=50% Wave, 10% Drunk, 50% Sudden:
+TIME=66.09:END=93.91:MODS=15% Brake, 20% Drunk:
+TIME=93.91:END=114.78:MODS=50% Dizzy, 20% Drunk:
+
+#SONG:Walking on Fire:Hard:;

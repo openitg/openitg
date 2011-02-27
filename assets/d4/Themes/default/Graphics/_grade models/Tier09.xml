@@ -1,0 +1,13 @@
+<ActorFrame>
+	<children>
+		<ActorFrame
+			OnCommand="zoom,0.85;rotationy,-90;spin;EffectMagnitude,0,40,0"
+		>
+			<children>
+				<Actor
+					File="a.txt"
+				/>
+			</children>
+		</ActorFrame>
+	</children>
+</ActorFrame>

@@ -1,0 +1,47 @@
+#COURSE:Funkitude; 
+#METER:REGULAR:7; 
+#METER:DIFFICULT:10; 
+ 
+#MODS:
+  TIME=07.38:END=14.77:MODS=Wave:
+  TIME=14.77:END=29.54:MODS=50% Expand: 
+  TIME=29.54:END=59.08:MODS=40% Beat, Dark: 
+  TIME=44.31:END=59.08:MODS=50% Sudden: 
+  TIME=62.77:END=77.54:MODS=Hallway, Wave: 
+  TIME=77.54:END=107.08:MODS=Sudden: 
+  TIME=92.31:END=107.08:MODS=50% Beat, Dark: 
+#SONG:Funk Factory:Hard:;
+ 
+#MODS: 
+  TIME=0.1:END=17.77:MODS=incoming, 5% Alternate: 
+  TIME=17.77:END=29.62:MODS=space, 20% Wave: 
+  TIME=29.62:END=41.47:MODS=incoming, 10% Drunk: 
+  TIME=41.47:END=65.18:MODS=space: 
+  TIME=65.18:END=88.88:MODS=incoming: 
+  TIME=88.88:END=95.10:MODS=space: 
+  TIME=95.10:END=150.10:MODS=incoming: 
+#SONG:Agent Blatant:Hard:;  
+ 
+#MODS: 
+  TIME=03.57:END=17.79:MODS=50% Beat: 
+  TIME=17.79:END=32.00:MODS=50% Expand:
+  TIME=32.00:END=46.22:MODS=75% Beat:
+  TIME=46.22:END=60.44:MODS=70% Wave: 
+  TIME=60.44:END=74.66:MODS=70% Brake: 
+  TIME=74.66:END=88.88:MODS=3x, 40% Beat: 
+  TIME=88.88:END=103.10:MODS=Flat, 50% beat: 
+#SONG:Wake Up:Hard:; 
+
+#MODS: 
+  TIME=09.08:END=30.89:MODS=50% Beat:
+  TIME=16.35:END=30.89:MODS=Hallway:
+  TIME=30.89:END=41.80:MODS=Flat, 50% Stealth:
+  TIME=41.80:END=63.62:MODS=65% Beat, Distant:
+  TIME=49.08:END=63.62:MODS=Dark:
+  TIME=56.35:END=63.62:MODS=Flat:
+  TIME=63.62:END=69.08:MODS=Boomerang:
+  TIME=70.89:END=78.17:MODS=50% Beat, Boost:
+  TIME=78.17:END=90.89:MODS=Brake:
+  TIME=92.71:END=108.17:MODS=Hallway, 75% Beat, Dark:
+  TIME=99.99:END=108.17:MODS=70% Bumpy:
+#SONG:Spin Chicken:Expert:;

@@ -1,0 +1,20 @@
+<ActorFrame> <children>
+	<Layer File="base frame" />
+	<Layer Type="ActorFrame" OnCommand="x,-128;y,31"> <children>
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Fantastic"	OnCommand="y,16*0;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Excellent"	OnCommand="y,16*1;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Great"		OnCommand="y,16*2;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Decent"		OnCommand="y,16*3;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Way Off"	OnCommand="y,16*4;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Miss"		OnCommand="y,16*5;zoom,0.5;horizalign,left;ShadowLength,0" />
+	</children> </Layer>
+	<Layer Type="ActorFrame" OnCommand="x,4;y,31"> <children>
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Jumps"		OnCommand="y,16*0;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Holds"		OnCommand="y,16*1;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Mines"		OnCommand="y,16*2;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Hands"		OnCommand="y,16*3;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Rolls"		OnCommand="y,16*4;zoom,0.5;horizalign,left;ShadowLength,0" />
+		<Layer Type="BitmapText" Font="_eurostile normal" Text="Max Combo"	OnCommand="y,16*5;zoom,0.5;horizalign,left;ShadowLength,0;maxwidth,130" />
+	</children> </Layer>
+</children> </ActorFrame>
+

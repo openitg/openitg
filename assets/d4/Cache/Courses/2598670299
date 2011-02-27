@@ -1,0 +1,19 @@
+#COURSE:Speeder;
+#METER:Regular:10;
+#METER:Difficult:10;
+// cache tags:
+#RADAR:0:1:1.374,0.000,0.809,0.695,0.111,883.000,89.000,75.000,52.000,0.000,0.000;
+#RADAR:0:2:2.218,0.000,1.568,0.674,0.757,1444.000,169.000,74.000,86.000,2.000,0.000;
+#RADAR:1:1:1.266,0.000,0.817,0.376,0.005,837.000,89.000,40.000,0.000,0.000,0.000;
+#RADAR:1:2:2.217,0.000,1.567,0.599,0.588,1457.000,172.000,64.000,13.000,12.000,0.000;
+// end cache tags
+#GAINSECONDS:70.000000;
+#SONG:In The Groove 2/July -Euromix-:Medium:Overhead,3x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/Wake Up:Medium:Overhead,3.5x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/Bloodrush:Medium:Overhead,4x,nodifficult;
+#GAINSECONDS:60.000000;
+#SONG:In The Groove 2/Sweet World:Hard:Overhead,4.5x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/One False Move:Hard:Overhead,5x,nodifficult;

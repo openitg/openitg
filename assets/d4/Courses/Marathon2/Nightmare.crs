@@ -1,0 +1,69 @@
+#COURSE:Nightmare;
+#METER:Regular:10;
+#METER:Difficult:13;
+
+#MODS:
+  TIME=00.00:END=107.00:MODS=Dark, Blind:
+  TIME=52.08:END=107.00:MODS=Reverse:
+  TIME=0.00:END=25.33:MODS=30% Beat:
+  TIME=12.65:END=25.33:MODS=50% Drunk, 30% Tipsy, 20% Beat:
+  TIME=25.33:END=31.66:MODS=25% Tornado, 20% Beat:
+  TIME=31.66:END=38.00:MODS=50% Brake, 30% Bumpy:
+  TIME=38.00:END=50.67:MODS=50% Drunk, 30% Tipsy, 20% Beat:
+  TIME=50.67:END=52.67:MODS=Stealth:
+  TIME=52.67:END=64.00:MODS=Sudden, 3x:
+  TIME=66.51:END=72.85:MODS=30% Beat, 50% Drunk, 30% Tipsy:
+  TIME=72.85:END=79.19:MODS=50% Brake, 30% Bumpy:
+  TIME=79.19:END=91.86:MODS=30% Beat, 50% Drunk, 30% Wave, 30% Tipsy:
+  TIME=91.86:END=104.53:MODS=30% Beat, 50% Drunk, 30% Wave, 30% Tipsy, 50% Sudden:
+  TIME=104.53:END=108.88:MODS=Tornado, *2 -500% Mini:
+#SONG:Energizer:Hard:;
+
+#MODS:
+  TIME=00.00:END=103.86:MODS=Dark, Blind:
+  TIME=04.53:END=05.68:MODS=*10000 1000% Dizzy:
+  TIME=05.72:END=18.23:MODS=40% Beat:
+  TIME=18.23:END=23.92:MODS=50% Wave, 40% Beat, 75% Bumpy, 25% Brake:
+  TIME=23.92:END=30.38:MODS=70% Bumpy:
+  TIME=30.38:END=42.51:MODS=150% Distant, 4x, 40% Bumpy:
+  TIME=42.51:END=53.17:MODS=4x, 50% Dizzy:
+  TIME=53.17:END=66.84:MODS=50% Wave, 50% Bumpy, Hallway, *10 Reverse:
+  TIME=66.84:END=78.99:MODS=2x, 50% Wave, 50% Bumpy, Hallway, Reverse, 5% Flip, -75% Mini:
+  TIME=78.99:END=103.86:MODS=50% Wave, 40% Beat, 75% Bumpy, 25% Brake, Reverse:
+#SONG:Bloodrush:Hard:;
+
+#MODS:
+  TIME=00.00:END=112.86:MODS=Dark, Blind:
+  TIME=65.81:END=112.86:MODS=Reverse:
+  TIME=05.40:END=28.64:MODS=50% Expand, 50% Tipsy, 50% Drunk:
+  TIME=28.64:END=41.03:MODS=20% Expand, 20% Tipsy, 20% Drunk, Hidden:
+  TIME=41.03:END=53.42:MODS=50% Expand, 50% Tipsy, 50% Drunk, 50% Bumpy:
+  TIME=53.42:END=65.81:MODS=Bumpy, 50% Tipsy, 50% Drunk:
+  TIME=65.81:END=82.84:MODS=40% Expand, 40% Tipsy, 40% Drunk, 40% Bumpy:
+  TIME=82.82:END=98.32:MODS=Bumpy, 50% Tipsy, 50% Drunk:
+  TIME=98.32:END=107.62:MODS=50% Tipsy, 40% Beat, 40% Bumpy, 30% Drunk:
+  TIME=107.62:END=112.86:MODS=50% Expand, 50% Tipsy, 50% Drunk, 50% Bumpy:
+#SONG:!:Hard:;
+
+#MODS:
+  TIME=00.00:END=114.00:MODS=Dark, Blind, Mirror:
+  TIME=47.97:END=114.00:MODS=*2 Reverse:
+  TIME=06.84:END=18.84:MODS=75% Wave:
+  TIME=18.84:END=21.74:MODS=75% Dizzy:
+  TIME=21.74:END=33.41:MODS=50% Brake:
+  TIME=33.41:END=47.97:MODS=2x, 50% Boost, 50% Expand:
+  TIME=47.97:END=49.37:MODS=Stealth:
+  TIME=49.37:END=57.04:MODS=20% Mini, 20% Tipsy, 20% Drunk, 20% Dizzy, 20% Bumpy, 20% Beat:
+  TIME=57.04:END=63.10:MODS=30% Mini, 30% Tipsy, 30% Drunk, 30% Dizzy, 30% Bumpy, 30% Beat:
+  TIME=63.10:END=68.82:MODS=40% Mini, 40% Tipsy, 40% Drunk, 40% Dizzy, 40% Bumpy, 40% Beat:
+  TIME=68.82:END=74.31:MODS=50% Mini, 50% Tipsy, 50% Drunk, 50% Dizzy, 50% Bumpy, 50% Beat:
+  TIME=74.31:END=81.83:MODS=-75% Mini, Drunk, Tornado:
+  TIME=83.56:END=87.33:MODS=60% Mini, 60% Tipsy, 60% Drunk, 60% Dizzy, 40% Bumpy, 40% Beat:
+  TIME=87.33:END=98.94:MODS=20% Dizzy:
+  TIME=98.94:END=103.63:MODS=50% Mini, Bumpy:
+  TIME=103.57:END=104.21:MODS=*10 60% Mini:
+  TIME=104.21:END=109.95:MODS=*10 70% Mini, 50% Beat:
+  TIME=109.95:END=111.03:MODS=*5 -500% Mini:
+  TIME=111.03:END=120.00:MODS=*10 150% Mini:
+
+#SONG:Vertex^2:Hard:;

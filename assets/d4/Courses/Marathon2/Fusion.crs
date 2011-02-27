@@ -1,0 +1,47 @@
+#COURSE:Fusion;
+#METER:REGULAR:6;
+#METER:DIFFICULT:9;
+
+#MODS:
+  TIME=0.1:END=20.56:MODS=0.75x, 100% Boost:
+  TIME=20.56:END=32.56:MODS=1.5x, 20% Boost:
+  TIME=32.56:END=50.56:MODS=50% Tipsy:
+  TIME=50.56:END=64.27:MODS=50% Wave:
+  TIME=64.27:END=84.00:MODS=20% Tornado:
+  TIME=84.00:END=150.00:MODS=10% Reverse, 50% Boost:
+
+#SONG:In The Groove 2/Holy Guacamole:Easy:;
+
+#MODS:
+  TIME=0.1:END=25.70:MODS=20% Expand, 20% Drunk, Dark:
+  TIME=25.70:END=39.42:MODS=30% Tipsy, 20% Wave, Dark:
+  TIME=39.42:END=54.85:MODS=40% Wave, 30% Bumpy, Dark:
+  TIME=54.85:END=68.56:MODS=30% Beat, 10% Tornado, Dark:
+  TIME=68.56:END=82.28:MODS=10% Beat, 20% Tornado, Dark:
+  TIME=82.28:END=102.85:MODS=20% Expand, 50% Beat, Dark:
+  TIME=102.85:END=150.85:MODS=20% Drunk, 1.5x, Dark:
+
+#SONG:In The Groove 2/Tribal Style:Easy:;
+
+
+#MODS:
+  TIME=0.1:END=21.81:MODS=60% Expand:
+  TIME=21.81:END=29.08:MODS=60% Expand, 20% Wave:
+  TIME=29.08:END=43.63:MODS=40% Bumpy, 20% Drunk, Mirror:
+  TIME=43.63:END=58.17:MODS=25% Bumpy, 10% Tornado:
+  TIME=58.17:END=72.72:MODS=20% Bumpy, 20% Wave, Mirror:
+  TIME=72.72:END=87.26:MODS=60% Expand:
+  TIME=87.26:END=150.26:MODS=60% Expand, 20% Wave:
+
+#SONG:In The Groove 2/Fleadh Uncut:Medium:;
+
+#MODS:
+  TIME=0.1:END=150.88:MODS=Flip:
+  TIME=0.1:END=24.35:MODS=50% Sudden:
+  TIME=24.35:END=38.30:MODS=50% Wave:
+  TIME=38.30:END=57.44:MODS=50% Sudden:
+  TIME=57.44:END=71.16:MODS=50% Boost:
+  TIME=71.16:END=90.88:MODS=50% Sudden:
+  TIME=90.88:END=150.88:MODS=50% Wave:
+
+#SONG:In The Groove 2/Hispanic Panic:Medium:;

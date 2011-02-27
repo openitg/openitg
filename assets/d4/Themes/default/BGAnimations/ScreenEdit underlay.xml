@@ -1,0 +1,26 @@
+<ActorFrame>
+	<children>
+		<BitmapText
+			Text="EDITOR"
+			Font="_eurostile blue glow"
+			InitCommand="ShadowLength,4;horizalign,left;x,SCREEN_LEFT+40;y,SCREEN_TOP+40;DiffuseAlpha,0.7"
+			OnCommand=""
+			OffCommand=""
+		/>
+		<BitmapText 
+			Font="_eurostile blue glow"
+			OnCommand="DiffuseAlpha,0.8;maxwidth,184;x,SCREEN_LEFT+100;y,SCREEN_CENTER_Y-80;PlayCommand,Refresh"
+			RefreshCommand="%function(self) self:settext(GetEditStepsText()) self:sleep(0.5); self:queuecommand('Refresh') end" 
+		/>
+		<FadingBanner 
+			OnCommand="%function(self) self:LoadFromSong(GAMESTATE:GetCurrentSong()); self:x(SCREEN_LEFT+100); self:y(SCREEN_CENTER_Y-40); self:zoom(0.30); end" 
+		/>
+		<BitmapText
+			Text="Press SELECT::  button for a::  list of::  commands::::Press START::  button for the::  Edit Menu"
+			Font="_eurostile normal"
+			InitCommand="ShadowLength,2;zoom,0.6;horizalign,left;x,SCREEN_LEFT+30;y,SCREEN_BOTTOM-90"
+			OnCommand=""
+			OffCommand=""
+		/>
+	</children>
+</ActorFrame>

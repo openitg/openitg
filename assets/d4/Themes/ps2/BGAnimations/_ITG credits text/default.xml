@@ -1,0 +1,143 @@
+﻿<BGAnimation
+	UseScroller="1" 
+	SecondsPerItem="0.3" 
+	NumItemsToDraw="21" 
+	ItemPaddingStart="10" 
+	ItemPaddingEnd="100" 
+	TransformFunction="function(self,offset,itemIndex,numItems) self:y(offset*23); end"
+	QuantizePixels="1"
+>
+	<children>
+		<Layer Type="AutoActor" File="roxor" OnCommand="shadowlength,4;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="PRODUCER" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Jason Asbahr" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="PROGRAMMING" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Glenn Maynard" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Chris Danford" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Andrew Tjew" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="SOUND" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Kyle Ward" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="STEP ARTISTS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Kyle Ward" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Chris Foy" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Matthew Emirzian" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Ryan McKanna" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Matt Puls" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="THEME GRAPHICS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Heather Dority" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Chris Danford" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Ryan McKanna" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Glenn Maynard" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="SONG/COURSE GRAPHICS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Ryan McKanna" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Matt Puls" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Heather Dority" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="SYSADMIN" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Travis B. Hartwell" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="BUSINESS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Jason Asbahr" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="John Cooney" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="TEST LOCATIONS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Illusionz - Issaquah, WA" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="8 on the Break - Dunellen, NJ" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="SPECIAL THANKS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Beth Schultz" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Kevin McKanna" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Jennifer Putzier" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Rhea Dysangco" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Cinnamon Cooney" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Lee Search" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Lou Hall" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Aaron Shafer" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="The awesome StepMania" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="programmers and community" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="AutoActor" File="redoctane" OnCommand="shadowlength,4;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="PRODUCTION" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#D57676;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="EXECUTIVE PRODUCER" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Charles Huang" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="PRODUCER" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="John Tam" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="QA LEAD/ PA" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Ted Lange" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="QA TESTERS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Mark Johnson" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Jordan Dodge" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Raul Renteria" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Daniyel Garcia" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="ACCESSORY PM" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Jamie Yang" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="ACCESSORIES GROUP" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Mike Nguyen" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="PUBLISHING" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#D57676;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="CEO" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Kai Huang" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="VP OF MARKETING" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Dean Ku" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="MARKETING ANALYST" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Michelle Bravo" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="DESIGN" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Michael Doan" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Andrew Kim" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="MANUAL" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Chris Larkin" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="PRODUCT WEBSITE" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Scott Yang" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Michael Doan" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="OPERATIONS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Kyle Rechsteiner" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="James Goodwin" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Tina Xu" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="CUSTOMER SUPPORT" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Harris Cho" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="AutoActor" File="reverb" OnCommand="shadowlength,4;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="VP OF BUSINESS DEVELOPMENT" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Doug Kennedy" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="VP OF PUBLIC RELATIONS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Tracie Snitker" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="RETAIL SALES MANAGER" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Melchiah Kirk" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="CREATIVE DIRECTOR" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
+		<Layer Type="BitmapText" Text="Jeribai Tascoe" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+	</children>
+</BGAnimation>

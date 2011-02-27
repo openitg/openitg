@@ -1,0 +1,5 @@
+<ActorFrame>
+	<children>
+		<Model Meshes="flag meshes.txt" Materials="flag materials orange.txt" Bones="bones.txt" OnCommand="zoom,0.8;wag;EffectMagnitude,0,20,0;EffectPeriod,8;y,-20" />
+	</children>
+</ActorFrame>

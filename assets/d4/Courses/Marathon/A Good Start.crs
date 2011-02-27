@@ -1,0 +1,42 @@
+#COURSE:A Good Start
+#METER:REGULAR:6;
+#METER:DIFFICULT:9;
+ 
+
+
+#MODS:
+
+TIME=14.40:END=34.34:MODS=60% Wave:
+TIME=57.79:END=70.00:MODS=80% Wave:
+TIME=100.10:END=115.00:MODS=110% Wave:
+
+
+#SONG:Do U Love Me:Easy:; 
+
+#MODS:
+
+TIME=58.13:END=72.38:MODS=120% boost:
+
+#SONG:Da Roots:Easy:60% hidden;   
+
+#MODS:
+
+TIME=22.15:END=36.00:MODS=20% beat:
+TIME=52.06:END=77.50:MODS=40% drunk:
+TIME=85.4:END=100.00:MODS=20% beat:
+
+#SONG:Solina:MEDIUM:dark:;
+
+#MODS:
+
+TIME=5.52:LEN=4.70:MODS=60% Wave:
+  TIME=20.36:LEN=9.5:MODS= Wave:
+TIME=40.00:LEN=9.5:MODS=20% dizzy:
+TIME=58.90:LEN=2.35:MODS=60% Wave:
+TIME=62.25:LEN=2.35:MODS=60% drunk:
+TIME=67.25:LEN=2.35:MODS=60% drunk:
+TIME=72.30:LEN=9.5:MODS=dark:
+
+  TIME=101.0:LEN=20.5:MODS=60% Expand:
+
+#SONG:Hip Hop Jam:Hard:;

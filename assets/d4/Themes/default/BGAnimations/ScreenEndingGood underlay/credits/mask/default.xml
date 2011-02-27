@@ -1,0 +1,11 @@
+<ActorFrame>
+	<children>
+		<ActorFrame OnCommand="z,1;zoomy,0.5;linear,1;zoomy,2.5;linear,3.0;zoomy,2.2;linear,0.7;zoomy,1.5">
+			<children>
+				<Quad OnCommand="clearzbuffer,1;zwrite,1;blend,noeffect;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT;cropright,0;linear,1;cropright,1;sleep,0;cropright,0;cropleft,1;linear,3.0;linear,0.7;cropleft,0" />
+				<Quad OnCommand="zwrite,1;blend,noeffect;vertalign,bottom;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,400;y,-80;linear,3" />
+				<Quad OnCommand="zwrite,1;blend,noeffect;vertalign,top;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,400;y,+80;linear,3" />
+			</children>
+		</ActorFrame>
+	</children>
+</ActorFrame>

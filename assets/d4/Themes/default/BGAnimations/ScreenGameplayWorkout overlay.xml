@@ -1,0 +1,83 @@
+<ActorFrame>
+	<children>
+		<Layer
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)" 
+			Class="ScoreDisplayCalories" 
+			Font="_futurist metalic" 
+			Format="%5.2fc" 
+			PlayerNumber="PLAYER_1" 
+			OnCommand="@'x,SCREEN_CENTER_X-SCREEN_WIDTH/4;y,SCREEN_TOP+56;ShadowLength,2;Diffuse,'..PlayerColor(PLAYER_1)..';addy,-100;sleep,0.5;decelerate,0.8;addy,100'" 
+			OffCommand="accelerate,0.8;addy,-100" 
+		/>
+		<Layer
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_2)" 
+			Class="ScoreDisplayCalories" 
+			Font="_futurist metalic" 
+			Format="%5.2fc" 
+			PlayerNumber="PLAYER_2" 
+			OnCommand="@'x,SCREEN_CENTER_X+SCREEN_WIDTH/4;y,SCREEN_TOP+56;ShadowLength,2;Diffuse,'..PlayerColor(PLAYER_2)..';addy,-100;sleep,0.5;decelerate,0.8;addy,100'" 
+			OffCommand="accelerate,0.8;addy,-100" 
+		/>
+		<Layer Type="BitmapText" 
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1) and GAMESTATE:PlayerIsUsingModifier(PLAYER_1,'reverse')" 
+			Type="BitmapText" 
+			Font="_eurostile normal" 
+			Text="Goal Complete!" 
+			OnCommand="x,SCREEN_CENTER_X-SCREEN_WIDTH/4;y,SCREEN_TOP+56+22;ShadowLength,2;zoom,0.6;DiffuseShift;EffectColor1,0.5,0.5,0.5,1;DiffuseAlpha,0;addy,-100;sleep,0.5;decelerate,0.8;addy,100" 
+			OffCommand="accelerate,0.8;addy,-100" 
+			GoalCompleteP1MessageCommand="zoom,2;linear,0.5;zoom,0.7;DiffuseAlpha,1" 
+		/>
+		<Layer
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_2) and GAMESTATE:PlayerIsUsingModifier(PLAYER_2,'reverse')" 
+			Class="BitmapText" 
+			Font="_eurostile normal" 
+			Text="Goal Complete!" 
+			OnCommand="x,SCREEN_CENTER_X+SCREEN_WIDTH/4;y,SCREEN_TOP+56+22;ShadowLength,2;zoom,0.6;DiffuseShift;EffectColor1,0.5,0.5,0.5,1;DiffuseAlpha,0;addy,-100;sleep,0.5;decelerate,0.8;addy,100" 
+			OffCommand="accelerate,0.8;addy,-100" 
+			GoalCompleteP2MessageCommand="zoom,2;linear,0.5;zoom,0.7;DiffuseAlpha,1" 
+		/>
+		<Layer
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)" 
+			Class="ScoreDisplayAliveTime" 
+			Font="_futurist metalic" 
+			PlayerNumber="PLAYER_1" 
+			OnCommand="@'x,SCREEN_CENTER_X-SCREEN_WIDTH/4;y,SCREEN_BOTTOM-32;ShadowLength,2;zoom,0.85;Diffuse,'..PlayerColor(PLAYER_1)..';addy,100;sleep,0.5;decelerate,0.8;addy,-100'" 
+			OffCommand="accelerate,0.8;addy,100" 
+		/>
+		<Layer
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_2)" 
+			Class="ScoreDisplayAliveTime" 
+			Font="_futurist metalic" 
+			PlayerNumber="PLAYER_2" 
+			OnCommand="@'x,SCREEN_CENTER_X+SCREEN_WIDTH/4;y,SCREEN_BOTTOM-32;ShadowLength,2;zoom,0.85;Diffuse,'..PlayerColor(PLAYER_2)..';addy,100;sleep,0.5;decelerate,0.8;addy,-100'" 
+			OffCommand="accelerate,0.8;addy,100" 
+		/>
+		<Layer
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1) and not GAMESTATE:PlayerIsUsingModifier(PLAYER_1,'reverse')" 
+			Class="BitmapText" 
+			Font="_eurostile normal" 
+			Text="Goal Complete!" 
+			OnCommand="x,SCREEN_CENTER_X-SCREEN_WIDTH/4;y,SCREEN_BOTTOM-32-24;ShadowLength,2;zoom,0.6;DiffuseShift;EffectColor1,0.5,0.5,0.5,1;DiffuseAlpha,0;addy,100;sleep,0.5;decelerate,0.8;addy,-100" 
+			OffCommand="accelerate,0.8;addy,100" 
+			GoalCompleteP1MessageCommand="zoom,2;linear,0.5;zoom,0.7;DiffuseAlpha,1" 
+		/>
+		<Layer
+			Condition="GAMESTATE:IsPlayerEnabled(PLAYER_2) and not GAMESTATE:PlayerIsUsingModifier(PLAYER_2,'reverse')" 
+			Class="BitmapText" 
+			Font="_eurostile normal" 
+			Text="Goal Complete!" 
+			OnCommand="x,SCREEN_CENTER_X+SCREEN_WIDTH/4;y,SCREEN_BOTTOM-32-24;ShadowLength,2;zoom,0.6;DiffuseShift;EffectColor1,0.5,0.5,0.5,1;DiffuseAlpha,0;addy,100;sleep,0.5;decelerate,0.8;addy,-100" 
+			OffCommand="accelerate,0.8;addy,100" 
+			GoalCompleteP2MessageCommand="zoom,2;linear,0.5;zoom,0.7;DiffuseAlpha,1" 
+		/>
+		<Layer
+			Class="BitmapText" 
+			Font="_eurostile normal" 
+			Text="" 
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-34;ShadowLength,2;zoom,0.6;addy,100;sleep,0.5;decelerate,0.8;addy,-100" 
+			OffCommand="accelerate,0.8;addy,100" 
+			NextCourseSongMessageCommand="%function(self) local songNum = GAMESTATE:GetCourseSongIndex()+1; if songNum &gt;= 5 then self:settext(string.format('Song %d',songNum+1)) end end" 
+		/>
+		<Layer File="ScreenGameplay overlay" />
+	</children>
+</ActorFrame>

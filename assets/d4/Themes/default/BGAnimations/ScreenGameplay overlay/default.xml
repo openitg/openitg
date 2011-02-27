@@ -1,0 +1,121 @@
+<ActorFrame> <children>
+	<LayerType="BitmapText"
+		Condition="GAMESTATE:GetPlayMode() == PLAY_MODE_RAVE"
+		Font="Common normal"
+		Text="@GAMESTATE:GetPlayerDisplayName(PLAYER_1)"
+		OnCommand="x,SCREEN_CENTER_X-224;y,SCREEN_TOP+53;shadowlength,0;diffuse,#000000;zoom,.5;maxwidth,180;addy,-100;sleep,0.5;decelerate,0.8;addy,+100"
+		OffCommand="accelerate,0.8;addy,-100"
+	/>
+	<Layer Type="BitmapText"
+		Condition="GAMESTATE:GetPlayMode() == PLAY_MODE_RAVE"
+		Font="Common normal"
+		Text="@GAMESTATE:GetPlayerDisplayName(PLAYER_2)"
+		OnCommand="x,SCREEN_CENTER_X+224;y,SCREEN_TOP+53;shadowlength,0;diffuse,#000000;zoom,.5;maxwidth,180;addy,-100;sleep,0.5;decelerate,0.8;addy,+100"
+		OffCommand="accelerate,0.8;addy,-100"
+	/>
+
+	<Layer Type="ActorFrame"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_TOP+24;addy,-100;sleep,0.5;queuecommand,TweenOn"
+		OffCommand="queuecommand,TweenOff"
+		ShowGameplayTopFrameMessageCommand="playcommand,TweenOn"
+		HideGameplayTopFrameMessageCommand="playcommand,TweenOff"
+		TweenOnCommand="decelerate,0.8;addy,+100"
+		TweenOffCommand="accelerate,0.8;addy,-100"
+		> <children>
+
+		<Layer
+			Type="SongMeterDisplay"
+			StreamWidth="390"
+			StreamPath="meter stream"
+		>
+			<Tip
+				File="tip"
+				OnCommand="diffuseshift;EffectColor1,1,1,1,0.6;EffectColor2,1,1,1,1.0"
+			/>
+		</Layer>
+
+		<Layer File="meter frame" />
+
+		<Layer
+			Type="BitmapText"
+			Font="_eurostile normal"
+			OnCommand="y,1;zoom,.5;shadowlength,0"
+			InitCommand="animate,0;playcommand,Update"
+			CurrentSongChangedMessageCommand="playcommand,Update"
+			UpdateCommand="%SetFromSongTitleAndCourseTitle"
+		/>
+	</children> </Layer>
+
+	<!-- Difficulty: -->
+	<Layer Type="ActorFrame"
+		OnCommand="sleep,0.5;queuecommand,TweenOn"
+		OffCommand="queuecommand,TweenOff"
+		ShowGameplayTopFrameMessageCommand="playcommand,TweenOn"
+		HideGameplayTopFrameMessageCommand="playcommand,TweenOff"
+		> <children>
+		
+		<ActorFrame Condition="GAMESTATE:IsPlayerEnabled(PLAYER_1)" OnCommand="x,SCREEN_CENTER_X-257;y,SCREEN_TOP+25;addx,-200" TweenOnCommand="decelerate,0.8;addx,+200" TweenOffCommand="accelerate,0.8;addx,-200"><children>
+			<Actor
+				File="@THEME:GetPath(EC_GRAPHICS,'','_difficulty icons')"
+				OnCommand="animate,0;playcommand,Update"
+				CurrentStepsP1ChangedMessageCommand="playcommand,Update"
+				CurrentStepsP2ChangedMessageCommand="playcommand,Update"
+				UpdateCommand="%function(self,parent) SetDifficultyFrameFromSteps(self, PLAYER_1) end"
+			/>
+			<Actor
+				Class="DifficultyMeter"
+				Type="ScreenGameplay DifficultyMeterP1"
+				OnCommand="playcommand,Update"
+				CurrentStepsP1ChangedMessageCommand="playcommand,Update"
+				CurrentStepsP2ChangedMessageCommand="playcommand,Update"
+				UpdateCommand="%function(self) self:SetFromSteps(GAMESTATE:GetCurrentSteps(PLAYER_1)) end"
+			/>
+		</children></ActorFrame>
+		
+		<ActorFrame Condition="GAMESTATE:IsPlayerEnabled(PLAYER_2)" OnCommand="x,SCREEN_CENTER_X+257;y,SCREEN_TOP+25;addx,+200" TweenOnCommand="decelerate,0.8;addx,-200" TweenOffCommand="accelerate,0.8;addx,+200"><children>
+			<Actor
+				File="@THEME:GetPath(EC_GRAPHICS,'','_difficulty icons')"
+				OnCommand="zoomx,-1;animate,0;playcommand,Update"
+				CurrentStepsP1ChangedMessageCommand="playcommand,Update"
+				CurrentStepsP2ChangedMessageCommand="playcommand,Update"
+				UpdateCommand="%function(self,parent) SetDifficultyFrameFromSteps(self, PLAYER_2) end"
+			/>
+			<Actor
+				Class="DifficultyMeter"
+				Type="ScreenGameplay DifficultyMeterP2"
+				OnCommand="playcommand,Update"
+				CurrentStepsP1ChangedMessageCommand="playcommand,Update"
+				CurrentStepsP2ChangedMessageCommand="playcommand,Update"
+				UpdateCommand="%function(self) self:SetFromSteps(GAMESTATE:GetCurrentSteps(PLAYER_2)) end"
+			/>
+		</children></ActorFrame>
+		
+	</children> </Layer>
+
+
+	<!-- Draw on top of the rest -->
+
+	<Layer
+		Type="Quad"
+		OnCommand="diffuse,#000000;stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffusealpha,1;linear,0.3;diffusealpha,0"
+	/>
+
+	<Layer
+		Condition="not GAMESTATE:IsDemonstration()"
+		File="../_song credit display"
+		OnCommand="sleep,2.5;linear,0.3;diffusealpha,0"
+	/>
+
+	<!-- Demonstration only: -->
+	<Layer Class="ActorFrame" Condition="GAMESTATE:IsDemonstration()"><children>
+		<Layer
+			File="demonstration gradient"
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;zoomtowidth,SCREEN_WIDTH;zoomtoheight,SCREEN_HEIGHT;diffusealpha,0.8"
+		/>
+		<Layer
+			File="demonstration logo"
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-180;pulse;EffectMagnitude,1.0,0.9,0;effectclock,bgm;effectperiod,1"
+		/>
+	</children></Layer>
+</children> </ActorFrame>
+

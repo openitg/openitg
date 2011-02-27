@@ -1,0 +1,30 @@
+<ActorFrame> <children>
+	<!-- Pause -->
+	<Layer Type="ActorFrame"> <children>
+		<Layer
+			Type="Quad"
+			InitCommand="diffuse,#000000;stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffusealpha,0;croptop,0.330;cropbottom,0.330;fadetop,0.1;fadebottom,0.1"
+			PauseCommand="linear,0.3;diffusealpha,0.7"
+			UnpauseCommand="stoptweening;linear,0.3;diffusealpha,0"
+		/>
+		<Layer
+			Type="BitmapText"
+			Font="_eurostile normal"
+			OnCommand="x,SCREEN_CENTER_X-SCREEN_WIDTH*0.8;y,SCREEN_CENTER_Y-16;diffusealpha,0;shadowlength,0;zoom,.78"
+			PauseCommand="settext,Game paused.;stoptweening;x,SCREEN_CENTER_X-SCREEN_WIDTH*0.8;decelerate,0.3;x,SCREEN_CENTER_X;diffusealpha,1"
+			UnpauseCommand="stoptweening;accelerate,0.3;x,SCREEN_CENTER_X-SCREEN_WIDTH*0.8;diffusealpha,0"
+			Controller1RemovedMessageCommand="%function(self) SetRemovedText(self, 1) end"
+			Controller2RemovedMessageCommand="%function(self) SetRemovedText(self, 2) end"
+		/>
+		<Layer
+			Type="BitmapText"
+			Font="_eurostile normal"
+			OnCommand="x,SCREEN_CENTER_X+SCREEN_WIDTH*0.8;y,SCREEN_CENTER_Y+16;diffusealpha,0;shadowlength,0;zoom,.78"
+			InitCommand="settext,Press &START; to resume"
+			PauseCommand="stoptweening;x,SCREEN_CENTER_X+SCREEN_WIDTH*0.8;decelerate,0.3;x,SCREEN_CENTER_X;diffusealpha,1"
+			UnpauseCommand="stoptweening;accelerate,0.3;x,SCREEN_CENTER_X+SCREEN_WIDTH*0.8;diffusealpha,0"
+		/>
+
+	</children> </Layer>
+</children> </ActorFrame>
+

@@ -1,0 +1,49 @@
+<ActorFrame> <children>
+	<Layer File="@THEME:GetPath(EC_BGANIMATIONS,'ScreenOptions','overlay')" />
+	<Layer
+		Type="BitmapText"
+		Font="ScreenOptions serial number"
+		Condition="Platform() == 'arcade'"
+		Text="@'Serial #' .. GetSerialNumber()"
+		InitCommand="x,SCREEN_CENTER_X+280;y,SCREEN_CENTER_Y-161;shadowlength,2;horizalign,right;wrapwidthpixels,1000;zoom,0.5"
+		OnCommand="diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+
+	<!-- Somewhat experimental: use an Actor to simply broadcast commands,
+	     which we pick up in another actor.  This lets us update the text
+	     every second, without the tweening queue of the actor getting in
+	     the way.  In principle, we could set up actual tweens in another
+	     actor, and copy the results to another actor, in order to effectively
+	     have multiple tweening queues for different attributes, though there
+	     may be better approaches. -->
+	<Layer
+		Type="Quad"
+		PulseCommand="%function(self) MESSAGEMAN:Broadcast('Pulse'); self:sleep(1); self:queuecommand('Pulse') end"
+		InitCommand="hidden,1;playcommand,Pulse"
+	/>
+
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Condition="Platform() == 'arcade'"
+		SetCommand="%function(self) self:settext( string.format('%02i:%02i:%02i %s %02i %04i', Hour(), Minute(), Second(), MonthToString(MonthOfYear()), DayOfMonth(), Year()) ) end"
+		PulseMessageCommand="playcommand,Set"
+		Text=""
+		InitCommand="x,SCREEN_CENTER_X+280;y,SCREEN_CENTER_Y+113;shadowlength,2;horizalign,right;zoom,0.5;playcommand,Set"
+		OnCommand="addx,-SCREEN_WIDTH;decelerate,0.3;addx,SCREEN_WIDTH"
+		OffCommand="accelerate,0.3;addx,SCREEN_WIDTH"
+	/>
+
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Condition="Platform() == 'arcade'"
+		SetCommand="%function(self) if HubIsConnected() then self:settext('') else self:settext('Memory card USB hub disconnected') end end"
+		PulseMessageCommand="playcommand,Set"
+		Text=""
+		InitCommand="x,SCREEN_CENTER_X-280;y,SCREEN_CENTER_Y-161;shadowlength,2;horizalign,left;zoom,0.5;diffuseshift;playcommand,Set"
+		OnCommand="addx,-SCREEN_WIDTH;decelerate,0.3;addx,SCREEN_WIDTH"
+		OffCommand="accelerate,0.3;addx,SCREEN_WIDTH"
+	/>
+</children> </ActorFrame>

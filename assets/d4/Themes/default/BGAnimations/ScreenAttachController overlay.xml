@@ -1,0 +1,8 @@
+<ActorFrame> <children>
+	<BitmapText
+		Text="No DUALSHOCK®2 analog controller is detected.::::Please insert a DUALSHOCK®2 analog controller to continue."
+		File="Common Normal"
+		OnCommand="diffuse,#E0E0E0;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="decelerate,0.3;diffusealpha,0"
+	/>
+</children> </ActorFrame>

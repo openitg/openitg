@@ -1,0 +1,12 @@
+<ActorFrame><children>
+	<Actor
+		File="explosion"
+		InitCommand="diffusealpha,0;blend,add"
+		MilestoneCommand="rotationz,0;zoom,2.6;diffusealpha,0.5;linear,0.5;rotationz,90;zoom,2;diffusealpha,0"
+	/>
+	<Actor
+		File="explosion"
+		InitCommand="diffusealpha,0;blend,add"
+		MilestoneCommand="rotationz,0;zoom,2.6;diffusealpha,0.5;linear,0.5;rotationz,-90;zoom,2;diffusealpha,0"
+	/>
+</children></ActorFrame>

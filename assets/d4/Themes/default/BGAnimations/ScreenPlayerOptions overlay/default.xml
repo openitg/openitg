@@ -1,0 +1,17 @@
+<ActorFrame> <children>
+	<Layer File="../ScreenOptions overlay" />
+
+	<Layer 
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_1)"
+		OnCommand="x,372;y,81;addx,SCREEN_WIDTH*3/4;sleep,0.1;decelerate,0.3;addx,-SCREEN_WIDTH*3/4"
+		OffCommand="accelerate,0.3;addx,SCREEN_WIDTH"
+		File="@THEME:GetPath(EC_GRAPHICS,'','_name p1')"
+	/>
+
+	<Layer
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_2)"
+		OnCommand="x,540;y,81;addx,SCREEN_WIDTH*3/4;sleep,0.2;decelerate,0.3;addx,-SCREEN_WIDTH*3/4"
+		OffCommand="accelerate,0.3;addx,SCREEN_WIDTH"
+		File="@THEME:GetPath(EC_GRAPHICS,'','_name p2')"
+	/>
+</children> </ActorFrame>

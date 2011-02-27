@@ -1,0 +1,24 @@
+<ActorFrame>
+	<children>
+		<ActorFrame
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y-20;addx,800;zoom,3.4;rotationx,90;linear,4;addx,-1600;decelerate,1.5;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+180;z,-200;rotationx,30;queuecommand,PlayWag"
+			PlayWagCommand="wag;EffectMagnitude,0,7,0;EffectPeriod,3"
+			OffCommand="stoptweening;accelerate,0.5;addx,-SCREEN_WIDTH*1.5;addz,-100"
+			FOV="90"
+		>
+			<children>
+				<Layer3
+					File="../../Graphics/_platform home single"
+					OnCommand="addx,-56"
+				/>
+				<Layer4
+					File="../../Graphics/_platform home single"
+					OnCommand="addx,+56"
+				/>
+			</children>
+		</ActorFrame>
+		<AutoActor
+			File="@THEME:GetPath(EC_BGANIMATIONS,'','_ScreenWarning overlay common')"
+		/>
+	</children>
+</ActorFrame>

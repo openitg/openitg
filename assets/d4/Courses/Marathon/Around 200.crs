@@ -1,0 +1,69 @@
+#COURSE:Around 200
+#METER:REGULAR:7;
+#METER:DIFFICULT:10;
+
+#MODS:
+  TIME=0.01:END=15.58:MODS=Space:
+  TIME=17.21:END=37.96:MODS=5% Cross:
+  TIME=37.96:END=57.09:MODS=80% Hidden:
+  TIME=58.72:END=67.47:MODS=Space:
+  TIME=68.44:END=89.20:MODS=5% Cross:
+  TIME=89.20:END=94.71:MODS=Space:
+  TIME=96.00:END=105.08:MODS=80% Hidden:
+  TIME=106.38:END=114.96:MODS=Space:
+
+#SONG:Hybrid:MEDIUM:;
+
+#MODS:
+  TIME=0.01:END=13.29:MODS=40% Dizzy:
+  TIME=14.49:END=24.09:MODS=Boost:
+  TIME=24.09:END=43.29:MODS=50% Brake:
+  TIME=48.09:END=57.39:MODS=40% Dizzy:
+  TIME=58.59:END=68.19:MODS=Boost:
+  TIME=68.19:END=87.39:MODS=50% Brake:
+  TIME=90.99:END=100.59:MODS=40% Dizzy, 40% Brake:
+  TIME=101.79:END=108.99:MODS=Boost:
+
+#SONG:No 1 Nation:Hard:;
+
+#MODS:
+  TIME=0.01:END=14.42:MODS=50% Drunk:
+  TIME=14.42:END=19.22:MODS=60% Tipsy:
+  TIME=19.22:END=24.04:MODS=50% Drunk:
+  TIME=24.04:END=28.82:MODS=60% Tipsy:
+  TIME=28.82:END=38.42:MODS=Boost:
+  TIME=38.42:END=56.42:MODS=30% Drunk, Wave:
+  TIME=57.62:END=67.22:MODS=40% Tipsy:
+  TIME=57.32:END=57.62:MODS=Beat:
+  TIME=58.22:END=58.52:MODS=Beat:
+  TIME=59.72:END=60.02:MODS=Beat:
+  TIME=60.62:END=60.92:MODS=Beat:
+  TIME=62.12:END=62.42:MODS=Beat:
+  TIME=63.02:END=63.32:MODS=Beat:
+  TIME=64.52:END=64.82:MODS=Beat:
+  TIME=65.72:END=66.92:MODS=50% Beat:
+  TIME=67.22:END=86.11:MODS=Boost, 80% Brake, 60% Expand:
+  TIME=88.53:END=108.01:MODS=30% Drunk, Wave:
+  TIME=108.01:END=120.01:MODS=Boost:
+
+#SONG:Disconnected:Hard:;
+
+#MODS:
+  TIME=0.01:END=11.35:MODS=40% Wave:
+  TIME=11.35:END=31.31:MODS=Boost, 40% Brake, Wave:
+  TIME=31.31:END=41.29:MODS=40% Drunk, 20% Tipsy, 40% Wave:
+  TIME=41.29:END=43.48:MODS=50% Drunk, 10% Tipsy, 40% Wave, 10% Alternate:
+  TIME=43.48:END=46.28:MODS=10% Drunk, 50% Tipsy, 40% Wave, 10% Split:
+  TIME=46.28:END=48.78:MODS=50% Drunk, 10% Tipsy, 40% Wave, 10% Cross:
+  TIME=48.78:END=51.27:MODS=50% Drunk, 10% Tipsy, 40% Wave, 10% Alternate:
+  TIME=51.27:END=53.46:MODS=10% Drunk, 50% Tipsy, 40% Wave, 10% Cross:
+  TIME=53.46:END=56.26:MODS=50% Drunk, 10% Tipsy, 40% Wave, 10% Split:
+  TIME=56.26:END=58.45:MODS=50% Drunk, 10% Tipsy, 40% Wave, 10% Alternate:
+  TIME=58.45:END=61.26:MODS=10% Drunk, 50% Tipsy, 40% Wave, 10% Split:
+  TIME=61.26:END=71.24:MODS=40% Wave:
+  TIME=71.24:END=81.22:MODS=40% Drunk, 20% Tipsy, 40% Wave, 40% Brake:
+  TIME=91.20:END=111.16:MODS=Boost, 40% Brake, Wave:
+  TIME=111.16:END=121.14:MODS=40% Drunk, 20% Tipsy, 40% Wave:
+  TIME=123.01:END=127.38:MODS=225% Brake:
+
+#SONG:Remember December:Hard:;

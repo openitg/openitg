@@ -1,0 +1,7 @@
+<ActorFrame>
+	<children>
+		<Model Meshes="plaque meshes.txt" Materials="plaque materials gold.txt" Bones="bones.txt" OnCommand="zoom,1.6;wag;EffectMagnitude,0,20,0;EffectPeriod,8" />
+	</children>
+</ActorFrame>
+
+

@@ -1,0 +1,25 @@
+#COURSE:Mirage
+#METER:REGULAR:8;
+#METER:DIFFICULT:8;
+
+
+#MODs:;
+#GAINSECONDS:80;
+#SONG:The Message:Medium:Overhead, 2x, nodifficult;
+
+#MODS:;
+#GAINSECONDS:70;
+#SONG:Hispanic Panic:Medium:Overhead, 2x, nodifficult;   
+
+#MODs:;
+#GAINSECONDS:70;
+#SONG:Spin Chicken:Hard:Overhead, 2x, Hidden, nodifficult;
+
+#MODS:;
+#GAINSECONDS:55;
+#SONG:Pick Me Up & Tango:Hard:Overhead, 2x, Dark, Boost, nodifficult; 
+
+#MODS:;
+#GAINSECONDS:50;
+#SONG:Wake Up:Hard:Overhead, 2x, Expand, Hidden, nodifficult; 
+

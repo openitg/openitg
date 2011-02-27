@@ -1,0 +1,5 @@
+<ActorFrame>
+	<children>
+		<Model Meshes="itg meshes.txt" Materials="itg materials blue.txt" Bones="bones.txt" OnCommand="zoomx,1.2;zoomy,0.8;rotationy,-90;spin;EffectMagnitude,0,40,0" />
+	</children>
+</ActorFrame>

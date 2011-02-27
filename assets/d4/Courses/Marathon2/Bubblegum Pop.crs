@@ -1,0 +1,39 @@
+#COURSE:Bubblegum Pop;
+#METER:REGULAR:6;
+#METER:DIFFICULT:8;
+
+#MODS:
+  TIME=0.1:END=16.50:MODS=1x, 40% Boost:
+  TIME=16.50:END=33.74:MODS=60% Sudden:
+  TIME=33.74:END=48.50:MODS=40% Brake:
+  TIME=48.50:END=63.96:MODS=60% Sudden:
+  TIME=63.96:END=150.00:MODS=40% Wave:
+
+#SONG:In The Groove 2/No Princess:Medium:;
+
+#MODS:
+  TIME=0.1:END=21.00:MODS=30% Expand:
+  TIME=21.00:END=43.80:MODS=30% Drunk:
+  TIME=43.80:END=70.07:MODS=20% Beat:
+  TIME=70.07:END=84.07:MODS=40% Bumpy:
+  TIME=84.07:END=150.07:MODS=70% Sudden:
+
+#SONG:In The Groove 2/Spaceman:Hard:;
+
+#MODS:
+  TIME=0.1:END=22.81:MODS=20% Dizzy:
+  TIME=22.81:END=45.42:MODS=1.5x, 50% Mini:
+  TIME=45.42:END=69.77:MODS=50% Hidden:
+  TIME=69.77:END=87.16:MODS=40% Tipsy:
+  TIME=87.16:END=150.07:MODS=1.5x, 40% Boost:
+
+#SONG:In The Groove 2/Bumble Bee:Hard:;
+
+#MODS:
+  TIME=0.1:END=28.64:MODS=40% Wave:
+  TIME=28.64:END=42.97:MODS=25% Expand:
+  TIME=42.97:END=65.40:MODS=1.5x, 20% Sudden:
+  TIME=65.40:END=85.96:MODS=30% Brake:
+  TIME=85.96:END=150.07:MODS=40% Bumpy:
+
+#SONG:In The Groove 2/Baby Baby:Hard:;

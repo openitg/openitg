@@ -1,0 +1,5 @@
+<Actor
+	File="test"
+	OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;diffusealpha,0;linear,0.3;diffusealpha,1"
+	OffCommand="linear,0.3;diffusealpha,0"
+/>

@@ -1,0 +1,8 @@
+<ActorFrame> <children>
+	<!-- When we get here, we already confirmed in ScreenPrompt, so we're already dim. -->
+	<Quad
+		OnCommand="stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffuse,#000000;diffusealpha,0.75"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+</children> </ActorFrame>
+

@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.61)
+AC_PREREQ(2.59)
 AC_INIT(itg2-util, 1.0, itgpmc@gmail.com)
 AC_CANONICAL_SYSTEM
 AC_CONFIG_SRCDIR(src/itg2-decrypt.c)
@@ -17,7 +17,6 @@ GETTEXT_PACKAGE=itg2-util
 AC_SUBST(GETTEXT_PACKAGE)
 # Checks for libraries.
 AC_CHECK_LIB([gcrypt], [gcry_md_hash_buffer])
-AC_CHECK_LIB([xml], [xmlNewTextReaderFilename])
 
 # Checks for header files.
 AC_HEADER_STDC

@@ -277,6 +277,6 @@ AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(src/Makefile)
 
 # TODO: clean this up - kinda hacky...
-cd src/libresample && ./configure && cd ../..
+cd src/libresample && autoconf && ./configure && cd ../..
 
 AC_OUTPUT

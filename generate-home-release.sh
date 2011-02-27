@@ -13,7 +13,8 @@ fi
 # remove useless files
 zip -d home-tmp.zip 'Themes/ps2onpc/*'
 zip -d home-tmp.zip 'Themes/ps2/*'
-zip -d home-tmp.zip 'Cache/*'
 
 (cd assets/game-data && zip -r ../../home-tmp.zip *)
+zip -d home-tmp.zip 'Cache/*'
+zip home-tmp.zip FAQ.txt ReleaseNotes.txt WhoToSue.txt
 (cd src && zip ../home-tmp.zip openitg)

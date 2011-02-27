@@ -1,0 +1,30 @@
+#!/bin/sh
+
+VF=version.txt
+CODE_VF=version.h
+
+if [[ -f $VF ]]; then
+	echo "Using existing version file: "
+	cat $VF;
+	exit;
+fi
+
+VERSION=$(git describe)
+# we have to do this the legacy way because git in debian sarge is only like
+# v1.5.4 which doesn't support the --format arguemnt
+DATE=$(git log -1 --pretty="format:%ad")
+
+echo "
+#ifndef VERSION_H_
+#define VERSION_H_
+#define OITG_VERSION \"$VERSION\"
+#define OITG_DATE \"$DATE\"
+#endif
+" > $CODE_VF
+
+# TODO: detect dirty working tree and note it
+echo "$VERSION
+$DATE" > $VF
+echo "Using version: "
+cat $VF
+exit 0;

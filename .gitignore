@@ -19,3 +19,5 @@ src/config.h
 src/version.bin
 src/verstub.cpp
 src/stamp-h1
+version.h
+version.txt

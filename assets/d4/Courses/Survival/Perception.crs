@@ -1,0 +1,27 @@
+#COURSE:Perception
+#METER:REGULAR:10;
+#METER:DIFFICULT:10;
+
+
+#MODS:;
+#GAINSECONDS:95;
+#SONG:We Know What To Do:Easy:alternate, Overhead, 2x, nodifficult;  
+
+#MODS:;
+#GAINSECONDS:85;
+#SONG:Liquid Moon:Easy:90% sudden, 90% hidden, dark, Overhead, drunk, 2x, nodifficult;  
+
+#MODS:;
+#GAINSECONDS:77;
+#SONG:Spin Chicken:Easy:flip, Overhead, 2x, nodifficult;  
+
+#MODS:;
+#GAINSECONDS:70;
+#SONG:Incognito:Medium:Boomerang, Blink, tipsy, Overhead, 2x, nodifficult;  
+
+#MODS:;
+#GAINSECONDS:65;
+#SONG:Clockwork Genesis:Medium:reverse, drunk, tipsy, Overhead, 2x, nodifficult;  
+
+
+

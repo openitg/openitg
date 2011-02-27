@@ -1,0 +1,39 @@
+<ActorFrame><children>
+	<AutoActor File="ScreenEvaluation overlay" />
+	<ActorFrame 
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_1)"
+		InitCommand="x,SCREEN_CENTER_X-160+EvalX();y,SCREEN_CENTER_Y-60,DrawOrder,101;zoom,2.5"
+		OnCommand="addx,-EvalTweenDistance();decelerate,0.5;addx,EvalTweenDistance();sleep,2;decelerate,0.5;zoom,1;x,SCREEN_CENTER_X-240+EvalX();y,SCREEN_CENTER_Y-38"
+		OffCommand="accelerate,0.3;addx,-EvalTweenDistance()"
+	><children>
+		<BitmapText
+			Font="_eurostile outline"
+			Text="Total Time:"
+			InitCommand="y,-10;horizalign,left;x,-40;zoom,0.5;skewx,-0.18;diffusebottomedge,#C94E4E"
+		/>
+		<BitmapText
+			Font="_eurostile outline"
+			Text="????"
+			InitCommand="%function(self) local s=SecondsToMSSMsMs( STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_1):GetSurvivalSeconds() ); self:settext(s) end"
+			OnCommand="x,10;y,10;zoomx,0.7;zoomy,0.9;diffusebottomedge,0.7,0.7,0.7,1"
+		/>
+	</children></ActorFrame>
+	<ActorFrame 
+		Condition="GAMESTATE:IsHumanPlayer(PLAYER_2)"
+		InitCommand="x,SCREEN_CENTER_X+160+EvalX();y,SCREEN_CENTER_Y-60;DrawOrder,101;zoom,2.5"
+		OnCommand="addx,EvalTweenDistance();decelerate,0.5;addx,-EvalTweenDistance();sleep,2;decelerate,0.5;zoom,1;x,SCREEN_CENTER_X+50+EvalX();y,SCREEN_CENTER_Y-38"
+		OffCommand="accelerate,0.3;addx,EvalTweenDistance()"
+	><children>
+		<BitmapText
+			Font="_eurostile outline"
+			Text="Total Time:"
+			InitCommand="y,-10;horizalign,left;x,-40;zoom,0.5;skewx,-0.18;diffusebottomedge,#C94E4E"
+		/>
+		<BitmapText
+			Font="_eurostile outline"
+			Text="????"
+			InitCommand="%function(self) local s=SecondsToMSSMsMs( STATSMAN:GetCurStageStats():GetPlayerStageStats(PLAYER_2):GetSurvivalSeconds() ); self:settext(s) end"
+			OnCommand="x,10;y,10;zoomx,0.7;zoomy,0.9;diffusebottomedge,0.7,0.7,0.7,1"
+		/>
+	</children></ActorFrame>
+</children></ActorFrame>

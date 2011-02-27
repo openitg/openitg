@@ -1,0 +1,18 @@
+<ActorFrame>
+	<children>
+		<ActorFrame
+			OnCommand="zoom,0.8;rotationy,-90;spin;EffectMagnitude,0,40,0"
+		>
+			<children>
+				<Actor
+					File="s.txt"
+					OnCommand="x,-25"
+				/>
+				<Actor
+					File="smooth minus.txt"
+					OnCommand="x,30"
+				/>
+			</children>
+		</ActorFrame>
+	</children>
+</ActorFrame>

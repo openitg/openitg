@@ -1,0 +1,11 @@
+<ActorFrame>
+	<children>
+		<BitmapText
+			Text="MAIN MENU"
+			File="_eurostile blue glow"
+			InitCommand="%function(self) self:shadowlength(4); self:x(self:GetWidth()/2) self:skewx(-0.16) end"
+			OnCommand=""
+			OffCommand=""
+		/>
+	</children>
+</ActorFrame>

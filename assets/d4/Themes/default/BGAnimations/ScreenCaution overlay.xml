@@ -1,0 +1,4 @@
+<ActorFrame><children>
+	<AutoActor File="ScreenWarning overlay" />
+	<AutoActor File="_join overlay" />
+</children></ActorFrame>

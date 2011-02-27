@@ -1,0 +1,47 @@
+#COURSE:Street Beat;
+#METER:REGULAR:7;
+#METER:DIFFICULT:9;
+ 
+
+#MODS:
+  TIME=06.99:END=27.86:MODS=30% Beat:
+  TIME=27.86:END=40.03:MODS=30% Beat, Blink: 
+  TIME=41.77:END=55.68:MODS=30% Beat, Wave: 
+  TIME=55.68:END=69.60:MODS=Dark: 
+  TIME=69.60:END=83.51:MODS=30% Beat, Distant: 
+  TIME=83.51:END=97.42:MODS=30% Beat, Hallway:  
+  TIME=97.42:END=104.38:MODS=30% Beat, 30% Mini, 50% Flat: 
+#SONG:Ride The Bass:Hard:;
+
+#MODS:
+  TIME=07.72:END=23.20:MODS=30% Beat:
+  TIME=23.20:END=38.69:MODS=40% Wave:
+  TIME=39.65:END=55.14:MODS=40% Hallway, 30% Beat, 40% Tipsy:
+  TIME=55.14:END=70.62:MODS=Dark, 30% Beat, 40% Bumpy:
+  TIME=74.49:END=89.98:MODS=50% Expand, 30% Beat:
+  TIME=89.98:END=105.46:MODS=Distant, Wave:
+#SONG:Music Pleeze:Hard:;
+
+#MODS: 
+  TIME=0.1:END=7.10:MODS=1x: 
+  TIME=7.10:END=12.62:MODS=50% Beat: 
+  TIME=12.62:END=28.86:MODS=50% Wave: 
+  TIME=28.86:END=41.49:MODS=50% Beat: 
+  TIME=41.49:END=57.73:MODS=1.5x, 30% Expand: 
+  TIME=57.73:END=86.60:MODS=3x, 70% Brake: 
+  TIME=86.60:END=106.35:MODS=50% Beat, 60% Boost: 
+  TIME=106.35:END=150.60:MODS=60% Boost: 
+#SONG:Get Happy:Hard:; 
+
+#MODS:
+  TIME=00.00:END=109.74:MODS=Reverse, 40% Beat: 
+  TIME=06.88:END=13.74:MODS=Boost, 30% Sudden: 
+  TIME=13.74:END=27.54:MODS=Wave: 
+  TIME=27.54:END=41.17:MODS=50% Expand: 
+  TIME=41.17:END=68.60:MODS=Flat:
+  TIME=48.03:END=68.60:MODS=50% Bumpy:  
+  TIME=54.88:END=66.88:MODS=Hidden: 
+  TIME=68.60:END=82.31:MODS=50% Expand, Bumpy: 
+  TIME=82.31:END=96.03:MODS=80% Brake, 30% Hidden: 
+  TIME=96.03:END=109.74:MODS=125% Wave, Dark, Bumpy: 
+#SONG:This is Rock & Roll:Hard:;

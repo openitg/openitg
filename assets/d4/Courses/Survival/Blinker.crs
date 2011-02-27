@@ -1,0 +1,26 @@
+#COURSE:Blinker
+#METER:REGULAR:9;
+#METER:DIFFICULT:9;
+
+#MODS:;
+#GAINSECONDS:70;
+#SONG:Birdie:Hard:Blink, Overhead, 1.5x, nodifficult;  
+
+#MODS:;
+#GAINSECONDS:60;
+#SONG:Funk Factory:Hard:Blink, Overhead, 2x, nodifficult;  
+
+#MODS:;
+#GAINSECONDS:65;
+#SONG:Lipstick Kiss:Hard:Blink, Overhead, 1.5x, nodifficult;  
+
+#MODS:;
+#GAINSECONDS:53;
+#SONG:High:Hard:Blink, Overhead, Boost, 2x, nodifficult;  
+
+#MODS:;
+#GAINSECONDS:45;
+#SONG:Tribal Style:Hard:Blink, Wave, Overhead, 2.5x, nodifficult;  
+
+
+

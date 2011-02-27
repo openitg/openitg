@@ -1,0 +1,3 @@
+<ActorFrame><children>
+	<Quad OnCommand="zoomtowidth,2;zoomtoheight,40;diffuse,#FFFFFF;diffusealpha,0.25" />
+</children></ActorFrame>

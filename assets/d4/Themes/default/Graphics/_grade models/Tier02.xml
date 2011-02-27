@@ -1,0 +1,17 @@
+<ActorFrame>
+	<children>
+		<Actor
+			File="star.txt"
+			OnCommand="x,-25;y,20;;zoom,0.5;wag;EffectMagnitude,0,4,10"
+		/>
+		<Actor
+			File="star.txt"
+			OnCommand="x,0;y,-20;zoom,0.5;wag;EffectMagnitude,0,4,10"
+		/>
+		<Actor
+			File="star.txt"
+			OnCommand="x,25;y,20;;zoom,0.5;wag;EffectMagnitude,0,4,10"
+		/>
+	</children>
+</ActorFrame>
+

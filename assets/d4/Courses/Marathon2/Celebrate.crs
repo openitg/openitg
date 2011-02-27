@@ -1,0 +1,50 @@
+#COURSE:Celebrate;
+#METER:Regular:9;
+#METER:Difficult:10;
+
+#MODS:
+  TIME=00.00:END=109.24:MODS=150% Distant, Dark, 4x, 85% Brake:
+  TIME=13.24:END=16.55:MODS=40% Bumpy, 40% Drunk, 50% Wave:
+  TIME=16.55:END=29.79:MODS=40% Bumpy, 40% Drunk, 50% Wave, 20% Dizzy:
+  TIME=29.79:END=43.03:MODS=40% Tipsy:
+  TIME=43.03:END=56.27:MODS=90% Hidden, 50% Expand:
+  TIME=56.27:END=69.51:MODS=Vivid, 50% Drunk, 50% Tipsy:
+  TIME=69.51:END=82.75:MODS=Dizzy, 35% Drunk:
+  TIME=82.75:END=109.24:MODS=40% Bumpy, 40% Drunk, 50% Wave, 20% Dizzy:
+#SONG:July -Euromix-:Hard:;
+
+#MODS:
+  TIME=13.76:END=27.48:MODS=Hallway, 20% Tipsy, 50% Drunk:
+  TIME=27.48:END=37.76:MODS=40% Expand, 20% Dizzy, Space:
+  TIME=37.76:END=51.48:MODS=Hallway, 25% Bumpy, Wave:
+  TIME=51.48:END=65.19:MODS=75% Mini, 50% Blink:
+  TIME=65.19:END=92.62:MODS=Sudden, 75% Tornado, Drunk:
+  TIME=78.90:END=92.62:MODS=Sudden, 30% Beat:
+  TIME=93.23:END=119.19:MODS=*.02 30% Flip, *.08 -90% Mini, 25% Bumpy, 20% Dizzy:
+  TIME=108.91:END=119.19:MODS=Hidden, Dark:
+#SONG:Euphoria:Medium:;
+
+#MODS:
+  TIME=05.62:END=11.26:MODS=Wave:
+  TIME=11.26:END=22.55:MODS=25% Drunk:
+  TIME=22.55:END=33.84:MODS=30% Bumpy, 60% Hallway, 40% Expand:
+  TIME=33.84:END=45.13:MODS=50% Tipsy:
+  TIME=45.13:END=72.64:MODS=30% Bumpy, 60% Distant, 40% Expand:
+  TIME=66.29:END=72.64:MODS=75% Brake:
+  TIME=72.64:END=83.75:MODS=30% Boost, 25% Drunk:
+  TIME=83.75:END=95.94:MODS=25% Stealth, 70% Hallway, 30% Bumpy:
+  TIME=95.94:END=101.95:MODS=25% Stealth, 40% Expand, 70% Distant:
+#SONG:Sunshine:Hard:;
+
+#MODS:
+  TIME=0:END=105.02:MODS=Reverse, Drunk:
+  TIME=0:END=28.92:MODS=Wave, Tipsy:
+  TIME=14.82:END=28.92:MODS=Blink:
+  TIME=28.92:END=50.09:MODS=Beat, Hallway:
+  TIME=43.04:END=50.09:MODS=40% Expand, 25% Drunk:
+  TIME=50.09:END=69.51:MODS=Wave, Distant:
+  TIME=64.21:END=69.51:MODS=40% Wave, 25% Tipsy:
+  TIME=69.51:END=83.62:MODS=70% Mini, Dark, Tipsy:
+  TIME=83.62:END=105.02:MODS=25% Mini, 50% Beat, Distant, 25% Bumpy:
+  TIME=97.74:END=105.02:MODS=Distant, Dark:
+#SONG:Hillbilly Hardcore:Hard:;

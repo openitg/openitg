@@ -1,0 +1,4 @@
+[Model]
+Meshes=pill-meshes and bones.txt
+Materials=pill-materials.txt
+Bones=pill-meshes and bones.txt

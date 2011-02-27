@@ -1,0 +1,42 @@
+<ActorFrame
+	MadeChoiceP1MessageCommand="playcommand,GoOff"
+	MadeChoiceP2MessageCommand="playcommand,GoOff"
+	GoOffCommand="%function(self) self:linear(0.5); local bHasFocus=math.abs(self:GetZoomZ()-1.1)<0.01; if bHasFocus then self:x(0); self:y(0); self:z(200); self:diffuse(1,1,1,1); self:zoom(1); self:glowblink(); self:sleep(0.5); self:linear(0.5); self:zoom(0); else self:x(0); self:y(0); self:z(0); self:zoom(0); end self:sleep(5) end"
+> <children>
+	<Layer
+		Type="ActorFrame"
+		InitCommand="ztest,1"
+		OnCommand="x,-80;y,30"
+		GainFocusCommand="wag;EffectMagnitude,0,10,0"
+		LoseFocusCommand="stopeffect"
+	>
+		<children>
+			<Layer
+				File="../_platform home single"
+				OnCommand="zoom,1.2;rotationx,30"
+			/>
+		</children>
+	</Layer>
+	<Layer
+		Type="ActorFrame"
+		OnCommand="x,80;y,30"
+		GainFocusCommand="wag;EffectMagnitude,0,10,0"
+		LoseFocusCommand="stopeffect"
+	>
+		<children>
+			<Layer
+				File="../_platform home single"
+				InitCommand="ztest,1"
+				OnCommand="zoom,1.2;rotationx,30"
+			/>
+		</children>
+	</Layer>
+	<Layer
+		File="title"
+		InitCommand="z,30;y,-50;ShadowLength,4;ztest,1"
+		GainFocusCommand=""
+		LoseFocusCommand=""
+		EnabledCommand="stopeffect"
+		DisabledCommand="diffuseshift;effectcolor1,0,0,0,1;effectcolor2,0,0,0,1"
+	/>
+</children> </ActorFrame>

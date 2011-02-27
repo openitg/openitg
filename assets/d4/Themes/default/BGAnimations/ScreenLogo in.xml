@@ -1,0 +1,5 @@
+<BGAnimation Sound="_logo.ogg">
+	<children>
+		<AutoActor File="_fade in normal" />
+	</children>
+</BGAnimation>

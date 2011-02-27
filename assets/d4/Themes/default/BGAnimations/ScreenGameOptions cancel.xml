@@ -1,0 +1,9 @@
+<ActorFrame
+	Sound="Screen cancel/cancel.ogg"
+> <children>
+	<Actor
+		Type="Quad"
+		StartTransitioningCommand="%function(self) SCREENMAN:GetTopScreen():playcommand('Off') self:sleep(0.3) end"
+	/>
+</children> </ActorFrame>
+

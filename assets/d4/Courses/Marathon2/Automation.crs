@@ -1,0 +1,54 @@
+#COURSE:Automation
+#METER:REGULAR:9;
+#METER:DIFFICULT:11;
+ 
+
+#MODS:
+TIME=03.40:END=20.43:MODS=80% Expand, 40% Dizzy:
+TIME=20.43:END=34.04:MODS=50% Sudden, 75% Brake:
+TIME=35.73:END=49.35:MODS=80% Expand, 40% Dizzy:
+TIME=49.35:END=62.96:MODS=50% Sudden, 30% Brake:
+TIME=62.96:END=76.58:MODS=50% Sudden, 50% Brake:
+TIME=78.29:END=105.52:MODS=80% Expand, 40% Dizzy:
+TIME=91.90:END=105.52:MODS=50% Tipsy:
+
+#SONG:Soapy Bubble:Hard:;
+
+
+#MODS:
+TIME=03.19:END=38.39:MODS=70% Drunk:
+TIME=19.19:END=38.39:MODS=50% Dizzy:
+TIME=38.39:END=63.99:MODS=25% Tipsy, 25% Drunk, 25% Dizzy:
+TIME=44.79:END=63.99:MODS=30% Tornado:
+TIME=63.99:END=95.99:MODS=70% Drunk:
+TIME=76.79:END=95.99:MODS=50% Dizzy:
+TIME=95.99:END=102.39:MODS=25% Tipsy, 25% Drunk, 25% Dizzy:
+
+#SONG:Incognito:Hard:; 
+
+
+#MODS:
+TIME=0.00:END=106.70:MODS=Reverse, Incoming, 50% Hidden:
+TIME=0.00:END=26.09:MODS=150% Wave:
+TIME=26.09:END=52.21:MODS=40% Boost, 20% Drunk:
+TIME=52.21:END=63.64:MODS=60% Wave, 50% Sudden:
+TIME=63.64:END=66.91:MODS=3x, 20% Boost:
+TIME=68.54:END=81.60:MODS=150% Wave:
+TIME=81.60:END=94.66:MODS=40% Boost, 20% Drunk:
+TIME=94.66:END=106.70:MODS=60% Wave, 50% Sudden:
+
+#SONG:Determinator:Hard:;
+
+
+#MODS:
+TIME=0.00:END=105.59:MODS=Cross, Centered:
+TIME=2.75:END=27.44:MODS=20% Wave:
+TIME=16.47:END=27.44:MODS=50% Wave:
+TIME=28.81:END=50.75:MODS=20% Tornado:
+TIME=39.78:END=50.75:MODS=50% Brake:
+TIME=50.75:END=72.69:MODS=50% Wave:
+TIME=72.69:END=82.29:MODS=50% Wave, 50% Brake, 20% Tornado, 20% Dizzy:
+TIME=83.65:END=105.59:MODS=20% Tornado, 50% Brake:
+TIME=94.62:END=105.59:MODS=50% Sudden, 50% Dizzy:
+
+#SONG:Clockwork Genesis:Hard:;

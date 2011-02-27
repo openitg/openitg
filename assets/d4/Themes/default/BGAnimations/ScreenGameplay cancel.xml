@@ -1,0 +1,8 @@
+<ActorFrame> <children>
+	<Layer
+		Type="Quad"
+		InitCommand="diffuse,#000000;stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM"
+		OnCommand="cropleft,1;fadeleft,.5;linear,0.5;cropleft,-0.5"
+	/>
+	<Layer File="_menu out" OnCommand="hibernate,0.10" />
+</children> </ActorFrame>

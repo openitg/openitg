@@ -1,0 +1,56 @@
+#COURSE:Fractious;
+#METER:Regular:8;
+#METER:Difficult:10;
+// cache tags:
+#RADAR:0:1:1.206,0.000,0.481,1.042,0.000,810.000,57.000,125.000,0.000,12.000,0.000;
+#RADAR:0:2:2.064,0.000,0.718,1.290,0.641,1455.000,87.000,154.000,33.000,27.000,0.000;
+#RADAR:0:3:2.798,0.000,0.832,3.796,1.408,1575.000,98.000,618.000,238.000,80.000,0.000;
+#RADAR:1:1:1.328,0.000,0.372,0.525,0.014,982.000,44.000,64.000,0.000,12.000,0.000;
+#RADAR:1:2:1.944,0.000,0.739,0.575,0.475,1439.000,85.000,71.000,3.000,21.000,0.000;
+#RADAR:1:3:2.381,0.000,1.066,1.001,0.656,1719.000,123.000,122.000,24.000,25.000,0.000;
+// end cache tags
+#MODS:
+  TIME=0.01:LEN=13.21:MODS=Brake:
+  TIME=13.22:LEN=12.86:MODS=Boost, Wave:
+  TIME=26.08:LEN=4.28:MODS=Tipsy:
+  TIME=30.36:LEN=5.15:MODS=Brake:
+  TIME=35.51:LEN=15.43:MODS=Boost, Wave:
+  TIME=50.94:LEN=6.85:MODS=Boost, Wave, 70% Dizzy:
+  TIME=57.79:LEN=13.72:MODS=Boost, Wave, 50% Drunk, 50% Tipsy:
+  TIME=71.51:LEN=20.57:MODS=Boost, Wave, 70% Dizzy:
+  TIME=92.08:LEN=20.57:MODS=Brake, Wave:
+  TIME=117.79:LEN=62.21:MODS=*1.5 225% Brake;
+#SONG:In The Groove/Bend Your Mind:Medium:;
+#MODS:
+  TIME=0.01:LEN=14.99:MODS=75% Brake, Reverse:
+  TIME=16.47:LEN=9.60:MODS=Boost, 20% Drunk, 20% Tipsy:
+  TIME=26.07:LEN=12.34:MODS=Boost, Wave:
+  TIME=38.41:LEN=10.97:MODS=50% Drunk, 50% Tipsy, Boost, Wave:
+  TIME=49.38:LEN=10.97:MODS=Drunk:
+  TIME=60.35:LEN=10.97:MODS=Boost, 10% Tornado:
+  TIME=71.32:LEN=10.98:MODS=0.5x:
+  TIME=82.30:LEN=9.60:MODS=Boost, 20% Drunk, 20% Tipsy:
+  TIME=93.27:LEN=8.91:MODS=Expand, 20% Tornado:
+  TIME=104.24:LEN=75.76:MODS=Incoming, Wave;
+#SONG:In The Groove/Disconnected -mobius-:Hard:;
+#MODS:
+  TIME=0.01:LEN=15.08:MODS=Wave:
+  TIME=15.09:LEN=14.55:MODS=20% Tornado, Wave:
+  TIME=29.64:LEN=7.27:MODS=Expand, Wave:
+  TIME=36.91:LEN=14.54:MODS=65% Brake, 20% Drunk, 20% Tipsy:
+  TIME=51.45:LEN=12.73:MODS=65% Brake, 30% Drunk, 30% Tipsy:
+  TIME=66.00:LEN=12.72:MODS=80% Wave, 80% Expand, 80% Brake:
+  TIME=80.54:LEN=14.55:MODS=20% Tornado, Wave:
+  TIME=95.09:LEN=14.54:MODS=Wave:
+  TIME=109.63:LEN=70.37:MODS=Distant, Wave, 20% Drunk;
+#SONG:In The Groove/Queen of Light:Hard:;
+#MODS:
+  TIME=0.10:LEN=109.17:MODS=Boomerang, 85% Dark:
+  TIME=0.10:LEN=12.76:MODS=80% Bumpy, Wave:
+  TIME=12.86:LEN=13.24:MODS=10% Alternate:
+  TIME=26.51:LEN=13.24:MODS=10% Alternate, 20% Drunk, 20% Tipsy:
+  TIME=39.75:LEN=13.24:MODS=80% Bumpy:
+  TIME=52.99:LEN=13.24:MODS=80% Bumpy, 30% Drunk, 30% Tipsy:
+  TIME=66.23:LEN=13.25:MODS=10% Split:
+  TIME=79.48:LEN=100.52:MODS=50% Tipsy,50% Drunk;
+#SONG:In The Groove/Oasis:Hard:;

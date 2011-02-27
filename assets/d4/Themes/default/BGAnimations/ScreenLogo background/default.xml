@@ -1,0 +1,81 @@
+﻿<ActorFrame><children>
+	<Layer
+		File="978_JumpBack"
+		OnCommand="rate,2;diffusealpha,0.7;stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM"
+	/>
+	<Layer
+		Condition="SelectButtonAvailable()"
+		File="andamiro"
+		OnCommand="x,SCREEN_LEFT+60;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+	/>
+	<Layer
+		Condition="SelectButtonAvailable()"
+		File="roxor"
+		OnCommand="x,SCREEN_LEFT+200;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+	/>
+	<Layer
+		Condition="not SelectButtonAvailable()"
+		File="roxor"
+		OnCommand="x,SCREEN_LEFT+90;y,SCREEN_TOP+30;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+	/>
+	<Layer
+		Class="ActorFrame"
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+10"
+	><children>
+		<Layer
+			Condition="SelectButtonAvailable()"
+			File="pump"
+			OnCommand="x,140;y,-102;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1"
+		/>
+		<BitampText
+			Condition="SelectButtonAvailable()"
+			Font="_eurostile normal"
+			Text="TM"
+			OnCommand="x,254;y,-110;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1;diffuse,#000000;zoom,0.25;ShadowLength,0"
+		/>
+		<AutoActor
+			File="2"
+			OnCommand="x,190;y,10;ZoomX,0;glow,1,1,1,1;sleep,0.8;ZoomY,3;BounceEnd,.3;Zoom,1;glow,1,1,1,0"
+		/>
+		<AutoActor
+			File="in"
+			OnCommand="x,-240;y,-70;zoom,0;sleep,0.1;bounceend,0.4;zoom,1"
+		/>
+		<AutoActor
+			File="the"
+			OnCommand="x,-106;y,-70;zoom,0;sleep,0.1;bounceend,0.4;zoom,1"
+		/>
+		<AutoActor
+			File="groove"
+			OnCommand="x,-50;y,26;zoom,0;sleep,0.1;bounceend,0.4;zoom,1"
+		/>
+		<AutoActor
+			File="trademark"
+			OnCommand="x,176;y,-24;diffusealpha,0;sleep,0.5;linear,0.5;diffusealpha,1;diffuse,#000000"
+		/>
+	</children></Layer>
+	<Layer
+		Condition="SelectButtonAvailable()"
+		Class="BitmapText"
+		Font="_eurostile normal"
+		Text="&xa9; 2005 Andamiro Co., Ltd."
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-31;zoom,0.5;shadowlength,2;diffusealpha,0.8"
+	/>
+	<Layer
+		Class="BitmapText"
+		Font="_eurostile normal"
+		Text="&xa9; 2005 Roxor Games, Inc."
+		OnCommand="x,SCREEN_CENTER_X;y,SCREEN_BOTTOM-17;zoom,0.5;shadowlength,2;diffusealpha,0.8"
+	/>
+	<Layer
+		Condition="Platform() == 'arcade'"
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="@'r'..GetRevision()"	
+		OnCommand="x,SCREEN_CENTER_X+94;y,SCREEN_BOTTOM-17;zoom,0.5;shadowlength,2;horizalign,left;diffusealpha,0.8"
+	/>												
+	<Layer
+		Class="Quad"
+		OnCommand="stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM;diffuse,#FFFFFF;diffusealpha,0;sleep,0.1;accelerate,0.5;diffusealpha,1;sleep,0.2;decelerate,0.5;diffusealpha,0"
+	/>
+</children></ActorFrame>

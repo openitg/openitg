@@ -1,0 +1,168 @@
+<ActorFrame>
+	<children>
+		<AutoActor
+			File="_ScreenEvaluationWorkout grade frame common"
+			InitCommand="DrawOrder,-1"
+		/>
+
+		<!-- Line 1: Stage Calories -->
+		<BitmapText
+			Text="Calories Burned"
+			Font="_eurostile normal"
+			OnCommand="x,-128;y,33;zoom,0.5;horizalign,left;ShadowLength,0"
+		/>
+		<RollingNumbers
+			Font="_eurostile normal"
+			Format="%04.2f"
+			TargetNumber="WorkoutGetStageCalories(PLAYER_2)"
+			OnCommand="@'x,90;y,33;zoom,0.5;ShadowLength,0;horizalign,right;Diffuse,'..PlayerColor(PLAYER_2)"
+		/>
+		<BitmapText
+			Text="cals"
+			Font="_eurostile normal"
+			OnCommand="x,110;y,33;zoom,0.5;ShadowLength,0"
+		/>
+
+		<!-- Line 2: Total Calories -->
+		<BitmapText
+			Text="Total Cals Burned"
+			Font="_eurostile normal"
+			OnCommand="x,-128;y,49;zoom,0.5;horizalign,left;ShadowLength,0"
+		/>
+		<RollingNumbers
+			Font="_eurostile normal"
+			Format="%04.2f"
+			TargetNumber="WorkoutGetTotalCalories(PLAYER_2)"
+			OnCommand="@'x,90;y,49;zoom,0.5;ShadowLength,0;horizalign,right;Diffuse,'..PlayerColor(PLAYER_2)"
+		/>
+		<BitmapText
+			Text="cals"
+			Font="_eurostile normal"
+			OnCommand="x,110;y,49;zoom,0.5;ShadowLength,0"
+		/>
+		
+		<!-- Line 3: Gameplay Seconds -->
+		<BitmapText
+			Text="Total Play Time"
+			Font="_eurostile normal"
+			OnCommand="x,-128;y,65;zoom,0.5;horizalign,left;ShadowLength,0"
+		/>
+		<RollingNumbers
+			Font="_eurostile normal"
+			Format="%04.2f"
+			TargetNumber="WorkoutGetTotalSeconds()/60"
+			OnCommand="@'x,90;y,65;zoom,0.5;ShadowLength,0;horizalign,right;Diffuse,'..PlayerColor(PLAYER_2)"
+		/>
+		<BitmapText
+			Text="mins"
+			Font="_eurostile normal"
+			OnCommand="x,110;y,65;zoom,0.5;ShadowLength,0"
+		/>
+		
+		<!-- Line 4: Goal -->
+		<BitmapText
+			Text="Fitness Goal"
+			Font="_eurostile normal"
+			OnCommand="x,-128;y,81;zoom,0.5;horizalign,left;ShadowLength,0"
+		/>
+		<ActorFrame
+			Condition="WorkoutGetProfileGoalType(PLAYER_2) == GOAL_CALORIES"
+		>
+			<children>
+				<RollingNumbers
+					Font="_eurostile normal"
+					Format="%04.2f"
+					TargetNumber="WorkoutGetGoalCalories(PLAYER_2)"
+					OnCommand="@'x,90;y,81;zoom,0.5;ShadowLength,0;horizalign,right;Diffuse,'..PlayerColor(PLAYER_2)"
+				/>
+				<BitmapText
+					Text="cals"
+					Font="_eurostile normal"
+					OnCommand="x,110;y,81;zoom,0.5;ShadowLength,0"
+				/>
+			</children>
+		</ActorFrame>
+		<ActorFrame
+			Condition="WorkoutGetProfileGoalType(PLAYER_2) == GOAL_TIME"
+		>
+			<children>
+				<RollingNumbers
+					Font="_eurostile normal"
+					Format="%04.2f"
+					TargetNumber="WorkoutGetGoalSeconds(PLAYER_2)/60"
+					OnCommand="@'x,90;y,81;zoom,0.5;ShadowLength,0;horizalign,right;Diffuse,'..PlayerColor(PLAYER_2)"
+				/>
+				<BitmapText
+					Text="mins"
+					Font="_eurostile normal"
+					OnCommand="x,110;y,81;zoom,0.5;ShadowLength,0"
+				/>
+			</children>
+		</ActorFrame>
+		<ActorFrame
+			Condition="WorkoutGetProfileGoalType(PLAYER_2) == GOAL_NONE"
+		>
+			<children>
+				<BitmapText
+					Font="_eurostile normal"
+					Text="No Goal"
+					OnCommand="@'x,90;y,81;zoom,0.5;ShadowLength,0;horizalign,right;Diffuse,'..PlayerColor(PLAYER_2)"
+				/>
+			</children>
+		</ActorFrame>
+		
+		<!-- Line 5: Goal Status -->
+		<ActorFrame
+			Condition="WorkoutGetProfileGoalType(PLAYER_2) == GOAL_CALORIES"
+		>
+			<children>
+				<BitmapText
+					Condition="WorkoutGetPercentCompleteCalories(PLAYER_2)<1"
+					Text="Keep Going!"
+					Font="_eurostile normal"
+					OnCommand="x,-70;y,108;zoom,0.6;ShadowLength,0;DiffuseShift"
+				/>
+				<BitmapText
+					Condition="WorkoutGetPercentCompleteCalories(PLAYER_2)>=1"
+					Text="Goal Complete!"
+					Font="_eurostile normal"
+					OnCommand="x,-70;y,108;zoom,0.6;ShadowLength,0;DiffuseShift"
+				/>
+				<BitmapText
+					Font="_eurostile normal"
+					Text="@string.format('%01.0f%% Complete',WorkoutGetPercentCompleteCalories(PLAYER_2)*100)"
+					OnCommand="@'x,64;y,108;zoom,0.6;maxwidth,220;ShadowLength,0;Diffuse,'..PlayerColor(PLAYER_2)"
+				/>
+			</children>
+		</ActorFrame>
+		<ActorFrame
+			Condition="WorkoutGetProfileGoalType(PLAYER_2) == GOAL_TIME"
+		>
+			<children>
+				<BitmapText
+					Condition="WorkoutGetPercentCompleteSeconds(PLAYER_2)<1"
+					Text="Keep Going!"
+					Font="_eurostile normal"
+					OnCommand="x,-70;y,116;zoom,0.6;ShadowLength,0;DiffuseShift"
+				/>
+				<BitmapText
+					Condition="WorkoutGetPercentCompleteSeconds(PLAYER_2)>=1"
+					Text="Goal Complete!"
+					Font="_eurostile normal"
+					OnCommand="x,-70;y,116;zoom,0.6;ShadowLength,0;DiffuseShift"
+				/>
+				<BitmapText
+					Font="_eurostile normal"
+					Text="@string.format('%01.0f%% Complete',WorkoutGetPercentCompleteSeconds(PLAYER_2)*100)"
+					OnCommand="@'x,64;y,116;zoom,0.6;maxwidth,220;ShadowLength,0;Diffuse,'..PlayerColor(PLAYER_2)"
+				/>
+			</children>
+		</ActorFrame>
+		<BitmapText
+			Condition="WorkoutGetProfileGoalType(PLAYER_2) == GOAL_NONE"
+			Text="Keep Going!"
+			Font="_eurostile normal"
+			OnCommand="x,0;y,116;zoom,0.6;ShadowLength,0;DiffuseShift"
+		/>
+	</children>
+</ActorFrame>

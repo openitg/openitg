@@ -1,0 +1,24 @@
+<ActorFrame><children>
+	<AutoActor
+		File="arrow"
+		InitCommand="x,SCREEN_LEFT+64;y,SCREEN_CENTER_Y"
+		OnCommand="addx,-200;decelerate,0.5;addx,200"
+		MenuLeftP1MessageCommand="playcommand,Blink"
+		MenuLeftP2MessageCommand="playcommand,Blink"
+		BlinkCommand="finishtweening;zoom,1.2;glow,1,1,1,1;linear,0.2;glow,1,1,1,0;zoom,1"
+		MadeChoiceP1MessageCommand="playcommand,GoOff"
+		MadeChoiceP2MessageCommand="playcommand,GoOff"
+		GoOffCommand="accelerate,0.5;addx,-200"
+	/>
+	<AutoActor
+		File="arrow"
+		InitCommand="x,SCREEN_RIGHT-64;y,SCREEN_CENTER_Y;RotationZ,180"
+		OnCommand="addx,200;decelerate,0.5;addx,-200"
+		MenuRightP1MessageCommand="playcommand,Blink"
+		MenuRightP2MessageCommand="playcommand,Blink"
+		BlinkCommand="finishtweening;zoom,1.2;glow,1,1,1,1;linear,0.2;glow,1,1,1,0;zoom,1"
+		MadeChoiceP1MessageCommand="playcommand,GoOff"
+		MadeChoiceP2MessageCommand="playcommand,GoOff"
+		GoOffCommand="accelerate,0.5;addx,200"
+	/>
+</children></ActorFrame>

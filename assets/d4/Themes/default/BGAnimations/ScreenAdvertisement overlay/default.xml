@@ -1,0 +1,55 @@
+﻿<ActorFrame FOV="45" ><children>
+	<AutoActor
+		File="case"
+		Command="x,SCREEN_CENTER_X-180;y,SCREEN_CENTER_Y;rotationy,-60;zoom,3;spin;EffectMagnitude,0,40,0"
+	/>
+	<ActorFrame OnCommand="x,SCREEN_CENTER_X+10;y,SCREEN_CENTER_Y;rotationy,-10" ><children>
+		<AutoActor
+			File="streak"
+			OnCommand="zoom,0.5;fadeleft,0.3;faderight,0.3;cropleft,1.3;cropright,-0.3;linear,1;cropleft,-0.3;zoom,3;linear,11;zoom,2.8"
+		/>
+		<Layer
+			Class="ActorFrame"
+			InitCommand="x,+160;y,-52"
+			OnCommand="zoom,0.8;addx,600;sleep,0.5;decelerate,0.5;addx,-600"
+		><children>
+			<AutoActor
+				File="in"
+				OnCommand="x,-240;y,-70;shadowlength,2"
+			/>
+			<AutoActor
+				File="the"
+				OnCommand="x,-106;y,-70;shadowlength,2"
+			/>
+			<AutoActor
+				File="groove"
+				OnCommand="x,-50;y,26;shadowlength,2"
+			/>
+			<AutoActor
+				File="trademark"
+				OnCommand="x,176;y,-24;diffuse,#000000"
+			/>
+			<Layer
+				Class="BitmapText"
+				Font="_eurostile normal"
+				Text="for PlayStation® 2"
+				OnCommand="horizalign,right;x,+170;y,+110;shadowlength,2;zoom,1.4"
+			/>
+			<Layer
+				Class="BitmapText"
+				Font="_eurostile normal"
+				Text="In Stores Now"
+				OnCommand="horizalign,right;x,+170;y,+150;shadowlength,2;zoom,1.4"
+			/>
+			<Layer
+				Class="BitmapText"
+				Font="_big blue glow"
+				Text="www.inthegroove.com"
+				OnCommand="x,-48;y,+200;shadowlength,2;zoom,1.0"
+			/>
+		</children></Layer>
+	</children></ActorFrame>
+	<AutoActor
+		File="../ScreenAttract overlay"
+	/>
+</children></ActorFrame>

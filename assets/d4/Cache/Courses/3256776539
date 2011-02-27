@@ -1,0 +1,19 @@
+#COURSE:Space;
+#METER:Regular:9;
+#METER:Difficult:9;
+// cache tags:
+#RADAR:0:1:1.247,0.000,0.690,0.204,0.000,847.000,75.000,22.000,0.000,0.000,0.000;
+#RADAR:0:2:1.809,0.056,0.802,0.792,0.041,1196.000,87.000,85.000,0.000,0.000,0.000;
+#RADAR:1:1:1.065,0.000,0.292,0.114,0.000,762.000,31.000,12.000,0.000,0.000,0.000;
+#RADAR:1:2:1.918,0.000,0.728,0.239,0.105,1354.000,78.000,26.000,2.000,0.000,0.000;
+// end cache tags
+#GAINSECONDS:70.000000;
+#SONG:In The Groove 2/Spacy Crazy Girl:Medium:Space,2x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/Summer in Belize:Medium:Space,boost,1.5x,nodifficult;
+#GAINSECONDS:65.000000;
+#SONG:In The Groove 2/Spaceman:Medium:Space,expand,2.5x,nodifficult;
+#GAINSECONDS:60.000000;
+#SONG:In The Groove 2/!:Medium:Space,wave,1.5x,nodifficult;
+#GAINSECONDS:60.000000;
+#SONG:In The Groove 2/Temple of Boom:Medium:Space,Reverse,60% Expand,50% bumpy,75% hidden,1.5x,nodifficult;

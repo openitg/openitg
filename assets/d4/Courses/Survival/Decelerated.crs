@@ -1,0 +1,28 @@
+#COURSE:Decelerated
+#METER:REGULAR:9;
+#METER:DIFFICULT:9;
+
+
+#MODs:;
+#GAINSECONDS:80;
+#SONG:Bumble Bee:Easy:Brake, Overhead, 1.5x, nodifficult;
+
+
+#MODS:;
+#GAINSECONDS:75;
+#SONG:Life of a Butterfly:Easy:Brake, Overhead, 1.5x, nodifficult;   
+
+
+#MODs:;
+#GAINSECONDS:70;
+#SONG:Renaissance:Medium:Brake, Overhead, 1.5x, nodifficult;
+
+
+#MODs:;
+#GAINSECONDS:68;
+#SONG:Ize Pie:Medium:Brake, Overhead, 1.25x, nodifficult;
+
+
+#MODS:;
+#GAINSECONDS:65;
+#SONG:Amore:Medium:Brake, Overhead, 1x, nodifficult; 

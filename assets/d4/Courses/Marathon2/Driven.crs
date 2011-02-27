@@ -1,0 +1,260 @@
+#COURSE:Driven
+
+#METER:REGULAR:9;
+#METER:DIFFICULT:11;
+
+#MODS:
+TIME=5.818:END=17.444:MODS=*.2 115% brake:
+TIME=0.1:END=5.818:MODS=*100 100% centered:
+TIME=5.818:END=17.444:MODS=*.15 -60% centered:
+TIME=17.5:END=21.34:MODS=blink:
+TIME=22.54:END=22.9:MODS=*1000 1000000% dizzy:
+TIME=23:END=23.1:MODS=*100000 1% dizzy:
+TIME=23.54:END=33.6:MODS=wave, expand, 0.6x:
+TIME=34:END=41.4:MODS= 0.5x:
+TIME=34.9:END=40.4:MODS=*.5 -320% mini,:
+TIME=34.9:END=40.4:MODS=*.08 20% flip:
+TIME=40.4:END=43.6:MODS=*.08 0% flip:
+TIME=43.63:END=63.9:MODS=blind:
+TIME=43.63:END=46.5:MODS=*4.4 200% hallway:
+TIME=46.5:END=49.5:MODS=*4.4 200% incoming:
+TIME=49.5:END=52.36:MODS=*.8 200% distant:
+TIME=52.4:END=55.3:MODS=*.8 150% space:
+TIME=55.3:END=58.1:MODS=*1.2 -200% hallway:
+TIME=58.1:END=61.1:MODS=*1.2 -200% incoming:
+TIME=61.1:END=63.9:MODS=*2.0 -270% distant:
+TIME=65:END=69.5:MODS=200% bumpy:
+TIME=69.8:END=81.1:MODS= noholds:
+TIME=69.8:END=70.3:MODS=big:
+TIME=75.6:END=76.1:MODS=big:
+TIME=69.8:END=81.1:MODS=dark, dizzy:
+TIME=81.1:END=110:MODS=0.9x:
+TIME=81.1:END=87.2:MODS=hidden, 200% dizzy:
+TIME=87.2:END=92.7:MODS=sudden, 300% dizzy:
+TIME=92.7:END=98.5:MODS=hidden, sudden, 400% dizzy:
+TIME=98.5:END=104.7:MODS=hidden,7% hiddenoffset, sudden, -7% suddenoffset distant, 500% dizzy:
+TIME=104.7:END=113.5:MODS=hidden, 15% hiddenoffset, sudden, -15% suddenoffset distant, 650% dizzy:
+TIME=98.5:END=112:MODS=blind:
+TIME=110.5:END=113.5:MODS=stealth, dark:
+TIME=112:END=115:MODS=*30 -10000% mini:
+TIME=81.1:END=83.2:MODS=wide:
+#SONG:Pandemonium:Easy:;
+
+#MODS:
+TIME=0.1:END=24.5:MODS=boomerang, 60% stealth:
+TIME=12.65:END=24.5:MODS=dark, dizzy:
+TIME=18.9:END=24.5:MODS=*2 600% beat:
+TIME=24.5:END=24.6:MODS=*100 0% beat:
+TIME=24.5:END=43:MODS=robot:
+TIME=25.53:END=42:MODS=cross:
+TIME=28.4:END=42:MODS=*.3 centered:
+TIME=31.6:END=42:MODS=*30 reverse:
+TIME=31.6:END=38:MODS=*.3 0% centered:
+TIME=42:END=50.6:MODS=*.3 0% centered,*.3 0% reverse:
+TIME=42:END=50.6:MODS=80% stealth:
+TIME=50.6:END=53.01:MODS=*.3 stealth:
+TIME=53.01:END=53.1:MODS=*100 0% stealth:
+TIME=53.02:END=60:MODS=-80% centered:
+TIME=53.8:END=67:MODS=10% stealth, robot:
+TIME=53.9:END=65.7:MODS=0.67x:
+TIME=53.9:END=60.1:MODS=*.4 210% centered:
+TIME=60.1:END=60.21:MODS=*1000 -30% centered:
+TIME=60.21:END=65.7:MODS=*.4 210% centered:
+TIME=53.8:END=66.5:MODS=blind:
+TIME=65.7:END=79.2:MODS= 30% stealth, robot:
+TIME=66.5:END=72.8:MODS=*.5 250% tipsy:
+TIME=72.8:END=79.2:MODS=*.2 drunk:
+TIME=79.2:END=92.3:MODS=*.3 50% drunk,*.3 tipsy, *.1 dark:
+TIME=79.2:END=92.3:MODS=*.05 stealth, robot:
+TIME=93:END=120:MODS= vivid, mirror, nomines:
+TIME=92.5:END=95.6:MODS= split:
+TIME=95.6:END=99:MODS= *2 alternate, reverse:
+TIME=99:END=102:MODS= alternate:
+TIME=102:END=120:MODS= *2 split, reverse:
+#SONG:Energizer:Easy:;
+ 
+#MODS:
+TIME=10.102:END=10.408:MODS=hidden,*9 -90% hiddenoffset:
+TIME=10.408:END=10.714:MODS=hidden,*9 -80% hiddenoffset:
+TIME=10.714:END=11.327:MODS=hidden,*9 -75% hiddenoffset:
+TIME=11.327:END=11.633:MODS=hidden,*9 -70% hiddenoffset:
+TIME=11.633:END=11.939:MODS=hidden,*9 -65% hiddenoffset:
+TIME=11.939:END=12.245:MODS=hidden,*9 -60% hiddenoffset:
+TIME=12.245:END=12.551:MODS=hidden,*9 -55% hiddenoffset:
+TIME=12.551:END=12.857:MODS=hidden,*9 -50% hiddenoffset:
+TIME=12.857:END=13.163:MODS=hidden,*9 -45% hiddenoffset:
+TIME=13.163:END=13.469:MODS=hidden,*9 -40% hiddenoffset:
+TIME=13.469:END=13.776:MODS=hidden,*9 -35% hiddenoffset:
+TIME=13.776:END=14.082:MODS=hidden,*9 -30% hiddenoffset:
+TIME=14.082:END=14.388:MODS=hidden,*9 -20% hiddenoffset:
+TIME=14.388:END=14.694:MODS=hidden,*9 -10% hiddenoffset:
+TIME=14.694:END=15.000:MODS=hidden,*9 0% hiddenoffset:
+TIME=15.000:END=15.306:MODS=hidden,*9 10% hiddenoffset:
+TIME=15.306:END=15.612:MODS=hidden,*9 20% hiddenoffset:
+TIME=15.612:END=15.918:MODS=hidden,*9 30% hiddenoffset:
+TIME=15.918:END=16.224:MODS=hidden,*9 40% hiddenoffset:
+TIME=16.224:END=16.531:MODS=hidden,*9 50% hiddenoffset:
+TIME=16.531:END=16.837:MODS=hidden,*9 60% hiddenoffset: 
+TIME=16.837:END=17.143:MODS=hidden,*9 70% hiddenoffset:
+TIME=17.143:END=17.449:MODS=hidden,*9 89% hiddenoffset:
+TIME=17.449:END=17.755:MODS=hidden,*9 90% hiddenoffset:
+TIME=17.755:END=18.061:MODS=hidden,*9 100% hiddenoffset:
+TIME=18.061:END=18.367:MODS=hidden,*9 110% hiddenoffset:
+TIME=18.367:END=18.673:MODS=hidden,*9 120% hiddenoffset:
+TIME=18.673:END=18.980:MODS=hidden,*9 130% hiddenoffset:
+TIME=19.59:END=20.8:MODS=sudden,*9 100% suddenoffset:
+TIME=20.8:END=21.4:MODS=sudden,*9 90% suddenoffset:
+TIME=21.4:END=22:MODS=sudden,*9 80% suddenoffset:
+TIME=22:END=22.65:MODS=sudden,*9 70% suddenoffset:
+TIME=22.65:END=23.26:MODS=sudden,*9 60% suddenoffset:
+TIME=23.26:END=23.87:MODS=sudden,*9 50% suddenoffset:
+TIME=23.87:END=24.5:MODS=sudden,*9 40% suddenoffset:
+TIME=24.5:END=25.1:MODS=sudden,*9 30% suddenoffset:
+TIME=25.1:END=25.7:MODS=sudden,*9 20% suddenoffset:
+TIME=25.7:END=26.3:MODS=sudden,*9 10% suddenoffset:
+TIME=26.3:END=26.9:MODS=sudden,*9 0% suddenoffset:
+TIME=26.9:END=27.5:MODS=sudden,*9 -10% suddenoffset:
+TIME=27.5:END=28.1:MODS=sudden,*9 -20% suddenoffset:
+TIME=28.1:END=28.77:MODS=sudden,*9 -30% suddenoffset:
+TIME=28.77:END=29.388:MODS=sudden,*9 -40% suddenoffset:
+TIME=29.388:END=29.389:MODS=sudden,*9 -50% suddenoffset:
+TIME=31.8:END=34.2:MODS=sudden,*9 75% suddenoffset:
+TIME=31.8:END=34.2:MODS=hidden,*9 -75% hiddenoffset:
+TIME=34.2:END=36.7:MODS=sudden,*9 50% suddenoffset:
+TIME=34.2:END=36.7:MODS=hidden,*9 -50% hiddenoffset:
+TIME=36.7:END=39.2:MODS=sudden,*9 33% suddenoffset:
+TIME=36.7:END=39.2:MODS=hidden,*9 -33% hiddenoffset:
+TIME=39.2:END=43.8:MODS=sudden,*9 25% suddenoffset:
+TIME=39.2:END=43.8:MODS=hidden,*9 -25% hiddenoffset:
+TIME=43.8:END=46.2:MODS=sudden,*9 15% suddenoffset:
+TIME=43.8:END=46.2:MODS=hidden,*9 -15% hiddenoffset:
+TIME=46.2:END=48.6:MODS=sudden,*9 0% suddenoffset:
+TIME=46.2:END=48.6:MODS=hidden,*9 0% hiddenoffset:
+TIME=48.6:END=51.4:MODS=sudden,*9 5% suddenoffset:
+TIME=48.6:END=51.4:MODS=hidden,*9 15% hiddenoffset:
+TIME=51.4:END=53.8:MODS=sudden,*9 10% suddenoffset:
+TIME=51.4:END=53.8:MODS=hidden,*9 30% hiddenoffset:
+TIME=53.8:END=56.32:MODS=sudden,*9 -5% suddenoffset:
+TIME=53.8:END=56.32:MODS=hidden,*9 15% hiddenoffset:
+TIME=56.32:END=58.77:MODS=sudden,*9 15% suddenoffset:
+TIME=56.32:END=58.77:MODS=hidden,*9 45% hiddenoffset:
+TIME=58.77:END=60.4:MODS=sudden,*9 -20% suddenoffset:
+TIME=58.77:END=60.4:MODS=hidden,*9 10% hiddenoffset:
+TIME=60.46:END=60.47:MODS=sudden,*9 -25% suddenoffset:
+TIME=60.46:END=60.47:MODS=hidden,*9 5% hiddenoffset:
+TIME=31.8:END=60.47:MODS=blind, dark:
+TIME=61.1:END=71:MODS=*.16 150% centered:
+TIME=71:END=80:MODS=*300 reverse, *100 50% centered:
+TIME=72.25:END=74.7:MODS=*100 150% centered, *300 0% reverse:
+TIME=71.028:END=79.61:MODS=*9 robot:
+TIME=70.528:END=79.61:MODS= 0.8x:
+TIME=80.82:END=90.61:MODS=*.18 150% mini:
+TIME=90.61:END=99:MODS=*.36 -440% mini,*.04 26% flip, 0.85x:
+TIME=99:END=100.5:MODS=*.3 15% flip, 0.95x:
+TIME=100.4:END=100.5:MODS=*66 0% mini:
+TIME=105.6:END=107.6:MODS=*33 -100000% mini:
+TIME=107.6:END=109.5:MODS=*99 -100000% mini:
+TIME=100.4:END=100.8:MODS= 1.5x:
+TIME=100.4:END=105.3:MODS=*9 850% bumpy:
+TIME=9.7:END=9.8:MODS=*100 200% beat:
+TIME=9.85:END=9.9:MODS=*600 0% beat:
+TIME=19.2:END=19.3:MODS=*60 400% beat:
+TIME=19.35:END=19.4:MODS=*600 0% beat:
+TIME=29.2:END=29.45:MODS=*60 400% beat:
+TIME=29.50:END=29.6:MODS=*60 0% beat:
+TIME=30.45:END=30.65:MODS=*60 400% beat:
+TIME=30.70:END=30.8:MODS=*60 0% beat:
+TIME=41.1:END=41.35:MODS=*60 400% beat:
+TIME=41.4:END=41.5:MODS=*60 0% beat:
+TIME=51.2:END=51.4:MODS=*60 400% beat:
+TIME=51.45:END=51.55:MODS=*60 0% beat:
+TIME=59.8:END=60:MODS=*60 400% beat:
+TIME=60.01:END=60.1:MODS=*60 0% beat:
+TIME=70.8:END=71.08:MODS=*60 400% beat:
+TIME=71.1:END=71.15:MODS=*600 0% beat:
+TIME=72.11:END=72.3:MODS=*60 400% beat:
+TIME=72.35:END=72.4:MODS=*600 0% beat:
+TIME=72.11:END=72.3:MODS=*60 400% beat:
+TIME=72.35:END=72.4:MODS=*600 0% beat:
+TIME=73.31:END=73.55:MODS=*60 400% beat:
+TIME=73.6:END=73.65:MODS=*600 0% beat:
+TIME=74.63:END=74.72:MODS=*600 800% beat:
+TIME=74.77:END=74.92:MODS=*600 0% beat:
+TIME=75.88:END=76.09:MODS=*60 400% beat:
+TIME=76.13:END=76.18:MODS=*600 0% beat:
+TIME=77.1:END=77.3:MODS=*60 400% beat:
+TIME=77.35:END=77.4:MODS=*600 0% beat:
+TIME=78.32:END=78.4:MODS=*600 800% beat:
+TIME=78.45:END=78.5:MODS=*600 0% beat:
+TIME=90.28:END=90.38:MODS=*100 400% beat:
+TIME=90.43:END=90.48:MODS=*600 0% beat:
+TIME=100.38:END=100.48:MODS=*100 400% beat:
+TIME=100.53:END=100.58:MODS=*600 0% beat:
+TIME=105.28:END=105.35:MODS=*100 400% beat:
+TIME=105.4:END=105.45:MODS=*600 0% beat:
+TIME=60.459:END=61.:MODS=*3 flip:
+TIME=61.05:END=61.1:MODS=*15 0% flip:
+TIME=60.46:END=60.47:MODS=mirror:
+TIME=79.6:END=80.15:MODS=*3 reverse:
+TIME=80.16:END=80.2:MODS=*6 0% reverse:
+TIME=79.6:END=80.15:MODS=*3 flip:
+TIME=80.16:END=80.2:MODS=*6 0% flip:
+TIME=31.81:END=32.0:MODS=*1000 500% Dizzy:
+TIME=32:END=32.05:MODS=*1000 0% dizzy:
+TIME=34.26:END=34.48:MODS=*1000 500% Dizzy:
+TIME=34.48:END=34.53:MODS=*1000 0% dizzy:
+TIME=34.29:END=34.48:MODS=*1000 500% Dizzy:
+TIME=34.48:END=34.53:MODS=*1000 0% dizzy:
+TIME=36.68:END=36.83:MODS=*1000 500% Dizzy:
+TIME=36.83:END=36.88:MODS=*1000 0% dizzy:
+TIME=39.16:END=39.33:MODS=*1000 500% Dizzy:
+TIME=39.33:END=39.38:MODS=*1000 0% dizzy:
+TIME=43.75:END=43.93:MODS=*1000 500% Dizzy:
+TIME=43.93:END=43.98:MODS=*1000 0% dizzy:
+TIME=46.2:END=46.38:MODS=*1000 500% Dizzy:
+TIME=46.38:END=56.43:MODS=*1000 0% dizzy:
+TIME=48.65:END=48.83:MODS=*1000 500% Dizzy:
+TIME=48.83:END=48.88:MODS=*1000 0% dizzy:
+TIME=82.94:END=83.12:MODS=*1000 500% Dizzy:
+TIME=83.12:END=83.17:MODS=*1000 0% dizzy:
+TIME=85.39:END=85.56:MODS=*1000 500% Dizzy:
+TIME=85.56:END=85.61:MODS=*1000 0% dizzy:
+TIME=87.84:END=88.01:MODS=*1000 500% Dizzy:
+TIME=88.01:END=88.06:MODS=*1000 0% dizzy:
+TIME=89.37:END=89.54:MODS=*1000 500% Dizzy:
+TIME=89.54:END=89.59:MODS=*1000 0% dizzy:
+#SONG:Monolith:Medium:;  
+
+
+
+#MODS: 
+TIME=1:END=120:MODS=blind:
+TIME=1:END=80:MODS=3x:
+TIME=0.1:END=7.4:MODS=boomerang, dizzy:
+TIME=0.1:END=2:MODS=*3 400% distant,*5 -650% centered, -170% mini:
+TIME=2:END=3:MODS=*3 700% distant,*10 -1000% centered, -170% mini:
+TIME=3:END=4:MODS=*3 715% distant,*10 -1000% centered,*.17 -170% mini,*.1 5% flip, 1.5x:
+TIME=4:END=5.5:MODS=*3 -300% distant,*10 0% centered:
+TIME=5.5:END=6:MODS=*3 overhead,*35 0% centered:
+TIME=6:END=12.5:MODS=*.8 220% hallway,*.2 -50% centered:
+TIME=12.5:END=17:MODS=*.8 200% incoming,*.2 30% centered:
+TIME=17:END=26:MODS=*.8 200% distant,*.14 -50% centered:
+TIME=26:END=30:MODS=*1.5 -250% distant:
+TIME=26:END=27:MODS=*35 0% centered:
+TIME=28:END=30:MODS=*.4 -60% centered:
+TIME=30:END=41.1:MODS=*.8 210% space, nohands, 30% centered, tipsy:
+TIME=40.1:END=45:MODS=*4.4 -210% incoming, -30% centered, tipsy:
+TIME=45:END=50:MODS=*.5 210% space, 50% bumpy, *8 0% tipsy:
+TIME=50:END=55:MODS=*.3 -210% incoming, 80% bumpy:
+TIME=55:END=60:MODS=*.3 210% space, *8 800% dizzy, 80% bumpy:
+TIME=60:END=75:MODS=*2 overhead, *.3 flip,*4 0% dizzy:
+TIME=68:END=75:MODS=beat, 20% drunk, 70% tipsy, 50% bumpy:
+TIME=63:END=75:MODS=blink:
+TIME=84:END=89:MODS=85% stealth:
+TIME=75.4:END=77.7:MODS= 199% mini:
+TIME=79:END=83.5:MODS=32x, *.3 50% flip, *.5 dark:
+TIME=80:END=83.5:MODS=c1900:
+TIME=91.9:END=98.5:MODS=0.25x:
+TIME=98.5:END=103:MODS=*.8 200% incoming,*.2 30% centered, tipsy, drunk, 10% beat:
+TIME=103.8:END=115:MODS=0.01x, 50% flip, dark, stealth,:
+#SONG:One False Move:easy:;

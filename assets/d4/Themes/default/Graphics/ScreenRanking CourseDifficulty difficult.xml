@@ -1,0 +1,19 @@
+<ActorFrame>
+	<children>
+		<Layer 
+			Type="AutoActor" 
+			File="ScreenRanking difficulty icon" 
+			InitCommand="pause;setstate,COURSE_DIFFICULTY_DIFFICULT" 
+			OnCommand="diffusealpha,0;sleep,0.1;linear,0.3;diffusealpha,1" 
+			OffCommand="sleep,0.0;linear,0.3;diffusealpha,0" 
+		/>
+		<Layer 
+			Type="BitmapText" 
+			Text="@CourseDifficultyToThemedString(COURSE_DIFFICULTY_DIFFICULT)" 
+			File="_eurostile normal" 
+			InitCommand="@'diffuse,' .. ContrastingDifficultyColor(DIFFICULTY_HARD) .. ';ShadowLength,2;zoom,0.5'" 
+			OnCommand="diffusealpha,0;sleep,0.1;linear,0.3;diffusealpha,1" 
+			OffCommand="sleep,0.0;linear,0.3;diffusealpha,0" 
+		/>
+	</children>
+</ActorFrame>

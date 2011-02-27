@@ -1,0 +1,48 @@
+#COURSE:Awakening;
+#METER:Regular:9;
+#METER:Difficult:11;
+
+#MODS:
+  TIME=07.17:END=21.28:MODS=Boost:
+  TIME=21.28:END=35.40:MODS=Wave:
+  TIME=35.40:END=49.52:MODS=25% Flip:
+  TIME=49.52:END=63.64:MODS=50% Hidden:
+  TIME=63.64:END=77.76:MODS=Distant, 50% Beat:
+  TIME=77.76:END=91.87:MODS=Hallway, 50% Bumpy:
+  TIME=91.87:END=107.31:MODS=50% Expand:
+#SONG:Out Of The Dark:Hard:;
+
+#MODS:
+  TIME=00.00:END=104.11:MODS=Dark:
+  TIME=05.28:END=24.69:MODS=50% Dizzy:
+  TIME=24.69:END=40.58:MODS=50% Beat, 75% Boost:
+  TIME=40.58:END=57.23:MODS=50% Dizzy, 50% Drunk:
+  TIME=57.23:END=74.11:MODS=75% Boost, Dizzy:
+  TIME=74.11:END=88.22:MODS=Sudden, 70% Tipsy:
+  TIME=88.22:END=104.11:MODS=20% Flip, 50% Drunk:
+#SONG:Life of a Butterfly:Hard:;
+
+#MODS:
+  TIME=00.00:END=107.82:MODS=Reverse:
+  TIME=13.83:END=42.36:MODS=50% Expand:
+  TIME=27.26:END=42.36:MODS=75% Tipsy, 30% Drunk:
+  TIME=42.36:END=55.79:MODS=Sudden, Flat:
+  TIME=53.27:END=67.53:MODS=25% Hidden, 25% Sudden, 25% Flip:
+  TIME=68.38:END=96.07:MODS=50% Brake, -60% Mini:
+  TIME=82.64:END=96.07:MODS=Hallway, 20% Sudden, 15% Flip:
+  TIME=96.07:END=107.82:MODS=Hidden:
+#SONG:Amore:Hard:;
+
+#MODS:
+  TIME=00.00:END=110.74:MODS=Dark:
+  TIME=05.49:END=10.97:MODS=80% Sudden, 80% Hallway:
+  TIME=10.97:END=32.91:MODS=15% Tornado, 25% Drunk:
+  TIME=21.94:END=32.91:MODS=10% Flip:
+  TIME=32.91:END=42.48:MODS=0.5x:
+  TIME=42.48:END=65.83:MODS=Mini, Hallway, Expand:
+  TIME=54.86:END=65.83:MODS=50% Drunk, 50% Tipsy:
+  TIME=65.83:END=75.40:MODS=Hidden, 50% Mini:
+  TIME=76.80:END=87.70:MODS=40% Mini, 15% Flip:
+  TIME=87.77:END=109.68:MODS=Distant, 25% Bumpy, 70% Wave, 25% Drunk:
+  TIME=98.74:END=109.68:MODS=10% Tornado, 25% Tipsy, 50% Beat, 20% Stealth:
+#SONG:Destiny:Hard:;

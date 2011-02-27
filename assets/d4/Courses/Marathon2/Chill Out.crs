@@ -1,0 +1,47 @@
+#COURSE:Chill Out
+#METER:REGULAR:9;
+#METER:DIFFICULT:10;
+ 
+
+#MODS:
+TIME=03.52:END=20.43:MODS=70% Tipsy, 70% Brake:
+TIME=20.43:END=49.40:MODS=50% Brake, 20% Drunk:
+TIME=49.40:END=63.52:MODS=Drunk, Tornado:
+TIME=63.52:END=75.87:MODS=3x, Brake, Drunk, 60% Tornado:
+TIME=77.63:END=91.75:MODS=70% Tipsy, 70% Brake:
+TIME=91.75:END=105.87:MODS=50% Brake, 20% Drunk:
+
+
+#SONG:Ize Pie:Hard:;
+
+#MODS:
+TIME=03.83:END=46.07:MODS=40% Wave, 40% Drunk, 25% Tipsy:
+TIME=15.35:END=46.07:MODS=50% Boost:
+TIME=46.07:END=65.03:MODS=40% Wave, 40% Drunk, 25% Tipsy, 30% Tornado:
+TIME=65.03:END=71.99:MODS=Brake, Drunk, 150% Tornado:
+TIME=72.95:END=88.31:MODS=40% Wave, 40% Drunk, 25% Tipsy:
+TIME=88.31:END=104.63:MODS=85% Tipsy, 85% Drunk, 85% Boost, 40% Wave:
+
+
+#SONG:Reactor:Hard:;
+
+#MODS:
+TIME=00.00:END=108.60:MODS=Space, Reverse, Dark:
+TIME=00.00:END=36.33:MODS=30% Expand, 30% Tornado:
+TIME=38.15:END=67.24:MODS=Tipsy, 40% Brake:
+TIME=67.24:END=81.33:MODS=30% Expand, 30% Tornado, Dizzy:
+TIME=83.60:END=105.42:MODS=Tipsy, 40% Brake:
+TIME=105.42:END=108.60:MODS=50% Drunk, 40% Tornado:
+
+#SONG:Sweet World:Hard:;
+
+#MODS:
+TIME=03.51:END=21.16:MODS=80% Brake, 80% Wave:
+TIME=21.16:END=35.28:MODS=50% Mini, Dizzy, 20% Tornado:
+TIME=35.28:END=49.39:MODS=40% Drunk, 30% Tornado:
+TIME=49.39:END=63.51:MODS=70% Wave, 70% Drunk, 70% Tipsy, 70% Dark:
+TIME=63.51:END=77.62:MODS=50% Mini, Dizzy, 20% Tornado:
+TIME=77.62:END=91.74:MODS=40% Drunk, 30% Tornado:
+TIME=91.74:END=105.85:MODS=50% Brake, 50% Wave, 50% Drunk, 20% Tornado, 50% Tipsy:
+
+#SONG:Twilight:Expert:;

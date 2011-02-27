@@ -1,0 +1,7 @@
+<!-- Don't show player stats panes -->
+<ActorFrame>
+	<children>
+		<AutoActor File="@THEME:GetPath(EC_BGANIMATIONS,'','_scrolling ITG credits')" />
+		<AutoActor File="@THEME:GetPath(EC_BGANIMATIONS,'','_ScreenEnding overlay common')" />
+	</children>
+</ActorFrame>

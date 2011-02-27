@@ -1,0 +1,33 @@
+<ActorFrame><children>
+	<Layer
+		Class="AutoActor" 
+		File="../ScreenWithMenuElements underlay/back"
+		OnCommand="playcommand,DoOn"
+	/>
+	<Layer
+		Class="AutoActor" 
+		File="../_shared underlay arrows"
+		OnCommand="playcommand,DoOn"
+	/>
+	<Layer Class="ActorFrame" InitCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+50;z,-100;zoom,1.35"><children>
+		<ActorFrame><children>
+			<AutoActor 
+				File="char" 
+				OnCommand="zbuffer,1;glow,1,1,1,0;diffusealpha,0;linear,0.3;glow,1,1,1,1;sleep,0.001;diffusealpha,1;linear,0.3;glow,1,1,1,0" 
+				OffCommand="linear,0.3;diffusealpha,0"
+			/>
+		</children></ActorFrame>
+	</children></Layer>
+	<Layer Class="AutoActor" 
+		File="explanation frame" 
+		OnCommand="x,SCREEN_CENTER_X+82;y,SCREEN_CENTER_Y+134;diffusealpha,0;linear,0.5;diffusealpha,1" 
+		MadeChoiceP1MessageCommand="playcommand,GoOff"
+		MadeChoiceP2MessageCommand="playcommand,GoOff"
+		GoOffCommand="linear,0.5;diffusealpha,0" 
+	/>
+	<Layer
+		Class="AutoActor" 
+		File="../ScreenWithMenuElements underlay/fore"
+		OnCommand="playcommand,DoOn"
+	/>
+</children></ActorFrame>

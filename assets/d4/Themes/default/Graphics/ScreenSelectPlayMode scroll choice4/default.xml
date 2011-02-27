@@ -1,0 +1,33 @@
+<ActorFrame
+	MadeChoiceP1MessageCommand="playcommand,GoOff"
+	MadeChoiceP2MessageCommand="playcommand,GoOff"
+	GoOffCommand="%function(self) self:linear(0.5); local bHasFocus=math.abs(self:GetZoomZ()-1.1)<0.01; if bHasFocus then self:x(0); self:y(0); self:z(200); self:diffuse(1,1,1,1); self:zoom(1); self:glowblink(); self:sleep(0.5); self:linear(0.5); self:zoom(0); else self:x(0); self:y(0); self:z(0); self:zoom(0); end self:sleep(5) end"
+> <children>
+	<AutoActor 
+		File="title"
+		InitCommand="zbuffer,1"
+	/>
+	<ActorFrame
+		OnCommand="x,-150;y,30"
+		GainFocusCommand="pulse;effectmagnitude,1.2,1,0;effectclock,bgm;effectperiod,.5;effectdelay,.5;effectoffset,0.6"
+		LoseFocusCommand="stopeffect"
+	> <children>
+		<Layer
+			File="stopwatch"
+			InitCommand="zbuffer,1"
+		/>
+		<Layer
+			Type="ActorFrame"
+			OnCommand="x,8;y,16;rotationz,15;spin;effectmagnitude,0,0,+45;effectclock,bgm"
+		> <children>
+			<AutoActor 
+				File="hand"
+				InitCommand="zbuffer,1;horizalign,right;vertalign,bottom;x,24;y,16"
+			/>
+		</children> </Layer>
+		<Layer
+			File="center"
+			InitCommand="zbuffer,1;horizalign,right;vertalign,bottom;x,36;y,36;hidden,0"
+		/>
+	</children> </ActorFrame>
+</children> </ActorFrame>

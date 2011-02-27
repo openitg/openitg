@@ -1,0 +1,53 @@
+<ActorFrame><children>
+	<Layer
+		File="../ScreenWithMenuElements underlay"
+	/>
+	
+	<ActorFrame
+		OnCommand="addx,-SCREEN_WIDTH;decelerate,0.3;addx,SCREEN_WIDTH"
+		OffCommand="accelerate,0.3;addx,SCREEN_WIDTH"
+	><children>
+	
+		<Layer
+			File="../../Graphics/_name p1"
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_1)"
+			OnCommand="x,SCREEN_CENTER_X-146;y,SCREEN_CENTER_Y-138"
+		/>
+		<Layer
+			File="../../Graphics/_name p2"
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_2)"
+			OnCommand="x,SCREEN_CENTER_X+146;y,SCREEN_CENTER_Y-138"
+		/>
+		<Layer
+			File="player-frame"
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_1)"
+			OnCommand="x,SCREEN_CENTER_X-146;y,SCREEN_CENTER_Y-60"
+		/>
+		<Layer
+			File="player-frame"
+			Condition="GAMESTATE:IsHumanPlayer(PLAYER_2)"
+			OnCommand="x,SCREEN_CENTER_X+146;y,SCREEN_CENTER_Y-60"
+		/>
+		<Layer
+			Font="_eurostile normal"
+			Text="Not Present"
+			Condition="not GAMESTATE:IsHumanPlayer(PLAYER_1)"
+			OnCommand="x,SCREEN_CENTER_X-146;y,SCREEN_CENTER_Y-70;DiffuseShift;EffectColor1,.8,.8,.8,1;EffectColor2,.4,.4,.4,1"
+		/>
+		<Layer
+			Font="_eurostile normal"
+			Text="Not Present"
+			Condition="not GAMESTATE:IsHumanPlayer(PLAYER_2)"
+			OnCommand="x,SCREEN_CENTER_X+146;y,SCREEN_CENTER_Y-70;DiffuseShift;EffectColor1,.8,.8,.8,1;EffectColor2,.4,.4,.4,1"
+		/>
+		<Layer
+			File="shared-frame"
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+36"
+		/>
+		<Layer
+			File="explanation-frame"
+			OnCommand="x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y+118"
+		/>
+	</children></ActorFrame>
+</children></ActorFrame>
+

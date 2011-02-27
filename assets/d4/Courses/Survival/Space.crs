@@ -1,0 +1,25 @@
+#COURSE:Space
+#METER:REGULAR:9;
+#METER:DIFFICULT:9;
+
+
+#MODS:;
+#GAINSECONDS:70;
+#SONG:Spacy Crazy Girl:Medium:Space, 2x, nodifficult;  
+
+#MODs:;
+#GAINSECONDS:65;
+#SONG:Summer in Belize:Medium:Space, boost, 1.5x, nodifficult;
+
+#MODS:;
+#GAINSECONDS:65;
+#SONG:Spaceman:medium:Space, expand, 2.5x, nodifficult; 
+
+#MODs:;
+#GAINSECONDS:60;
+#SONG:!:Medium:Space, wave, 1.5x, nodifficult;
+
+#MODS:;
+#GAINSECONDS:60;
+#SONG:Temple of Boom:medium:Space, Reverse, 60% Expand, 50% bumpy, 75% hidden, 1.5x, nodifficult; 
+

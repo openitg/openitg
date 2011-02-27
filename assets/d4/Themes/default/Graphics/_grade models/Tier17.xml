@@ -1,0 +1,16 @@
+<ActorFrame>
+	<children>
+		<ActorFrame
+			OnCommand="zoom,0.85;wag;EffectMagnitude,0,0,10"
+		>
+			<children>
+				<Actor
+					File="d.txt"
+				/>
+			</children>
+		</ActorFrame>
+	</children>
+</ActorFrame>
+
+
+

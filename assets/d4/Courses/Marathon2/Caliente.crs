@@ -1,0 +1,47 @@
+#COURSE:Caliente;
+#METER:REGULAR:8;
+#METER:DIFFICULT:10;
+ 
+#MODS:
+  TIME=10.47:END=20.36:MODS=40% Drunk:
+  TIME=20.36:END=30.26:MODS=70% Tipsy:
+  TIME=30.26:END=40.16:MODS=Beat:
+  TIME=40.16:END=50.06:MODS=50% Beat, 30% Boost:
+  TIME=50.06:END=62.43:MODS=15% Tornado:
+  TIME=62.43:END=72.33:MODS=60% Drunk:
+  TIME=72.33:END=82.23:MODS=90% Tipsy:
+  TIME=82.23:END=92.12:MODS=Beat, 50% Sudden:
+  TIME=92.12:END=102.02:MODS=50% Beat, 30% Boost, 30% Sudden:
+  TIME=102.02:END=111.92:MODS=50% Beat, 50% Wave, 50% Drunk:
+  TIME=111.92:END=123.06:MODS=50% Beat, 30% Expand, Bumpy:
+#SONG:Hip Hop Jam:Medium:;
+
+#MODS:
+  TIME=14.99:END=29.42:MODS=30% Tornado:
+  TIME=29.42:END=42.96:MODS=25% Flip:
+  TIME=46.57:END=61.00:MODS=Wave, 70% Sudden:
+  TIME=61.00:END=75.44:MODS=70% Hidden, Beat:
+  TIME=77.24:END=107.02:MODS=20% Flip, 20% Tornado:
+  TIME=90.78:END=107.02:MODS=20% Drunk, 20% Tipsy:
+#SONG:Pick Me Up & Tango:Hard:;
+
+#MODS:
+  TIME=06.86:END=25.73:MODS=Bumpy, Beat:
+  TIME=25.73:END=39.45:MODS=20% Drunk, 10% Flip:
+  TIME=39.45:END=51.43:MODS=Brake:
+  TIME=53.17:END=73.76:MODS=50% Bumpy, 50% Beat:
+  TIME=60.03:END=73.76:MODS=Wave:
+  TIME=73.76:END=87.48:MODS=70% Bumpy, 70% Beat, 50% Tipsy:
+  TIME=87.48:END=102.70:MODS=15% Tornado, 15% Flip, 20% Beat:
+#SONG:Hispanic Panic:Hard:;
+
+#MODS:
+  TIME=00.00:END=101.34:MODS=Reverse:
+  TIME=07.24:END=21.79:MODS=70% Boost, Bumpy, 20% Drunk:
+  TIME=21.79:END=29.06:MODS=Wave, 10% Flip:
+  TIME=29.06:END=43.61:MODS=40% Mini, 50% Brake, 20% Sudden:
+  TIME=43.61:END=58.15:MODS=50% Mini, 30% Boost, Hallway, 30% Sudden:
+  TIME=58.15:END=72.70:MODS=Bumpy, 20% Mini, 20% Wave, 10% Tornado:
+  TIME=72.70:END=85.43:MODS=Boomerang, Sudden:
+  TIME=87.24:END=101.34:MODS=30% Expand, Beat, Sudden, Dark:
+#SONG:Fleadh Uncut:Hard:;

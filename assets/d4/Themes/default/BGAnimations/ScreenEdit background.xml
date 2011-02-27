@@ -1,0 +1,11 @@
+<ActorFrame>
+	<children>
+		<AutoActor 
+			File="@THEME:GetPath(EC_BGANIMATIONS,'','_shared background no streaks')" 
+			OnCommand="%function(self) self:rotationz(90); self:zoomx(1.2); self:x(SCREEN_CENTER_X); self:y(SCREEN_CENTER_Y); self:SetUpdateRate(0.1) end" 
+		/>
+		<Quad 
+			OnCommand="diffuse,0,0,0,0.2;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y;ZoomToWidth,SCREEN_WIDTH;ZoomToHeight,SCREEN_HEIGHT"
+		/>
+	</children>
+</ActorFrame>

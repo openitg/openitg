@@ -1,0 +1,382 @@
+<ActorFrame> <children>
+	<ActorFrame OnCommand="%function(self) self:y( scale(1,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"> <children>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier01')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(1,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end" 
+		/>
+		<AutoActor
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier02')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(2,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end" 
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier03')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(3,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end" 
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier04')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(4,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end" 
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier05')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(5,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end" 
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier06')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(6,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier07')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(7,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier08')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(8,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end" 
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier09')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(9,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end" 
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenEvaluation','grade Tier10')"
+			OnCommand="%function(self) self:zoom(0.45); self:x( scale(10,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end" 
+		/>
+	</children></ActorFrame>
+	<ActorFrame OnCommand="x,SCREEN_LEFT+80"> <children>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenRanking','Difficulty easy')" 
+			OnCommand="%function(self) self:y( scale(2,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenRanking','Difficulty medium')" 
+			OnCommand="%function(self) self:y( scale(3,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenRanking','Difficulty hard')" 
+			OnCommand="%function(self) self:y( scale(4,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenRanking','Difficulty challenge')" 
+			OnCommand="%function(self) self:y( scale(5,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenRanking','CourseDifficulty regular')" 
+			OnCommand="%function(self) self:y( scale(6,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"
+		/>
+		<AutoActor 
+			File="@THEME:GetPath(EC_GRAPHICS,'ScreenRanking','CourseDifficulty difficult')" 
+			OnCommand="%function(self) self:y( scale(7,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"
+		/>
+	</children></ActorFrame>
+	<ActorFrame OnCommand="%function(self) self:y( scale(2,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"> <children>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER01)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(1,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER02)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(2,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER03)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(3,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER04)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(4,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER05)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(5,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER06)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(6,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER07)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(7,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER08)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(8,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER09)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(9,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_EASY,GRADE_TIER10)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(10,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+	</children></ActorFrame>
+	<ActorFrame OnCommand="%function(self) self:y( scale(3,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"> <children>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER01)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(1,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER02)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(2,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER03)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(3,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER04)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(4,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER05)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(5,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER06)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(6,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER07)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(7,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER08)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(8,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER09)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(9,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_MEDIUM,GRADE_TIER10)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(10,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+	</children></ActorFrame>
+	<ActorFrame OnCommand="%function(self) self:y( scale(4,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"> <children>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER01)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(1,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER02)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(2,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER03)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(3,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER04)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(4,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER05)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(5,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER06)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(6,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER07)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(7,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER08)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(8,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER09)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(9,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_HARD,GRADE_TIER10)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(10,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+	</children></ActorFrame>
+	<ActorFrame OnCommand="%function(self) self:y( scale(5,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"> <children>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER01)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(1,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER02)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(2,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER03)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(3,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER04)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(4,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER05)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(5,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER06)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(6,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER07)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(7,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER08)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(8,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER09)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(9,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalStepsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,DIFFICULTY_CHALLENGE,GRADE_TIER10)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(10,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+	</children></ActorFrame>
+	<ActorFrame OnCommand="%function(self) self:y( scale(6,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"> <children>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER01)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(1,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER02)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(2,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER03)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(3,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER04)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(4,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER05)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(5,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER06)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(6,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER07)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(7,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER08)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(8,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER09)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(9,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_REGULAR,GRADE_TIER10)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(10,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+	</children></ActorFrame>
+	<ActorFrame OnCommand="%function(self) self:y( scale(7,1,7,SCREEN_CENTER_Y-130,SCREEN_CENTER_Y+130) ); end"> <children>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER01)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(1,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER02)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(2,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER03)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(3,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER04)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(4,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER05)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(5,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER06)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(6,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER07)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(7,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER08)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(8,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER09)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(9,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+		<BitmapText
+			Font="_futurist metalic"
+			Text="@PROFILEMAN:GetMachineProfile():GetTotalTrailsWithTopGrade(STEPS_TYPE_DANCE_DOUBLE,COURSE_DIFFICULTY_DIFFICULT,GRADE_TIER10)"
+			OnCommand="%function(self) self:zoom(0.7); self:x( scale(10,1,10,SCREEN_LEFT+160,SCREEN_RIGHT-50) ); end"
+		/>
+	</children></ActorFrame>
+</children></ActorFrame>

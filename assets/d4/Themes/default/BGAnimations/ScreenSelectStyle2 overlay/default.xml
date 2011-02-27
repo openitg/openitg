@@ -1,0 +1,10 @@
+<ActorFrame><children>
+	<Layer Class="AutoActor" 
+		File="explanation frame" 
+		OnCommand="x,SCREEN_CENTER_X+82;y,SCREEN_CENTER_Y+134;diffusealpha,0;linear,0.5;diffusealpha,1" 
+		MadeChoiceP1MessageCommand="playcommand,GoOff"
+		MadeChoiceP2MessageCommand="playcommand,GoOff"
+		GoOffCommand="linear,0.5;diffusealpha,0" 
+	/>
+	<AutoActor File="../_join overlay" />
+</children></ActorFrame>

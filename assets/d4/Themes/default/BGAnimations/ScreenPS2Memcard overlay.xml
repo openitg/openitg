@@ -1,0 +1,44 @@
+<ActorFrame>
+	<children>
+		<ActorFrame
+			OnCommand="x,SCREEN_CENTER_X-100;y,SCREEN_CENTER_Y*4/3;playcommand,SetYes"
+
+			PromptYesCommand="playcommand,PillShow;playcommand,PillGainFocus"
+			ChangeToYesCommand="playcommand,PillGainFocus"
+			PromptNoCommand="playcommand,PillShow;playcommand,PillLoseFocus"
+			ChangeToNoCommand="playcommand,PillLoseFocus"
+
+			YesCommand="playcommand,PillHide"
+			NoCommand="playcommand,PillHide"
+			AbortYesNoCommand="playcommand,PillHide"
+			>
+			<children>
+				<Actor File="@THEME:GetPath(EC_GRAPHICS,'','_small pill green')" />
+			</children>
+		</ActorFrame>
+		<ActorFrame
+			OnCommand="x,SCREEN_CENTER_X+100;y,SCREEN_CENTER_Y*4/3;playcommand,SetNo"
+
+			PromptYesCommand="playcommand,PillShow;playcommand,PillLoseFocus"
+			ChangeToYesCommand="playcommand,PillLoseFocus"
+			PromptNoCommand="playcommand,PillShow;playcommand,PillGainFocus"
+			ChangeToNoCommand="playcommand,PillGainFocus"
+
+			NoCommand="playcommand,PillHide"
+			YesCommand="playcommand,PillHide"
+			AbortYesNoCommand="playcommand,PillHide"
+			>
+			<children>
+				<Actor File="@THEME:GetPath(EC_GRAPHICS,'','_small pill red')" />
+			</children>
+		</ActorFrame>
+		<BitmapText
+			Text="Press &START;"
+			File="Common Normal"
+			OnCommand="diffuse,#E0E0E0;x,SCREEN_CENTER_X;y,SCREEN_CENTER_Y*4/3;diffusealpha,0"
+			PromptOKCommand="diffusealpha,1"
+			PromptOKAbortCommand="decelerate,0.5;diffusealpha,0"
+			PromptOKPressedCommand="decelerate,0.5;diffusealpha,0"
+		/>
+	</children>
+</ActorFrame>

@@ -1,0 +1,58 @@
+#COURSE:Wildside
+#METER:REGULAR:9;
+#METER:DIFFICULT:10;
+
+
+#MODS:
+TIME=06.56:END=11.08:MODS=200% Tornado:
+TIME=12.73:END=13.14:MODS=Beat:
+TIME=13.14:END=26.28:MODS=50% Drunk, 50% Tipsy:
+TIME=26.28:END=39.43:MODS=30% Expand, 30% Boost, 50% Drunk, 50% Tipsy:
+TIME=39.43:END=46.00:MODS=90% Hidden, 90% Sudden:
+TIME=46.00:END=59.15:MODS=90% Hidden, 90% Sudden, 50% Drunk, 50% Tipsy:
+TIME=59.15:END=72.29:MODS=50% Drunk, 50% Tipsy:
+TIME=85.44:END=98.58:MODS=30% Expand, 30% Boost, 50% Drunk, 50% Tipsy:
+TIME=98.58:END=105.16:MODS=35% Tornado:
+
+
+#SONG:Temple of Boom:Hard:;
+
+
+#MODS:
+TIME=3.42:END=104.99:MODS=Incoming, 50% Sudden:
+TIME=3.42:END=33.42:MODS=Wave, 50% Drunk, 50% Dizzy:
+TIME=33.42:END=47.13:MODS=50% Dizzy, 70% Tipsy, 70% Drunk:
+TIME=47.13:END=60.84:MODS=50% Dizzy, 70% Tipsy, 70% Drunk, 50% Wave:
+TIME=64.27:END=84.84:MODS=Wave, 50% Drunk, 50% Dizzy:
+TIME=84.84:END=91.70:MODS=50% Dizzy, 70% Tipsy, 70% Drunk:
+TIME=91.70:END=104.99:MODS=50% Dizzy, 70% Tipsy, 70% Drunk, 50% Wave:
+
+
+#SONG:Holy Guacamole:Hard:;
+
+
+#MODS:
+TIME=3.42:END=109.70:MODS=Reverse, Space:
+TIME=3.42:END=13.70:MODS=20% Boost:
+TIME=13.70:END=27.42:MODS=20% Boost, 50% Expand, Wave:
+TIME=27.42:END=54.85:MODS=20% Boost, 60% Hidden, 50% Expand, Wave:
+TIME=54.85:END=68.56:MODS=50% Boost, 50% Expand, 50% Drunk, 50% Tipsy:
+TIME=68.56:END=82.28:MODS=Dark, 50% Boost, 30% Dizzy, 50% Sudden, 50% Hidden, 20% Drunk, 20% Tipsy:
+TIME=82.28:END=109.70:MODS=50% Boost, 60% Hidden, 50% Expand, Wave:
+
+#SONG:Tribal Style:Hard:;
+
+
+#MODS:
+TIME=00.00:END=105.29:MODS=1.5x, Reverse, Incoming:
+TIME=00.00:END=7.95:MODS=50% Beat:
+TIME=09.68:END=29.37:MODS=20% Beat, Expand, 110% Hidden:
+TIME=31.82:END=51.42:MODS=40% Beat, 20% Tornado, Wave, Sudden:
+TIME=51.42:END=60.45:MODS=20% Beat, Expand, Hidden:
+TIME=61.22:END=71.02:MODS=20% Beat, 50% Dizzy, 50% Drunk, 90% Sudden, Wave:
+TIME=71.02:END=79.59:MODS=Wave, Sudden, 20% Tornado:
+TIME=80.80:END=100.40:MODS=40% Beat, 20% Tornado, Wave, Sudden:
+TIME=100.40:END=108.05:MODS=20% Beat, 50% Dizzy, 50% Drunk, Hidden, Wave:
+TIME=105.29:END=108.05:MODS=50% Beat:
+
+#SONG:Monolith:Hard:;

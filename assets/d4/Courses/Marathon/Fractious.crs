@@ -1,0 +1,57 @@
+#COURSE:Fractious
+
+#METER:REGULAR:8;
+#METER:DIFFICULT:10;
+ 
+#MODS:
+  TIME=0.01:END=13.22:MODS=Brake:
+  TIME=13.22:END=26.08:MODS=Boost, Wave:
+  TIME=26.08:END=30.36:MODS=Tipsy:
+  TIME=30.36:END=35.51:MODS=Brake:
+  TIME=35.51:END=50.94:MODS=Boost, Wave:
+  TIME=50.94:END=57.79:MODS=Boost, Wave, 70% Dizzy:
+  TIME=57.79:END=71.51:MODS=Boost, Wave, 50% Drunk, 50% Tipsy:
+  TIME=71.51:END=92.08:MODS=Boost, Wave, 70% Dizzy:
+  TIME=92.08:END=112.65:MODS=Brake, Wave:
+  TIME=117.79:END=180:MODS=*1.5 225% Brake:
+
+#SONG:In The Groove/Bend Your Mind:Medium:;
+
+#MODS:
+  TIME=0.01:END=15.00:MODS=75% Brake, Reverse:
+  TIME=16.47:END=26.07:MODS=Boost, 20% Drunk, 20% Tipsy:
+  TIME=26.07:END=38.41:MODS=Boost, Wave:
+  TIME=38.41:END=49.38:MODS=50% Drunk, 50% Tipsy, Boost, Wave:
+  TIME=49.38:END=60.35:MODS=Drunk:
+  TIME=60.35:END=71.32:MODS=Boost, 10% Tornado:
+  TIME=71.32:END=82.30:MODS=0.5x:
+  TIME=82.30:END=91.90:MODS=Boost, 20% Drunk, 20% Tipsy:
+  TIME=93.27:END=102.18:MODS=Expand, 20% Tornado:
+  TIME=104.24:END=180:MODS=Incoming, Wave:
+
+#SONG:In The Groove/Disconnected -Mobius-:Hard:; 
+
+#MODS:
+  TIME=0.01:END=15.09:MODS=Wave:
+  TIME=15.09:END=29.64:MODS=20% Tornado, Wave:
+  TIME=29.64:END=36.91:MODS=Expand, Wave:
+  TIME=36.91:END=51.45:MODS=65% Brake, 20% Drunk, 20% Tipsy:
+  TIME=51.45:END=64.18:MODS=65% Brake, 30% Drunk, 30% Tipsy:
+  TIME=66.00:END=78.72:MODS=80% Wave, 80% Expand, 80% Brake:
+  TIME=80.54:END=95.09:MODS=20% Tornado, Wave:
+  TIME=95.09:END=109.63:MODS=Wave:
+  TIME=109.63:END=180:MODS=Distant, Wave, 20% Drunk:
+
+#SONG:In The Groove/Queen of Light:Hard:; 
+
+#MODS:
+  TIME=0.1:END=109.27:MODS=Boomerang, 85% Dark:
+  TIME=0.1:END=12.86:MODS=80% Bumpy, Wave:
+  TIME=12.86:END=26.1:MODS=10% Alternate:
+  TIME=26.51:END=39.75:MODS=10% Alternate, 20% Drunk, 20% Tipsy:
+  TIME=39.75:END=52.99:MODS=80% Bumpy:
+  TIME=52.99:END=66.23:MODS=80% Bumpy, 30% Drunk, 30% Tipsy:
+  TIME=66.23:END=79.48:MODS=10% Split:
+  TIME=79.48:END=180:MODS=50% Tipsy,50% Drunk:
+
+#SONG:In The Groove/Oasis:HARD:;

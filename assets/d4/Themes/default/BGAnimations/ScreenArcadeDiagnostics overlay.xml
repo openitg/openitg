@@ -1,0 +1,111 @@
+<ActorFrame OnCommand="x,SCREEN_LEFT+160;y,SCREEN_TOP+80"> <children>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="@GetProductName()"
+		OnCommand="x,10;y,30*0;horizalign,left;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="Revision:"
+		OnCommand="y,30*1;horizalign,right;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="@GetRevision()"
+		OnCommand="x,10;y,30*1;horizalign,left;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="Uptime:"
+		OnCommand="y,30*2;horizalign,right;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text=""
+		OnCommand="x,10;y,30*2;horizalign,left;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+		RefreshCommand="%function(self) self:settext( GetUptime() ) end"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="Network:"
+		OnCommand="y,30*3;horizalign,right;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text=""
+		OnCommand="x,10;y,30*3;horizalign,left;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+		RefreshCommand="%function(self) self:settext( GetIP() ) end"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="Machine Edits:"
+		OnCommand="y,30*4;horizalign,right;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="@GetNumMachineEdits() .. ' files'"
+		OnCommand="x,10;y,30*4;horizalign,left;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="Crash Logs:"
+		OnCommand="y,30*5;horizalign,right;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="@GetNumCrashLogs() .. ' files'"
+		OnCommand="x,10;y,30*5;horizalign,left;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="I/O Errors:"
+		OnCommand="y,30*6;horizalign,right;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text=""
+		OnCommand="x,10;y,30*6;horizalign,left;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+		RefreshCommand="%function(self) self:settext( GetNumIOErrors() ) end"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="Mach. Scores:"
+		OnCommand="y,30*7;horizalign,right;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>
+	<Layer
+		Type="BitmapText"
+		Font="_eurostile normal"
+		Text="@GetNumMachineScores()..''"
+		OnCommand="x,10;y,30*7;horizalign,left;zoom,0.75;diffusealpha,0;linear,0.3;diffusealpha,1"
+		OffCommand="linear,0.3;diffusealpha,0"
+	/>																								   
+	GetNumMachineScores
+</children> </ActorFrame>

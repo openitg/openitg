@@ -1,0 +1,10 @@
+Materials: 1
+"sphere"
+1 1 1 1
+1 1 1 1
+1 1 1 1
+0 0 0 1
+12.799999
+1.000000
+"sphere silver.png"
+"metal sphere add.png"

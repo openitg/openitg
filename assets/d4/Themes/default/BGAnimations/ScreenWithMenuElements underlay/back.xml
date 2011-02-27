@@ -1,0 +1,13 @@
+<ActorFrame InitCommand="y,SCREEN_TOP+42" ><children>
+	<AutoActor
+		File="streak"
+		InitCommand="x,SCREEN_CENTER_X;zoomToWidth,SCREEN_WIDTH;cropleft,-0.2;cropright,-0.2"
+		DoOnCommand="diffusealpha,1;cropright,1.2;cropleft,-0.2;linear,1;cropright,-0.2"
+		DoOffCommand="linear,0.5;diffusealpha,0"
+	/>
+	<AutoActor
+		File="flare"
+		InitCommand="x,SCREEN_LEFT-128"
+		DoOnCommand="x,SCREEN_LEFT-128;RotationZ,0;Linear,1;x,SCREEN_RIGHT+128;RotationZ,+360"
+	/>
+</children></ActorFrame>

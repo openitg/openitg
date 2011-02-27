@@ -1,0 +1,4 @@
+[Model]
+Meshes=../default/_down tap addition meshes.txt
+Materials=_Down Tap note 4th materials.txt
+Bones=../default/_down tap bones.txt

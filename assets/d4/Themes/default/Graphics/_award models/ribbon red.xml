@@ -1,0 +1,5 @@
+<ActorFrame>
+	<children>
+		<Model Meshes="ribbon meshes.txt" Materials="ribbon materials red.txt" Bones="bones.txt" OnCommand="zoom,0.6;wag;EffectMagnitude,0,15,0;EffectPeriod,8" />
+	</children>
+</ActorFrame>

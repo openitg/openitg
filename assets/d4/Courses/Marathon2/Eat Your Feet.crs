@@ -1,0 +1,67 @@
+#COURSE:Eat Your Feet
+#METER:REGULAR:8;
+#METER:DIFFICULT:9;
+ 
+
+#MODS:
+TIME=07.17:END=100.77:MODS=-90% Mini, 7% Flip:
+TIME=14.37:END=33.57:MODS=Dizzy, 30% Beat, 20% Tipsy:
+TIME=33.57:END=43.17:MODS=50% Brake, 20% Drunk, 40% Tipsy, 40% Beat, Bumpy:
+TIME=43.17:END=52.77:MODS=Dizzy, 30% Beat, 20% Tipsy:
+TIME=52.77:END=71.97:MODS=70% Tipsy, Bumpy:
+TIME=71.97:END=91.17:MODS=50% Brake, 20% Drunk, 40% Tipsy, 40% Beat, Bumpy:
+TIME=91.17:END=100.77:MODS=50% Brake, Dizzy, Bumpy:
+TIME=100.77:END=103.47:MODS=175% Mini:
+
+#SONG:D-Code:Hard:;
+
+#MODS:
+
+
+TIME=00.00:END=106.00:MODS=Reverse, Hallway:
+TIME=07.19:END=7.57:MODS=Beat:
+TIME=08.71:END=9.09:MODS=Beat:
+TIME=10.23:END=10.61:MODS=Beat:
+TIME=07.57:END=13.65:MODS=Wave, 30% Expand, Tipsy, 30% Drunk, 50% Boost:
+TIME=13.65:END=25.80:MODS=80% Boost:
+TIME=25.80:END=50.11:MODS=Wave, 30% Expand, 30% Drunk, 20% Tornado, 30% Tipsy:
+TIME=50.11:END=74.41:MODS=50% Brake, 40% Tornado, 90% Hidden:
+TIME=74.41:END=83.52:MODS=Wave, 30% Expand, 30% Drunk, 50% Boost:
+TIME=74.03:END=74.41:MODS=Beat:
+TIME=77.07:END=77.45:MODS=Beat:
+TIME=80.11:END=80.48:MODS=Beat:
+TIME=83.52:END=92.64:MODS=Wave, 30% Expand, 30% Drunk, 20% Tornado, 30% Tipsy:
+TIME=92.64:END=99.28:MODS=Wave, 200% Boost, 60% Drunk, 50% Tornado, 60% Tipsy:
+TIME=104.22:END=104.60:MODS=Beat:
+TIME=99.28:END=104.60:MODS=50% Brake, 40% Tornado, Sudden:
+TIME=104.60:END=108.00:MODS=Reverse, Flip, 50% Cross, 50% Split, 50% Alternate, Drunk, Tipsy:
+
+#SONG:Habanera 1:Hard:;
+
+#MODS:
+TIME=00:END=112:MODS=Dark, 50% Mini, 5% Cross:
+TIME=00:END=12:MODS=50% Brake:
+TIME=12:END=24:MODS=70% Expand, 80% Bumpy, Tipsy:
+TIME=24:END=36:MODS=60% Tipsy, 40% Brake, 40% Wave:
+TIME=36:END=48:MODS=70% Expand, 80% Bumpy, Dizzy:
+TIME=48:END=60:MODS=70% Expand, 80% Bumpy, Dizzy:
+TIME=60:END=66:MODS=50% Drunk, 20% Tornado, 40% Bumpy:
+TIME=66:END=72:MODS=50% Drunk, 20% Tornado, 40% Bumpy, 30% Tipsy, 50% Boost:
+TIME=72:END=84:MODS=50% Drunk, 20% Tornado, 40% Bumpy, 30% Tipsy, 70% Expand:
+TIME=84:END=96:MODS=70% Expand, 80% Bumpy, Dizzy:
+TIME=89.26:END=89.52:MODS=-75% Mini:
+TIME=96:END=104.92:MODS=70% Expand, 70% Bumpy, Dizzy:
+TIME=104.92:END=108:MODS=50% Drunk, 20% Tornado, 40% Bumpy, 30% Tipsy, 70% Expand:
+
+#SONG:Go 60 Go:Medium:;
+
+#MODS:
+TIME=00.00:END=106:MODS=Boomerang, Mirror, Reverse, Vivid, Distant, Dark, 2x, Hidden, 40% Mini:
+TIME=04.49:END=20.99:MODS=40% Drunk, 50% Dizzy, 50% Wave, 20% Bumpy, 20% Brake:
+TIME=20.99:END=35.99:MODS=50% Expand, 40% Dizzy, 20% Bumpy:
+TIME=47.99:END=67.48:MODS=40% Drunk, 50% Dizzy, 50% Wave, 20% Bumpy, 20% Brake:
+TIME=67.49:END=79.49:MODS=70% Wave, 70% Drunk, 70% Tipsy, 20% Bumpy:
+TIME=79.49:END=91.49:MODS=40% Drunk, 50% Dizzy, 50% Wave, 20% Bumpy, 20% Brake:
+TIME=92.645:END=105.01:MODS=50% Dizzy, 40% Drunk, 50% Wave, 20% Tornado:
+
+#SONG:Renaissance:Medium:;

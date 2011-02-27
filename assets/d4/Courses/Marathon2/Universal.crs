@@ -1,0 +1,46 @@
+#COURSE:Universal;
+#METER:Regular:9;
+#METER:Difficult:10;
+
+#MODS:
+  TIME=00.00:END=108.64:MODS=Incoming:
+  TIME=14.55:END=38.18:MODS=30% Drunk:
+  TIME=38.18:END=67.27:MODS=30% Beat:
+  TIME=67.27:END=83.64:MODS=50% Expand:
+  TIME=83.64:END=105.45:MODS=30% Beat, Flat:
+#SONG:Sweet World:Medium:;
+
+#MODS:
+  TIME=00.00:END=99.85:MODS=Space:
+  TIME=14.01:END=28.03:MODS=50% Mini:
+  TIME=28.03:END=42.04:MODS=60% Tipsy:
+  TIME=42.04:END=56.06:MODS=40% Expand, 30% Beat:
+  TIME=56.06:END=70.07:MODS=80% Mini, Beat:
+  TIME=70.07:END=84.09:MODS=50% Stealth:
+  TIME=84.09:END=91.09:MODS=Planted:
+  TIME=91.09:END=99.85:MODS=Flat:
+#SONG:Spaceman:Hard:;
+
+#MODS:
+  TIME=00.00:END=103.09:MODS=Hallway, Dark:
+  TIME=15.97:END=30.20:MODS=50% Stealth:
+  TIME=23.09:END=30.20:MODS=30% Beat:
+  TIME=30.20:END=44.42:MODS=Dizzy:
+  TIME=44.42:END=65.75:MODS=Mini, 30% Beat:
+  TIME=58.64:END=65.75:MODS=50% Stealth:
+  TIME=65.75:END=79.97:MODS=40% Drunk:
+  TIME=72.86:END=79.97:MODS=40% Tipsy:
+  TIME=79.97:END=87.09:MODS=Mini, 30% Beat, 50% Boost:
+  TIME=87.09:END=103.09:MODS=Dizzy, 30% Drunk, 30% Tipsy, 40% Mini:
+#SONG:Spacy Crazy Girl:Hard:;
+
+#MODS:
+  TIME=00.00:END=112.14:MODS=20% Beat, Distant, Dark, Blind:
+  TIME=04.48:END=22.42:MODS=50% Wave, 20% Drunk, 20% Dizzy:
+  TIME=22.42:END=40.37:MODS=50% Tipsy, 50% Wave:
+  TIME=40.37:END=58.31:MODS=50% Expand, 50% Stealth:
+  TIME=58.31:END=67.28:MODS=30% Brake, 20% Tornado:
+  TIME=67.28:END=76.26:MODS=50% Expand, 50% Stealth:
+  TIME=76.26:END=94.20:MODS=20% Drunk, 20% Tipsy, Blink:
+  TIME=94.20:END=112.14:MODS=50% Wave, 20% Drunk, 20% Dizzy:
+#SONG:Zodiac:Hard:;

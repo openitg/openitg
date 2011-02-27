@@ -1,0 +1,9 @@
+<ActorFrame
+	InitCommand="zoom,0.85;wag;EffectMagnitude,0,10,10"
+>
+	<children>
+		<Actor
+			File="f.txt"
+		/>
+	</children>
+</ActorFrame>

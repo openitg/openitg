@@ -1,0 +1,4 @@
+<ActorFrame><children>
+	<AutoActor File="back" />
+	<AutoActor File="fore" />
+</children></ActorFrame>

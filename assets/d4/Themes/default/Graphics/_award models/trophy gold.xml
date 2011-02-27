@@ -1,0 +1,5 @@
+<ActorFrame>
+	<children>
+		<Model Meshes="trophy meshes.txt" Materials="trophy materials gold.txt" Bones="bones.txt" OnCommand="zoom,4.6;spin;EffectMagnitude,0,40,0" />
+	</children>
+</ActorFrame>

@@ -1,0 +1,15 @@
+<ActorFrame><children>
+	<Actor
+		File="shot"
+		InitCommand="diffusealpha,0;blend,add"
+		MilestoneCommand="zoomx,-2;zoomy,2;diffusealpha,1;x,0;linear,0.5;diffusealpha,0;x,-150"
+	/>
+	<Actor
+		File="shot"
+		InitCommand="diffusealpha,0;blend,add"
+		MilestoneCommand="zoomx,2;zoomy,2;diffusealpha,1;x,0;linear,0.5;diffusealpha,0;x,150"
+	/>
+	<AutoActor
+		File="../Combo 100milestone"
+	/>
+</children></ActorFrame>

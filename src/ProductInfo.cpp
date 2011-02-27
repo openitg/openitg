@@ -28,9 +28,9 @@ CString ProductInfo::getCrashReportUrl() {
 }
 
 CString ProductInfo::getFullVersionString() {
-	return getVersion() + CString("-") + getPlatform();
+	return getVersion() + "-" + getPlatform();
 }
 
 CString ProductInfo::getSerial() {
-	return CString("OITG-") + getVersion() + CString("-") + getPlatform();
+	return CString("OITG-") + getVersion() + "-" + getPlatform();
 }

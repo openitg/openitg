@@ -1,9 +1,7 @@
 #!/bin/sh
 
 DEBIAN_SARGE_MIRROR="http://archive.debian.org/debian"
-
 SARGE_DIST_NAME="sarge"
-
 DEBIAN_SARGE_BACKPORTS="deb http://archive.debian.org/debian-backports sarge-backports main contrib"
 
 usage() {

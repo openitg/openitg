@@ -19,11 +19,6 @@
 #define PATCH_XML_PATH "Data/patch/patch.xml"
 #define STATS_XML_PATH "Data/MachineProfile/Stats.xml"
 
-// these should be defined in verstub.cpp across all platforms
-extern const bool VersionSVN;
-extern const char *const VersionDate;
-extern unsigned long VersionNumber;
-
 /* /stats/ is mounted to Data for arcade builds, so this should be okay. */
 int DiagnosticsUtil::GetNumCrashLogs()
 {
@@ -137,15 +132,12 @@ int DiagnosticsUtil::GetNumMachineScores()
 
 CString DiagnosticsUtil::GetProductName()
 {
-	if( VersionSVN )
-		return CString(PRODUCT_NAME_VER) + " " + ssprintf( "r%lu", VersionNumber);
-
-	return CString(PRODUCT_NAME_VER);
+	return CString(ProductInfo::getFullVersionString());
 }
 
 CString DiagnosticsUtil::GetProductVer()
 {
-	return CString(PRODUCT_VER);
+	return CString(ProductInfo::getVersion());
 }
 
 namespace
@@ -155,37 +147,7 @@ namespace
 	 * from verstub. */
 	CString GenerateDebugSerial()
 	{
-		char system, type;
-
-	// set the compilation OS
-	#if defined(WIN32)
-		system = 'W'; /* Windows */
-	#elif defined(LINUX)
-		if( VersionSVN )
-			system = 'S'; /*nix, with SVN */
-		else
-			system = 'L'; /*nix, no SVN */
-	#elif defined(DARWIN)
-		system = 'M'; /* Mac OS */
-	#else
-		system = 'U'; /* unknown */
-	#endif
-
-	// set the compilation arcade type
-	#ifdef ITG_ARCADE
-		type = 'A';
-	#else
-		type = 'P';
-	#endif
-
-		// if SVN, display revision: "OITG-W-20090409-600-P"
-		// if no SVN, display build in hex: "OITG-W-20090409-08A-P"
-		if( VersionSVN )
-			return ssprintf( "OITG-%c-%s-%03lu-%c", system, 
-				VersionDate, VersionNumber, type );
-		else
-			return ssprintf( "OITG-%c-%s-%03lX-%c", system, 
-				VersionDate, VersionNumber, type );
+		return CString(ProductInfo::getSerial());
 	}
 }
 
@@ -229,7 +191,7 @@ void DiagnosticsUtil::SetInputType( const CString &sType )
 void SetProgramGlobals( lua_State* L )
 {
 	LUA->SetGlobal( "OPENITG", true );
-	LUA->SetGlobal( "OPENITG_VERSION", PRODUCT_TOKEN );
+	LUA->SetGlobal( "OPENITG_VERSION", ProductInfo::getVersion() );
 }
 
 REGISTER_WITH_LUA_FUNCTION( SetProgramGlobals );

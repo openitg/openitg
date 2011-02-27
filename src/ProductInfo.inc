@@ -1,3 +1,4 @@
+; TODO - delete this file?  this stuff is no longer up to date.
 ; Included by the NSIS installer script
 ; Don't forget to also change ProductInfo.h!
 

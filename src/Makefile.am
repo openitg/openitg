@@ -21,18 +21,7 @@ else
 LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ $(LUA_LIBS) -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
 endif
 
-.PHONY: build_version
-
-all: build_version
-
-build_version: $(srcdir)/libresample/libresample.a $(srcdir)/crypto561/libcryptopp.a
-	$(CC) -O2 archutils/Unix/verinc.c -o archutils/Unix/verinc
-	chmod +x archutils/Unix/verinc
-	archutils/Unix/verinc `svnversion`
-	$(CXX) -c verstub.cpp
-
-verstub.cpp:
-	$(MAKE) build_version
+all: $(srcdir)/libresample/libresample.a $(srcdir)/crypto561/libcryptopp.a
 
 clean-local: clean_libresample
 
@@ -389,7 +378,8 @@ ScreenManager.h SongManager.cpp SongManager.h \
 StatsManager.cpp StatsManager.h \
 ThemeManager.cpp ThemeManager.h \
 UnlockManager.cpp UnlockManager.h \
-UserPackManager.cpp UserPackManager.h
+UserPackManager.cpp UserPackManager.h \
+ProductInfo.cpp ProductInfo.h
 
 if !WITHOUT_NETWORKING
 # Compile NetworkSyncManager even if networking is disabled; it'll stub itself.
@@ -455,7 +445,6 @@ main_LDADD = \
 		  $(srcdir)/libresample/libresample.a \
 		  $(srcdir)/crypto561/libcryptopp.a
 
-nodist_openitg_SOURCES = verstub.cpp
 openitg_SOURCES = $(main_SOURCES)
 openitg_LDADD = $(main_LDADD) \
 	$(srcdir)/ffmpeg/lib/libavformat.a $(srcdir)/ffmpeg/lib/libavcodec.a

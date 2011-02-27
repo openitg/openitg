@@ -238,7 +238,7 @@ PrefsManager::PrefsManager() :
 	m_iEndlessBreakLength			( "EndlessBreakLength",			5 ),
 	m_bDisableScreenSaver			( "DisableScreenSaver",			true ),
 	m_sLanguage						( "Language",					"" ),	// ThemeManager will deal with this invalid language
-	m_sMemoryCardProfileSubdir		( "MemoryCardProfileSubdir",	PRODUCT_NAME ),
+	m_sMemoryCardProfileSubdir		( "MemoryCardProfileSubdir",	ProductInfo::getName()),
 	m_iProductID					( "ProductID",					1 ),
 	m_sDefaultLocalProfileIDP1		( "DefaultLocalProfileIDP1",	"" ),
 	m_sDefaultLocalProfileIDP2		( "DefaultLocalProfileIDP2",	"" ),

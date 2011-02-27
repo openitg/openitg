@@ -895,15 +895,10 @@ static void MountTreeOfZips( const CString &dir, bool recurse = true )
 	}
 }
 
-extern const bool VersionSVN;
-extern unsigned long VersionNumber;
-extern const char *const VersionTime;
-
 static void WriteLogHeader()
 {
-	LOG->Info( PRODUCT_NAME_VER );
-	LOG->Info( "Compiled %s (%s %lu)", VersionTime, 
-		VersionSVN ? "revision" : "build", VersionNumber );
+	LOG->Info( ProductInfo::getFullVersionString());
+	LOG->Info( "Compiled %s (build %lu)", ProductInfo::getDate(), ProductInfo::getVersion() );
 
 	time_t cur_time;
 	time(&cur_time);

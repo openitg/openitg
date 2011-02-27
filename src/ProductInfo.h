@@ -10,30 +10,20 @@
 #undef OFFICIAL_RELEASE
 //#define OFFICIAL_RELEASE 1
 
-/* (x?)xyy - x is release type, y is release version */
-/* 101 - beta 1, 102 - beta 1.1, 103 - beta 2, 104 - beta 3 */
-#define PRODUCT_TOKEN 104
+#include "StdString.h"
+#include "../version.h"
 
-/* The name of the build and its current version */
-#define PRODUCT_NAME "OpenITG"
-#define PRODUCT_VER "beta 3"
+class ProductInfo {
 
-#if defined(ITG_ARCADE)
-#define PRODUCT_PLATFORM "AC"
-#elif defined(XBOX)
-#define PRODUCT_PLATFORM "CS" 
-#else
-#define PRODUCT_PLATFORM "PC"
-#endif
-
-#ifndef OFFICIAL_RELEASE
-#define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER " DEV"
-#else
-#define PRODUCT_NAME_VER PRODUCT_NAME " " PRODUCT_PLATFORM " " PRODUCT_VER
-#endif
-
-/* A central location from which we can update crash handler data... */
-#define CRASH_REPORT_URL "https://sourceforge.net/tracker2/?atid=1110556&group_id=239714"
+	public:
+		static CString getName();
+		static CString getVersion();
+		static CString getDate();
+		static CString getPlatform();
+		static CString getCrashReportUrl();
+		static CString getFullVersionString();
+		static CString getSerial();
+};
 
 #endif
 

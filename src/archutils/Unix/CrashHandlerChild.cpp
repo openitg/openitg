@@ -22,10 +22,6 @@
 #include "archutils/Darwin/Crash.h"
 #endif
 
-#if defined(HAVE_VERSION_INFO)
-extern const unsigned version_num;
-#endif
-
 const char *g_pCrashHandlerArgv0 = NULL;
 
 
@@ -287,9 +283,9 @@ static void child_process()
 		exit(1);
 	}
 
-    fprintf(CrashDump, "%s crash report", PRODUCT_NAME_VER );
+    fprintf(CrashDump, "%s crash report", ProductInfo::getFullVersionString() );
 #if defined(HAVE_VERSION_INFO)
-    fprintf(CrashDump, " (build %u)", version_num);
+    fprintf(CrashDump, " (build %u)", ProductInfo::getVersion());
 #endif
     fprintf(CrashDump, "\n");
     fprintf(CrashDump, "--------------------------------------\n");
@@ -366,14 +362,15 @@ static void child_process()
         tty = stderr;
 
     fprintf(tty,
-            "\n"
-            PRODUCT_NAME " has crashed.  Debug information has been output to\n"
+			"\n"
+            + CString(ProductInfo::getName())
+			+ " has crashed.  Debug information has been output to\n"
             "\n"
             "    " + sCrashInfoPath + "\n"
             "\n"
             "Please report a bug at:\n"
             "\n"
-            "    " CRASH_REPORT_URL "\n"
+            "    " + ProductInfo::getCrashReportUrl() + "\n"
             "\n"
             );
 

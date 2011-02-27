@@ -20,6 +20,7 @@
 #include "CommonMetrics.h"
 #include "Game.h"
 #include "ScreenOptionsMasterPrefs.h"
+#include "ProductInfo.h"
 
 #define MAX_STAGES_TEXT				THEME->GetMetric (m_sName,"MaxStagesText")
 #define COIN_MODE_CHANGE_SCREEN		THEME->GetMetric (m_sName,"CoinModeChangeScreen")
@@ -66,7 +67,7 @@ void ScreenTitleMenu::Init()
 	m_textVersion.LoadFromFont( THEME->GetPathF("Common","normal") );
 	m_textVersion.SetName( "Version" );
 	/* easier debugging, plus product placement ;D */
-	m_textVersion.SetText( PRODUCT_NAME_VER );
+	m_textVersion.SetText( ProductInfo::getName() );
 	this->AddChild( &m_textVersion );
 	SET_XY_AND_ON_COMMAND( m_textVersion );
 

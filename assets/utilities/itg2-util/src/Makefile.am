@@ -14,9 +14,10 @@ data_SOURCES = $(KeydumpSources) $(iButtonSources) $(AESSources)
 
 ###### ITG2 ############
 
-itg2ac_util_SOURCES = $(data_SOURCES) itg2-swiss-army-knife.c itg2util.c itg2util.h itg2-patch-constants.h
-itg2ac_util_LDFLAGS = -lgcrypt
+LIBS = -Wl,-Bstatic -lgcrypt -lgpg-error -Wl,-Bdynamic
 
+itg2ac_util_SOURCES = $(data_SOURCES) itg2-swiss-army-knife.c itg2util.c itg2util.h itg2-patch-constants.h
+itg2ac_util_LDADD = 
 ## libtommath ##
 
 libtommath_a_SOURCES = \

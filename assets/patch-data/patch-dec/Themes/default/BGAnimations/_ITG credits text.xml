@@ -15,6 +15,7 @@
 		<Layer Type="BitmapText" Text="Mark “vyhd” Cannon" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Pat “infamouspat” Mac" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Matt “1360” Vandermeulen" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Carl “terabyte” Myers" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="THEME WORK" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
 		<Layer Type="BitmapText" Text="Stephen “xjen0vax” Marshall" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />

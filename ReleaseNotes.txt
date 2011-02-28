@@ -1,3 +1,17 @@
+OpenITG, beta 3 (February 27th, 2011)
+
+It's been a long time in coming, but OpenITG beta 3 is here!
+
+-The source code now lives in github and is easier to check out and build.
+-Home Releases are easier so you could make a release with your own changes if you wanted.
+-Arcade Releases now build in a chroot so any modern Linux can easily create them.
+
+Official releases will be signed by our private key but anyone could generate
+their own key and make their own releases if they wanted to.
+
+For detailed instructions on checking out the code, contributing, or making
+release, see: README or https://github.com/openitg/openitg/wiki
+
 OpenITG, beta 2 (August 9th, 2009)
 ----------------------------------
 

@@ -49,7 +49,7 @@ rm -f openitg-tmp.itg
 # ..including the binary
 (
 	cd src
-	zip ../../openitg-tmp.itg openitg
+	zip ../openitg-tmp.itg openitg
 )
 
 # sign .itg file

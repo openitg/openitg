@@ -643,7 +643,7 @@ public:
 	{
 		// Range check the count.
 
-		nCount = max(0, min(nCount, static_cast<int>(this->size())));
+		nCount = std::max(0, std::min(nCount, static_cast<int>(this->size())));
 		return this->substr(0, static_cast<MYSIZE>(nCount)); 
 	}
 
@@ -686,7 +686,7 @@ public:
 	{
 		// Range check the count.
 
-		nCount = max(0, min(nCount, static_cast<int>(this->size())));
+		nCount = std::max(0, std::min(nCount, static_cast<int>(this->size())));
 		return this->substr(this->size()-static_cast<MYSIZE>(nCount));
 	}
 

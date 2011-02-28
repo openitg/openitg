@@ -3,7 +3,7 @@
 VF=version.txt
 CODE_VF=version.h
 
-if [[ -f $VF ]]; then
+if [ -f $VF ]; then
 	echo "Using existing version file: "
 	cat $VF;
 	exit;

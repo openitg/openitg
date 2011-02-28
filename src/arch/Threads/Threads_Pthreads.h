@@ -27,7 +27,7 @@ public:
 	void Halt( bool Kill );
 	void Resume();
 	uint64_t GetThreadId() const;
-	int Wait();
+	intptr_t Wait();
 };
 
 class MutexImpl_Pthreads: public MutexImpl

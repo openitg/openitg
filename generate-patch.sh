@@ -54,7 +54,7 @@ rm -f openitg-tmp.itg
 # ..including the binary
 (
 	cd src
-	zip ../openitg-tmp.itg openitg
+	zip "../$PATCH_OUTPUT_FILE" openitg
 )
 
 # sign .itg file

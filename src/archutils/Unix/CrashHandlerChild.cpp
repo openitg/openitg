@@ -283,9 +283,9 @@ static void child_process()
 		exit(1);
 	}
 
-    fprintf(CrashDump, "%s crash report", ProductInfo::getFullVersionString() );
+    fprintf(CrashDump, "%s crash report", ProductInfo::getFullVersionString().c_str() );
 #if defined(HAVE_VERSION_INFO)
-    fprintf(CrashDump, " (build %u)", ProductInfo::getVersion());
+    fprintf(CrashDump, " (build %u)", ProductInfo::getVersion().c_str() );
 #endif
     fprintf(CrashDump, "\n");
     fprintf(CrashDump, "--------------------------------------\n");

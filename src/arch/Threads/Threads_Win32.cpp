@@ -48,11 +48,11 @@ uint64_t ThreadImpl_Win32::GetThreadId() const
 	return (uint64_t) ThreadId;
 }
 
-int ThreadImpl_Win32::Wait()
+intptr_t ThreadImpl_Win32::Wait()
 {
 	WaitForSingleObject( ThreadHandle, INFINITE );
 
-	DWORD ret;
+	intptr_t ret;
 	GetExitCodeThread( ThreadHandle, &ret );
 
 	CloseHandle( ThreadHandle );

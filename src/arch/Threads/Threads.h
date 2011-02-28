@@ -17,7 +17,7 @@ public:
 	 * one thread.  (This means that Win32 thread handles are not acceptable as ThreadIds.) */
 	virtual uint64_t GetThreadId() const = 0;
 
-	virtual int Wait() = 0;
+	virtual intptr_t Wait() = 0;
 };
 
 class MutexImpl

@@ -40,8 +40,8 @@ public:
 		{StoreInitialize(MakeParameters("InputFileName", filename));}
 
 	lword MaxRetrievable() const;
-	unsigned int TransferTo2(BufferedTransformation &target, lword &transferBytes, const std::string &channel=NULL_CHANNEL, bool blocking=true);
-	unsigned int CopyRangeTo2(BufferedTransformation &target, lword &begin, lword end=LWORD_MAX, const std::string &channel=NULL_CHANNEL, bool blocking=true) const;
+	size_t TransferTo2(BufferedTransformation &target, lword &transferBytes, const std::string &channel=NULL_CHANNEL, bool blocking=true);
+	size_t CopyRangeTo2(BufferedTransformation &target, lword &begin, lword end=LWORD_MAX, const std::string &channel=NULL_CHANNEL, bool blocking=true) const;
 
 private:
 	void StoreInitialize(const NameValuePairs &parameters);
@@ -107,7 +107,7 @@ lword RageFileStore::MaxRetrievable() const
 	return m_pFile->GetFileSize() - m_pFile->Tell();
 }
 
-unsigned int RageFileStore::TransferTo2(BufferedTransformation &target, lword &transferBytes, const std::string &channel, bool blocking)
+size_t RageFileStore::TransferTo2(BufferedTransformation &target, lword &transferBytes, const std::string &channel, bool blocking)
 {
 	if( m_pFile == NULL || m_pFile->AtEOF() || !m_pFile->GetError().empty() )
 	{
@@ -124,14 +124,14 @@ unsigned int RageFileStore::TransferTo2(BufferedTransformation &target, lword &t
 	while( size && !m_pFile->AtEOF() )
 	{
 		{
-			unsigned int spaceSize = 1024;
-			m_space = HelpCreatePutSpace(target, channel, 1, (unsigned int)STDMIN(size, (unsigned long)UINT_MAX), spaceSize);
+			size_t spaceSize = 1024;
+			m_space = HelpCreatePutSpace(target, channel, 1, (size_t)STDMIN(size, (unsigned long)UINT_MAX), spaceSize);
 			
 			m_len = m_pFile->Read( (char *)m_space, STDMIN(size, (unsigned long)spaceSize));
 			if( m_len == -1 )
 				throw ReadErr( *m_pFile );
 		}
-		unsigned int blockedBytes;
+		size_t blockedBytes;
 output:
 		blockedBytes = target.ChannelPutModifiable2(channel, m_space, m_len, 0, blocking);
 		m_waiting = blockedBytes > 0;
@@ -145,7 +145,7 @@ output:
 }
 
 
-unsigned int RageFileStore::CopyRangeTo2(BufferedTransformation &target, lword &begin, lword end, const std::string &channel, bool blocking) const
+size_t RageFileStore::CopyRangeTo2(BufferedTransformation &target, lword &begin, lword end, const std::string &channel, bool blocking) const
 {
 	if( m_pFile == NULL || m_pFile->AtEOF() || !m_pFile->GetError().empty() )
 		return 0;
@@ -159,7 +159,7 @@ unsigned int RageFileStore::CopyRangeTo2(BufferedTransformation &target, lword &
 		if( m_pFile->AtEOF() )
 			return 0;
 
-		unsigned int blockedBytes = target.ChannelPut( channel, byte(result), blocking );
+		size_t blockedBytes = target.ChannelPut( channel, byte(result), blocking );
 		begin += 1-blockedBytes;
 		return blockedBytes;
 	}

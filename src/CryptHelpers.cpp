@@ -6,12 +6,21 @@
 
 // crypt headers
 #include <typeinfo>
-#include "crypto561/files.h"
-#include "crypto561/filters.h"
-#include "crypto561/cryptlib.h"
-#include "crypto561/sha.h"
-#include "crypto561/rsa.h"
-#include "crypto561/osrng.h"
+#if defined(HAVE_LIBCRYPTOPP)
+	#include <crypto++/files.h>
+	#include <crypto++/filters.h>
+	#include <crypto++/cryptlib.h>
+	#include <crypto++/sha.h>
+	#include <crypto++/rsa.h>
+	#include <crypto++/osrng.h>
+#else
+	#include "crypto561/files.h"
+	#include "crypto561/filters.h"
+	#include "crypto561/cryptlib.h"
+	#include "crypto561/sha.h"
+	#include "crypto561/rsa.h"
+	#include "crypto561/osrng.h"
+#endif
 #if defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER <= 1310
 #if defined(_DEBUG)
 #pragma comment(lib, "crypto561/cryptlib_vs2003/Win32/output/debug/cryptlib_vs2003.lib")
@@ -52,7 +61,24 @@ private:
 	bool m_waiting;
 };
 
-class RageFileSource : public SourceTemplate<RageFileStore>
+template <class T>
+class RageSourceTemplate : public Source
+{
+public:
+	RageSourceTemplate<T>(BufferedTransformation *attachment, T _store)
+		: Source(attachment), m_store(_store) {}
+        size_t Pump2(lword &byteCount, bool blocking=true)
+                {return m_store.TransferTo2(*AttachedTransformation(), byteCount, DEFAULT_CHANNEL, blocking);}
+        size_t PumpMessages2(unsigned int &messageCount, bool blocking=true)
+                {return m_store.TransferMessagesTo2(*AttachedTransformation(), messageCount, DEFAULT_CHANNEL, blocking);}
+        bool SourceExhausted() const
+                {return !m_store.AnyRetrievable() && !m_store.AnyMessages();}
+
+protected:
+        T m_store;
+};
+
+class RageFileSource : public RageSourceTemplate<RageFileStore>
 {
 public:
 	typedef FileStore::Err Err;
@@ -60,7 +86,7 @@ public:
 	typedef FileStore::ReadErr ReadErr;
 
 	RageFileSource( RageFileBasic *pFile, bool pumpAll, BufferedTransformation *attachment = NULL )
-		: SourceTemplate<RageFileStore>(attachment,RageFileStore(pFile)) {SourceInitialize(pumpAll, MakeParameters("InputBinaryMode", true, false));}
+		: RageSourceTemplate<RageFileStore>(attachment,RageFileStore(pFile)) {SourceInitialize(pumpAll, MakeParameters("InputBinaryMode", true, false));}
 };
 
 RageFileStore::ReadErr::ReadErr( const RageFileBasic &f ):

@@ -63,10 +63,13 @@ LowLevelWindow_X11::~LowLevelWindow_X11()
 		DPMSSetTimeouts( g_X11Display, m_DPMSData.standby, m_DPMSData.suspend, m_DPMSData.off );
 	}
 
+
+	if( !m_bWasWindowed )
 	{
 		XRRSetScreenConfig( g_X11Display, g_pScreenConfig, RootWindow(g_X11Display, DefaultScreen(g_X11Display)), g_iOldSize, g_OldRotation, CurrentTime );
-		XUngrabKeyboard( g_X11Display, CurrentTime );
 	}
+
+	XUngrabKeyboard( g_X11Display, CurrentTime );
 
 	X11Helper::Stop();	// Xlib cleans up the window for us
 }

@@ -21,6 +21,7 @@ else
 LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ $(LUA_LIBS) -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
 endif
 
+if !HAVE_LIBRESAMPLE
 all: $(srcdir)/libresample/libresample.a $(srcdir)/crypto561/libcryptopp.a
 
 clean-local: clean_libresample
@@ -30,6 +31,9 @@ clean_libresample:
 
 $(srcdir)/libresample/libresample.a:
 	cd $(srcdir)/libresample && autoconf && sh ./configure && make
+else
+all: $(srcdir)/crypto561/libcryptopp.a
+endif
 
 $(srcdir)/crypto561/libcryptopp.a:
 	cd $(srcdir)/crypto561 && make -f GNUmakefile
@@ -442,10 +446,13 @@ main_LDADD = \
 		  $(AUDIO_LIBS) \
 		  $(SDL_LIBS) \
 		  $(XLIBS) \
-		  $(srcdir)/libresample/libresample.a \
 		  $(srcdir)/crypto561/libcryptopp.a
 
 openitg_SOURCES = $(main_SOURCES)
+
+if !HAVE_LIBRESAMPLE
+main_LDADD += $(srcdir)/libresample/libresample.a
+endif
 
 if !HAVE_FFMPEG
 openitg_LDADD = $(main_LDADD) \
@@ -499,8 +506,11 @@ test_audio_readers_SOURCES = \
 		RageSoundResampler.cpp RageSoundResampler.h
 
 test_audio_readers_LDADD = \
-		$(AUDIO_LIBS) \
-		$(srcdir)/libresample/libresample.a
+		$(AUDIO_LIBS)
+
+if !HAVE_LIBRESAMPLE
+test_audio_readers_LDADD += $(srcdir)/libresample/libresample.a
+endif
 
 TESTS += test_file_readers
 test_file_readers_SOURCES = \

@@ -176,12 +176,19 @@ SM_TLS
 SM_LIBUSB
 
 have_ffmpeg=no
+have_libresample=no
 
-# search for system ffmpeg if not building for arcade
+# search for system libs if not building for arcade
 if test "$itg_arcade" = "no"; then
 	AC_SEARCH_LIBS(avcodec_init, [avcodec], have_libavcodec=yes,  have_libavcodec=no)
 	AC_SEARCH_LIBS(guess_format, [avformat], have_libavformat=yes,  have_libavformat=no)
 	AC_SEARCH_LIBS(swscale_version, [swscale], have_libswscale=yes,  have_libswscale=no)
+
+	have_libresample=yes
+	AC_CHECK_LIB(resample, resample_open, [x=y], have_libresample=no, [-lm])
+	if test "$have_libresample" = "yes"; then
+		LIBS="$LIBS -lresample"
+	fi
 
 	if test "$have_libavcodec" = "yes"; then
 	  AC_MSG_CHECKING([for libavcodec >= 0.6.1])
@@ -226,6 +233,7 @@ if test "$itg_arcade" = "no"; then
 fi
 
 AM_CONDITIONAL(HAVE_FFMPEG, test "$have_ffmpeg" = "yes")
+AM_CONDITIONAL(HAVE_LIBRESAMPLE, test "$have_libresample" = "yes")
 
 SM_CHECK_CRASH_HANDLER
 
@@ -290,7 +298,9 @@ AM_CONDITIONAL(BUILD_TESTS, test "$enable_tests" = "yes" )
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(src/Makefile)
 
-# TODO: clean this up - kinda hacky...
-cd src/libresample && autoconf && ./configure && cd ../..
+if test "$have_libresample" = "no"; then
+	# use our own libresample in vain
+	cd src/libresample && autoconf && ./configure && cd ../..
+fi
 
 AC_OUTPUT

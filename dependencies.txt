@@ -1,4 +1,5 @@
 debian squeeze/sid packages:
+automake1.9 # newer versions do not work!
 libsdl1.2-dev
 libglu1-mesa-dev # openGL library
 liblualib50-dev

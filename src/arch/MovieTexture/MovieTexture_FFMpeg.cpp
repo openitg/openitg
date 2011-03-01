@@ -13,43 +13,39 @@
 
 #include <cerrno>
 
-// dumb workaround...dunno if it'll compile. -- Vyhd
-#define HAVE_IMG_CONVERT
-
 #if defined(WIN32) && !defined(XBOX)
 #include <windows.h>
 #endif
 
 namespace avcodec
 {
-#if defined(_WIN32)
-#include "ffmpeg/include/ffmpeg/avformat.h"
-#else
-extern "C"
-{
-#include "ffmpeg/include/ffmpeg/avformat.h"
-}
-#endif
+	#if defined(_WIN32)
+		#include "ffmpeg/include/ffmpeg/avformat.h"
+	#else
+	extern "C"
+	{
+		#if defined(HAVE_FFMPEG)
+			#include <libavformat/avformat.h>
+			#include <libswscale/swscale.h>
+		#else
+			#include "ffmpeg/include/ffmpeg/avformat.h"
+		#endif
+	}
+	#endif
 
-#if !defined(HAVE_IMG_CONVERT)
-extern "C"
-{
-#include "ffmpeg/include/ffmpeg/swscale.h"
-}
-#endif // HAVE_IMG_CONVERT
-    void img_convert__(AVPicture *dst, int dst_pix_fmt,
-                       const AVPicture *src, int pix_fmt,
-                       int width, int height)
-    {
-#ifdef HAVE_IMG_CONVERT
-        img_convert(dst, dst_pix_fmt, src, pix_fmt, width, height);
-#else
-        static SwsContext* context = 0;
-        context = sws_getCachedContext(context, width, height, pix_fmt, width, height, dst_pix_fmt, 0, NULL, NULL, NULL);
-        sws_scale(context, const_cast<uint8_t**>(src->data), const_cast<int*>(src->linesize), 0, height, dst->data, dst->linesize);
-#endif // HAVE_IMG_CONVERT
-    }
-}
+	void img_convert__(AVPicture *dst, int dst_pix_fmt,
+			const AVPicture *src, int pix_fmt,
+			int width, int height)
+	{
+		#if !defined(HAVE_FFMPEG)
+			img_convert(dst, dst_pix_fmt, src, pix_fmt, width, height);
+		#else
+			static SwsContext* context = 0;
+			context = sws_getCachedContext(context, width, height, (PixelFormat)pix_fmt, width, height, (PixelFormat)dst_pix_fmt, SWS_BICUBIC, NULL, NULL, NULL);
+			sws_scale(context, const_cast<uint8_t**>(src->data), const_cast<int*>(src->linesize), 0, height, dst->data, dst->linesize);
+		#endif // !HAVE_FFMPEG
+	}
+};
 
 #if defined(_MSC_VER)
 	#pragma comment(lib, "ffmpeg/lib/avcodec.lib")
@@ -72,9 +68,15 @@ struct AVPixelFormat_t
 		  0x0000FF00,
 		  0x000000FF,
 		  0xFF000000 },
+#if !defined(HAVE_FFMPEG)
 		avcodec::PIX_FMT_RGBA32,
 		true,
 		false
+#else
+		avcodec::PIX_FMT_ARGB,
+ 		true,
+		true
+#endif
 	},
 	{ 
 		24,
@@ -585,7 +587,7 @@ int URLRageFile_write( avcodec::URLContext *h, unsigned char *buf, int size )
 	return f->Write( buf, size );
 }
 
-avcodec::offset_t URLRageFile_seek( avcodec::URLContext *h, avcodec::offset_t pos, int whence )
+int64_t URLRageFile_seek( avcodec::URLContext *h, int64_t pos, int whence )
 {
 	RageFile *f = (RageFile *) h->priv_data;
 	return f->Seek( (int) pos, whence );

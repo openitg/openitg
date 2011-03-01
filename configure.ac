@@ -175,43 +175,57 @@ SM_AUDIO
 SM_TLS
 SM_LIBUSB
 
-#AC_SEARCH_LIBS(avcodec_init, [avcodec], have_libavcodec=yes,  have_libavcodec=no)
-#AC_SEARCH_LIBS(guess_format, [avformat], have_libavformat=yes,  have_libavformat=no)
+have_ffmpeg=no
 
-#if test "$have_libavcodec" = "yes"; then
-#  AC_MSG_CHECKING([for libavcodec >= 0.4.9])
-#  AC_TRY_RUN([
-#      #include <ffmpeg/avcodec.h>
-#      int main()
-#      {
-#	      return ( LIBAVCODEC_VERSION_INT < 0x000409 )? 1:0;
-#      }
-#      ],,have_libavcodec=no,)
-#  AC_MSG_RESULT($have_libavcodec)
-#fi
+# search for system ffmpeg if not building for arcade
+if test "$itg_arcade" = "no"; then
+	AC_SEARCH_LIBS(avcodec_init, [avcodec], have_libavcodec=yes,  have_libavcodec=no)
+	AC_SEARCH_LIBS(guess_format, [avformat], have_libavformat=yes,  have_libavformat=no)
+	AC_SEARCH_LIBS(swscale_version, [swscale], have_libswscale=yes,  have_libswscale=no)
 
-#if test "$have_libavformat" = "yes"; then
-#  AC_MSG_CHECKING([for libavformat >= 0.4.9])
-#  AC_TRY_RUN([
-#      #include <ffmpeg/avformat.h>
-#      int main()
-#      {
-#	      return ( LIBAVFORMAT_VERSION_INT < 0x000409 )? 1:0;
-#      }
-#      ],,have_libavformat=no,)
-#  AC_MSG_RESULT($have_libavformat)
-#fi
+	if test "$have_libavcodec" = "yes"; then
+	  AC_MSG_CHECKING([for libavcodec >= 0.6.1])
+	  AC_TRY_RUN([
+	      #include <libavcodec/avcodec.h>
+	      int main()
+	      {
+		      return ( LIBAVCODEC_VERSION_INT < 0x344802 )? 1:0;
+	      }
+	      ],,have_libavcodec=no,)
+	  AC_MSG_RESULT($have_libavcodec)
+	fi
 
-#have_ffmpeg=no
-#if test "$have_libavformat" = "yes" -a "$have_libavcodec" = "yes"; then
-#	have_ffmpeg=yes
-#	AC_DEFINE(HAVE_FFMPEG, 1, [FMPEG support available])
-#fi
-#AM_CONDITIONAL(HAVE_FFMPEG, test "$have_ffmpeg" = "yes")
+	if test "$have_libavformat" = "yes"; then
+	  AC_MSG_CHECKING([for libavformat >= 0.6.1])
+	  AC_TRY_RUN([
+	      #include <libavformat/avformat.h>
+	      int main()
+	      {
+		      return ( LIBAVFORMAT_VERSION_INT < 0x344002 )? 1:0;
+	      }
+	      ],,have_libavformat=no,)
+	  AC_MSG_RESULT($have_libavformat)
+	fi
 
-# We statically link our own FFMPEG libs, so we always have FFMPEG regardless
-AC_DEFINE(HAVE_FFMPEG, 1, [FFMPEG support available])
-AM_CONDITIONAL(HAVE_FFMPEG, true)
+	if test "$have_libswscale" = "yes"; then
+	  AC_MSG_CHECKING([for libswscale >= 0.6.1])
+	  AC_TRY_RUN([
+	      #include <libswscale/swscale.h>
+	      int main()
+	      {
+		      return ( LIBSWSCALE_VERSION_INT < 0x000B00 )? 1:0;
+	      }
+	      ],,have_libswscale=no,)
+	  AC_MSG_RESULT($have_libswscale)
+	fi
+
+	if test "$have_libavformat" = "yes" -a "$have_libavcodec" = "yes" -a "$have_libswscale" = "yes"; then
+		have_ffmpeg=yes
+		AC_DEFINE(HAVE_FFMPEG, 1, [FFMPEG support available])
+	fi
+fi
+
+AM_CONDITIONAL(HAVE_FFMPEG, test "$have_ffmpeg" = "yes")
 
 SM_CHECK_CRASH_HANDLER
 

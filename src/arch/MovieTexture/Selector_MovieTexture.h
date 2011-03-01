@@ -8,7 +8,8 @@
 #include "MovieTexture_DShow.h"
 #endif
 
-#ifdef HAVE_FFMPEG
+/* we always have ffmpeg, static or system -hifi */
+#if 1 // def HAVE_FFMPEG
 #include "MovieTexture_FFMpeg.h"
 #endif
 

@@ -20,7 +20,6 @@ typedef unsigned long long UInt64;
 #define BACKTRACE_METHOD_POWERPC_DARWIN
 #define HAVE_VERSION_INFO
 #define HAVE_CXA_DEMANGLE
-#define HAVE_FFMPEG
 #define HAVE_SDL
 #define CRASH_HANDLER
 #define _BSD_WCHAR_T_DEFINED_

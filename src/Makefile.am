@@ -446,8 +446,13 @@ main_LDADD = \
 		  $(srcdir)/crypto561/libcryptopp.a
 
 openitg_SOURCES = $(main_SOURCES)
+
+if !HAVE_FFMPEG
 openitg_LDADD = $(main_LDADD) \
 	$(srcdir)/ffmpeg/lib/libavformat.a $(srcdir)/ffmpeg/lib/libavcodec.a
+else
+openitg_LDADD = $(main_LDADD)
+endif
 
 if HAVE_GTK
 bin_PROGRAMS += GtkModule.so

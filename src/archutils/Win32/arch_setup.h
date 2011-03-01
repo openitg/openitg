@@ -1,8 +1,6 @@
 #ifndef ARCH_SETUP_WINDOWS_H
 #define ARCH_SETUP_WINDOWS_H
 
-#define HAVE_FFMPEG
-
 #if !defined(XBOX)
 #define SUPPORT_OPENGL
 #endif

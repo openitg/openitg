@@ -1,11 +1,36 @@
-debian squeeze/sid packages:
-automake1.9 # newer versions do not work!
+Debian squeeze/sid packages
+===========================
+
+# for direct git source access
+git-core
+
+# basic compiling tools
+make gcc g++
+
+# correct autotool versions (required)
+autoconf2.13
+automake1.9
+gettext
+
+# required libraries
+libgl1-mesa-dev libglu1-mesa-dev
+libpng12-dev libjpeg62-dev
+liblua5.1-0-dev
+libvorbis-dev libmad0-dev
+libusb-dev
+libxrandr-dev
+
+# ffmpeg libraries are recommended for x86, required for x86_64
+libavcodec-dev
+libavformat-dev
+libswscale-dev
+
+# optional but recommended (faster build)
+libresample1-dev
+libcrypto++-dev
+
+# optional if you build with --disable-gtk2 and do not require a loading window
+libgtk2.0-dev
+
+# required for --enable-sdl
 libsdl1.2-dev
-libglu1-mesa-dev # openGL library
-liblualib50-dev
-libvorbis-dev
-libmad0-dev # only needed for mp3 support
-libusb-dev # note that libusb 0.1 is best, 1.0 is broke.
-libgtk2.0-dev # needed for loading window in linux
-libavcodec-dev # ffmpeg
-libavformat-dev # ffmpeg some more

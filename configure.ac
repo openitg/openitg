@@ -201,36 +201,36 @@ if test "$itg_arcade" = "no"; then
 	fi
 
 	if test "$have_libavcodec" = "yes"; then
-	  AC_MSG_CHECKING([for libavcodec >= 0.6.1])
+	  AC_MSG_CHECKING([for libavcodec >= 0.5.2])
 	  AC_TRY_RUN([
 	      #include <libavcodec/avcodec.h>
 	      int main()
 	      {
-		      return ( LIBAVCODEC_VERSION_INT < 0x344802 )? 1:0;
+		      return ( LIBAVCODEC_VERSION_INT < 0x341401 )? 1:0;
 	      }
 	      ],,have_libavcodec=no,)
 	  AC_MSG_RESULT($have_libavcodec)
 	fi
 
 	if test "$have_libavformat" = "yes"; then
-	  AC_MSG_CHECKING([for libavformat >= 0.6.1])
+	  AC_MSG_CHECKING([for libavformat >= 0.5.2])
 	  AC_TRY_RUN([
 	      #include <libavformat/avformat.h>
 	      int main()
 	      {
-		      return ( LIBAVFORMAT_VERSION_INT < 0x344002 )? 1:0;
+		      return ( LIBAVFORMAT_VERSION_INT < 0x341F00 )? 1:0;
 	      }
 	      ],,have_libavformat=no,)
 	  AC_MSG_RESULT($have_libavformat)
 	fi
 
 	if test "$have_libswscale" = "yes"; then
-	  AC_MSG_CHECKING([for libswscale >= 0.6.1])
+	  AC_MSG_CHECKING([for libswscale >= 0.5.2])
 	  AC_TRY_RUN([
 	      #include <libswscale/swscale.h>
 	      int main()
 	      {
-		      return ( LIBSWSCALE_VERSION_INT < 0x000B00 )? 1:0;
+		      return ( LIBSWSCALE_VERSION_INT < 0x000701 )? 1:0;
 	      }
 	      ],,have_libswscale=no,)
 	  AC_MSG_RESULT($have_libswscale)

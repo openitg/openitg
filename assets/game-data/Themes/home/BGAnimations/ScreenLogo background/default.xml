@@ -1,7 +1,7 @@
 <ActorFrame><children>
 	<!-- OpenITG: why doesn't this work unless we have a personal? That's stupid. -->
 	<Layer
-		File="978_JumpBack"
+		File="../../../default/BGAnimations/ScreenLogo background/978_JumpBack"
 		OnCommand="rate,2;diffusealpha,0.7;stretchto,SCREEN_LEFT,SCREEN_TOP,SCREEN_RIGHT,SCREEN_BOTTOM"
 	/>
 

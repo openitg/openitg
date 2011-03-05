@@ -1,3 +1,4 @@
+#include "global.h"
 #include "StdString.h"
 #include "ProductInfo.h"
 

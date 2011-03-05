@@ -25,6 +25,9 @@ libavcodec-dev
 libavformat-dev
 libswscale-dev
 
+# optional but recommended (you want ALSA, right?)
+libasound2-dev
+
 # optional but recommended (faster build)
 libresample1-dev
 libcrypto++-dev

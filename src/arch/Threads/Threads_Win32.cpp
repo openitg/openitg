@@ -53,7 +53,7 @@ intptr_t ThreadImpl_Win32::Wait()
 	WaitForSingleObject( ThreadHandle, INFINITE );
 
 	intptr_t ret;
-	GetExitCodeThread( ThreadHandle, &ret );
+	GetExitCodeThread( ThreadHandle, (LPDWORD)&ret );
 
 	CloseHandle( ThreadHandle );
 	ThreadHandle = NULL;

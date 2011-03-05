@@ -1,4 +1,6 @@
-#include "global.h"
+#if defined(WIN32)
+	#include "global.h"
+#endif
 #include "StdString.h"
 #include "ProductInfo.h"
 

@@ -1924,6 +1924,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ProductInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath="ProductInfo.h"
 				>
 			</File>

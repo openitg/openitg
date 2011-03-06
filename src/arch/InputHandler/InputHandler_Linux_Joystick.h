@@ -5,22 +5,50 @@
 #include "RageThreads.h"
 #include "RageTimer.h"
 
+#if HAVE_INOTIFY
+#include <sys/inotify.h>
+#endif
+
 class InputHandler_Linux_Joystick: public InputHandler
 {
 public:
 	InputHandler_Linux_Joystick();
 	~InputHandler_Linux_Joystick();
-	enum { NUM_JOYSTICKS = 4 };
 
 	void GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut );
 
 private:
+	struct joystick_dev
+	{
+		/*
+		joystick_dev(CString a, int b, CString c)
+		{
+			path = a;
+			fd = b;
+			name = c;
+		};
+		*/
+		CString path;
+		int fd;
+		CString name;
+	};
+
+	joystick_dev m_Devs[NUM_JOYSTICKS];
+
+	void Attach(CString device);
+	void Detach(CString device);
+
 	static int InputThread_Start( void *p );
 	void InputThread();
+#if HAVE_INOTIFY
+	static int HotplugThread_Start( void *p );
+	void HotplugThread();
+#endif
 
 	int fds[NUM_JOYSTICKS];
 	CString m_sDescription[NUM_JOYSTICKS];
 	RageThread m_InputThread;
+	RageThread m_HotplugThread;
 	bool m_bShutdown;
 
 	// debugging

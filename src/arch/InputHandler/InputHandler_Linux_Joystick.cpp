@@ -1,7 +1,8 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-#include "PrefsManager.h" // XXX
+#include "ScreenManager.h"
+#include "InputMapper.h"
 #include "InputHandler_Linux_Joystick.h"
 
 #include <stdio.h>
@@ -17,77 +18,42 @@
 
 REGISTER_INPUT_HANDLER2( Joystick, Linux_Joystick );
 
-static const char *Paths[InputHandler_Linux_Joystick::NUM_JOYSTICKS] =
-{
-	"/dev/js0",
-	"/dev/js1",
-	"/dev/input/js0",
-	"/dev/input/js1",
-};
-
 InputHandler_Linux_Joystick::InputHandler_Linux_Joystick()
 {
 	LOG->Trace( "InputHandler_Linux_Joystick::InputHandler_Linux_Joystick" );
 	
 	for(int i = 0; i < NUM_JOYSTICKS; ++i)
-		fds[i] = -1;
+		m_Devs[i].fd = -1;
 
-	/* We check both eg. /dev/js0 and /dev/input/js0.  If both exist, they're probably
-	 * the same device; keep track of device IDs so we don't open the same joystick
-	 * twice. */
-	set< pair<int,int> > devices;
-	bool bFoundAnyJoysticks = false;
-	
+	// try attaching all possible joysticks
 	for(int i = 0; i < NUM_JOYSTICKS; ++i)
-	{
-		struct stat st;
-		if( stat( Paths[i], &st ) == -1 )
-		{
-			if( errno != ENOENT )
-				LOG->Warn( "Couldn't stat %s: %s", Paths[i], strerror(errno) );
-			continue;
-		}
-
-		if( !S_ISCHR( st.st_mode ) )
-		{
-			LOG->Warn( "Ignoring %s: not a character device", Paths[i] );
-			continue;
-		}
-
-		pair<int,int> dev( major(st.st_rdev), minor(st.st_rdev) );
-		if( devices.find(dev) != devices.end() )
-			continue; /* dupe */
-		devices.insert( dev );
-
-		fds[i] = open( Paths[i], O_RDONLY );
-
-		if(fds[i] != -1)
-		{
-			char szName[1024];
-			ZERO( szName );
-			if( ioctl(fds[i], JSIOCGNAME(sizeof(szName)), szName) < 0 )
-				m_sDescription[i] = ssprintf( "Unknown joystick at %s", Paths[i] );
-			else
-				m_sDescription[i] = szName;
-
-			LOG->Info("Opened %s", Paths[i]);
-			bFoundAnyJoysticks = true;
-		}
-	}
+		Attach(ssprintf("/dev/input/js%d", i));
 
 	m_bShutdown = false;
 
 	m_DebugTimer.m_sName = "Linux_Joystick";
 
-	if( bFoundAnyJoysticks )
-	{
-		m_InputThread.SetName( "Joystick thread" );
-		m_InputThread.Create( InputThread_Start, this );
-	}
+	m_InputThread.SetName( "Joystick thread" );
+	m_InputThread.Create( InputThread_Start, this );
+
+#if HAVE_INOTIFY
+	m_HotplugThread.SetName( "Joystick hotplug thread" );
+	m_HotplugThread.Create( HotplugThread_Start, this );
+#endif
 }
 	
 InputHandler_Linux_Joystick::~InputHandler_Linux_Joystick()
 {
+#if HAVE_INOTIFY
+	if( m_HotplugThread.IsCreated() )
+	{
+		m_bShutdown = true;
+		LOG->Trace( "Shutting down joystick hotplug thread ..." );
+		m_HotplugThread.Wait();
+		LOG->Trace( "Joystick hotplug thread shut down." );
+	}
+#endif
+
 	if( m_InputThread.IsCreated() )
 	{
 		m_bShutdown = true;
@@ -97,7 +63,10 @@ InputHandler_Linux_Joystick::~InputHandler_Linux_Joystick()
 	}
 
 	for(int i = 0; i < NUM_JOYSTICKS; ++i)
-		if(fds[i] != -1) close(fds[i]);
+	{
+		if (m_Devs[i].fd)
+			close(m_Devs[i].fd);
+	}
 }
 
 int InputHandler_Linux_Joystick::InputThread_Start( void *p )
@@ -105,6 +74,14 @@ int InputHandler_Linux_Joystick::InputThread_Start( void *p )
 	((InputHandler_Linux_Joystick *) p)->InputThread();
 	return 0;
 }
+
+#if HAVE_INOTIFY
+int InputHandler_Linux_Joystick::HotplugThread_Start( void *p )
+{
+	((InputHandler_Linux_Joystick *) p)->HotplugThread();
+	return 0;
+}
+#endif
 
 void InputHandler_Linux_Joystick::InputThread()
 {
@@ -118,15 +95,12 @@ void InputHandler_Linux_Joystick::InputThread()
 		
 		for(int i = 0; i < NUM_JOYSTICKS; ++i)
 		{
-			if (fds[i] < 0)
+			if (m_Devs[i].fd < 0)
 				continue;
 
-			FD_SET(fds[i], &fdset);
-			max_fd = max(max_fd, fds[i]);
+			FD_SET(m_Devs[i].fd, &fdset);
+			max_fd = max(max_fd, m_Devs[i].fd);
 		}
-
-		if(max_fd == -1)
-			break;
 
 		struct timeval zero = {0,100000};
 		if( select(max_fd+1, &fdset, NULL, NULL, &zero) <= 0 )
@@ -134,19 +108,18 @@ void InputHandler_Linux_Joystick::InputThread()
 
 		for(int i = 0; i < NUM_JOYSTICKS; ++i)
 		{
-			if( fds[i] == -1 )
+			if (m_Devs[i].fd < 0)
 				continue;
 
-			if(!FD_ISSET(fds[i], &fdset))
+			if(!FD_ISSET(m_Devs[i].fd, &fdset))
 				continue;
 
 			js_event event;
-			int ret = read(fds[i], &event, sizeof(event));
+			int ret = read(m_Devs[i].fd, &event, sizeof(event));
 			if(ret != sizeof(event))
 			{
 				LOG->Warn("Unexpected packet (size %i != %i) from joystick %i; disabled", ret, (int)sizeof(event), i);
-				close(fds[i]);
-				fds[i] = -1;
+				Detach(m_Devs[i].path);
 				continue;
 			}
 
@@ -180,8 +153,7 @@ void InputHandler_Linux_Joystick::InputThread()
 				
 			default:
 				LOG->Warn("Unexpected packet (type %i) from joystick %i; disabled", event.type, i);
-				close(fds[i]);
-				fds[i] = -1;
+				Detach(m_Devs[i].path);
 				continue;
 			}
 
@@ -193,20 +165,168 @@ void InputHandler_Linux_Joystick::InputThread()
 	}
 }
 
+void InputHandler_Linux_Joystick::Attach(CString path)
+{
+	struct stat st;
+	if( stat( path.c_str(), &st ) == -1 )
+	{
+		if( errno != ENOENT )
+			LOG->Warn( "Couldn't stat %s: %s", path.c_str(), strerror(errno) );
+		return;
+	}
+
+	if( !S_ISCHR( st.st_mode ) )
+	{
+		LOG->Warn( "Ignoring %s: not a character device", path.c_str() );
+		return;
+	}
+
+	int fd = open( path.c_str(), O_RDONLY );
+
+	if (fd != -1)
+	{
+		CString name;
+
+		char szName[1024];
+		ZERO( szName );
+		if( ioctl(fd, JSIOCGNAME(sizeof(szName)), szName) < 0 )
+			name = ssprintf( "Unknown joystick at %s", path.c_str() );
+		else
+			name = szName;
+
+		for (int i = 0; i < NUM_JOYSTICKS; ++i)
+		{
+			if (m_Devs[i].fd < 0)
+			{
+				m_Devs[i].path = path;
+				m_Devs[i].fd = fd;
+				m_Devs[i].name = name;
+
+				/* ScreenManager is not loaded when the joysticks are first initialized */
+				if (SCREENMAN)
+				{
+					SCREENMAN->SystemMessageNoAnimate(ssprintf("Joystick %d \"%s\" attached", i+1, name.c_str()));
+					if (INPUTMAPPER)
+					{
+						LOG->Info("Remapping joysticks after hotplug.");
+						INPUTMAPPER->AutoMapJoysticksForCurrentGame();
+					}
+				}
+				return;
+			}
+		}
+
+		LOG->Warn("Couldn't find a free device slot for new joystick!");
+	} else {
+		LOG->Warn("Couldn't open %s: %s", path.c_str(), strerror(errno));
+	}
+}
+
+void InputHandler_Linux_Joystick::Detach(CString path)
+{
+	for (int i = 0; i < NUM_JOYSTICKS; ++i)
+	{
+		if (m_Devs[i].fd < 0)
+			continue;
+
+		if (m_Devs[i].path == path)
+		{
+			SCREENMAN->SystemMessageNoAnimate(ssprintf("Joystick %d \"%s\" detached", i+1, m_Devs[i].name.c_str()));
+			close(m_Devs[i].fd);
+			m_Devs[i].fd = -1;
+			break;
+		}
+	}
+}
+
+#if HAVE_INOTIFY
+void InputHandler_Linux_Joystick::HotplugThread()
+{
+	int ifd = inotify_init();
+	if (ifd < 0)
+	{
+		LOG->Warn("Error initializing inotify: %s", strerror(errno));
+		return;
+	}
+
+	int wfd = inotify_add_watch(ifd, "/dev/input", IN_CREATE|IN_DELETE);
+	if (wfd < 0)
+	{
+		close(ifd);
+		LOG->Warn("Error watching /dev/input");
+		return;
+	}
+
+	LOG->Info("Watching /dev/input for changes");
+
+	while( !m_bShutdown )
+	{
+		fd_set fdset;
+		FD_ZERO(&fdset);
+		FD_SET(ifd, &fdset);
+
+		struct timeval tv = {0,100000};
+		if( select(ifd+1, &fdset, NULL, NULL, &tv) <= 0 )
+			continue;
+
+		char buf[1024];
+		memset(buf, 0, 1024);
+		int ret = read(ifd, buf, 1024);
+		if (ret < 1)
+		{
+			LOG->Warn("Error reading inotify: %s", strerror(errno));
+			break;
+		}
+
+		char *ptr = buf;
+
+		while (ptr) {
+			struct inotify_event *ev = (struct inotify_event *)ptr;
+
+			if (ev->mask & IN_CREATE)
+			{
+				if (CString(ev->name).find("js") == 0)
+				{
+					SCREENMAN->PlayCoinSound();
+					struct timeval tv = {0,500000};
+					select(1, NULL, NULL, NULL, &tv);
+					Attach("/dev/input/" + CString(ev->name));
+				}
+			}
+
+			else if (ev->mask & IN_DELETE)
+			{
+				if (CString(ev->name).find("js") == 0)
+				{
+					Detach("/dev/input/" + CString(ev->name));
+				}
+			}
+
+			ptr += sizeof(struct inotify_event) + ev->len;
+			if (ptr > buf + ret)
+				ptr = NULL;
+		}
+	}
+
+	inotify_rm_watch(ifd, wfd);
+	close(ifd);
+}
+#endif
+
 void InputHandler_Linux_Joystick::GetDevicesAndDescriptions( vector<InputDevice>& vDevicesOut, vector<CString>& vDescriptionsOut )
 {
-	for(int i = 0; i < NUM_JOYSTICKS; ++i)
+	for (int i = 0; i < NUM_JOYSTICKS; i++)
 	{
-		if (fds[i] < 0)
+		if (m_Devs[i].fd < 0)
 			continue;
 
 		vDevicesOut.push_back( InputDevice(DEVICE_JOY1+i) );
-		vDescriptionsOut.push_back( m_sDescription[i] );
+		vDescriptionsOut.push_back( m_Devs[i].name );
 	}
 }
 
 /*
- * (c) 2003-2004 Glenn Maynard
+ * (c) 2003-2004 Glenn Maynard, 2011 Toni Spets <toni.spets@iki.fi>
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

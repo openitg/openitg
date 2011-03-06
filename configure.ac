@@ -175,6 +175,11 @@ SM_AUDIO
 SM_TLS
 SM_LIBUSB
 
+# for linux joystick hotplug
+AC_CHECK_HEADER([sys/inotify.h], 
+	AC_DEFINE(HAVE_INOTIFY, 1, [inotify support in kernel])
+,)
+
 have_ffmpeg=no
 have_libresample=no
 

@@ -397,6 +397,22 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 			END_MARKER
 		}
 	},
+	{
+		"dance",
+		"WiseGroup.,Ltd Positive Gaming Impact USB pad",
+		"Positive Gaming Impact Dance Pad",
+		{
+			{ 0, JOY_1,	DANCE_BUTTON_LEFT,		false },
+			{ 0, JOY_4,	DANCE_BUTTON_RIGHT,		false },
+			{ 0, JOY_3,	DANCE_BUTTON_UP,		false },
+			{ 0, JOY_2,	DANCE_BUTTON_DOWN,		false },
+			{ 0, JOY_7,	DANCE_BUTTON_UPLEFT,		false },
+			{ 0, JOY_8,	DANCE_BUTTON_UPRIGHT,		false },
+			{ 0, JOY_10,	GAME_BUTTON_SELECT,		false },
+			{ 0, JOY_9,	GAME_BUTTON_START,		false },
+			END_MARKER
+		}
+	},
 };
 
 void InputMapper::ApplyMapping( const Mapping *maps, GameController gc, InputDevice device )

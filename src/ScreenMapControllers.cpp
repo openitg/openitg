@@ -27,8 +27,8 @@ const int FramesToWaitForInput = 2;
 const int NUM_CHANGABLE_SLOTS = NUM_SHOWN_GAME_TO_DEVICE_SLOTS-1;
 
 
-const float LINE_START_Y	=	64;
-const float LINE_GAP_Y		=	28;
+const float LINE_START_Y	=	70;
+const float LINE_GAP_Y		=	25;
 const float BUTTON_COLUMN_X[NUM_SHOWN_GAME_TO_DEVICE_SLOTS*MAX_GAME_CONTROLLERS] =
 {
 	50, 125, 200, 440, 515, 590 
@@ -60,14 +60,14 @@ void ScreenMapControllers::Init()
 		m_textName[b].LoadFromFont( THEME->GetPathF("Common","title") );
 		m_textName[b].SetXY( SCREEN_CENTER_X, -6 );
 		m_textName[b].SetText( sName );
-		m_textName[b].SetZoom( 0.7f );
+		m_textName[b].SetZoom( 0.5f );
 		m_textName[b].SetShadowLength( 2 );
 		m_Line[b].AddChild( &m_textName[b] );
 
 		m_textName2[b].LoadFromFont( THEME->GetPathF("Common","title") );
 		m_textName2[b].SetXY( SCREEN_CENTER_X, +6 );
 		m_textName2[b].SetText( sSecondary );
-		m_textName2[b].SetZoom( 0.5f );
+		m_textName2[b].SetZoom( 0.3f );
 		m_textName2[b].SetShadowLength( 2 );
 		m_Line[b].AddChild( &m_textName2[b] );
 

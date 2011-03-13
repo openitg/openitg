@@ -88,17 +88,6 @@ AC_C_BIGENDIAN(
 	AC_DEFINE(ENDIAN_LITTLE, 1, [Little endian]),
 	AC_MSG_ERROR([Can't determine endianness]) )
 
-# If we're compiling with the SSE2 build flag, add that flag to CFLAGS and CXXFLAGS.
-# (Handwritten SSE/SSE2 code isn't in the binary, but GCC's heuristics optimize enough
-# vector arithmetic in Rage that this produces a noticeable speedup on SSE2 processors.)
-
-AC_ARG_WITH(sse2, AC_HELP_STRING([--with-sse2], [Enable SSE2 optimization]), with_sse2=$withval, with_sse2=no)
-
-if test "$with_sse2" = "yes"; then
-	CFLAGS="$CFLAGS -msse2"
-	CXXFLAGS="$CXXFLAGS -msse2"
-fi
-
 AC_ARG_WITH(prof, AC_HELP_STRING([--with-prof], [Enable profiling]), with_prof=$withval, with_prof=no)
 if test "$with_prof" = "yes"; then
 	test "$DEFAULT_CFLAGS" = "yes" && CFLAGS="$CFLAGS -pg"
@@ -180,8 +169,9 @@ AC_CHECK_HEADER([sys/inotify.h],
 	AC_DEFINE(HAVE_INOTIFY, 1, [inotify support in kernel])
 ,)
 
-have_ffmpeg=no
-have_libresample=no
+have_ffmpeg=static
+have_libresample=static
+have_sse2=no
 
 # search for system libs if not building for arcade
 if test "$itg_arcade" = "no"; then
@@ -190,7 +180,7 @@ if test "$itg_arcade" = "no"; then
 	AC_SEARCH_LIBS(swscale_version, [swscale], have_libswscale=yes,  have_libswscale=no)
 
 	have_libresample=yes
-	AC_CHECK_LIB(resample, resample_open, [x=y], have_libresample=no, [-lm])
+	AC_CHECK_LIB(resample, resample_open, [x=y], have_libresample=static, [-lm])
 	if test "$have_libresample" = "yes"; then
 		LIBS="$LIBS -lresample"
 	fi
@@ -235,14 +225,24 @@ if test "$itg_arcade" = "no"; then
 		have_ffmpeg=yes
 		AC_DEFINE(HAVE_FFMPEG, 1, [FFMPEG support available])
 	fi
+
+	# test if processor supports SSE2
+	AC_TRY_RUN([int main() { int a,d; asm ("cpuid":"=a"(a),"=d"(d):"0"(1)); return d & (1 << 26) ? 0 : 1; }], have_sse2=yes, have_sse2=no)
 fi
 
 AM_CONDITIONAL(HAVE_FFMPEG, test "$have_ffmpeg" = "yes")
 AM_CONDITIONAL(HAVE_LIBRESAMPLE, test "$have_libresample" = "yes")
 
+AC_ARG_WITH(sse2, AC_HELP_STRING([--with-sse2], [Enable SSE2 optimization]), with_sse2=$withval, with_sse2=$have_sse2)
+if test "$with_sse2" = "yes"; then
+	CFLAGS="$CFLAGS -msse2"
+	CXXFLAGS="$CXXFLAGS -msse2"
+fi
+
 SM_CHECK_CRASH_HANDLER
 
-AM_PATH_ALSA(0.9.0,AC_DEFINE([HAVE_ALSA],1,[Define presence of ALSA]),alsa=false)
+alsa=yes
+AM_PATH_ALSA(0.9.0,AC_DEFINE([HAVE_ALSA],1,[Define presence of ALSA]),alsa=no)
 
 AM_ICONV
 
@@ -274,7 +274,7 @@ AC_CHECK_LIB( pthread, pthread_cond_timedwait, AC_DEFINE([HAVE_PTHREAD_COND_TIME
 # Always:
 AC_DEFINE(_GNU_SOURCE, 1, [Use GNU extensions])
 
-AM_CONDITIONAL(HAVE_ALSA, test x$alsa != xfalse )
+AM_CONDITIONAL(HAVE_ALSA, test x$alsa != xno )
 AM_CONDITIONAL(HAVE_GTK, test "$enable_gtk2" != "no" )
 AM_CONDITIONAL(HAVE_OSS, test x$ac_cv_header_sys_soundcard_h = xyes )
 AM_CONDITIONAL(USE_CRASH_HANDLER, test "$use_crash_handler" = "yes" )
@@ -308,4 +308,47 @@ if test "$have_libresample" = "no"; then
 	cd src/libresample && autoconf && ./configure && cd ../..
 fi
 
+AC_CHECK_PROG([have_git], [git], yes, no)
+
+oitg_git=no
+if test "$have_git" = "yes"; then
+	if git status &>/dev/null; then
+		oitg_git=yes
+	else
+		echo "Warning: This is not a git checkout of OpenITG, can't determine version!"
+	fi
+else
+	echo "Warning: git is not installed, can't determine OpenITG version!"
+fi
+
+if test "$oitg_git" = "yes"; then
+	oitg_version=`git describe`
+	oitg_date=`git log -1 --pretty="format:%ad"`
+else
+	oitg_version="unknown version"
+	oitg_date="unknown date"
+fi
+
+AC_DEFINE_UNQUOTED(OITG_VERSION, "$oitg_version", [OpenITG version])
+AC_DEFINE_UNQUOTED(OITG_DATE, "$oitg_date", [OpenITG version date])
+
 AC_OUTPUT
+
+echo
+echo
+
+echo "OpenITG $oitg_version ($oitg_date)"
+
+echo
+
+echo "Arcade build		$itg_arcade"
+echo "SSE2 optimizations	$with_sse2 (supported: $have_sse2)"
+echo "SDL			$enable_sdl"
+echo "FFMPEG			$have_ffmpeg"
+echo "libresample		$have_libresample"
+echo "libcrypto++		$have_libcryptopp"
+echo "GTK2			$enable_gtk2"
+echo "ALSA			$alsa"
+echo "OSS			$ac_cv_header_sys_soundcard_h (forced: $force_oss)"
+
+echo

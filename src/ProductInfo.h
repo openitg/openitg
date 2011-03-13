@@ -3,15 +3,14 @@
 #ifndef PRODUCT_INFO_H
 #define PRODUCT_INFO_H
 
-#ifdef LINUX
-#include "config.h" // for ITG_ARCADE
+#ifdef HAVE_CONFIG_H 
+#include "config.h"
 #endif
 
 #undef OFFICIAL_RELEASE
 //#define OFFICIAL_RELEASE 1
 
 #include "StdString.h"
-#include "../version.h"
 
 class ProductInfo {
 

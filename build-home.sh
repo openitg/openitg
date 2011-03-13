@@ -1,6 +1,4 @@
 #!/bin/sh
-# XXX: Move this to make land!
-./generate-version
 
 ./autogen.sh
 #./configure --with-x --with-gnu-ld --target=i386-pc-linux-gnu --host=i386-pc-linux-gnu

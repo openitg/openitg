@@ -2,7 +2,7 @@
 #define USB_DRIVER_IMPL_LIBUSB_H
 
 #include "USBDriver_Impl.h"
-#include <usb.h>
+struct usb_dev_handle;
 
 class USBDriver_Impl_Libusb : public USBDriver_Impl
 {
@@ -20,6 +20,8 @@ public:
 
 	int InterruptRead( int iEndpoint, char *pData, int iSize, int iTimeout );
 	int InterruptWrite( int iEndpoint, char *pData, int iSize, int iTimeout );
+
+	virtual const char *GetError() const;
 
 protected:
 	bool SetConfiguration( int iConfig );

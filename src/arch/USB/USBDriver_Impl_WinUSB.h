@@ -2,7 +2,7 @@
 #define USB_DRIVER_IMPL_WINUSB_H
 
 #include "USBDriver_Impl.h"
-#include <winusb.h>
+struct WINUSB_INTERFACE_HANDLE;
 
 class USBDriver_Impl_WinUSB : public USBDriver_Impl
 {

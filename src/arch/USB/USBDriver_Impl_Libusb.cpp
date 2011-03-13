@@ -1,6 +1,7 @@
 #include "global.h"
 #include "RageLog.h"
 #include "USBDriver_Impl_Libusb.h"
+#include <usb.h>
 
 USBDriver_Impl_Libusb::USBDriver_Impl_Libusb()
 {
@@ -146,4 +147,9 @@ bool USBDriver_Impl_Libusb::ClaimInterface( int iInterface )
 bool USBDriver_Impl_Libusb::ReleaseInterface( int iInterface )
 {
 	return usb_release_interface( m_pHandle, iInterface ) == 0;
+}
+
+const char* USBDriver_Impl_Libusb::GetError() const
+{
+	return usb_strerror();
 }

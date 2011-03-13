@@ -1,8 +1,6 @@
 #ifndef USBDRIVER_H
 #define USBDRIVER_H
 
-#include <usb.h>
-
 // These need to be #define'd so they're properly used in derivative CPPs.
 #define HID_GET_REPORT	0x01
 #define HID_SET_REPORT	0x09
@@ -11,19 +9,21 @@
 #define HID_IFACE_IN	256
 #define HID_IFACE_OUT	512
 
+class USBDriver_Impl;
+
 class USBDriver
 {
 public:
 	USBDriver();
 	virtual ~USBDriver();
 
-	bool Open();
-	void Close();
-protected:
-	virtual bool Matches(int idVendor, int idProduct) const;
+	bool OpenInternal( int iVendorID, int iProductID );
 
-	struct usb_device *FindDevice();
-	usb_dev_handle *m_pHandle;
+	virtual bool Open();
+	virtual void Close();
+
+protected:
+	USBDriver_Impl* m_pDriver;
 };
 
 #endif

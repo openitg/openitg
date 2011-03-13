@@ -1,135 +1,45 @@
 #include "global.h"
 #include "RageLog.h"
-#include "io/USBDriver.h"
 
-#include <usb.h>
+#include "io/USBDriver.h"
+#include "arch/USB/USBDriver_Impl.h"
 
 USBDriver::USBDriver()
 {
-	m_pHandle = NULL;
+	m_pDriver = NULL;
 }
 
 USBDriver::~USBDriver()
 {
+	delete m_pDriver;
+}
+
+bool USBDriver::OpenInternal( int iVendorID, int iProductID )
+{
 	Close();
-}
 
-/* sorry, but...Visual C++ wants it this way. */
-bool USBDriver::Matches( int idVendor, int idProduct ) const
-{
-	return false;
-}
+	m_pDriver = USBDriver_Impl::Create();
 
-struct usb_device *USBDriver::FindDevice()
-{
-	LOG->Trace( "USBDriver::FindDevice()" );
+	/* if !m_pDriver, this build cannot support USB drivers. */
+	if( m_pDriver == NULL )
+		return false;
 
-	for( usb_bus *bus = usb_get_busses(); bus; bus = bus->next )
-		for( struct usb_device *dev = bus->devices; dev; dev = dev->next )
-			if( this->Matches(dev->descriptor.idVendor, dev->descriptor.idProduct) )
-				return dev;
-
-	// fall through
-	LOG->Trace( "FindDevice() found no matches." );
-	return NULL;
-}
-
-void USBDriver::Close()
-{
-	// never opened
-	if( m_pHandle == NULL )
-		return;
-
-	LOG->Trace( "USBDriver::Close()" );
-
-	usb_set_altinterface( m_pHandle, 0 );
-	usb_reset( m_pHandle );
-	usb_close( m_pHandle );
-	m_pHandle = NULL;
+	return m_pDriver->Open( iVendorID, iProductID );
 }
 
 bool USBDriver::Open()
 {
-	Close();
+	return false;
+}
 
-	usb_init();
-
-	if( usb_find_busses() < 0 )
-	{
-		LOG->Warn( "USBDriver::Open(): usb_find_busses: %s", usb_strerror() );
-		return false;
-	}
-
-	if( usb_find_devices() < 0 )
-	{
-		LOG->Warn( "USBDriver::Open(): usb_find_devices: %s", usb_strerror() );
-		return false;
-	}
-	
-	struct usb_device *dev = FindDevice();
-
-	if( dev == NULL )
-	{
-		LOG->Warn( "USBDriver::Open(): no device found." );
-		return false;
-	}
-
-	m_pHandle = usb_open( dev );
-
-	if( m_pHandle == NULL )
-	{
-		LOG->Warn( "USBDriver::Open(): usb_open: %s", usb_strerror() );
-		return false;
-	}
-
-#ifdef LIBUSB_HAS_DETACH_KERNEL_DRIVER_NP
-		// The device may be claimed by a kernel driver. Attempt to reclaim it.
-		// This macro is self-porting, so no ifdef LINUX should be needed.
-		for( unsigned i = 0; i < dev->config->bNumInterfaces; i++ )
-		{
-			int iResult = usb_detach_kernel_driver_np( m_pHandle, i );
-
-			switch( iResult )
-			{
-			// no kernel drivers needed detached ("No data available") - continue
-			case -61:
-				LOG->Trace( "USBDriver:Open(): kernel detach - no kernel drivers needed detached." );
-			// no error
-			case 0:
-				continue;
-				break;
-			default:
-				LOG->Warn( "USBDriver::Open(): usb_detach_kernel_driver_np: %s", usb_strerror() );
-				return false;
-				break;
-			}
-		}
-
-#endif
-
-	if ( usb_set_configuration(m_pHandle, dev->config->bConfigurationValue) < 0 )
-	{
-		LOG->Warn( "USBDriver::Open(): usb_set_configuration: %s", usb_strerror() );
-		Close();
-		return false;
-	}
-	
-	// claim all interfaces for this device
-	for( unsigned i = 0; i < dev->config->bNumInterfaces; i++ )
-	{
-		if ( usb_claim_interface(m_pHandle, i) < 0 )
-		{
-			LOG->Warn( "USBDriver::Open(): usb_claim_interface(%i): %s", i, usb_strerror() );
-			Close();
-			return false;
-		}
-	}
-
-	return true;
+void USBDriver::Close()
+{
+	if( m_pDriver )
+		m_pDriver->Close();
 }
 
 /*
- * Copyright (c) 2008 BoXoRRoXoRs
+ * Copyright (c) 2008-2011 BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

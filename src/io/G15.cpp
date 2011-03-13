@@ -3,6 +3,16 @@
 #include "RageLog.h"
 #include "RageUtil.h"
 
+#include "arch/USB/USBDriver_Impl.h"
+
+const short G15_VENDOR_ID = 0x046D;
+const short G15_PRODUCT_ID[] = { 0xC227, 0xC251 };
+
+const unsigned NUM_PRODUCT_IDS = ARRAYLEN( G15_PRODUCT_ID );
+
+/* 10 ms */
+const unsigned REQ_TIMEOUT = 10000;
+
 void PixmapToLCDData( const unsigned char *pData, unsigned char *pLCD )
 {
 	ASSERT(pLCD);
@@ -10,6 +20,8 @@ void PixmapToLCDData( const unsigned char *pData, unsigned char *pLCD )
 
 	memset(pLCD, 0, 992);
 	pLCD[0] = 0x03;
+
+	// ?_?
 	for( unsigned row = 0; row < 43; row++ )
 	{
 		for( unsigned col = 0; col < 160; col++ )
@@ -22,21 +34,10 @@ void PixmapToLCDData( const unsigned char *pData, unsigned char *pLCD )
 	}
 }
 
-struct ID
+bool G15::Open()
 {
-	int VID, PID;
-};
-
-const ID DeviceIDs[2] =
-{
-	{ 0x046D, 0xC227 },
-	{ 0x046D, 0xC251 },
-};
-
-bool G15::Matches( int idVendor, int idProduct ) const
-{
-	for( unsigned i = 0; i < ARRAYLEN(DeviceIDs); ++i )
-		if( idVendor == DeviceIDs[i].VID && idProduct == DeviceIDs[i].PID )
+	for( unsigned i = 0; i < NUM_PRODUCT_IDS; ++i )
+		if( m_pDriver->Open(G15_VENDOR_ID, G15_PRODUCT_ID[i]) )
 			return true;
 
 	return false;
@@ -46,13 +47,15 @@ bool G15::WriteLCD( unsigned char *pData )
 {
 	ASSERT(pData);
 	unsigned char pLCDData[992];
-
 	PixmapToLCDData( pData, pLCDData );
 
-	int iReturn = usb_interrupt_write( m_pHandle, 0x02, (char*)pLCDData, 992, 1000 );
-	if (iReturn == 992) return true;
+	int iExpected = ARRAYLEN( pLCDData );
+	int iResult = m_pDriver->InterruptWrite( 0x02, (char*)pLCDData, iExpected, REQ_TIMEOUT );
 
-	LOG->Warn( "G15 LCD Write failed, returned %i: %s\n", iReturn, usb_strerror() );
+	if( iResult == iExpected );
+		return true;
+
+	LOG->Warn( "G15 LCD Write failed, returned %i: %s\n", iResult, m_pDriver->GetError() );
 
 	return false;
 }

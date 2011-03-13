@@ -6,18 +6,22 @@
 class ITGIO: public USBDriver
 {
 public:
-	static bool DeviceMatches( int idVendor, int idProduct );
+	/* returns true if the VID/PID match ITGIO. */
+	static bool DeviceMatches( int iVendorID, int iProductID );
+
+	bool Open();
 
 	bool Read( uint32_t *pData );
 	bool Write( const uint32_t iData );
 
-	/* Globally accessible. */
+	/* Attempts to reconnect indefinitely, setting an error message
+	 * for the main loop -- do NOT call from the main loop directly
+	 * or the engine may hang! */
+	void Reconnect();
+
+	/* Globally accessible for diagnostics purposes. */
 	static int m_iInputErrorCount;
 	static CString m_sInputError;
-protected:
-	bool Matches( int idVendor, int idProduct ) const;
-
-	void Reconnect();
 };
 
 #endif /* IO_ITGIO_H */

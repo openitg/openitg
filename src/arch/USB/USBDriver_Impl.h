@@ -1,9 +1,13 @@
 #ifndef USB_DRIVER_IMPL_H
 #define USB_DRIVER_IMPL_H
 
+#include "USBDriver_Macros.h"
+
 class USBDriver_Impl
 {
 public:
+	static USBDriver_Impl* Create();
+
 	USBDriver_Impl();
 	virtual ~USBDriver_Impl();
 
@@ -18,6 +22,9 @@ public:
 	virtual int InterruptRead( int iEndpoint, char *pData, int iSize, int iTimeout ) = 0;
 	virtual int InterruptWrite( int iEndpoint, char *pData, int iSize, int iTimeout ) = 0;
 
+	/* if something fails, return a string describing the error */
+	virtual const char *GetError() const = 0;
+
 protected:
 	virtual bool SetConfiguration( int iConfig ) = 0;
 
@@ -25,5 +32,5 @@ protected:
 	virtual bool ReleaseInterface( int iInterface ) = 0;
 };
 
-#endif // USB_DRIVER_H
+#endif // USB_DRIVER_IMPL_H
 

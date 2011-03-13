@@ -3,6 +3,7 @@
 #include "RageUtil.h"
 #include "USBDriver_Impl_WinUSB.h"
 
+#include <winusb.h>
 #include <Usb100.h>
 #include <Setupapi.h>
 

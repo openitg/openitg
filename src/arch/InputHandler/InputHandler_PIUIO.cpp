@@ -12,6 +12,16 @@ REGISTER_INPUT_HANDLER( PIUIO );
 
 bool InputHandler_PIUIO::s_bInitialized = false;
 
+// simple helper function to automatically reopen PIUIO if a USB error occurs
+static void Reconnect( PIUIO &board )
+{
+	while( !board.Open() )
+	{
+		board.Close();
+		usleep( 100000 );
+	}
+}
+
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
 	m_bFoundDevice = false;
@@ -70,7 +80,7 @@ InputHandler_PIUIO::~InputHandler_PIUIO()
 	// reset all lights and unclaim the device
 	if( m_bFoundDevice )
 	{
-		Board.Write( 0 );
+		Board.Write( 0 );	// it's okay if this fails
 		Board.Close();
 
 		s_bInitialized = false;
@@ -179,9 +189,13 @@ void InputHandler_PIUIO::HandleInput()
 				m_iLightData &= 0xFFFCFFFC;
 				m_iLightData |= (i | (i << 16));
 
+				// request this set of sensors
+				while( !Board.Write(m_iLightData) )
+					Reconnect( Board );
+
 				// read from this set of sensors
-				Board.Write( m_iLightData );
-				Board.Read( &m_iInputData[i] );
+				while( !Board.Read(&m_iInputData[i]) )
+					Reconnect( Board );
 
 				// PIUIO opens high; invert the input
 				m_iInputData[i] = ~m_iInputData[i];

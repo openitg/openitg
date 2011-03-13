@@ -3,53 +3,55 @@
 
 /* Define the default driver sets. */
 #if defined(WINDOWS)
-#include "ArchHooks/ArchHooks_Win32.h"
-#include "LoadingWindow/LoadingWindow_Win32.h"
-#include "LowLevelWindow/LowLevelWindow_Win32.h"
-#include "MemoryCard/MemoryCardDriverThreaded_Windows.h"
-#define DEFAULT_INPUT_DRIVER_LIST "DirectInput,Pump,Para"
-#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,DShow,Null"
-#define DEFAULT_SOUND_DRIVER_LIST "DirectSound-sw,WDMKS,WaveOut,Null"
-
+	#include "ArchHooks/ArchHooks_Win32.h"
+	#include "LoadingWindow/LoadingWindow_Win32.h"
+	#include "LowLevelWindow/LowLevelWindow_Win32.h"
+	#include "MemoryCard/MemoryCardDriverThreaded_Windows.h"
+	#include "USB/USBDriver_Impl_WinUSB.h"
+	#define DEFAULT_INPUT_DRIVER_LIST "DirectInput,Pump,Para"
+	#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,DShow,Null"
+	#define DEFAULT_SOUND_DRIVER_LIST "DirectSound-sw,WDMKS,WaveOut,Null"
 
 #elif defined(MACOSX)
-#include "ArchHooks/ArchHooks_MacOSX.h"
-#include "LoadingWindow/LoadingWindow_MacOSX.h"
-#include "LowLevelWindow/LowLevelWindow_MacOSX.h"
-#define DEFAULT_INPUT_DRIVER_LIST "SDL"
-#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,Null"
-#define DEFAULT_SOUND_DRIVER_LIST "CoreAudio,Null"
-
+	#include "ArchHooks/ArchHooks_MacOSX.h"
+	#include "LoadingWindow/LoadingWindow_MacOSX.h"
+	#include "LowLevelWindow/LowLevelWindow_MacOSX.h"
+	#define DEFAULT_INPUT_DRIVER_LIST "SDL"
+	#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,Null"
+	#define DEFAULT_SOUND_DRIVER_LIST "CoreAudio,Null"
 
 #elif defined(_XBOX)
-#include "ArchHooks/ArchHooks_Xbox.h"
-#include "LoadingWindow/LoadingWindow_Xbox.h"
-#include "LowLevelWindow/LowLevelWindow_Win32.h"
-#define DEFAULT_INPUT_DRIVER_LIST "Xbox"
-#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,DShow,Null"
-#define DEFAULT_SOUND_DRIVER_LIST "DirectSound,DirectSound-sw,Null"
-
+	#include "ArchHooks/ArchHooks_Xbox.h"
+	#include "LoadingWindow/LoadingWindow_Xbox.h"
+	#include "LowLevelWindow/LowLevelWindow_Win32.h"
+	#define DEFAULT_INPUT_DRIVER_LIST "Xbox"
+	#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,DShow,Null"
+	#define DEFAULT_SOUND_DRIVER_LIST "DirectSound,DirectSound-sw,Null"
 
 #elif defined(UNIX)
-#include "ArchHooks/ArchHooks_Unix.h"
-#include "LowLevelWindow/LowLevelWindow_X11.h"
+	#include "ArchHooks/ArchHooks_Unix.h"
+	#include "LowLevelWindow/LowLevelWindow_X11.h"
+	#include "USB/USBDriver_Impl_Libusb.h"
 
-#if defined(LINUX)
-#include "MemoryCard/MemoryCardDriverThreaded_Linux.h"
-#endif
+	#if defined(LINUX)
+		#include "MemoryCard/MemoryCardDriverThreaded_Linux.h"
+	#endif
 
-#if defined(HAVE_GTK)
-#include "LoadingWindow/LoadingWindow_Gtk.h"
-#endif
-#if defined(LINUX)
-#define DEFAULT_INPUT_DRIVER_LIST "X11,Joystick"
+	#if defined(HAVE_GTK)
+		#include "LoadingWindow/LoadingWindow_Gtk.h"
+	#endif
+
+	#if defined(LINUX)
+		#define DEFAULT_INPUT_DRIVER_LIST "X11,Joystick"
+	#else
+		#define DEFAULT_INPUT_DRIVER_LIST "X11"
+	#endif
+
+	#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,Null"
+	#define DEFAULT_SOUND_DRIVER_LIST "ALSA-sw,OSS,Null"
+
 #else
-#define DEFAULT_INPUT_DRIVER_LIST "X11"
-#endif
-#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,Null"
-#define DEFAULT_SOUND_DRIVER_LIST "ALSA-sw,OSS,Null"
-#else
-#error Which arch?
+	#error Which arch?
 #endif
 
 /* All use these. */

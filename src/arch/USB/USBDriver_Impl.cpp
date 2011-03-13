@@ -2,6 +2,16 @@
 #include "USBDriver_Impl.h"
 #include "arch/arch_default.h"
 
+USBDriver_Impl::USBDriver_Impl()
+{
+	/* no-op */
+}
+
+USBDriver_Impl::~USBDriver_Impl()
+{
+	/* no-op */
+}
+
 /* XXX: this is a little dumb. hopefully there's a better way? */
 
 USBDriver_Impl* USBDriver_Impl::Create()

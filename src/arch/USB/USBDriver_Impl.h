@@ -12,7 +12,7 @@ public:
 	virtual ~USBDriver_Impl();
 
 	virtual bool Open( int iVendorID, int iProductID ) = 0;
-	virtual void Close();
+	virtual void Close() = 0;
 
 	virtual int ControlMessage( int iType, int iRequest, int iValue, int iIndex, char *pData, int iSize, int iTimeout ) = 0;
 

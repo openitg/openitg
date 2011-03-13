@@ -9,6 +9,11 @@ USBDriver_Impl_Libusb::USBDriver_Impl_Libusb()
 	m_pHandle = NULL;
 }
 
+USBDriver_Impl_Libusb::~USBDriver_Impl_Libusb()
+{
+	Close();
+}
+
 static struct usb_device *FindDevice( int iVendorID, int iProductID )
 {
 	for( usb_bus *bus = usb_get_busses(); bus; bus = bus->next )

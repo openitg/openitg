@@ -165,7 +165,9 @@ SM_TLS
 SM_LIBUSB
 
 # for linux joystick hotplug
+have_inotify=no
 AC_CHECK_HEADER([sys/inotify.h], 
+	have_inotify=yes
 	AC_DEFINE(HAVE_INOTIFY, 1, [inotify support in kernel])
 ,)
 
@@ -350,5 +352,6 @@ echo "libcrypto++		$have_libcryptopp"
 echo "GTK2			$enable_gtk2"
 echo "ALSA			$alsa"
 echo "OSS			$ac_cv_header_sys_soundcard_h (forced: $force_oss)"
+echo "inotify hotplug		$have_inotify"
 
 echo

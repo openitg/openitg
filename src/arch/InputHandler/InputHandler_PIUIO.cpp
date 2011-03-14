@@ -15,11 +15,15 @@ bool InputHandler_PIUIO::s_bInitialized = false;
 // simple helper function to automatically reopen PIUIO if a USB error occurs
 static void Reconnect( PIUIO &board )
 {
+	LOG->Warn( "PIUIO connection lost! Retrying..." );
+
 	while( !board.Open() )
 	{
 		board.Close();
 		usleep( 100000 );
 	}
+
+	LOG->Warn( "PIUIO reconnected." );
 }
 
 InputHandler_PIUIO::InputHandler_PIUIO()
@@ -40,8 +44,6 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 		LOG->Warn( "InputHandler_PIUIO: Could not establish a connection with the I/O device." );
 		return;
 	}
-
-	LOG->Trace( "Opened PIUIO board." );
 
 	// set the relevant global flags (static flag, input type)
 	m_bFoundDevice = true;
@@ -116,7 +118,8 @@ void InputHandler_PIUIO::SetLightsMappings()
 
 	/* The coin counter moves halfway if we send bit 4, then the rest of
 	 * the way when we send bit 5. If bit 5 is sent without bit 4 prior,
-	 * the coin counter doesn't do anything. */
+	 * the coin counter doesn't do anything, so we just keep it on and
+	 * use bit 4 to pulse. */
 	uint32_t iCoinTriggers[2] = { (1 << 27), (1 << 28) };
 
 	m_LightsMappings.SetCabinetLights( iCabinetLights );

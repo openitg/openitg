@@ -130,15 +130,18 @@ StepMania = StdString.h \
 LoadingWindow = arch/LoadingWindow/LoadingWindow.cpp arch/LoadingWindow/LoadingWindow.h \
 		arch/LoadingWindow/LoadingWindow_Null.h
 
+USBDriver = arch/USB/USBDriver_Impl.cpp arch/USB/USBDriver_Impl.h
 
+# if HAVE_LIBUSB
 LIBS += -lusb
-#Make sure any dependencies on these data structure are wrapped.
-DataStructures += io/USBDriver.cpp io/USBDriver.h \
-		  io/PIUIO.cpp io/PIUIO.h \
-		  io/ITGIO.cpp io/ITGIO.h \
-		  io/PacDrive.cpp io/PacDrive.h \
-		  io/G15.cpp io/G15.h \
-		  io/USBDevice.h
+
+USBIO = io/USBDriver.cpp io/USBDriver.h io/PIUIO.cpp io/PIUIO.h io/ITGIO.cpp \
+	io/ITGIO.h io/PacDrive.cpp io/PacDrive.h io/G15.cpp io/G15.h \
+	io/USBDevice.h
+
+DataStructures += $(USBIO)
+USBDriver += arch/USB/USBDriver_Impl_Libusb.cpp arch/USB/USBDriver_Impl_Libusb.h
+# endif
 
 # these both use the same .h file
 if LINUX
@@ -261,7 +264,7 @@ InputHandler +=	arch/InputHandler/InputHandler_Linux_Joystick.h arch/InputHandle
 endif
 
 Arch = $(LoadingWindow) $(Sound) $(ArchHooks) $(InputHandler) $(MovieTexture) \
-	   $(Lights) $(MemoryCard) $(LowLevelWindow) $(ArchUtils) $(Dialog) $(Threads) \
+	   $(Lights) $(MemoryCard) $(LowLevelWindow) $(ArchUtils) $(Dialog) $(Threads) $(USBDriver) \
 	   arch/arch_default.h arch/arch_platform.h arch/RageDriver.cpp arch/RageDriver.h
 
 RageSoundFileReaders = RageSoundReader_WAV.cpp RageSoundReader_WAV.h 

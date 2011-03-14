@@ -143,12 +143,12 @@ void InputHandler_Iow::InputThreadMain()
 		// ITGIO opens high - flip the bit values
 		m_iReadData = ~m_iReadData;
 
+		// update the I/O state with the data we've read
+		HandleInput();
+
 		// write our lights data (and handle I/O errors)
 		while( !Board.Write(0xFFFF0000 | m_iWriteData) )
 			Board.Reconnect();
-
-		// update the I/O state with the data we've read
-		HandleInput();
 
 		m_DebugTimer.EndUpdate();
 

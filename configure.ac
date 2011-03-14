@@ -177,7 +177,6 @@ SM_LIBUSB
 
 have_ffmpeg=no
 have_libresample=no
-have_libcryptopp=no
 
 # search for system libs if not building for arcade
 if test "$itg_arcade" = "no"; then
@@ -189,15 +188,6 @@ if test "$itg_arcade" = "no"; then
 	AC_CHECK_LIB(resample, resample_open, [x=y], have_libresample=no, [-lm])
 	if test "$have_libresample" = "yes"; then
 		LIBS="$LIBS -lresample"
-	fi
-
-	# there has to be a better way... -hifi
-	AC_LANG([C++])
-	AC_CHECK_HEADER([crypto++/cryptlib.h], have_libcryptopp=yes, have_libcryptopp=no)
-	AC_LANG([C])
-	if test "$have_libcryptopp" = "yes"; then
-		LIBS="$LIBS -lcrypto++"
-		AC_DEFINE(HAVE_LIBCRYPTOPP, 1, [system CryptoPP available])
 	fi
 
 	if test "$have_libavcodec" = "yes"; then
@@ -244,7 +234,6 @@ fi
 
 AM_CONDITIONAL(HAVE_FFMPEG, test "$have_ffmpeg" = "yes")
 AM_CONDITIONAL(HAVE_LIBRESAMPLE, test "$have_libresample" = "yes")
-AM_CONDITIONAL(HAVE_LIBCRYPTOPP, test "$have_libcryptopp" = "yes")
 
 SM_CHECK_CRASH_HANDLER
 

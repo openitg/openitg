@@ -1,8 +1,15 @@
+/* USBDriver_Impl_WinUSB: (not fully complete) USB control system for
+ * Windows XP SP2 and up. Libusb has problems trying to hack around 
+ * how terribly Windows handles I/O devices, so we have a native API 
+ * implementation (in the works). */
+
 #ifndef USB_DRIVER_IMPL_WINUSB_H
 #define USB_DRIVER_IMPL_WINUSB_H
 
 #include "USBDriver_Impl.h"
 struct WINUSB_INTERFACE_HANDLE;
+
+#define HAS_USBDRIVER_IMPL_WINUSB
 
 class USBDriver_Impl_WinUSB : public USBDriver_Impl
 {

@@ -13,7 +13,7 @@ const unsigned REQ_TIMEOUT = 10000;
 bool PacDrive::Open()
 {
 	for( unsigned i = 0; i < 8; ++i )
-		if( m_pDriver->Open(PACDRIVE_VENDOR_ID, PACDRIVE_PRODUCT_ID + i) )
+		if( OpenInternal(PACDRIVE_VENDOR_ID, PACDRIVE_PRODUCT_ID + i) )
 			return true;
 
 	return false;

@@ -114,10 +114,8 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 		if( m_sSecret.empty() )
 		{
 			/* quick hack: Xbox can't dongle, so disable it. */
-#ifndef XBOX
 			CHECKPOINT_M( "dongle" );
 			iButton::GetAESKey(subkey, AESKey);
-#endif
 		}
 		else
 		{

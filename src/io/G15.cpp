@@ -37,7 +37,7 @@ void PixmapToLCDData( const unsigned char *pData, unsigned char *pLCD )
 bool G15::Open()
 {
 	for( unsigned i = 0; i < NUM_PRODUCT_IDS; ++i )
-		if( m_pDriver->Open(G15_VENDOR_ID, G15_PRODUCT_ID[i]) )
+		if( OpenInternal(G15_VENDOR_ID, G15_PRODUCT_ID[i]) )
 			return true;
 
 	return false;

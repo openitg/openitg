@@ -10,14 +10,20 @@ typedef unsigned char uchar;
 
 namespace iButton
 {
+/* The Xbox physically can't support a dongle, so we stub these. */
+#if !defined(XBOX)
 	int GetAESKey( const uchar *subkey, uchar *output );
 	CString GetSerialNumber();
+#else
+	int GetAESKey( const uchar *subkey, uchar *output ) { return 0; }
+	CString GetSerialNumber() { return CString(); }
+#endif
 };
 
 #endif // IBUTTON_H
 
 /*
- * (c) 2008 BoXoRRoXoRs
+ * (c) 2008-2011 BoXoRRoXoRs
  * All rights reserved.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a

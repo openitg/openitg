@@ -20,7 +20,7 @@ bool PIUIO::DeviceMatches( int iVID, int iPID )
 
 bool PIUIO::Open()
 {
-	return m_pDriver->Open( PIUIO_VENDOR_ID, PIUIO_PRODUCT_ID );
+	return OpenInternal( PIUIO_VENDOR_ID, PIUIO_PRODUCT_ID );
 }
 
 bool PIUIO::Read( uint32_t *pData )

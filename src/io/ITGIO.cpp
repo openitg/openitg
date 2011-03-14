@@ -34,7 +34,7 @@ bool ITGIO::Open()
 {
 	/* we don't really care which PID works, just if it does */
 	for( unsigned i = 0; i < NUM_PRODUCT_IDS; ++i )
-		if( m_pDriver->Open(ITGIO_VENDOR_ID, ITGIO_PRODUCT_ID[i]) )
+		if( OpenInternal(ITGIO_VENDOR_ID, ITGIO_PRODUCT_ID[i]) )
 			return true;
 
 	return false;

@@ -9,9 +9,6 @@ public:
 	/* returns true if the VID/PID match PIUIO. */
 	static bool DeviceMatches( int iVendorID, int iProductID );
 
-	PIUIO();
-	~PIUIO();
-
 	bool Open();
 
 	bool Read( uint32_t *pData );

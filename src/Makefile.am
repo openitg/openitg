@@ -21,17 +21,8 @@ else
 LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ $(LUA_LIBS) -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
 endif
 
-STATIC_LIBS =
-
 if !HAVE_LIBRESAMPLE
-	$(STATIC_LIBS) += $(srcdir)/libresample/libresample.a
-endif
-
-if !HAVE_LIBCRYPTOPP
-	$(STATIC_LIBS) += $(srcdir)/crypto561/libcryptopp.a
-endif
-
-all: $(STATIC_LIBS)
+all: $(srcdir)/libresample/libresample.a $(srcdir)/crypto561/libcryptopp.a
 
 clean-local: clean_libresample
 
@@ -40,6 +31,9 @@ clean_libresample:
 
 $(srcdir)/libresample/libresample.a:
 	cd $(srcdir)/libresample && autoconf && sh ./configure && make
+else
+all: $(srcdir)/crypto561/libcryptopp.a
+endif
 
 $(srcdir)/crypto561/libcryptopp.a:
 	cd $(srcdir)/crypto561 && make -f GNUmakefile
@@ -451,16 +445,13 @@ main_SOURCES = $(Screens) \
 main_LDADD = \
 		  $(AUDIO_LIBS) \
 		  $(SDL_LIBS) \
-		  $(XLIBS)
+		  $(XLIBS) \
+		  $(srcdir)/crypto561/libcryptopp.a
 
 openitg_SOURCES = $(main_SOURCES)
 
 if !HAVE_LIBRESAMPLE
 main_LDADD += $(srcdir)/libresample/libresample.a
-endif
-
-if !HAVE_LIBCRYPTOPP
-main_LDADD += $(srcdir)/crypto561/libcryptopp.a
 endif
 
 if !HAVE_FFMPEG
@@ -532,11 +523,8 @@ test_file_errors_SOURCES = \
 		tests/test_file_errors.cpp \
 		MsdFile.cpp MsdFile.h \
 		XmlFile.cpp XmlFile.h \
+		$(srcdir)/crypto561/libcryptopp.a \
 		CryptManager.cpp CryptManager.h $(cryptopp) $(crypto)
-
-if !HAVE_LIBCRYPTOPP
-test_file_errors_SOURCES += $(srcdir)/crypto561/libcryptopp.a
-endif
 
 TESTS += test_timing_data
 test_timing_data_SOURCES = \

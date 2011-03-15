@@ -155,9 +155,10 @@ void PlayerOptions::GetMods( vector<CString> &AddTo ) const
 	AddPart( AddTo, m_fCover,	"Cover" );
 
 	AddPart( AddTo, m_fPassmark, "Passmark" );
-	AddPart( AddTo, m_fTimingScale, "JudgeScale" );
-
 	AddPart( AddTo, m_fRandomSpeed, "RandomSpeed" );
+
+	if( m_fTimingScale != 1.0f )
+		AddPart( AddTo, m_fTimingScale, "Timing" );
 
 	if( m_bTurns[TURN_MIRROR] )			AddTo.push_back( "Mirror" );
 	if( m_bTurns[TURN_LEFT] )			AddTo.push_back( "Left" );

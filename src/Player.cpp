@@ -75,7 +75,7 @@ float AdjustedWindowTap( TapWindow tw, float fTimingScale, bool bIsPlayingBeginn
 	return fSecs;
 }
 
-float AdjustedWindowHold( HoldWindow hw, float fTimingScale, bool bIsPlayingBeginner )
+float AdjustedWindowHold( HoldWindow hw, bool bIsPlayingBeginner )
 {
 	float fSecs = 0;
 	switch( hw )

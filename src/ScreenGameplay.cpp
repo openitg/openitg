@@ -1348,20 +1348,6 @@ void ScreenGameplay::UpdateSongPosition( float fDeltaTime )
 
 	float fSecondsTotal = fSeconds+fAdjust; 
 
-	// give a bit of leeway - ITG's R23 feature cuts off at 2:10 instead of 2:00, so add 10 to the limit
-	// UPDATE: made obsolete with the new custom song system
-	/*
-	if (m_bSongIsCustom && (PREFSMAN->m_iCustomMaxSeconds > 0) && fSecondsTotal > MAX_CUSTOM_LENGTH )
-	{
-		LOG->Warn( "Custom songs time limit of %f seconds exceeded (%f seconds); ending early.",
-			MAX_CUSTOM_LENGTH, fSecondsTotal );
-
-                m_pSoundMusic->StopPlaying();
-                m_soundAssistTick.StopPlaying(); // Stop any queued assist ticks.
-		m_SongFinished.StartTransitioning( SM_NotesEnded );
-	}
-	*/
-
 	GAMESTATE->UpdateSongPosition( fSecondsTotal, GAMESTATE->m_pCurSong->m_Timing, tm+fAdjust );
 }
 

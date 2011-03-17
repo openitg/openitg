@@ -178,7 +178,7 @@ const CString &Song::GetSongFilePath() const
 	return m_sSongFileName;
 }
 
-NotesLoader *Song::MakeLoader( CString sDir ) const
+NotesLoader *Song::MakeLoader( const CString &sDir ) const
 {
 	NotesLoader *ret;
 
@@ -215,10 +215,12 @@ static set<istring> BlacklistedImages;
  *
  * If true, check the directory hash and reload the song from scratch if it's changed.
  */
-bool Song::LoadFromSongDir( CString sDir )
+bool Song::LoadFromSongDir( const CString &sDir_ )
 {
 	//	LOG->Trace( "Song::LoadFromSongDir(%s)", sDir.c_str() );
-	ASSERT( sDir != "" );
+	ASSERT( !sDir_.empty() );
+
+	CString sDir = sDir_;
 
 	// make sure there is a trailing slash at the end of sDir
 	if( sDir.Right(1) != "/" )
@@ -315,9 +317,11 @@ bool Song::LoadFromSongDir( CString sDir )
 	return true;	// do load this song
 }
 
-bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber pn )
+bool Song::LoadFromCustomSongDir( const CString &sDir_, const CString &sGroupName, PlayerNumber pn )
 {
-	ASSERT( sDir != "" );
+	CString sDir = sDir_;
+
+	ASSERT( !sDir.empty() );
 
 	// Make sure there is a trailing slash at the end of sDir, then save it
 	if( sDir.Right(1) != "/" )
@@ -369,7 +373,7 @@ bool Song::LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber
 	return true;
 }
 
-static void GetImageDirListing( CString sPath, CStringArray &AddTo, bool bReturnPathToo=false )
+static void GetImageDirListing( const CString &sPath, CStringArray &AddTo, bool bReturnPathToo=false )
 {
 	GetDirListing( sPath + ".png", AddTo, false, bReturnPathToo ); 
 	GetDirListing( sPath + ".jpg", AddTo, false, bReturnPathToo ); 
@@ -1022,7 +1026,7 @@ Steps* Song::GetStepsByMeter( StepsType st, int iMeterLow, int iMeterHigh ) cons
 	return NULL;
 }
 
-Steps* Song::GetStepsByDescription( StepsType st, CString sDescription ) const
+Steps* Song::GetStepsByDescription( StepsType st, const CString &sDescription ) const
 {
 	vector<Steps*> vNotes;
 	GetSteps( vNotes, st, DIFFICULTY_INVALID, -1, -1, sDescription );
@@ -1109,7 +1113,7 @@ void Song::Save()
 }
 
 
-void Song::SaveToSMFile( CString sPath, bool bSavingCache )
+void Song::SaveToSMFile( const CString &sPath, bool bSavingCache )
 {
 	LOG->Trace( "Song::SaveToSMFile('%s')", sPath.c_str() );
 
@@ -1357,15 +1361,18 @@ vector<BackgroundChange> &Song::GetForegroundChanges()
 }
 
 
-CString GetSongAssetPath( CString sPath, const CString &sSongPath )
+CString GetSongAssetPath( const CString &sPath_, const CString &sSongPath )
 {
-	if( sPath == "" )
+	if( sPath_.empty() )
 		return "";
 
 	/* If there's no path in the file, the file is in the same directory
 	 * as the song.  (This is the preferred configuration.) */
-	if( sPath.find('/') == CString::npos )
-		return sSongPath+sPath;
+	if( sPath_.find('/') == CString::npos )
+		return sSongPath+sPath_;
+
+	CString sPath = sPath_;
+	CollapsePath( sPath );
 
 	/* The song contains a path; treat it as relative to the top SM directory. */
 	if( sPath.Left(3) == "../" )
@@ -1373,8 +1380,6 @@ CString GetSongAssetPath( CString sPath, const CString &sSongPath )
 		/* The path begins with "../".  Resolve it wrt. the song directory. */
 		sPath = sSongPath + sPath;
 	}
-
-	CollapsePath( sPath );
 
 	/* If the path still begins with "../", then there were an unreasonable number
 	 * of them at the beginning of the path.  Ignore the path entirely. */
@@ -1488,7 +1493,7 @@ void Song::RemoveSteps( const Steps* pSteps )
 	AddAutoGenNotes();
 }
 
-bool Song::Matches(CString sGroup, CString sSong) const
+bool Song::Matches(const CString &sGroup, const CString &sSong) const
 {
 	if( sGroup.size() && sGroup.CompareNoCase(this->m_sGroupName) != 0)
 		return false;
@@ -1582,7 +1587,7 @@ float Song::GetStepsSeconds() const
 	return GetElapsedTimeFromBeat( m_fLastBeat ) - GetElapsedTimeFromBeat( m_fFirstBeat );
 }
 
-bool Song::IsEditDescriptionUnique( StepsType st, CString sPreferredDescription, const Steps *pExclude ) const
+bool Song::IsEditDescriptionUnique( StepsType st, const CString &sPreferredDescription, const Steps *pExclude ) const
 {
 	FOREACH_CONST( Steps*, m_vpSteps, s )
 	{

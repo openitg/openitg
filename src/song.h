@@ -60,16 +60,16 @@ public:
 	void Reset();
 	void DetachSteps();
 
-	NotesLoader *MakeLoader( CString sDir ) const;
+	NotesLoader *MakeLoader( const CString &sDir ) const;
 
-	bool LoadFromSongDir( CString sDir );
-	bool LoadFromCustomSongDir( CString sDir, CString sGroupName, PlayerNumber pn );
+	bool LoadFromSongDir( const CString &sDir );
+	bool LoadFromCustomSongDir( const CString &sDir, const CString &sGroupName, PlayerNumber pn );
 
 	void TidyUpData();	// call after loading to clean up invalid data
 	void ReCalculateRadarValuesAndLastBeat( float fSeconds = -1.0f );	// called by TidyUpData, and after saving
 	void TranslateTitles();	// called by TidyUpData
 
-	void SaveToSMFile( CString sPath, bool bSavingCache );
+	void SaveToSMFile( const CString &sPath, bool bSavingCache );
 	void Save();	// saves SM and DWI
 	void SaveToCacheFile();
 	void SaveToDWIFile();
@@ -166,9 +166,9 @@ public:
 	bool IsLong() const;
 	bool IsMarathon() const;
 
-	bool Matches(CString sGroup, CString sSong) const;
+	bool Matches( const CString &sGroup, const CString &sSong) const;
 
-	TimingData					m_Timing;
+	TimingData m_Timing;
 
 	typedef vector<BackgroundChange> VBackgroundChange;
 private:
@@ -229,7 +229,7 @@ public:
 		) const;
 	Steps* GetStepsByDifficulty( StepsType st, Difficulty dc, bool bIncludeAutoGen = true ) const;
 	Steps* GetStepsByMeter( StepsType st, int iMeterLow, int iMeterHigh ) const;
-	Steps* GetStepsByDescription( StepsType st, CString sDescription ) const;
+	Steps* GetStepsByDescription( StepsType st, const CString &sDescription ) const;
 	Steps* GetClosestNotes( StepsType st, Difficulty dc, bool bIgnoreLocked=false ) const;
 	bool IsEasy( StepsType st ) const;
 	bool IsTutorial() const;
@@ -248,7 +248,7 @@ public:
 	int GetNumStepsLoadedFromProfile( ProfileSlot slot ) const;
 	bool IsEditAlreadyLoaded( Steps* pSteps ) const;
 
-	bool IsEditDescriptionUnique( StepsType st, CString sPreferredDescription, const Steps *pExclude ) const;
+	bool IsEditDescriptionUnique( StepsType st, const CString &sPreferredDescription, const Steps *pExclude ) const;
 	void MakeUniqueEditDescription( StepsType st, CString &sPreferredDescriptionInOut ) const;
 
 	// An array of keysound file names (e.g. "beep.wav").

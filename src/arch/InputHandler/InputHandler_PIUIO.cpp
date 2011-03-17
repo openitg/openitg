@@ -14,6 +14,10 @@ bool InputHandler_PIUIO::s_bInitialized = false;
 
 InputHandler_PIUIO::InputHandler_PIUIO()
 {
+	m_bFoundDevice = false;
+
+	/* if a handler has already been created (e.g. by ScreenArcadeStart)
+	 * and it has claimed the board, don't try to claim it again. */
 	if( s_bInitialized )
 	{
 		LOG->Warn( "InputHandler_PIUIO: Redundant driver loaded. Disabling..." );
@@ -30,6 +34,7 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 	LOG->Trace( "Opened PIUIO board." );
 
 	// set the relevant global flags (static flag, input type)
+	m_bFoundDevice = true;
 	s_bInitialized = true;
 	m_bShutdown = false;
 

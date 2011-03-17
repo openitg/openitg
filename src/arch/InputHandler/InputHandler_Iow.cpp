@@ -19,6 +19,11 @@ bool InputHandler_Iow::s_bInitialized = false;
 
 InputHandler_Iow::InputHandler_Iow()
 {
+	m_bFoundDevice = false;
+
+	/* if a handler has already been created (e.g. by ScreenArcadeStart)
+	 * and it has claimed the board, don't try to claim it again. */
+
 	if( s_bInitialized )
 	{
 		LOG->Warn( "InputHandler_Iow: Redundant driver loaded. Disabling..." );

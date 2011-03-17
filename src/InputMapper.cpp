@@ -67,9 +67,6 @@ struct AutoJoyMapping
 };
 #define END_MARKER	{-1, -1, GAME_BUTTON_INVALID, false },	// end marker
 
-/* I'm separating ITGIO and PIUIO since we're soft-coding them.
- * ITGIO won't see any improvements, but PIUIO already has, so...
- * -- Vyhd */
 const AutoJoyMapping g_AutoJoyMappings[] = 
 {
 	{
@@ -78,26 +75,26 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 		"ITG input device",
 		{
 			/* Player 1 */
-			{ 0, JOY_14,		DANCE_BUTTON_LEFT,		false },
-			{ 0, JOY_13,		DANCE_BUTTON_RIGHT,		false },
-			{ 0, JOY_16,		DANCE_BUTTON_UP,		false },
-			{ 0, JOY_15,		DANCE_BUTTON_DOWN,		false },
-			{ 0, JOY_12,		GAME_BUTTON_START,		false },
-			{ 0, JOY_11,		GAME_BUTTON_MENULEFT,		false },
-			{ 0, JOY_10,		GAME_BUTTON_MENURIGHT,		false },
+			{ 0, JOY_14,	DANCE_BUTTON_LEFT,	false },
+			{ 0, JOY_13,	DANCE_BUTTON_RIGHT,	false },
+			{ 0, JOY_16,	DANCE_BUTTON_UP,	false },
+			{ 0, JOY_15,	DANCE_BUTTON_DOWN,	false },
+			{ 0, JOY_12,	GAME_BUTTON_START,	false },
+			{ 0, JOY_11,	GAME_BUTTON_MENULEFT,	false },
+			{ 0, JOY_10,	GAME_BUTTON_MENURIGHT,	false },
 
 			/* Player 2 */
-			{ 1, JOY_7,		DANCE_BUTTON_LEFT,		true },
-			{ 1, JOY_6,		DANCE_BUTTON_RIGHT,		true },
-			{ 1, JOY_9,		DANCE_BUTTON_UP,		true },
-			{ 1, JOY_8,		DANCE_BUTTON_DOWN,		true },
-			{ 1, JOY_5,		GAME_BUTTON_START,		true },
-			{ 1, JOY_4,		GAME_BUTTON_MENULEFT,		true },
-			{ 1, JOY_3,		GAME_BUTTON_MENURIGHT,		true },
+			{ 1, JOY_7,	DANCE_BUTTON_LEFT,	true },
+			{ 1, JOY_6,	DANCE_BUTTON_RIGHT,	true },
+			{ 1, JOY_9,	DANCE_BUTTON_UP,	true },
+			{ 1, JOY_8,	DANCE_BUTTON_DOWN,	true },
+			{ 1, JOY_5,	GAME_BUTTON_START,	true },
+			{ 1, JOY_4,	GAME_BUTTON_MENULEFT,	true },
+			{ 1, JOY_3,	GAME_BUTTON_MENURIGHT,	true },
 
 			/* Other controls */
-			{ 0, JOY_2,		GAME_BUTTON_OPERATOR,		false },
-			{ 0, JOY_1,		GAME_BUTTON_COIN,		false },
+			{ 0, JOY_2,	GAME_BUTTON_OPERATOR,	false },
+			{ 0, JOY_1,	GAME_BUTTON_COIN,	false },
 			END_MARKER
 		}
 	},
@@ -107,29 +104,55 @@ const AutoJoyMapping g_AutoJoyMappings[] =
 		"ITG input device",
 		{
 			/* Player 1 */
-			{ 0, JOY_30,		DANCE_BUTTON_LEFT,		false },
-			{ 0, JOY_29,		DANCE_BUTTON_RIGHT,		false },
-			{ 0, JOY_32,		DANCE_BUTTON_UP,		false },
-			{ 0, JOY_31,		DANCE_BUTTON_DOWN,		false },
-			{ 0, JOY_27,		GAME_BUTTON_SELECT,		false },
-			{ 0, JOY_28,		GAME_BUTTON_START,		false },
-			{ 0, JOY_26,		GAME_BUTTON_MENULEFT,		false },
-			{ 0, JOY_25,		GAME_BUTTON_MENURIGHT,		false },
+			{ 0, JOY_30,	DANCE_BUTTON_LEFT,	false },
+			{ 0, JOY_29,	DANCE_BUTTON_RIGHT,	false },
+			{ 0, JOY_32,	DANCE_BUTTON_UP,	false },
+			{ 0, JOY_31,	DANCE_BUTTON_DOWN,	false },
+			{ 0, JOY_27,	GAME_BUTTON_SELECT,	false },
+			{ 0, JOY_28,	GAME_BUTTON_START,	false },
+			{ 0, JOY_26,	GAME_BUTTON_MENULEFT,	false },
+			{ 0, JOY_25,	GAME_BUTTON_MENURIGHT,	false },
 
 			/* Player 2 */
-			{ 1, JOY_14,		DANCE_BUTTON_LEFT,		true },
-			{ 1, JOY_13,		DANCE_BUTTON_RIGHT,		true },
-			{ 1, JOY_16,		DANCE_BUTTON_UP,		true },
-			{ 1, JOY_15,		DANCE_BUTTON_DOWN,		true },
-			{ 1, JOY_11,		GAME_BUTTON_SELECT,		true },
-			{ 1, JOY_12,		GAME_BUTTON_START,		true },
-			{ 1, JOY_10,		GAME_BUTTON_MENULEFT,		true },
-			{ 1, JOY_9,		GAME_BUTTON_MENURIGHT,		true },
+			{ 1, JOY_14,	DANCE_BUTTON_LEFT,	true },
+			{ 1, JOY_13,	DANCE_BUTTON_RIGHT,	true },
+			{ 1, JOY_16,	DANCE_BUTTON_UP,	true },
+			{ 1, JOY_15,	DANCE_BUTTON_DOWN,	true },
+			{ 1, JOY_11,	GAME_BUTTON_SELECT,	true },
+			{ 1, JOY_12,	GAME_BUTTON_START,	true },
+			{ 1, JOY_10,	GAME_BUTTON_MENULEFT,	true },
+			{ 1, JOY_9,	GAME_BUTTON_MENURIGHT,	true },
 
 			/* Other controls */
-			{ 0, JOY_23,		GAME_BUTTON_OPERATOR,		false },
-			{ 1, JOY_18,		GAME_BUTTON_OPERATOR,		false },
-			{ 0, JOY_22,		GAME_BUTTON_COIN,		false },
+			{ 0, JOY_23,	GAME_BUTTON_OPERATOR,	false },
+			{ 1, JOY_18,	GAME_BUTTON_OPERATOR,	false },
+			{ 0, JOY_22,	GAME_BUTTON_COIN,	false },
+			END_MARKER
+		}
+	},
+	{
+		"pump",
+		"PIUIO",
+		"MK6 I/O device",	// disambiguation from 'dance'
+		{
+			/* Player 1 */
+			{ 0, JOY_32,	PUMP_BUTTON_UPLEFT,	false },
+			{ 0, JOY_31,	PUMP_BUTTON_UPRIGHT,	false },
+			{ 0, JOY_30,	PUMP_BUTTON_CENTER,	false },
+			{ 0, JOY_29,	PUMP_BUTTON_DOWNLEFT,	false },
+			{ 0, JOY_28,	PUMP_BUTTON_DOWNRIGHT,	false },
+
+			/* Player 2 */
+			{ 1, JOY_16,	PUMP_BUTTON_UPLEFT,	true },
+			{ 1, JOY_15,	PUMP_BUTTON_UPRIGHT,	true },
+			{ 1, JOY_14,	PUMP_BUTTON_CENTER,	true },
+			{ 1, JOY_13,	PUMP_BUTTON_DOWNLEFT,	true },
+			{ 1, JOY_12,	PUMP_BUTTON_DOWNRIGHT,	true },
+
+			/* Other controls */
+			{ 0, JOY_23,	GAME_BUTTON_OPERATOR,	false },
+			{ 1, JOY_18,	GAME_BUTTON_OPERATOR,	false },
+			{ 0, JOY_22,	GAME_BUTTON_COIN,	false },
 			END_MARKER
 		}
 	},

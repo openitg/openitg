@@ -10,6 +10,12 @@
 #pragma comment (lib, "setupapi.lib" )
 #pragma comment (lib, "winusb.lib" )
 
+bool USBDriver_Impl_WinUsb::DeviceExists( short iVendorID, short iProductID )
+{
+	/* currently not implemented */
+	return false;
+}
+
 USBDriver_Impl_WinUSB::USBDriver_Impl_WinUSB()
 {
 	m_hDevice = INVALID_HANDLE_VALUE;

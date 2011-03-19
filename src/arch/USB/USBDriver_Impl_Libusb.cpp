@@ -7,16 +7,9 @@ extern "C" {
 #include <usb.h>
 }
 
-USBDriver_Impl_Libusb::USBDriver_Impl_Libusb()
-{
-	usb_init();
-	m_pHandle = NULL;
-}
-
-USBDriver_Impl_Libusb::~USBDriver_Impl_Libusb()
-{
-	Close();
-}
+/* static struct to ensure the USB subsystem is initialized on start */
+struct USBInit { USBInit() { usb_init(); } };
+static struct USBInit g_USBInit;
 
 static struct usb_device *FindDevice( int iVendorID, int iProductID )
 {
@@ -29,6 +22,20 @@ static struct usb_device *FindDevice( int iVendorID, int iProductID )
 	return NULL;
 }
 
+bool USBDriver_Impl_Libusb::DeviceExists( short iVendorID, short iProductID )
+{
+	return FindDevice(iVendorID, iProductID) != NULL;
+}
+
+USBDriver_Impl_Libusb::USBDriver_Impl_Libusb()
+{
+	m_pHandle = NULL;
+}
+
+USBDriver_Impl_Libusb::~USBDriver_Impl_Libusb()
+{
+	Close();
+}
 
 bool USBDriver_Impl_Libusb::Open( int iVendorID, int iProductID )
 {

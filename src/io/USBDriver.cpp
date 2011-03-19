@@ -14,15 +14,25 @@ USBDriver::~USBDriver()
 	delete m_pDriver;
 }
 
-bool USBDriver::OpenInternal( int iVendorID, int iProductID )
+bool USBDriver::OpenInternal( short iVendorID, short iProductID )
 {
 	Close();
+
+	/* see if this device actually exists before trying to open it */
+	if( !USBDriver_Impl::DeviceExists(iVendorID, iProductID) )
+	{
+		LOG->Warn( "USBDriver::OpenInternal(0x%04x, 0x%04x): device does not exist\n", iVendorID, iProductID );
+		return false;
+	}
 
 	m_pDriver = USBDriver_Impl::Create();
 
 	/* if !m_pDriver, this build cannot support USB drivers. */
 	if( m_pDriver == NULL )
+	{
+		LOG->Warn( "USBDriver::OpenInternal(): Create failed. (No driver impl?" );
 		return false;
+	}
 
 	return m_pDriver->Open( iVendorID, iProductID );
 }

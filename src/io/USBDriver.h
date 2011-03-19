@@ -17,7 +17,7 @@ public:
 	USBDriver();
 	virtual ~USBDriver();
 
-	bool OpenInternal( int iVendorID, int iProductID );
+	bool OpenInternal( short iVendorID, short iProductID );
 
 	virtual bool Open();
 	virtual void Close();

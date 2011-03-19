@@ -26,3 +26,15 @@ USBDriver_Impl* USBDriver_Impl::Create()
 	return NULL;
 #endif
 }
+
+/* XXX: can we do this better? */
+bool USBDriver_Impl::DeviceExists( short iVendorID, short iProductID )
+{
+#if defined(HAS_USBDRIVER_IMPL_WINUSB)
+	return USBDriver_Impl_WinUSB::DeviceExists( iVendorID, iProductID );
+#elif defined(HAS_USBDRIVER_IMPL_LIBUSB)
+	return USBDriver_Impl_Libusb::DeviceExists( iVendorID, iProductID );
+#else
+	return false;
+#endif
+}

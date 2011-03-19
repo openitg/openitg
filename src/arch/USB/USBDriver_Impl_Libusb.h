@@ -12,6 +12,8 @@ struct usb_dev_handle;
 class USBDriver_Impl_Libusb : public USBDriver_Impl
 {
 public:
+	static bool DeviceExists( short iVendorID, short iProductID );
+
 	USBDriver_Impl_Libusb();
 	~USBDriver_Impl_Libusb();
 

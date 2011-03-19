@@ -14,6 +14,8 @@ struct WINUSB_INTERFACE_HANDLE;
 class USBDriver_Impl_WinUSB : public USBDriver_Impl
 {
 public:
+	static bool DeviceExists( short iVendorID, short iProductID );
+
 	USBDriver_Impl();
 	~USBDriver_Impl();
 

@@ -1,0 +1,25 @@
+Directory layout
+----------------
+
+arcade-patch: contains startup scripts, X configuration, and kernel modules
+	for arcade patches.
+
+d4: contains the game data from the ITG drive. This should *not* be modified:
+	all changes should go under patch-data, which is overlaid on this data
+	by the game binary.
+
+game-data: contains supporting data for OpenITG home releases (the 'home' theme
+	and default config). This combined with d4 creates the root directory
+	for OpenITG home releases.
+
+patch-data: contains changed data in d4 across both arcade and home releases,
+	This is compressed and encrypted into Data/patch/patch.zip; individual
+	files are 'overloaded' in the d4 directory here. Make all changes to
+	the core game data in this directory only.
+
+utilities: various programs used for debugging, testing, reverse engineering,
+	and so forth. Contains itg2-util for Linux, which handles dongle-based
+	ITG data encryption/decryption; and patch-toolkit for Linux and Windows,
+	which handles ITG patch encryption/decryption. Bring Your Own Compiler.
+
+win32-installer: icons, config, and scripting for the Windows NSIS installer.

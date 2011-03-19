@@ -732,7 +732,7 @@ CString RageFileManager::ResolvePath( const CString &sPath_ )
 		if( sPath.substr(0, iMountPointLen) != pDriver->m_sMountPoint )
 			continue;
 
-		sResolvedPath = pDriver->m_sRoot + "/" + sPath.substr(iMountPointLen);
+		sResolvedPath = pDriver->m_sRoot + "/" + CString(sPath.substr(iMountPointLen));
 
 		LOG->Debug( "sPath: %s, pDriver->m_sRoot: %s, sResolvedPath: %s",
 			sPath.c_str(), pDriver->m_sRoot.c_str(), sResolvedPath.c_str() );

@@ -712,7 +712,7 @@ CString RageFileManager::ResolvePath( const CString &sPath_ )
 	CString sPath = sPath_;
 	NormalizePath( sPath );
 
-	CString sResolvedPath = "";
+	CString sResolvedPath = sPath;
 
 	vector<LoadedDriver *> apDriverList;
 	ReferenceAllDrivers( apDriverList );
@@ -720,13 +720,19 @@ CString RageFileManager::ResolvePath( const CString &sPath_ )
 	for( unsigned i = 0; i < apDriverList.size(); ++i )
 	{
 		LoadedDriver *pDriver = apDriverList[i];
+		const CString sDriverPath = pDriver->GetPath( sPath );
 
-		FileType type = pDriver->m_pDriver->GetFileType(sPath);
-
-		if( type != TYPE_DIR )
+		LOG->Debug( "m_sRoot: %s, m_sMountPoint: %s", pDriver->m_sRoot.c_str(), pDriver->m_sMountPoint.c_str() );
+		if ( sDriverPath.empty() || pDriver->m_sRoot.empty() )
 			continue;
 
-		sResolvedPath = pDriver->m_sRoot + sPath;
+		FileType type = pDriver->m_pDriver->GetFileType(sPath);
+	
+		int iMountPointLen = pDriver->m_sMountPoint.length();
+		if( sPath.substr(0, iMountPointLen) != pDriver->m_sMountPoint )
+			continue;
+
+		sResolvedPath = pDriver->m_sRoot + "/" + sPath.substr(iMountPointLen);
 
 		LOG->Debug( "sPath: %s, pDriver->m_sRoot: %s, sResolvedPath: %s",
 			sPath.c_str(), pDriver->m_sRoot.c_str(), sResolvedPath.c_str() );
@@ -880,6 +886,7 @@ RageFileBasic *RageFileManager::OpenForWriting( const CString &sPath, int mode, 
 		RageFileBasic *pRet = ld.m_pDriver->Open( sDriverPath, mode, iThisError );
 		if( pRet )
 		{
+			printf("OpenForWriting %s\n", sDriverPath.c_str());
 			UnreferenceAllDrivers( apDriverList );
 			return pRet;
 		}

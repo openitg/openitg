@@ -24,10 +24,10 @@ bool ITGIO::DeviceMatches( int iVID, int iPID )
 		return false;
 
 	for( unsigned i = 0; i < NUM_PRODUCT_IDS; ++i )
-		if( iPID != ITGIO_PRODUCT_ID[i] )
-			return false;
+		if( iPID == ITGIO_PRODUCT_ID[i] )
+			return true;
 
-	return true;
+	return false;
 }
 
 bool ITGIO::Open()

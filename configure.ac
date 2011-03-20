@@ -314,7 +314,7 @@ AC_CHECK_PROG([have_git], [git], yes, no)
 
 oitg_git=no
 if test "$have_git" = "yes"; then
-	if git status &>/dev/null; then
+	if test -d .git; then
 		oitg_git=yes
 	else
 		echo "Warning: This is not a git checkout of OpenITG, can't determine version!"

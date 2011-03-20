@@ -8,7 +8,11 @@ extern "C" {
 }
 
 /* static struct to ensure the USB subsystem is initialized on start */
-struct USBInit { USBInit() { usb_init(); } };
+struct USBInit
+{
+	USBInit() { usb_init(); usb_find_busses(); usb_find_devices(); }
+};
+
 static struct USBInit g_USBInit;
 
 static struct usb_device *FindDevice( int iVendorID, int iProductID )

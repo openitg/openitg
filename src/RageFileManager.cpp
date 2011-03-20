@@ -722,28 +722,25 @@ CString RageFileManager::ResolvePath( const CString &sPath_ )
 		LoadedDriver *pDriver = apDriverList[i];
 		const CString sDriverPath = pDriver->GetPath( sPath );
 
-		LOG->Debug( "m_sRoot: %s, m_sMountPoint: %s", pDriver->m_sRoot.c_str(), pDriver->m_sMountPoint.c_str() );
 		if ( sDriverPath.empty() || pDriver->m_sRoot.empty() )
 			continue;
 
 		FileType type = pDriver->m_pDriver->GetFileType(sPath);
+
+		if ( pDriver->m_sType != "dir" && pDriver->m_sType != "dirro" )
+			continue;
 	
 		int iMountPointLen = pDriver->m_sMountPoint.length();
 		if( sPath.substr(0, iMountPointLen) != pDriver->m_sMountPoint )
 			continue;
 
 		sResolvedPath = pDriver->m_sRoot + "/" + CString(sPath.substr(iMountPointLen));
-
-		LOG->Debug( "sPath: %s, pDriver->m_sRoot: %s, sResolvedPath: %s",
-			sPath.c_str(), pDriver->m_sRoot.c_str(), sResolvedPath.c_str() );
-
 		break;
 	}
 
 	UnreferenceAllDrivers( apDriverList );
 
 	NormalizePath( sResolvedPath );
-	LOG->Debug( "\"%s\" resolved to \"%s\".", sPath_.c_str(), sResolvedPath.c_str() );
 
 	return sResolvedPath;
 }

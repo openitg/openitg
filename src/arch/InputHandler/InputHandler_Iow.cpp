@@ -72,7 +72,7 @@ InputHandler_Iow::~InputHandler_Iow()
 	/* Reset all lights to off and close it */
 	if( m_bFoundDevice )
 	{
-		Board.Write( 0 );
+		Board.Write( 0 );	// it's okay if this fails
 		Board.Close();
 
 		s_bInitialized = false;
@@ -136,13 +136,19 @@ void InputHandler_Iow::InputThreadMain()
 		 * I have no idea what use that could possibly be, but we need
 		 * to write 0xFFFF0000 to not trigger input on a write... */
 
-		Board.Write( 0xFFFF0000 | m_iWriteData );
+		// read our input data (and handle I/O errors)
+		while( !Board.Read(&m_iReadData) )
+			Board.Reconnect();
 
 		// ITGIO opens high - flip the bit values
-		Board.Read( &m_iReadData );
 		m_iReadData = ~m_iReadData;
 
+		// update the I/O state with the data we've read
 		HandleInput();
+
+		// write our lights data (and handle I/O errors)
+		while( !Board.Write(0xFFFF0000 | m_iWriteData) )
+			Board.Reconnect();
 
 		m_DebugTimer.EndUpdate();
 
@@ -158,7 +164,7 @@ void InputHandler_Iow::HandleInput()
 	DeviceInput di = DeviceInput( DEVICE_JOY1, JOY_1 );
 
 	// ITGIO only reads the first 16 bits
-	for( int iButton = 0; iButton < 16; iButton++ )
+	for( int iButton = 0; iButton < 16; ++iButton )
 	{
 		di.button = JOY_1+iButton;
 

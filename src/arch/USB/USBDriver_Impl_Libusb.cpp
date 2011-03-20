@@ -1,12 +1,19 @@
 #include "global.h"
 #include "RageLog.h"
 #include "USBDriver_Impl_Libusb.h"
+#include <cerrno>
 
-USBDriver_Impl_Libusb::USBDriver_Impl_Libusb()
-{
-	usb_init();
-	m_pHandle = NULL;
+extern "C" {
+#include <usb.h>
 }
+
+/* static struct to ensure the USB subsystem is initialized on start */
+struct USBInit
+{
+	USBInit() { usb_init(); usb_find_busses(); usb_find_devices(); }
+};
+
+static struct USBInit g_USBInit;
 
 static struct usb_device *FindDevice( int iVendorID, int iProductID )
 {
@@ -15,11 +22,24 @@ static struct usb_device *FindDevice( int iVendorID, int iProductID )
 			if( iVendorID == dev->descriptor.idVendor && iProductID == dev->descriptor.idProduct )
 				return dev;
 
-	// fall through
-	LOG->Trace( "FindDevice() found no matches." );
+	LOG->Trace( "FindDevice(): no match for VID 0x%04x, PID 0x%04x.", iVendorID, iProductID );
 	return NULL;
 }
 
+bool USBDriver_Impl_Libusb::DeviceExists( short iVendorID, short iProductID )
+{
+	return FindDevice(iVendorID, iProductID) != NULL;
+}
+
+USBDriver_Impl_Libusb::USBDriver_Impl_Libusb()
+{
+	m_pHandle = NULL;
+}
+
+USBDriver_Impl_Libusb::~USBDriver_Impl_Libusb()
+{
+	Close();
+}
 
 bool USBDriver_Impl_Libusb::Open( int iVendorID, int iProductID )
 {
@@ -54,26 +74,36 @@ bool USBDriver_Impl_Libusb::Open( int iVendorID, int iProductID )
 	}
 
 #ifdef LIBUSB_HAS_DETACH_KERNEL_DRIVER_NP
-		// The device may be claimed by a kernel driver. Attempt to reclaim it.
-		for( unsigned i = 0; i < dev->config->bNumInterfaces; i++ )
+	// The device may be claimed by a kernel driver. Attempt to reclaim it.
+
+	for( unsigned iface = 0; iface < dev->config->bNumInterfaces; iface++ )
+	{
+		int iResult = usb_detach_kernel_driver_np( m_pHandle, iface );
+
+		// no attached driver, no error -- ignore these
+		if( iResult == -ENODATA || iResult == 0 )
+			continue;
+
+		/* we have an error we can't handle; try and get more info. */
+		LOG->Warn( "usb_detach_kernel_driver_np: %s\n", usb_strerror() );
+
+
+#ifdef LIBUSB_HAS_GET_DRIVER_NP
+		// on EPERM, a driver exists and we can't detach - report which one
+		if( iResult == -EPERM )
 		{
-			int iResult = usb_detach_kernel_driver_np( m_pHandle, i );
+			char szDriverName[16];
+			strcpy( szDriverName, "(unknown)" );
+			usb_get_driver_np(m_pHandle, iface, szDriverName, 16);
 
-			switch( iResult )
-			{
-			case -61:	// "No data available" (no driver attached) - continue
-			case 0:		// no error
-				continue;
-				break;
-			default:	// unhandled error
-				LOG->Warn( "Libusb: usb_detach_kernel_driver_np: %s", usb_strerror() );
-				Close();
-				return false;
-				break;
-			}
+			LOG->Warn( "(cannot detach kernel driver \"%s\")", szDriverName );
 		}
+#endif	// LIBUSB_HAS_GET_DRIVER_NP
 
-#endif
+		Close();
+		return false;
+	}
+#endif	// LIBUSB_HAS_DETACH_KERNEL_DRIVER_NP
 
 	if ( !SetConfiguration(dev->config->bConfigurationValue) )
 	{
@@ -146,4 +176,9 @@ bool USBDriver_Impl_Libusb::ClaimInterface( int iInterface )
 bool USBDriver_Impl_Libusb::ReleaseInterface( int iInterface )
 {
 	return usb_release_interface( m_pHandle, iInterface ) == 0;
+}
+
+const char* USBDriver_Impl_Libusb::GetError() const
+{
+	return usb_strerror();
 }

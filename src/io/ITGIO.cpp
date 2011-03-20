@@ -1,79 +1,87 @@
 #include "global.h"
 #include "RageLog.h"
+#include "RageUtil.h"	// for ssprintf, arraylen
 
 #include "io/ITGIO.h"
+#include "arch/USB/USBDriver_Impl.h"
 
 CString ITGIO::m_sInputError;
 int ITGIO::m_iInputErrorCount = 0;
 
-bool ITGIO::DeviceMatches( int idVendor, int idProduct )
+// control message timeout, in microseconds (so, 1 ms)
+const int REQ_TIMEOUT = 1000;
+
+// weirdly, the ITG2 r21 binary checks for three PIDs; we'll do that too.
+const short ITGIO_VENDOR_ID = 0x07C0;
+const short ITGIO_PRODUCT_ID[3] = { 0x1501, 0x1582, 0x1584 };
+
+// convenience constant for how many PIDs we need to check
+const unsigned NUM_PRODUCT_IDS = ARRAYLEN( ITGIO_PRODUCT_ID );
+
+bool ITGIO::DeviceMatches( int iVID, int iPID )
 {
-	if ( idVendor == 0x7c0 )
-	{
-		if ( idProduct == 0x1501 || idProduct == 0x1582 || idProduct == 0x1584 )
+	if( iVID != ITGIO_VENDOR_ID )
+		return false;
+
+	for( unsigned i = 0; i < NUM_PRODUCT_IDS; ++i )
+		if( iPID == ITGIO_PRODUCT_ID[i] )
 			return true;
-	}
 
 	return false;
 }
 
-// redirect for USBDriver's Open() code
-bool ITGIO::Matches( int idVendor, int idProduct ) const
+bool ITGIO::Open()
 {
-	return ITGIO::DeviceMatches( idVendor, idProduct );
+	/* we don't really care which PID works, just if it does */
+	for( unsigned i = 0; i < NUM_PRODUCT_IDS; ++i )
+		if( OpenInternal(ITGIO_VENDOR_ID, ITGIO_PRODUCT_ID[i]) )
+			return true;
+
+	return false;
 }
 
 bool ITGIO::Read( uint32_t *pData )
 {
-	int iResult;
+	/* XXX: magic number left over from the ITG disassembly */
+	int iExpected = 4;
 
-	while( 1 )
-	{
-		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-			HID_GET_REPORT, HID_IFACE_IN, 0, (char *)pData, 4, 1000 );
-		if( iResult == 4 ) // all data read
-			break;
+	int iResult = m_pDriver->ControlMessage(
+		USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+		HID_GET_REPORT, HID_IFACE_IN, 0, (char*)pData, iExpected,
+		REQ_TIMEOUT );
 
-		// all data not read
-		Reconnect();
-		//Write( [obj+12] );
-	}
-
-	return true;
+	return iResult == iExpected;
 }
 
 bool ITGIO::Write( const uint32_t iData )
 {
-	int iResult;
+	/* XXX: magic number left over from the ITG disassembly */
+	int iExpected = 4;
 
-	while( 1 )
-	{
-		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-			HID_SET_REPORT, HID_IFACE_OUT, 0, (char *)&iData, 4, 1000 );
-	
-		if( iResult == 4 ) // all data read
-			break;
-		
-		Reconnect();
-	}
+	int iResult = m_pDriver->ControlMessage(
+		USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+		HID_SET_REPORT, HID_IFACE_OUT, 0, (char*)&iData, iExpected,
+		REQ_TIMEOUT );
 
-	return true;
+
+	return iResult == iExpected;
 }
 
 void ITGIO::Reconnect()
 {
-	LOG->Warn( "Attempting to reconnect ITGIO." );
+	LOG->Debug( "Attempting to reconnect ITGIO." );
 
-	m_sInputError = "I/O error";
+	/* set a message that the game loop can catch and display */
+	m_sInputError = ssprintf( "I/O error: %s", m_pDriver->GetError() );
+
 	Close();
 
 	// attempt to reconnect every 0.1 seconds
-	do
+	while( !Open() )
 	{
-		m_iInputErrorCount++;
+		++m_iInputErrorCount;
 		usleep(100000);
 	}
-	while( !Open() );
 
 	m_sInputError = "";
 }

@@ -3,11 +3,18 @@
 #include "RageUtil.h"
 #include "USBDriver_Impl_WinUSB.h"
 
+#include <winusb.h>
 #include <Usb100.h>
 #include <Setupapi.h>
 
 #pragma comment (lib, "setupapi.lib" )
 #pragma comment (lib, "winusb.lib" )
+
+bool USBDriver_Impl_WinUsb::DeviceExists( short iVendorID, short iProductID )
+{
+	/* currently not implemented */
+	return false;
+}
 
 USBDriver_Impl_WinUSB::USBDriver_Impl_WinUSB()
 {

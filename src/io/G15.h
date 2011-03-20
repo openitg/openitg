@@ -13,7 +13,8 @@ enum G15DisplayState
 class G15: public USBDriver
 {
 public:
-	bool Read( uint32_t *pData ) { return false; }
+	bool Open();
+
 	bool Write( const uint32_t iData, G15DisplayState throwaway );
 
 protected:

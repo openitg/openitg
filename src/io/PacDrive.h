@@ -6,10 +6,8 @@
 class PacDrive: public USBDriver
 {
 public:
+	bool Open();
 	bool Write( const uint16_t iData );
-
-protected:
-	bool Matches( int idVendor, int idProduct ) const;
 };
 
 #endif /* IO_PACDRIVE_H */

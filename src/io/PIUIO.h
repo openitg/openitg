@@ -6,14 +6,14 @@
 class PIUIO: public USBDriver
 {
 public:
-	static bool DeviceMatches( int idVendor, int idProduct );
+	/* returns true if the VID/PID match PIUIO. */
+	static bool DeviceMatches( int iVendorID, int iProductID );
+
+	bool Open();
 
 	bool Read( uint32_t *pData );
 	bool Write( const uint32_t iData );
 	bool BulkReadWrite( uint32_t pData[8] );
-
-protected:
-	bool Matches( int idVendor, int idProduct ) const;
 };
 
 #endif /* IO_PIUIO_H */

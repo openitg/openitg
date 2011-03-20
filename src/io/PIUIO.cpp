@@ -2,86 +2,66 @@
 #include "RageLog.h"
 
 #include "io/PIUIO.h"
+#include "arch/USB/USBDriver_Impl.h"
 
-bool PIUIO::DeviceMatches( int idVendor, int idProduct )
+const short PIUIO_VENDOR_ID	= 0x0547;
+const short PIUIO_PRODUCT_ID	= 0x1002;
+
+/* proprietary (arbitrary?) request PIUIO requires to handle I/O */
+const short PIUIO_CTL_REQ = 0xAE;
+
+/* timeout value for read/writes, in microseconds (so, 10 ms) */
+const int REQ_TIMEOUT = 10000;
+
+bool PIUIO::DeviceMatches( int iVID, int iPID )
 {
-	if( idVendor == 0x547 && idProduct == 0x1002 )
-		return true;
-
-	return false;
+	return iVID == PIUIO_VENDOR_ID && iPID == PIUIO_PRODUCT_ID;
 }
 
-bool PIUIO::Matches( int idVendor, int idProduct ) const
+bool PIUIO::Open()
 {
-	return PIUIO::DeviceMatches( idVendor, idProduct );
+	return OpenInternal( PIUIO_VENDOR_ID, PIUIO_PRODUCT_ID );
 }
 
 bool PIUIO::Read( uint32_t *pData )
 {
-	int iResult;
+	/* XXX: magic number left over from the ITG disassembly */
+	int iExpected = 8;
 
-	while( 1 )
-	{
-		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_IN | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)pData, 8, 10000);
-		if( iResult == 8 ) // all data read
-			break;
+	int iResult = m_pDriver->ControlMessage(
+		USB_DIR_IN | USB_TYPE_VENDOR, PIUIO_CTL_REQ,
+		0, 0, (char*)pData, iExpected, REQ_TIMEOUT );
 
-		// all data not read
-		LOG->Warn( "PIUIO input error: %s", usb_strerror() );
-		Close();
-	
-		while( !Open() )
-			usleep( 100000 );
-	}
-
-	return true;
+	return iResult == iExpected;
 }
 
 bool PIUIO::Write( const uint32_t iData )
 {
-	int iResult;
+	/* XXX: magic number left over from the ITG disassembly */
+	int iExpected = 8;
 
-	while( 1 )
-	{
-		iResult = usb_control_msg(m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_VENDOR, 0xAE, 0, 0, (char *)&iData, 8, 10000 );
-		
-		if( iResult == 8 )
-			break;
-		
-		LOG->Warn( "PIUIO output error: %s", usb_strerror() );
-		Close();
+	int iResult = m_pDriver->ControlMessage(
+		USB_DIR_OUT | USB_TYPE_VENDOR, PIUIO_CTL_REQ,
+		0, 0, (char*)&iData, iExpected, REQ_TIMEOUT );
 
-		while( !Open() )
-			usleep( 100000 );
-	}
-
-	return true;
+	return iResult == iExpected;
 }
 
 bool PIUIO::BulkReadWrite( uint32_t pData[8] )
 {
-	int iResult;
+	/* XXX: magic number left over from the ITG disassembly */
+	int iExpected = 32;
 
-	while ( 1 )
-	{
-		// this is caught by the r16 kernel hack, using '10011' as
-		// a sentinel. the rest of the USB parameters aren't used.
-		iResult = usb_control_msg(m_pHandle, 0, 0, 0, 0, (char*)pData, 32, 10011);
+	// this is caught by the r16 kernel hack, using '10011' as
+	// a sentinel. the rest of the USB parameters aren't used.
+	int iResult = m_pDriver->ControlMessage( 0, 0, 0, 0, 
+		(char*)pData, iExpected, 10011 );
 
-		if ( iResult == 32 )
-			break;
-
-		LOG->Warn( "PIUIO bulk comm error: %s", usb_strerror() );
-		Close();
-		
-		while( !Open() )
-			usleep( 100000 );
-	}
-	return true;
+	return iResult == iExpected;
 }
 
 /*
- * Copyright (c) 2008 BoXoRRoXoRs
+ * Copyright (c) 2008-2011 BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

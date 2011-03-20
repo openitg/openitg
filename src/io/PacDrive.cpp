@@ -1,38 +1,42 @@
 #include "global.h"
 #include "RageLog.h"
 #include "PacDrive.h"
+#include "arch/USB/USBDriver_Impl.h"
 
-bool PacDrive::Matches( int idVendor, int idProduct ) const
+/* PacDrives have PIDs 1500 - 1507, but we'll handle that later. */
+const short PACDRIVE_VENDOR_ID = 0xD209;
+const short PACDRIVE_PRODUCT_ID = 0x1500;
+
+/* I/O request timeout, in microseconds (so, 10 ms) */
+const unsigned REQ_TIMEOUT = 10000;
+
+bool PacDrive::Open()
 {
-	if( idVendor != 0xd209 )
-		return false;
+	for( unsigned i = 0; i < 8; ++i )
+		if( OpenInternal(PACDRIVE_VENDOR_ID, PACDRIVE_PRODUCT_ID + i) )
+			return true;
 
-	/* PacDrives have PIDs 1500-1508 */
-	if( (idProduct & ~0x07) != 0x1500 )
-		return false;
-
-	return true;
+	return false;
 }
 
-/* While waiting for this to reconnect, we would likely run into a condition
- * where LightsDriver::Set() is being called constantly and none of the calls
- * actually terminate. If this write fails, assume it's lost and don't reconnect.
- */
 bool PacDrive::Write( const uint16_t iData )
 {
 	// output is within the first 16 bits - accept a
 	// 16-bit arg and cast it, for simplicity's sake.
 	uint32_t data = (iData << 16);
 
-	int iReturn = usb_control_msg( m_pHandle, USB_ENDPOINT_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
-		HID_SET_REPORT, HID_IFACE_OUT, 0, (char *)&data, 4, 10000 );
+	int iExpected = sizeof(data);
 
-	if( iReturn == 4 )
-		return true;
+	int iResult = m_pDriver->ControlMessage(
+		USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE,
+		HID_SET_REPORT, HID_IFACE_OUT, 0, (char *)&data, iExpected,
+		REQ_TIMEOUT );
 
-	LOG->Warn( "PacDrive writing failed, returned %i: %s", iReturn, usb_strerror() );
+	if( iResult != iExpected )
+		LOG->Warn( "PacDrive writing failed: %i (%s)\n", 
+			iResult, m_pDriver->GetError()  );
 
-	return false;
+	return iResult == iExpected;
 }
 
 /*

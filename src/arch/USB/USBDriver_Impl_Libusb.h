@@ -1,12 +1,19 @@
+/* USBDriver_Impl_Libusb: a low-level USB control system for any system
+ * which implements the libusb-0.1 API calls (Windows, Linux, Mac). */
+
 #ifndef USB_DRIVER_IMPL_LIBUSB_H
 #define USB_DRIVER_IMPL_LIBUSB_H
 
 #include "USBDriver_Impl.h"
-#include <usb.h>
+struct usb_dev_handle;
+
+#define HAS_USBDRIVER_IMPL_LIBUSB
 
 class USBDriver_Impl_Libusb : public USBDriver_Impl
 {
 public:
+	static bool DeviceExists( short iVendorID, short iProductID );
+
 	USBDriver_Impl_Libusb();
 	~USBDriver_Impl_Libusb();
 
@@ -20,6 +27,8 @@ public:
 
 	int InterruptRead( int iEndpoint, char *pData, int iSize, int iTimeout );
 	int InterruptWrite( int iEndpoint, char *pData, int iSize, int iTimeout );
+
+	virtual const char *GetError() const;
 
 protected:
 	bool SetConfiguration( int iConfig );

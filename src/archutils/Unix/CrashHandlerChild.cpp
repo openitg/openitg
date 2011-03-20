@@ -363,7 +363,7 @@ static void child_process()
 
     fprintf(tty,
 			"\n"
-            + CString(ProductInfo::getName())
+            + ProductInfo::getName()
 			+ " has crashed.  Debug information has been output to\n"
             "\n"
             "    " + sCrashInfoPath + "\n"

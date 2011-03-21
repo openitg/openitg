@@ -464,30 +464,27 @@ void MemoryCardManager::CheckStateChanges()
 		if( m_State[p] != state )
 		{
 			// play sound
-//			RageSoundParams params;
-//			params.m_bIsCriticalSound = true;
+			RageSoundParams params;
+			params.m_bIsCriticalSound = true;
+
 			switch( state )
 			{
 			case MEMORY_CARD_STATE_NO_CARD:
 			case MEMORY_CARD_STATE_REMOVED:
 				if( LastState == MEMORY_CARD_STATE_READY )
 				{
-//					m_soundDisconnect.Play( &params );
-					m_soundDisconnect.Play();
+					m_soundDisconnect.Play( &params );
 					MESSAGEMAN->Broadcast( (Message)(MESSAGE_CARD_REMOVED_P1+p) );
 				}
 				break;
 			case MEMORY_CARD_STATE_READY:
-//				m_soundReady.Play( &params );
-				m_soundReady.Play();
+				m_soundReady.Play( &params );
 				break;
 			case MEMORY_CARD_STATE_TOO_LATE:
-//				m_soundTooLate.Play( &params );
-//				m_soundTooLate.Play();
+				m_soundTooLate.Play( &params );
 				break;
 			case MEMORY_CARD_STATE_ERROR:
-//				m_soundError.Play( &params );
-				m_soundError.Play();
+				m_soundError.Play( &params );
 				break;
 			}
 

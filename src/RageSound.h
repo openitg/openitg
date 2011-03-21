@@ -69,6 +69,8 @@ struct RageSoundParams
 		M_CONTINUE, /* keep playing silence */
 		M_AUTO     /* obey filename hints */
 	} StopMode;
+
+	bool m_bIsCriticalSound; // ignores current mixer settings
 };
 
 class RageSound: public RageSoundBase

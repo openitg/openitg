@@ -131,20 +131,20 @@ void InputHandler_Iow::InputThreadMain()
 
 		UpdateLights();
 
+		// read our input data (and handle I/O errors)
+		while( !Board.Read(&m_iInputData) )
+			Board.Reconnect();
+
+		// ITGIO opens high - flip the bit values
+		m_iInputData = ~m_iInputData;
+
+		// update the I/O state with the data we've read
+		HandleInput();
+
 		/* XXX: the first 16 bits seem to manually trigger inputs;
 		 * ITGIO opens high, so writing a 0 bit counts as a press.
 		 * I have no idea what use that could possibly be, but we need
 		 * to write 0xFFFF0000 to not trigger input on a write... */
-
-		// read our input data (and handle I/O errors)
-		while( !Board.Read(&m_iReadData) )
-			Board.Reconnect();
-
-		// ITGIO opens high - flip the bit values
-		m_iReadData = ~m_iReadData;
-
-		// update the I/O state with the data we've read
-		HandleInput();
 
 		// write our lights data (and handle I/O errors)
 		while( !Board.Write(0xFFFF0000 | m_iWriteData) )
@@ -153,7 +153,7 @@ void InputHandler_Iow::InputThreadMain()
 		m_DebugTimer.EndUpdate();
 
 		if( g_bDebugInputDrivers && m_DebugTimer.TimeToReport() && SCREENMAN )
-			SCREENMAN->SystemMessageNoAnimate( BitsToString(m_iReadData) );
+			SCREENMAN->SystemMessageNoAnimate( BitsToString(m_iInputData) );
 	}
 
 	HOOKS->UnBoostThreadPriority();
@@ -161,38 +161,31 @@ void InputHandler_Iow::InputThreadMain()
 
 void InputHandler_Iow::HandleInput()
 {
+	// construct outside the loop and re-assign as needed - much cheaper
 	DeviceInput di = DeviceInput( DEVICE_JOY1, JOY_1 );
+	RageTimer now;
 
-	// ITGIO only reads the first 16 bits
-	for( int iButton = 0; iButton < 16; ++iButton )
+	// generate a bit field of changed inputs
+	uint32_t iChanged = m_iInputData ^ m_iLastInputData;
+	m_iLastInputData = m_iInputData;
+
+	// ITGIO only reads the first 16 bits; we can ignore the rest.
+	for( int iBtn = 0; iBtn < 16; ++iBtn )
 	{
-		di.button = JOY_1+iButton;
+		if( likely(!IsBitSet(iChanged, iBtn)) )
+			continue;
 
-		if( InputThread.IsCreated() )
-			di.ts.Touch();
+		di.button = JOY_1+iBtn;
+		di.ts = now;
 
-		ButtonPressed( di, m_iReadData & (1 << (31-iButton)) );
+		ButtonPressed( di, IsBitSet(m_iInputData,iBtn) );
 	}
 }
 
 void InputHandler_Iow::UpdateLights()
 {
-	static const LightsState *m_LightsState = LightsDriver_External::Get();
-
-	ZERO( m_iWriteData );
-
-	// update cabinet lighting
-	FOREACH_CabinetLight( cl )
-		if( m_LightsState->m_bCabinetLights[cl] )
-			m_iWriteData |= m_LightsMappings.m_iCabinetLights[cl];
-
-	FOREACH_GameController( gc )
-		FOREACH_GameButton( gb )
-			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iWriteData |= m_LightsMappings.m_iGameLights[gc][gb];
-
-	m_iWriteData |= m_LightsState->m_bCoinCounter ?
-		m_LightsMappings.m_iCoinCounter[0] : m_LightsMappings.m_iCoinCounter[1];
+	static const LightsState *ls = LightsDriver_External::Get();
+	m_iWriteData = m_LightsMappings.GetLightsField( ls );
 }
 
 /*

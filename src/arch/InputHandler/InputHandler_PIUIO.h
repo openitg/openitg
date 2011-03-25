@@ -43,7 +43,7 @@ private:
 	bool m_bFoundDevice;
 
 	// input field is a combination of each sensor set in m_iInputData
-	uint32_t m_iInputField;
+	uint32_t m_iInputField, m_iLastInputField;
 	uint32_t m_iInputData[4];
 
 	// used for the r16 kernel hack and translates to m_iInputData

@@ -50,6 +50,8 @@ InputHandler_PIUIO::InputHandler_PIUIO()
 	s_bInitialized = true;
 	m_bShutdown = false;
 
+	m_iLastInputField = 0;
+
 	DiagnosticsUtil::SetInputType( "PIUIO" );
 
 	/* If using the R16 kernel hack, low-level input is handled differently. */
@@ -230,43 +232,37 @@ void InputHandler_PIUIO::HandleInput()
 	for( int i = 0; i < 4; ++i )
 		m_iInputField |= m_iInputData[i];
 
+	// generate our input events bit field (1 = change, 0 = no change)
+	uint32_t iChanged = m_iInputField ^ m_iLastInputField;
+	m_iLastInputField = m_iInputField;
+
 	// Construct outside the loop and reassign as needed (it's cheaper).
 	DeviceInput di(DEVICE_JOY1, JOY_1);
+	RageTimer now;
 
-	for( short iButton = 0; iButton < 32; ++iButton )
+	for( unsigned iBtn = 0; iBtn < 32; ++iBtn )
 	{
-		di.button = JOY_1+iButton;
-		di.ts.Touch();
+		// if this button's status hasn't changed, don't report it.
+		if( likely(!IsBitSet(iChanged, iBtn)) )
+			continue;
+
+		di.button = JOY_1+iBtn;
+		di.ts = now;
 
 		/* Set a description of detected sensors to the arrows */
-		INPUTFILTER->SetButtonComment( di, MK6Helper::GetSensorDescription(m_iInputData, iButton) );
+		INPUTFILTER->SetButtonComment( di, MK6Helper::GetSensorDescription(m_iInputData, iBtn) );
 
-		/* Is the button we're looking for flagged in the input data? */
-		/* Incremented by one, since IsBitSet uses 1-32 and this uses 0-31. */
-		ButtonPressed( di, IsBitSet(m_iInputField,iButton+1) );
+		// report this button's status
+		ButtonPressed( di, IsBitSet(m_iInputField,iBtn) );
 	}
 }
 
 void InputHandler_PIUIO::UpdateLights()
 {
 	// set a const pointer to the "ext" LightsState to read from
-	static const LightsState *m_LightsState = LightsDriver_External::Get();
+	static const LightsState *ls = LightsDriver_External::Get();
 
-	// reset lights data
-	ZERO( m_iLightData );
-
-	// update marquee lights
-	FOREACH_CabinetLight( cl )
-		if( m_LightsState->m_bCabinetLights[cl] )
-			m_iLightData |= m_LightsMappings.m_iCabinetLights[cl];
-
-	FOREACH_GameController( gc )
-		FOREACH_GameButton( gb )
-			if( m_LightsState->m_bGameButtonLights[gc][gb] )
-				m_iLightData |= m_LightsMappings.m_iGameLights[gc][gb];
-
-	m_iLightData |= m_LightsState->m_bCoinCounter ?
-		m_LightsMappings.m_iCoinCounter[1] : m_LightsMappings.m_iCoinCounter[0];
+	m_iLightData = m_LightsMappings.GetLightsField( ls );
 }
 
 /*

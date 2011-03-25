@@ -28,7 +28,7 @@ private:
 	bool m_bFoundDevice;
 	bool m_bShutdown;
 
-	uint32_t m_iReadData;
+	uint32_t m_iInputData, m_iLastInputData;
 	uint32_t m_iWriteData;
 
 	void InputThreadMain();

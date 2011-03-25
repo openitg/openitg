@@ -18,6 +18,24 @@
 
 #define LIGHTS_INI_PATH "Data/LightsMaps.ini"
 
+uint32_t LightsMapping::GetLightsField( const LightsState *ls ) const
+{
+	uint32_t ret = 0;
+
+	FOREACH_CabinetLight( cl )
+		if( ls->m_bCabinetLights[cl] )
+			ret |= m_iCabinetLights[cl];
+
+	FOREACH_GameController( gc )
+		FOREACH_GameButton( gb )
+			if( ls->m_bGameButtonLights[gc][gb] )
+				ret |= m_iGameLights[gc][gb];
+
+	ret |= m_iCoinCounter[ls->m_bCoinCounter ? 1 : 0];
+
+	return ret;
+}
+
 /* It is important to note that ToMapping writes to the
  * input; FromMapping does not. This is because we never
  * have a reason to convert a LightsMapping value to a

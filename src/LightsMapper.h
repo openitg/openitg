@@ -50,6 +50,9 @@ struct LightsMapping
 		m_iCoinCounter[1] = array[1];	// on state
 	}
 
+	/* returns the bit field using these mappings with the given state */
+	uint32_t GetLightsField( const LightsState *ls ) const;
+
 	uint32_t	m_iCabinetLights[NUM_CABINET_LIGHTS];
 	uint32_t	m_iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];
 	uint32_t	m_iCoinCounter[2];	// off, on

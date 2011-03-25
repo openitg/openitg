@@ -488,33 +488,32 @@ bool FileCopy( RageFileBasic &in, RageFileBasic &out, void(*OnUpdate)(unsigned l
 
 
 // a few bitwise operators that may come in handy.
-// all operations are 1-32, i.e. one-indexed.
+// all operations are 0-31, i.e. zero-indexed.
 template<class T>
 inline bool IsBitSet( const T &data, int bit )
 {
-	int iBits = sizeof(T) * 8;
-	return data & ((T)1 << (iBits-bit));
+	// -1, since we have 32 bits indexed as 0..31
+	int bits = sizeof(T) * 8 - 1;
+	return data & ((T)1 << (bits-bit));
 }
 
 template<class T>
 inline void SetBit( T &data, int bit, bool on = true )
 {
-	int iBits = sizeof(T) * 8;
-	int bitval = ((T)1 << (iBits-bit));
+	// -1, since we have 32 bits indexed as 0..31
+	int bits = sizeof(T) * 8 - 1;
+	int bitval = ((T)1 << (bits-bit));
 
-	if( on )
-		data |= bitval;
-	else
-		data &= ~bitval;
+	data = on ? data | bitval : data & ~bitval;
 }
 
 template<class T>
 CString BitsToString( const T &data )
 {
-	int iBits = sizeof(T) * 8;
+	int bits = sizeof(T) * 8;
 	CString ret;
 
-	for( int i = 1; i <= iBits; i++ )
+	for( int i = 0; i < bits; i++ )
 		ret.append( IsBitSet( data, i ) ? "1" : "0" );
 
 	return ret;

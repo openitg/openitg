@@ -43,6 +43,8 @@ InputHandler_Iow::InputHandler_Iow()
 	m_bFoundDevice = true;
 	m_bShutdown = false;
 
+	m_iLastInputData = 0;
+
 	DiagnosticsUtil::SetInputType("ITGIO");
 
 	// set any alternate lights mappings, if they exist

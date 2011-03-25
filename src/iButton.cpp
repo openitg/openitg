@@ -14,7 +14,7 @@ extern "C" {
 #define SERIAL_PORT "/dev/ttyS0"
 #endif
 
-int iButton::GetAESKey(const uchar *subkey, uchar *output)
+bool iButton::GetAESKey(const uchar *subkey, uchar *output)
 {
 	uchar firstDataPage[32], firstScratchPad[32];
 	SHACopr copr;
@@ -24,7 +24,7 @@ int iButton::GetAESKey(const uchar *subkey, uchar *output)
 	if ((copr.portnum = owAcquireEx(SERIAL_PORT)) == -1)
 	{
 		LOG->Warn( "GetAESKey(): failed to acquire port." );
-		return -1;
+		return false;
 	}
 
 	FindNewSHA(copr.portnum, copr.devAN, TRUE);
@@ -43,7 +43,7 @@ int iButton::GetAESKey(const uchar *subkey, uchar *output)
 	memcpy(output, firstScratchPad+8, 24);
 	owRelease(copr.portnum);	
 
-	return 0;
+	return true;
 }
 
 CString iButton::GetSerialNumber()

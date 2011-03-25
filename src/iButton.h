@@ -12,10 +12,10 @@ namespace iButton
 {
 /* The Xbox physically can't support a dongle, so we stub these. */
 #if !defined(XBOX)
-	int GetAESKey( const uchar *subkey, uchar *output );
+	bool GetAESKey( const uchar *subkey, uchar *output );
 	CString GetSerialNumber();
 #else
-	int GetAESKey( const uchar *subkey, uchar *output ) { return 0; }
+	bool GetAESKey( const uchar *subkey, uchar *output ) { return false; }
 	CString GetSerialNumber() { return CString(); }
 #endif
 };

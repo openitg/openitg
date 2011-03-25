@@ -18,6 +18,39 @@ REGISTER_ITG2_FILE_DRIVER( PATCH, "patch", ITG2_PATCH_KEY );
 /* Declare the static key map used by the crypto implementation */
 tKeyMap RageFileObjCrypt_ITG2::m_sKnownKeys;
 
+/* Arcade: if dongle initialization fails and we can't open this file,
+ * display a message using xterm via execlp (which overwrites our process).
+ * xterm will die after 10 seconds, causing inittab to restart ITG. */
+
+#if defined(ITG_ARCADE)
+#include <cerrno>
+#include <unistd.h>
+
+void ShowCryptError()
+{
+	// the double spacing is intentional, so it lines up in xterm
+	CString sMessage = "Dongle initialization failed.  Retrying in 10 seconds.";
+	CString sCmd = ssprintf( "echo \"%s\"; sleep 10", sMessage.c_str() );
+
+	LOG->Warn( sMessage );
+
+	int ret = execlp( "xterm", "xterm", "-geometry", "40x8+40",
+		"-font", "-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1",
+		"-bg", "black", "-fg", "white", "-e", sCmd.c_str(), NULL );
+
+	/* if there was no error, execlp should end our process here. */
+
+	LOG->Warn( "execlp: %s", strerror(errno) );
+	exit( 1 );
+
+}
+#else // !defined(ITG_ARCADE)
+void ShowCryptError()
+{
+	LOG->Warn( "RageFileDriverCrypt_ITG2: Failed to initialize dongle!" );
+}
+#endif
+
 RageFileDriverCrypt_ITG2::RageFileDriverCrypt_ITG2( const CString &sRoot, const CString &secret ): RageFileDriverCrypt(sRoot)
 {
 	m_sSecret = secret;
@@ -36,12 +69,14 @@ RageFileObjCrypt_ITG2::RageFileObjCrypt_ITG2( const RageFileObjCrypt_ITG2 &cpy )
 
 bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &iError )
 {
+
 	// attempt to open the basic low-level routines for this file object
 	if( !RageFileObjDirect::OpenInternal(sPath, iMode, iError) )
 		return false;
 
 	// attempt to read the header data
 	char header[2];
+
 	if( ReadDirect(&header, 2) < 2 )
 	{
 		LOG->Warn("RageFileObjCrypt_ITG2: Could not open %s: unexpected header size", sPath.c_str() );
@@ -50,7 +85,7 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 
 	if( m_sSecret.empty() )
 	{
-		if (header[0] != ':' || header[1] != '|')
+		if( strncmp(header, ":|", 2) != 0 )
 		{
 			LOG->Warn("RageFileObjCrypt_ITG2: no secret given and %s is not an ITG2 arcade encrypted file", sPath.c_str() );
 			return false;
@@ -58,12 +93,13 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 	}
 	else
 	{
-		if (header[0] != '8' || header[1] != 'O')
+		if( strncmp(header, "8O", 2) != 0 )
 		{
 			LOG->Warn("RageFileObjCrypt_ITG2: secret given, but %s is not an ITG2 patch file", sPath.c_str() );
 			return false;
 		}
 	}
+
 	m_iHeaderSize = 2;
 
 	if( ReadDirect(&m_iFileSize, 4) < 4 )
@@ -71,8 +107,8 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 		LOG->Warn("RageFileObjCrypt_ITG2: Could not open %s: unexpected file size", sPath.c_str() );
 		return false;
 	}
-	m_iHeaderSize += 4;
 
+	m_iHeaderSize += 4;
 
 	uint32_t subkey_size;
 	if( ReadDirect(&subkey_size, 4) < 4 )
@@ -88,20 +124,24 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 	if( (got = ReadDirect(subkey, subkey_size)) < subkey_size )
 	{
 		LOG->Warn("RageFileObjCrypt_ITG2: %s: subkey: expected %i, got %i", sPath.c_str(), subkey_size, got);
+		SAFE_DELETE_ARRAY( subkey );
 		return false;
 	}
+
 	m_iHeaderSize += subkey_size;
 
 	unsigned char verifyblock[16];
+
 	if ((got = ReadDirect(&verifyblock, 16)) < 16)
 	{
 		LOG->Warn("RageFileObjCrypt_ITG2: %s: verifyblock: expected 16, got %i", sPath.c_str(), got);
 		return false;
 	}
+
 	m_iHeaderSize += 16;
 
 	// try to find the key in our stored data, if possible - otherwise, generate it
-	unsigned char *AESKey;
+	unsigned char *AESKey = NULL;
 	tKeyMap::iterator iter = m_sKnownKeys.find( sPath.c_str() );
 
 	// no key found. generate it.
@@ -113,9 +153,13 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 		// no value was specified, so we need to grab one from the dongle
 		if( m_sSecret.empty() )
 		{
-			/* quick hack: Xbox can't dongle, so disable it. */
 			CHECKPOINT_M( "dongle" );
-			iButton::GetAESKey(subkey, AESKey);
+
+			if( !iButton::GetAESKey(subkey, AESKey) )
+			{
+				SAFE_DELETE_ARRAY( AESKey );
+				ShowCryptError();
+			}
 		}
 		else
 		{
@@ -158,7 +202,7 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 	unsigned char plaintext[16];
 	aes_decrypt( verifyblock, plaintext, m_ctx );
 
-	if( plaintext[0] != ':' || plaintext[1] != 'D' )
+	if( strncmp((const char*)plaintext, ":D", 2) != 0 )
 	{
 		LOG->Warn("RageFileObjCrypt_ITG2: %s: decrypt failed, unexpected decryption magic", sPath.c_str() );
 		return false;

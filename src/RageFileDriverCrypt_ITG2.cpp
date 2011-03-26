@@ -159,6 +159,7 @@ bool RageFileObjCrypt_ITG2::OpenInternal( const CString &sPath, int iMode, int &
 			{
 				SAFE_DELETE_ARRAY( AESKey );
 				ShowCryptError();
+				return false;
 			}
 		}
 		else

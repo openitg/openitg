@@ -1,24 +1,23 @@
 #!/bin/bash
 
+# Usage: gen-patch-zip [out-file]
+#
+# Generates an encrypted patch ZIP for all releases. If out-file is
+# specified, the encrypted patch ZIP is output to that file. Otherwise, the
+# patch ZIP is output to ./patch.zip.
+# -- vyhd
+
 set -e
-set -u
 
-# the data containing all the patch data to be zipped (relative to CWD)
-PATCH_DIR="assets/patch-data"
+# include convenience functions and constants
+source common.sh
 
-# the patch file containing the above (relative to CWD)
-PATCH_FILE="patch.zip"
+# the path containing the game data to be used for the patch
+PATCH_DIR="$ASSETS_DIR/patch-data"
 
-# utility file to be used for encrypting the patch
-ENCRYPT_DIR="assets/utilities/itg2-util/src"
-ENCRYPT_FILE="itg2ac-util"	# hurr hurr hurr
-ENCRYPTER="$ENCRYPT_DIR/$ENCRYPT_FILE"
-
-if [ ! -f "$ENCRYPTER" ]; then
-	echo "$ENCRYPT_FILE must be built before using this script!"
-	echo "please cd on over to $ENCRYPT_DIR and build it."
-	exit 1
-fi
+# the patch file containing our data, using ./patch.zip by default.
+# if we have an argument, zip and encrypt into that file instead.
+PATCH_FILE=${1:-patch.zip}
 
 # does in-place encryption (well, using a temp file)
 function encrypt-patch {
@@ -30,17 +29,22 @@ function encrypt-patch {
 	fi
 
 	# leave this visible in case it throws an error
-	"$ENCRYPTER" -p "$1" "$TMP_FILE"
+	$ITG2_UTIL_PATH -p "$1" "$TMP_FILE"
 
 	mv "$TMP_FILE" "$1"
 }
 
-# delete the patch file if it exists, or zip
-# complains about an invalid structure.
-if [ -f "$PATCH_FILE" ]; then rm "$PATCH_FILE"; fi
+# Require that the encryption file actually exists
+has_file "$ITG2_UTIL_PATH" "$ITG2_UTIL_FILE must be built in $ITG2_UTIL_DIR first."
+
+# delete the patch file if it exists, or zip will try to update it
+rm -f "$PATCH_FILE"
 
 # we need this so we can put patch.zip in the CWD
 CWD=`pwd`
+
+# mild hack: wipe that CWD if we're using an absolute path
+if [ ${PATCH_FILE:0:1} == "/" ]; then CWD=""; fi
 
 cd "$PATCH_DIR"
 echo "Zipping files into $PATCH_FILE..."

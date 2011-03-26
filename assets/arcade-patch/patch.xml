@@ -1,10 +1,10 @@
 <Patch>
 	<Game>In The Groove 2</Game>
 	<Revision>1</Revision>
-	<Message>OpenITG has been installed on the cabinet.
+	<Message>OpenITG has been installed.
 
-	Revision: $REVISION
-	Build date: $DATE
+Revision: OITG_VERSION
+Build date: OITG_DATE
 
 The USB device may now be removed.</Message>
 </Patch>

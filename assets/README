@@ -2,7 +2,8 @@ Directory layout
 ----------------
 
 arcade-patch: contains startup scripts, X configuration, and kernel modules
-	for arcade patches.
+	for arcade patches. The patch.xml is a template; we perform some sed
+	voodoo to insert proper values in gen-arcade-patch.sh.
 
 d4: contains the game data from the ITG drive. This should *not* be modified:
 	all changes should go under patch-data, which is overlaid on this data

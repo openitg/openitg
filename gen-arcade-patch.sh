@@ -56,6 +56,10 @@ has_file "$VERIFY_SIG_PATH" "%s is missing; try checking out the repo again?"
 has_file "$PRIVATE_RSA" "RSA key \"%s\" not found! (failed sanity check)"
 
 #
+# warn the user if the util doesn't exist
+has_file "assets/utilities/itg2-util/src/itg2ac-util" "cd assets/utilities/itg2-util && ./autogen.sh && ./configure && make"
+
+#
 # build the signature verification program if it hasn't been built
 # - we usually make them build our utilities, but this is simple
 #
@@ -111,6 +115,7 @@ sed -r -i -e "s/OITG_DATE/$OITG_DATE/g" "$TMP_DIR/patch.xml"
 
 echo "Zipping patch data..."
 
+# NOTE: the "ITG 2 " prefix is required for the patches to be seen by itg/openitg
 PATCH_OUTPUT_FILE="ITG 2 OpenITG-$OITG_VERSION.itg"
 TEMP_SIG_FILE="$TMP_DIR/.sig"
 

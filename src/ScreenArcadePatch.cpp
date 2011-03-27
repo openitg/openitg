@@ -402,9 +402,13 @@ void ScreenArcadePatch::PatchMain()
 {
 	m_State = PATCH_CHECKING;
 
-	/* set up patterns to match, in order of priority. */
+        /* NOTE: we used to look for OpenITG prefixed updates also, but the
+         * original ITG binary does not, so if we want people to be able to
+         * upgrade directly from ITG to OITG, we have to continue to use the
+         * "ITG 2 " prefix.  Sad times. */
+
+	/* set up patterns to match */
 	CStringArray vsPatterns;
-	vsPatterns.push_back( "OpenITG *.itg" );
 	vsPatterns.push_back( "ITG 2 *.itg" );
 
 	/* check to see if either player has patches */

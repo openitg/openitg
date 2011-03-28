@@ -1,12 +1,24 @@
-OpenITG, beta 4 (February 27th, 2011)
+OpenITG, beta 4 (April ??, 2011)
 
 It's been a long time in coming, but OpenITG beta 3 is here!
 
--The "Timing Window" modifier has been added to let you change the judgement window dynamically - but making it easier will disqualify you for ranking.
--When disqualified for ranking, the score will show as white.
--The source code now lives in github and is easier to check out and build.
--Home Releases are easier so you could make a release with your own changes if you wanted.
--Arcade Releases now build in a chroot so any modern Linux can easily create them.
+-Accepted patches to improve building on 64-bit and more modern Linux (thanks, hifi!)
+-Fixed problem where USB cards sounds don't occur if attract sound is set to none.
+-Fixed bug #15 where usb cards gradually become slower and slower until the machine is rebooted.
+-Fixed bug #13 so that builds label themselves with a version in a post-svn world.
+-Fixed bug #20 where UserPacks screen does not calculate disk space correctly.
+-Fixed bug #17 where Timing Window ruins screenshots
+-The "Timing Window" modifier
+    Added to let you change the judgement window dynamically - but making it
+    easier will disqualify you for ranking.
+-Disqualified Notice
+    When disqualified for ranking, the score will show as white.
+-Developer Improvements - Github
+    The source code now lives in github and is easier to check out and build.
+-Release Improvements
+    Home Releases are easier so you could make a release with your own changes
+    if you wanted.  Arcade Releases now build in a chroot so any modern Linux
+    can easily create them.
 
 Changes in this release were contributed by the entire team, vyhd, infamouspat, and cmyers.
 
@@ -15,6 +27,12 @@ generate their own key and make their own releases if they wanted to.
 
 For detailed instructions on checking out the code, contributing, or making
 release, see: README or https://github.com/openitg/openitg/wiki
+
+OpenITG, beta 3 (January-ish, 2011)
+-------------------------------------
+
+Unofficial release candidate, nothing public.  See beta 4 for complete list of
+changes since beta 2.
 
 OpenITG, beta 2 (August 9th, 2009)
 ----------------------------------
@@ -453,3 +471,5 @@ OpenITG, alpha 1 (December 2nd, 2007)
     SONGMAN->LoadPlayerSongs()    - loads songs from a player's profile
     (RageUtil) CopyWithProgress() - copy a file while sending progress
 				    (fPercent) to a function pointer
+
+vi: expandtab sw=4 ts=4

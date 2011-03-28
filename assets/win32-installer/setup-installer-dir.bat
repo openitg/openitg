@@ -5,7 +5,9 @@
 mkdir inst-tmp
 xcopy /y /q /e assets\d4\* inst-tmp
 xcopy /y /q /e assets\game-data\* inst-tmp
-xcopy /y /q /e /exclude:assets\patch-data\patch-dec\zip.sh assets\patch-data\patch-dec\* inst-tmp
+mkdir inst-tmp\Data\patch
+mkdir inst-tmp\Data\patch\patch
+xcopy /y /q /e /exclude:assets\patch-data\zip.sh assets\patch-data\* inst-tmp\Data\patch\patch
 xcopy /y /q /e /i Program inst-tmp\Program
 xcopy /y /q assets\win32-installer\ASF.ini inst-tmp
 xcopy /y /q assets\win32-installer\*.ico inst-tmp\Data

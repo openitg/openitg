@@ -5,10 +5,10 @@ Name "OpenITG"
 
 # General Symbol Definitions
 !define PROGRAM_NAME "OpenITG"
-!define PRODUCT_NAME "OpenITG beta 2"
+!define PRODUCT_NAME "OpenITG"
 !define REGKEY "SOFTWARE\${PRODUCT_NAME}"
 !define SETUP_FILE_NAME "${PRODUCT_NAME}-setup.exe"
-!define URL "http://openitg.gr-p.com"
+!define URL "http://www.github.com/openitg"
 
 # MUI Symbol Definitions
 !define MUI_ICON "Data\oitgb2_48.ico"
@@ -375,7 +375,7 @@ Function .onInit
     StrCpy $R1 "$R0"
     GoTo uninstask
     ReadRegStr $R0 HKLM \
-    "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenITG Beta 1" \
+    "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenITG" \
         "UninstallString"
     StrCmp $R0 "" +3
     StrCpy $R1 "$R0"

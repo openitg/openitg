@@ -581,7 +581,11 @@ int URLRageFile_read( avcodec::URLContext *h, unsigned char *buf, int size )
 	return f->Read( buf, size );
 }
 
+#if LIBAVFORMAT_BUILD > AV_VERSION_INT(52, 67, 0)
+int URLRageFile_write( avcodec::URLContext *h, const unsigned char *buf, int size )
+#else
 int URLRageFile_write( avcodec::URLContext *h, unsigned char *buf, int size )
+#endif
 {
 	RageFile *f = (RageFile *) h->priv_data;
 	return f->Write( buf, size );

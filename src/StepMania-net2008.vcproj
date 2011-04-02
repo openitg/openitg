@@ -593,7 +593,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="2"
 				AdditionalIncludeDirectories=".;vorbis;libjpeg;&quot;lua-5.0\include&quot;;libusb\include;BaseClasses"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WINDOWS;RELEASE;_CRT_SECURE_NO_WARNINGS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;WINDOWS;RELEASE;_CRT_SECURE_NO_WARNINGS;OITG_VERSION=\&quot;b3-win32\&quot;;OITG_DATE=\&quot;03_31_2001\&quot;"
 				StringPooling="true"
 				MinimalRebuild="false"
 				ExceptionHandling="0"
@@ -2431,6 +2431,26 @@
 					</File>
 					<File
 						RelativePath="arch\Threads\Threads_Win32.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="USB"
+					>
+					<File
+						RelativePath=".\arch\USB\USBDriver_Impl.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\arch\USB\USBDriver_Impl.h"
+						>
+					</File>
+					<File
+						RelativePath=".\arch\USB\USBDriver_Impl_Libusb.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\arch\USB\USBDriver_Impl_Libusb.h"
 						>
 					</File>
 				</Filter>

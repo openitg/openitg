@@ -783,7 +783,6 @@ struct StdStringEqualsNoCase
 #endif
 
 /* Use CStdString: */
-#include "StdString.h"
 typedef StdString::CStdString CString;
 typedef std::vector<CString> CStringArray;
 

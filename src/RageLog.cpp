@@ -5,6 +5,7 @@
 #include "RageTimer.h"
 #include "RageFile.h"
 #include "RageThreads.h"
+#include "timer/Timer.h"
 #include <ctime>
 #if defined(_WINDOWS)
 #include "windows.h"
@@ -52,6 +53,14 @@ RageLog* LOG;		// global and accessable from anywhere in the program
  * The identifier is never displayed, so we can use a simple local object to
  * map/unmap, using any mechanism to generate unique IDs. */
 map<CString, CString> LogMaps;
+
+/* Time Map - remember the start time of various things so we can tell how long
+ * they took for profiling purposes.
+ *
+ * Note that the timer implementation is inspired by:
+ * http://www.songho.ca/misc/timer/timer.html
+ */
+map<CString, ProfilingTimer*> TimeMap;
 
 #ifdef ITG_ARCADE
 #define LOG_PATH	"Data/log.txt"
@@ -403,6 +412,51 @@ void RageLog::UnmapLog(const CString &key)
 {
 	LogMaps.erase(key);
 	UpdateMappedLog();
+}
+
+void RageLog::ProfileStart(const CString &name, const char *fmt, ...)
+{
+	CString s;
+	va_list	va;
+	va_start(va, fmt);
+	s += vssprintf( fmt, va );
+	va_end(va);
+
+	TimeMap[name] = new ProfilingTimer();
+	TimeMap[name]->Start();
+
+	if ( LOG != NULL )
+		LOG->Debug(s);
+	else
+		fprintf( stderr, s );
+}
+
+void RageLog::ProfileStop( const CString &name, const char *fmt, ...)
+{
+	CString s;
+	va_list	va;
+	va_start(va, fmt);
+	s += vssprintf( fmt, va );
+	va_end(va);
+
+
+	map<CString, ProfilingTimer*>::iterator i = TimeMap.find(name);
+	if ( i == TimeMap.end() ) {
+		// category not found, error
+		LOG->Warn( "Called ProfileStop() with unknown category %s", name.c_str() );
+		return;
+	}
+
+	ProfilingTimer *t = i->second;
+
+	t->Stop();
+	double TimeSinceInNS = t->GetElapsedSoFarInS();
+
+	if( LOG != NULL )
+		LOG->Debug( "[%6.4f] %s", TimeSinceInNS, s.c_str() );
+	else
+		fprintf( stderr, "[%6.4f] %s", TimeSinceInNS, s.c_str() );
+	SAFE_DELETE(t);
 }
 
 void ShowWarning( const char *file, int line, const char *message )

@@ -15,6 +15,10 @@ public:
 	void Debug( const char *fmt, ...) PRINTF(2,3);
 	void Flush();
 
+	// Log with timing for performance profiling
+	void ProfileStart( const CString &name, const char *fmt, ...) PRINTF(3,4);
+	void ProfileStop( const CString &name, const char *fmt, ...) PRINTF(3,4);
+
 	void MapLog( const CString &key, const char *fmt, ... ) PRINTF(3,4);
 	void UnmapLog( const CString &key );
 

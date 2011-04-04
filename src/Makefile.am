@@ -322,6 +322,8 @@ ScoreDisplayPercentage.cpp ScoreDisplayPercentage.h ScoreDisplayRave.cpp ScoreDi
 
 PCRE = pcre/chartables.c pcre/get.c pcre/internal.h pcre/maketables.c pcre/pcre.c pcre/pcre.h pcre/study.c
 
+Timer = timer/Timer.cpp timer/Timer.h
+
 RageFile = \
 RageFileBasic.cpp RageFileBasic.h \
 RageFile.cpp RageFile.h RageFileDriver.cpp RageFileDriver.h RageFileManager.cpp RageFileManager.h \
@@ -444,13 +446,16 @@ main_SOURCES = $(Screens) \
 		$(ibutton) \
 		$(aes) \
 		$(crypto) \
-		$(cryptopp)
+		$(cryptopp) \
+		$(Timer)
 
 main_LDADD = \
 		  $(AUDIO_LIBS) \
 		  $(SDL_LIBS) \
 		  $(XLIBS) \
-		  $(srcdir)/crypto561/libcryptopp.a
+		  $(srcdir)/crypto561/libcryptopp.a \
+		  -lrt 
+# -lrt ^^ is for Timer.h's <time.h>
 
 openitg_SOURCES = $(main_SOURCES)
 
@@ -477,6 +482,7 @@ all_test_SOURCES = \
 		$(ArchUtils) \
 		$(PCRE) \
 		$(RageFile) \
+		$(Timer) \
 		$(ArchHooks) \
 		$(Threads) \
 		$(Dialog) \

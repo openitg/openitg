@@ -205,7 +205,7 @@ void ScreenNameEntryTraditional::Init()
 	{
 		vector<GameState::RankingFeat> aFeats;
 		GAMESTATE->GetRankingFeats( p, aFeats );
-		m_bStillEnteringName[p] = aFeats.size()>0;
+		m_bStillEnteringName[p] = aFeats.size()>0 || PROFILEMAN->ProfileFromMemoryCardIsNew(p);
 		m_CurFeat[p] = 0;
 	}
 
@@ -215,6 +215,8 @@ void ScreenNameEntryTraditional::Init()
 	{
 		FOREACH_HumanPlayer( p )
 		{
+			const Profile* pProfile = PROFILEMAN->GetProfile(p);
+
 			// don't show keyboard if didn't make any high scores
 			if( !m_bStillEnteringName[p] )
 			{
@@ -294,7 +296,6 @@ void ScreenNameEntryTraditional::Init()
 			PositionCharsAndCursor( p );
 
 			// load last used ranking name if any
-			const Profile* pProfile = PROFILEMAN->GetProfile(p);
 			if( pProfile && !pProfile->m_sLastUsedHighScoreName.empty() )
 			{
 				m_sSelection[p] = CStringToWstring( pProfile->m_sLastUsedHighScoreName );
@@ -672,7 +673,7 @@ void ScreenNameEntryTraditional::MenuStart( PlayerNumber pn, const InputEventTyp
 
 void ScreenNameEntryTraditional::MenuSelect( PlayerNumber pn, const InputEventType type )
 {
-	if( !m_bStillEnteringName[pn] )
+	if( (!m_bStillEnteringName[pn] && !PROFILEMAN->ProfileFromMemoryCardIsNew(pn)) )
 		return;	// ignore
 	if( type != IET_FIRST_PRESS )
 		return;		// ignore
@@ -709,7 +710,7 @@ void ScreenNameEntryTraditional::Backspace( PlayerNumber pn )
 
 void ScreenNameEntryTraditional::MenuLeft( PlayerNumber pn, const InputEventType type )
 {
-	if( !m_bStillEnteringName[pn] || IsTransitioning()  )
+	if( (!m_bStillEnteringName[pn] && !PROFILEMAN->ProfileFromMemoryCardIsNew(pn)) || IsTransitioning()  )
 		return;
 
 	--m_SelectedChar[pn];
@@ -720,7 +721,7 @@ void ScreenNameEntryTraditional::MenuLeft( PlayerNumber pn, const InputEventType
 
 void ScreenNameEntryTraditional::MenuRight( PlayerNumber pn, const InputEventType type )
 {
-	if( !m_bStillEnteringName[pn] || IsTransitioning()  )
+	if( (!m_bStillEnteringName[pn] && !PROFILEMAN->ProfileFromMemoryCardIsNew(pn)) || IsTransitioning()  )
 		return;
 
 	++m_SelectedChar[pn];

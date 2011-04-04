@@ -126,6 +126,7 @@ public:
 	int m_iTotalRolls;
 	int m_iTotalMines;
 	int m_iTotalHands;
+	bool m_bNewProfile;
 	set<int> m_UnlockedSongs;
 	mutable CString m_sLastPlayedMachineGuid;	// mutable because we overwrite this on save, and I don't want to remove const from the whole save chain. -Chris
 	mutable DateTime m_LastPlayedDate;

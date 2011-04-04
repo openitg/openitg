@@ -50,6 +50,7 @@ void ProfileManager::Init()
 		m_bWasLoadedFromMemoryCard[p] = false;
 		m_bLastLoadWasTamperedOrCorrupt[p] = false;
 		m_bLastLoadWasFromLastGood[p] = false;
+		m_bNewProfile[p] = false;
 	}
 
 	LoadMachineProfile();
@@ -160,6 +161,7 @@ bool ProfileManager::LoadProfileFromMemoryCard( PlayerNumber pn )
 	GetMemoryCardProfileDirectoriesToTry( asDirsToTry );
 
 	int iLoadedFrom = -1;
+	m_bNewProfile[pn] = true;
 	for( unsigned i = 0; i < asDirsToTry.size(); ++i )
 	{
 		const CString &sSubdir = asDirsToTry[i];
@@ -177,11 +179,15 @@ bool ProfileManager::LoadProfileFromMemoryCard( PlayerNumber pn )
 		if( res == Profile::success )
 		{
 			iLoadedFrom = i;
+			m_bNewProfile[pn] = false;
 			break;
 		}
 		
 		if( res == Profile::failed_tampered )
+		{
+			m_bNewProfile[pn] = false;
 			break;
+		}
 	}
 
 	/* Store the directory we imported from, for display purposes. */
@@ -419,6 +425,11 @@ void ProfileManager::LoadMachineProfile()
 bool ProfileManager::ProfileWasLoadedFromMemoryCard( PlayerNumber pn ) const
 {
 	return GetProfile(pn) && m_bWasLoadedFromMemoryCard[pn];
+}
+
+bool ProfileManager::ProfileFromMemoryCardIsNew( PlayerNumber pn ) const
+{
+	return GetProfile(pn) && m_bWasLoadedFromMemoryCard[pn] && m_bNewProfile[pn];
 }
 
 bool ProfileManager::LastLoadWasTamperedOrCorrupt( PlayerNumber pn ) const

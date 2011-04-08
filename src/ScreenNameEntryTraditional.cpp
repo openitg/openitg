@@ -673,7 +673,7 @@ void ScreenNameEntryTraditional::MenuStart( PlayerNumber pn, const InputEventTyp
 
 void ScreenNameEntryTraditional::MenuSelect( PlayerNumber pn, const InputEventType type )
 {
-	if( (!m_bStillEnteringName[pn] && !PROFILEMAN->ProfileFromMemoryCardIsNew(pn)) )
+	if( !m_bStillEnteringName[pn] )
 		return;	// ignore
 	if( type != IET_FIRST_PRESS )
 		return;		// ignore
@@ -710,7 +710,7 @@ void ScreenNameEntryTraditional::Backspace( PlayerNumber pn )
 
 void ScreenNameEntryTraditional::MenuLeft( PlayerNumber pn, const InputEventType type )
 {
-	if( (!m_bStillEnteringName[pn] && !PROFILEMAN->ProfileFromMemoryCardIsNew(pn)) || IsTransitioning()  )
+	if( !m_bStillEnteringName[pn] || IsTransitioning()  )
 		return;
 
 	--m_SelectedChar[pn];
@@ -721,7 +721,7 @@ void ScreenNameEntryTraditional::MenuLeft( PlayerNumber pn, const InputEventType
 
 void ScreenNameEntryTraditional::MenuRight( PlayerNumber pn, const InputEventType type )
 {
-	if( (!m_bStillEnteringName[pn] && !PROFILEMAN->ProfileFromMemoryCardIsNew(pn)) || IsTransitioning()  )
+	if( !m_bStillEnteringName[pn] || IsTransitioning()  )
 		return;
 
 	++m_SelectedChar[pn];

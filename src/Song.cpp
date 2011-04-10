@@ -252,6 +252,11 @@ bool Song::LoadFromSongDir( const CString &sDir_ )
 		SMLoader ld;
 		ld.LoadFromSMFile( GetCacheFilePath(), *this, true );
 		ld.TidyUpData( *this, true );
+		if ( !IsAFile(m_sSongDir + "/" + m_sMusicFile) )
+		{
+			LOG->Warn( "%s has a useless cache entry", m_sSongDir.c_str() );
+			return false;
+		}
 	}
 	else
 	{

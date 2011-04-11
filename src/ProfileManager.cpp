@@ -151,11 +151,18 @@ void ProfileManager::GetMemoryCardProfileDirectoriesToTry( vector<CString> &asDi
 
 bool ProfileManager::LoadProfileFromMemoryCard( PlayerNumber pn )
 {
+	// This method basically covers loading an entire profile, so by measuring
+	// the time taken by this method, we can roughly measure how long it takes
+	// to load a profile for performance testing.
+	CString key = ssprintf("LoadProfileFromMemoryCard-P%d",pn+1);
+	LOG->ProfileStart(key, "Loading Profile Started");
 	UnloadProfile( pn );
 
 	// mount slot
-	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
+	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY ) {
+		LOG->ProfileStart(key, "Loading Profile Ended");
 		return false;
+	}
 
 	vector<CString> asDirsToTry;
 	GetMemoryCardProfileDirectoriesToTry( asDirsToTry );
@@ -210,6 +217,7 @@ bool ProfileManager::LoadProfileFromMemoryCard( PlayerNumber pn )
 		SONGMAN->LoadAllFromProfileDir( sDir, (ProfileSlot) pn );
 	}
 
+	LOG->ProfileStart(key, "Loading Profile Ended");
 	return true; // If a card is inserted, we want to use the memory card to save - even if the Profile load failed.
 }
 

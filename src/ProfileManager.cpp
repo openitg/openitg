@@ -160,7 +160,7 @@ bool ProfileManager::LoadProfileFromMemoryCard( PlayerNumber pn )
 
 	// mount slot
 	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY ) {
-		LOG->ProfileStart(key, "Loading Profile Ended");
+		LOG->ProfileStop(key, "Loading Profile Ended");
 		return false;
 	}
 
@@ -217,7 +217,7 @@ bool ProfileManager::LoadProfileFromMemoryCard( PlayerNumber pn )
 		SONGMAN->LoadAllFromProfileDir( sDir, (ProfileSlot) pn );
 	}
 
-	LOG->ProfileStart(key, "Loading Profile Ended");
+	LOG->ProfileStop(key, "Loading Profile Ended");
 	return true; // If a card is inserted, we want to use the memory card to save - even if the Profile load failed.
 }
 

@@ -345,6 +345,7 @@ Actor* ActorUtil::MakeActor( const RageTextureID &ID )
 			switch(rslt)
 			{
 				case Dialog::ignore:
+					LOG->Warn( sErr );
 					return NULL;
 				case Dialog::abort:
 					RageException::Throw(sErr);

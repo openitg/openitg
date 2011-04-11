@@ -17,6 +17,8 @@
 #include "LuaManager.h"
 #include "MessageManager.h"
 #include "Foreach.h"
+#include "PrefsManager.h"
+#include "Preference.h"
 
 #include "arch/Dialog/Dialog.h"
 
@@ -272,72 +274,84 @@ Actor* ActorUtil::LoadFromActorFile( const CString& sAniDir, const XNode* pNode 
 
 Actor* ActorUtil::MakeActor( const RageTextureID &ID )
 {
-	FileType ft = GetFileType(ID.filename);
-	switch( ft )
+	Dialog::Result rslt = Dialog::retry;
+	do
 	{
-	case FT_Xml:
+		FileType ft = GetFileType(ID.filename);
+		switch( ft )
 		{
-			XNode xml;
-			if( !xml.LoadFromFile(ID.filename) )
-				RageException::Throw( ssprintf("Error loading %s", ID.filename.c_str()) );
-			CString sDir = Dirname( ID.filename );
-			return LoadFromActorFile( sDir, &xml );
-		}
-	case FT_Actor:
-		{
-			// TODO: Check for recursive loading
-			IniFile ini;
-			if( !ini.ReadFile( ID.filename ) )
-				RageException::Throw( "%s", ini.GetError().c_str() );
-		
-			CString sDir = Dirname( ID.filename );
-
-			const XNode* pNode = ini.GetChild( "Actor" );
-			if( pNode == NULL )
-				RageException::Throw( "The file '%s' doesn't have layer 'Actor'.", ID.filename.c_str() );
-
-			return LoadFromActorFile( sDir, pNode );
-		}
-	case FT_Directory:
-		{
-			CString sDir = ID.filename;
-			if( sDir.Right(1) != "/" )
-				sDir += '/';
-			CString sIni = sDir + "BGAnimation.ini";
-			CString sXml = sDir + "default.xml";
-
-			if( DoesFileExist(sXml) )
+		case FT_Xml:
 			{
 				XNode xml;
-				if( !xml.LoadFromFile(sXml) )
-					RageException::Throw( ssprintf("Error loading %s", sXml.c_str()) );
+				if( !xml.LoadFromFile(ID.filename) )
+					RageException::Throw( ssprintf("Error loading %s", ID.filename.c_str()) );
+				CString sDir = Dirname( ID.filename );
 				return LoadFromActorFile( sDir, &xml );
 			}
-			else
+		case FT_Actor:
 			{
-				BGAnimation *pBGA = new BGAnimation;
-				pBGA->LoadFromAniDir( sDir );
-				return pBGA;
+				// TODO: Check for recursive loading
+				IniFile ini;
+				if( !ini.ReadFile( ID.filename ) )
+					RageException::Throw( "%s", ini.GetError().c_str() );
+			
+				CString sDir = Dirname( ID.filename );
+
+				const XNode* pNode = ini.GetChild( "Actor" );
+				if( pNode == NULL )
+					RageException::Throw( "The file '%s' doesn't have layer 'Actor'.", ID.filename.c_str() );
+
+				return LoadFromActorFile( sDir, pNode );
+			}
+		case FT_Directory:
+			{
+				CString sDir = ID.filename;
+				if( sDir.Right(1) != "/" )
+					sDir += '/';
+				CString sIni = sDir + "BGAnimation.ini";
+				CString sXml = sDir + "default.xml";
+
+				if( DoesFileExist(sXml) )
+				{
+					XNode xml;
+					if( !xml.LoadFromFile(sXml) )
+						RageException::Throw( ssprintf("Error loading %s", sXml.c_str()) );
+					return LoadFromActorFile( sDir, &xml );
+				}
+				else
+				{
+					BGAnimation *pBGA = new BGAnimation;
+					pBGA->LoadFromAniDir( sDir );
+					return pBGA;
+				}
+			}
+		case FT_Bitmap:
+		case FT_Movie:
+		case FT_Sprite:
+			{
+				Sprite* pSprite = new Sprite;
+				pSprite->Load( ID );
+				return pSprite;
+			}
+		case FT_Model:
+			{
+				Model* pModel = new Model;
+				pModel->Load( ID.filename );
+				return pModel;
+			}
+		default:
+			CString sErr = ssprintf("File \"%s\" has unknown type, \"%s\"", ID.filename.c_str(), FileTypeToString(ft).c_str());
+			rslt = Dialog::AbortRetryIgnore( sErr, "INVALID_ACTOR" );
+			switch(rslt)
+			{
+				case Dialog::ignore:
+					return NULL;
+				case Dialog::abort:
+					RageException::Throw(sErr);
 			}
 		}
-	case FT_Bitmap:
-	case FT_Movie:
-	case FT_Sprite:
-		{
-			Sprite* pSprite = new Sprite;
-			pSprite->Load( ID );
-			return pSprite;
-		}
-	case FT_Model:
-		{
-			Model* pModel = new Model;
-			pModel->Load( ID.filename );
-			return pModel;
-		}
-	default:
-		RageException::Throw("File \"%s\" has unknown type, \"%s\"",
-			ID.filename.c_str(), FileTypeToString(ft).c_str() );
 	}
+	while (rslt == Dialog::retry);
 }
 
 void ActorUtil::SetXY( Actor& actor, const CString &sType )

@@ -7,8 +7,10 @@
 #include "arch/Lights/LightsDriver_Dynamic.h"
 #include "arch/Lights/LightsDriver_Dynamic_Unix.h"
 
-#include "arch/Lights/LightsDriver_SystemMessage.h"
+/* We explicitly load these drivers. */
+#include "arch/Lights/LightsDriver_ActorMessage.h"
 #include "arch/Lights/LightsDriver_External.h"
+#include "arch/Lights/LightsDriver_SystemMessage.h"
 
 DriverList LightsDriver::m_pDriverList;
 
@@ -113,9 +115,9 @@ void LightsDriver::Create( const CString &sDrivers, vector<LightsDriver *> &Add 
 		Add.push_back( pDriver );
 	}
 
-	/* always add these drivers. system message for lights debugging,
-	 * and ext to avoid any weird problems with I/O lights not working. */
+	/* always add these drivers. */
 	Add.push_back( new LightsDriver_SystemMessage );
+	Add.push_back( new LightsDriver_ActorMessage );
 	Add.push_back( new LightsDriver_External );
 }
 

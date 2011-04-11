@@ -22,6 +22,9 @@ uint32_t LightsMapping::GetLightsField( const LightsState *ls ) const
 {
 	uint32_t ret = 0;
 
+	if( !ls )
+		return ret;
+
 	FOREACH_CabinetLight( cl )
 		if( ls->m_bCabinetLights[cl] )
 			ret |= m_iCabinetLights[cl];

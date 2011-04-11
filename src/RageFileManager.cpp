@@ -883,7 +883,6 @@ RageFileBasic *RageFileManager::OpenForWriting( const CString &sPath, int mode, 
 		RageFileBasic *pRet = ld.m_pDriver->Open( sDriverPath, mode, iThisError );
 		if( pRet )
 		{
-			printf("OpenForWriting %s\n", sDriverPath.c_str());
 			UnreferenceAllDrivers( apDriverList );
 			return pRet;
 		}

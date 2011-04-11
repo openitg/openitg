@@ -32,6 +32,10 @@ namespace avcodec
 		#endif
 	}
 	#endif
+	
+	#if !defined (AV_VERSION_INT)
+		#define AV_VERSION_INT(a, b, c) (a<<16 | b<<8 | c)
+	#endif
 
 	void img_convert__(AVPicture *dst, int dst_pix_fmt,
 			const AVPicture *src, int pix_fmt,

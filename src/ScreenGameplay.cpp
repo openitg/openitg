@@ -1835,6 +1835,7 @@ void ScreenGameplay::UpdateLights()
 	{
 		int iSeg = GAMESTATE->m_pCurSong->m_Timing.GetBPMSegmentIndexAtBeat( GAMESTATE->m_fSongBeat + 0.5 );
 		fLength = (0.25 / GAMESTATE->m_pCurSong->m_Timing.m_BPMSegments[iSeg].m_fBPS) + 0.01;
+		fLength = max( fLength, 0.0425f );
 	}	
 
 	// Send blink data.

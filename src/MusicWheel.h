@@ -97,6 +97,7 @@ protected:
 	ThemeMetric<bool> SHOW_RANDOM;
 	ThemeMetric<bool> SHOW_PORTAL;
 	ThemeMetric<bool> RANDOM_PICKS_LOCKED_SONGS;
+	ThemeMetric<bool> SWAP_RANDOM_AND_ROULETTE;  // Metric to swap Random and Roulette in the wheel -Wanny&Kriz
 	ThemeMetric<int> MOST_PLAYED_SONGS_TO_SHOW;
 	ThemeMetric<CString> MODE_MENU_CHOICE_NAMES;
 	ThemeMetricMap<CString> CHOICE;

@@ -21,10 +21,14 @@
 #include "CommonMetrics.h"
 #include "ProfileManager.h"
 #include "PlayerNumber.h"
+#include "ThemeMetric.h" // To be able of defining metrics -Wanny
 
 #define ENTRY(s)					THEME->GetMetric ("ScreenOptionsMaster",s)
 #define ENTRY_MODE(s,i)				THEME->GetMetric ("ScreenOptionsMaster",ssprintf("%s,%i",(s).c_str(),(i+1)))
 #define ENTRY_DEFAULT(s)			THEME->GetMetric ("ScreenOptionsMaster",(s) + "Default")
+
+/*Metrics entry to toggle the display of the song's meter besides the difficulty name in ScreenPlayerOptions -Wanny */
+ThemeMetric<bool> HIDE_METER		("ScreenPlayerOptions","HideMeter"); 
 
 static void SelectExactlyOne( int iSelection, vector<bool> &vbSelectedOut )
 {
@@ -397,7 +401,10 @@ public:
 					s = pSteps->GetDescription();
 				else
 					s = DifficultyToThemedString( pSteps->GetDifficulty() );
-				s += ssprintf( " %d", pSteps->GetMeter() );
+				if (!HIDE_METER) // Condition to display the meter or not -Wanny
+				{
+					s += ssprintf( " %d", pSteps->GetMeter() );
+				}
 				defOut.choices.push_back( s );
 				GameCommand mc;
 				mc.m_pSteps = pSteps;

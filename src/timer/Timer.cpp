@@ -1,12 +1,16 @@
 #include "Timer.h"
 
 ProfilingTimer::ProfilingTimer() {
-	elapsedSoFarInNS = 0;
-	lastStart = 0;
 	isRunning = false;
+	elapsedSoFarInNS = 0;
+
 #ifdef _WINDOWS
 	// This initializes the frequency of the ticks, which does not change.
-	QueryPerformanceFrequency(&frequency)
+	LARGE_INTEGER frequencyInfo;
+	QueryPerformanceFrequency(&frequencyInfo);
+	frequency = frequencyInfo.QuadPart;
+#else
+	lastStart = 0;
 #endif // _WINDOWS
 }
 
@@ -37,21 +41,21 @@ void ProfilingTimer::Stop() {
 	QueryPerformanceCounter(&endTime);
 	// frequency is ticks per second, 1 sec = 1 000 000 000 ns
 	// ticks / (tics/sec) * (ns / sec) = ns
-	elapsedSoFarInNS += (endTime - lastStart) / frequency * 1000000000;
+	elapsedSoFarInNS += (endTime.QuadPart - lastStart.QuadPart) / frequency * 1000000000;
 #else
 	timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	elapsedSoFarInNS += ts.tv_nsec - lastStart;
 #endif // _WINDOWS
 
-	lastStart = 0;
+	lastStart.QuadPart = 0;
 	isRunning = false;
 }
 
 void ProfilingTimer::Reset() {
 	// if running, stop
-	isRunning = 0;
-	lastStart = 0;
+	isRunning = false;
+	lastStart.QuadPart = 0;
 }
 
 double ProfilingTimer::GetElapsedSoFarInNS() const {
@@ -65,7 +69,7 @@ double ProfilingTimer::GetElapsedSoFarInNS() const {
 	QueryPerformanceCounter(&curTime);
 	// frequency is ticks per second, 1 sec = 1 000 000 000 ns
 	// ticks / (tics/sec) * (ns / sec) = ns
-	LARGE_INTEGER curElapsed = elapsedSoFarInNS + ( (curTime - lastStart) / frequency * 1000000000 );
+	LONG curElapsed = elapsedSoFarInNS + ( (curTime.QuadPart - lastStart.QuadPart) / frequency * 1000000000 );
 #else
 	timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -78,7 +82,7 @@ double ProfilingTimer::GetElapsedSoFarInNS() const {
 double ProfilingTimer::GetElapsedSoFarInS() const {
 	if (!isRunning) {
 		// then we just return the current total
-		return (double) elapsedSoFarInNS / 1000000000;
+		return (double) elapsedSoFarInNS / 1000000000UL;
 	}
 
 #ifdef _WINDOWS
@@ -86,7 +90,7 @@ double ProfilingTimer::GetElapsedSoFarInS() const {
 	QueryPerformanceCounter(&curTime);
 	// frequency is ticks per second, 1 sec = 1 000 000 000 ns
 	// ticks / (tics/sec) * (ns / sec) = ns
-	LARGE_INTEGER curElapsed = elapsedSoFarInNS + ( (curTime - lastStart) / frequency * 1000000000 );
+	LONG curElapsed = elapsedSoFarInNS + ( (curTime.QuadPart - lastStart.QuadPart) / frequency * 1000000000UL );
 #else
 	timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);

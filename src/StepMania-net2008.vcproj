@@ -2314,6 +2314,14 @@
 						>
 					</File>
 					<File
+						RelativePath=".\arch\Lights\LightsDriver_ActorMessage.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\arch\Lights\LightsDriver_ActorMessage.h"
+						>
+					</File>
+					<File
 						RelativePath=".\arch\Lights\LightsDriver_Dynamic.cpp"
 						>
 					</File>
@@ -3796,6 +3804,14 @@
 				</File>
 				<File
 					RelativePath="glext.h"
+					>
+				</File>
+				<File
+					RelativePath=".\timer\Timer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\timer\Timer.h"
 					>
 				</File>
 				<Filter

@@ -3,15 +3,17 @@
 
 @rem Move everything we want into a single directory
 mkdir inst-tmp
-xcopy /y /q /e assets\d4\* inst-tmp
-xcopy /y /q /e assets\game-data\* inst-tmp
+xcopy /y /e assets\d4\* inst-tmp
+xcopy /y /e assets\game-data\* inst-tmp
 mkdir inst-tmp\Data\patch
 mkdir inst-tmp\Data\patch\patch
-xcopy /y /q /e /exclude:assets\patch-data\zip.sh assets\patch-data\* inst-tmp\Data\patch\patch
-xcopy /y /q /e /i Program inst-tmp\Program
-xcopy /y /q assets\win32-installer\ASF.ini inst-tmp
-xcopy /y /q assets\win32-installer\*.ico inst-tmp\Data
-xcopy /y /q assets\win32-installer\*.png inst-tmp\Data
+xcopy /y /e /exclude:assets\patch-data\zip.sh assets\patch-data\* inst-tmp\Data\patch\patch
+xcopy /y /e /i Program inst-tmp\Program
+xcopy /y assets\win32-installer\ASF.ini inst-tmp
+xcopy /y assets\win32-installer\*.ico inst-tmp\Data
+xcopy /y assets\win32-installer\*.png inst-tmp\Data
+xcopy /y ReleaseNotes.txt inst-tmp
+xcopy /y WhoToSue.txt inst-tmp
 
 @rem Do some pruning: 
 @rem  1. remove cache and .sm files to songs we don't have

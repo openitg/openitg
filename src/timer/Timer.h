@@ -42,8 +42,8 @@ class ProfilingTimer {
 		bool isRunning;
 
 #ifdef _WINDOWS
-		LARGE_INTEGEER frequency;
-		LARGE_INTEGER elapsedSoFarInNS;
+		LONGLONG frequency;
+		LONG elapsedSoFarInNS;
 		LARGE_INTEGER lastStart;
 #else // UNIX platforms
 		long elapsedSoFarInNS;

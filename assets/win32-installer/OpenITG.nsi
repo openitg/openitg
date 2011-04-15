@@ -17,7 +17,7 @@ Name "OpenITG"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "${PRODUCT_NAME}"
-!define MUI_FINISHPAGE_SHOWREADME $INSTDIR\Docs\release\ReleaseNotes.txt
+!define MUI_FINISHPAGE_SHOWREADME $INSTDIR\ReleaseNotes.txt
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall-blue-full.ico"
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
 

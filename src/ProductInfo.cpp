@@ -1,7 +1,4 @@
-#if defined(WIN32)
-	#include "global.h"
-#endif
-#include "StdString.h"
+#include "global.h"
 #include "ProductInfo.h"
 
 CString ProductInfo::getName() {
@@ -9,11 +6,19 @@ CString ProductInfo::getName() {
 }
 
 CString ProductInfo::getVersion() {
+#if defined(_WIN32)
+	return CString("b3-win32");
+#else
 	return CString(OITG_VERSION);
+#endif
 }
 
 CString ProductInfo::getDate() {
+#if defined(_WIN32)
+	return CString("04-08-2011");
+#else
 	return CString(OITG_DATE);
+#endif
 }
 
 CString ProductInfo::getPlatform() {

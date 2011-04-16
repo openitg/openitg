@@ -25,7 +25,6 @@ namespace ProductInfo
 	CString GetPlatform();
 	CString GetCrashReportUrl();
 	CString GetFullVersionString();
-	CString GetSerial();
 };
 
 #endif

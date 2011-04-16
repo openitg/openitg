@@ -47,12 +47,7 @@ CString ProductInfo::GetCrashReportUrl()
 
 CString ProductInfo::GetFullVersionString()
 {
-	return GetVersion() + " " + GetPlatform();
-}
-
-CString ProductInfo::GetSerial()
-{
-	return CString("OITG-") + GetVersion() + "-" + GetPlatform();
+	return GetName() + " " + GetVersion() + " " + GetPlatform();
 }
 
 /* begin Lua bindings */

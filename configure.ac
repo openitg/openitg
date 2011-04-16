@@ -326,12 +326,15 @@ fi
 if test "$oitg_git" = "yes"; then
 	oitg_version=`git describe`
 	oitg_date=`git log -1 --pretty="format:%ad"`
+
+	# only define this if we actually have it
+	AC_DEFINE_UNQUOTED(OITG_VERSION, "$oitg_version", [OpenITG version])
+
 else
 	oitg_version="unknown version"
-	oitg_date="unknown date"
+	oitg_date=`date +"%Y%m%d"`
 fi
 
-AC_DEFINE_UNQUOTED(OITG_VERSION, "$oitg_version", [OpenITG version])
 AC_DEFINE_UNQUOTED(OITG_DATE, "$oitg_date", [OpenITG version date])
 
 AC_OUTPUT

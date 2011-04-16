@@ -42,20 +42,25 @@ void ProfilingTimer::Stop() {
 	// frequency is ticks per second, 1 sec = 1 000 000 000 ns
 	// ticks / (tics/sec) * (ns / sec) = ns
 	elapsedSoFarInNS += (endTime.QuadPart - lastStart.QuadPart) / frequency * 1000000000;
+	lastStart.QuadPart = 0;
 #else
 	timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
 	elapsedSoFarInNS += ts.tv_nsec - lastStart;
+	lastStart = 0;
 #endif // _WINDOWS
 
-	lastStart.QuadPart = 0;
 	isRunning = false;
 }
 
 void ProfilingTimer::Reset() {
 	// if running, stop
 	isRunning = false;
+#ifdef _WINDOWS
 	lastStart.QuadPart = 0;
+#else
+	lastStart = 0;
+#endif
 }
 
 double ProfilingTimer::GetElapsedSoFarInNS() const {

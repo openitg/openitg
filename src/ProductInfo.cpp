@@ -9,46 +9,50 @@ const unsigned BUILD_REVISION = 3;
 
 XToString( BuildVersion, NUM_BUILD_VERSIONS );
 
-CString ProductInfo::getName() {
-	return CString("OpenITG");
+CString ProductInfo::GetName()
+{
+	return "OpenITG";
 }
 
-CString ProductInfo::getVersion() {
-#if defined(_WIN32)
-	return CString("b3-win32");
+CString ProductInfo::GetVersion()
+{
+	return ssprintf( "%s %d", BuildVersionToString(BUILD_VERSION).c_str(), BUILD_REVISION );
+}
+
+CString ProductInfo::GetDate()
+{
+#if defined(OITG_DATE)
+	return OITG_DATE;
 #else
-	return CString(OITG_VERSION);
+	return "(unknown)";
 #endif
 }
 
-CString ProductInfo::getDate() {
-#if defined(_WIN32)
-	return CString("04-08-2011");
-#else
-	return CString(OITG_DATE);
-#endif
-}
-
-CString ProductInfo::getPlatform() {
+CString ProductInfo::GetPlatform()
+{
 #if defined(ITG_ARCADE)
-	return CString("AC");
+	return "AC";
 #elif defined(XBOX)
-	return CString("CS");
+	return "CS";
 #else
-	return CString("PC");
+	return "PC";
 #endif
 }
 
-CString ProductInfo::getCrashReportUrl() {
+/* XXX: there should be a better place for this. */
+CString ProductInfo::GetCrashReportUrl()
+{
 	return CString("http://wush.net/bugzilla/terabyte/");
 }
 
-CString ProductInfo::getFullVersionString() {
-	return getVersion() + "-" + getPlatform();
+CString ProductInfo::GetFullVersionString()
+{
+	return GetVersion() + " " + GetPlatform();
 }
 
-CString ProductInfo::getSerial() {
-	return CString("OITG-") + getVersion() + "-" + getPlatform();
+CString ProductInfo::GetSerial()
+{
+	return CString("OITG-") + GetVersion() + "-" + GetPlatform();
 }
 
 /* begin Lua bindings */

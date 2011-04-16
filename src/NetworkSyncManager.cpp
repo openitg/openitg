@@ -169,7 +169,7 @@ void NetworkSyncManager::PostStartUp(const CString& ServerIP)
 
 	m_packet.Write1(NETPROTOCOLVERSION);
 
-	m_packet.WriteNT(ProductInfo::getFullVersionString()); 
+	m_packet.WriteNT(ProductInfo::GetFullVersionString()); 
 
 	//Block until responce is received
 	//Move mode to blocking in order to give CPU back to the 

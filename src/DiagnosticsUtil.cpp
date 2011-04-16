@@ -132,12 +132,12 @@ int DiagnosticsUtil::GetNumMachineScores()
 
 CString DiagnosticsUtil::GetProductName()
 {
-	return CString(ProductInfo::getFullVersionString());
+	return ProductInfo::GetFullVersionString();
 }
 
 CString DiagnosticsUtil::GetProductVer()
 {
-	return CString(ProductInfo::getVersion());
+	return ProductInfo::GetVersion();
 }
 
 namespace
@@ -147,7 +147,7 @@ namespace
 	 * from verstub. */
 	CString GenerateDebugSerial()
 	{
-		return CString(ProductInfo::getSerial());
+		return ProductInfo::GetSerial();
 	}
 }
 

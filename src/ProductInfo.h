@@ -19,13 +19,13 @@ static const CString BuildVersionNames[] =
 
 namespace ProductInfo
 {
-	CString getName();
-	CString getVersion();
-	CString getDate();
-	CString getPlatform();
-	CString getCrashReportUrl();
-	CString getFullVersionString();
-	CString getSerial();
+	CString GetName();
+	CString GetVersion();
+	CString GetDate();
+	CString GetPlatform();
+	CString GetCrashReportUrl();
+	CString GetFullVersionString();
+	CString GetSerial();
 };
 
 #endif

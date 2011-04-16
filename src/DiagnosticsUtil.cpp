@@ -187,15 +187,6 @@ void DiagnosticsUtil::SetInputType( const CString &sType )
 	g_sInputType = sType;
 }
 
-// set OPENITG LUA variables from here
-void SetProgramGlobals( lua_State* L )
-{
-	LUA->SetGlobal( "OPENITG", true );
-	LUA->SetGlobal( "OPENITG_VERSION", ProductInfo::getVersion() );
-}
-
-REGISTER_WITH_LUA_FUNCTION( SetProgramGlobals );
-
 // LUA bindings for diagnostics functions
 
 #include "LuaFunctions.h"

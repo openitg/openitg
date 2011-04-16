@@ -1,7 +1,21 @@
-/* ProductInfo - Branding strings. */
+/* ProductInfo - Branding strings and Lua globals. */
 
 #ifndef PRODUCT_INFO_H
 #define PRODUCT_INFO_H
+
+enum BuildVersion
+{
+	VERSION_ALPHA,
+	VERSION_BETA,
+	VERSION_RELEASE_CANDIDATE,
+	VERSION_ZENITH,		// working name
+	NUM_BUILD_VERSIONS
+};
+
+static const CString BuildVersionNames[] =
+{
+	"alpha", "beta", "RC", "zenith"	// working name
+};
 
 namespace ProductInfo
 {

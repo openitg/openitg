@@ -897,8 +897,8 @@ static void MountTreeOfZips( const CString &dir, bool recurse = true )
 
 static void WriteLogHeader()
 {
-	LOG->Info( ProductInfo::getFullVersionString());
-	LOG->Info( "Compiled %s (build %s)", ProductInfo::getDate().c_str(), ProductInfo::getVersion().c_str() );
+	LOG->Info( ProductInfo::GetFullVersionString());
+	LOG->Info( "Compiled %s (build %s)", ProductInfo::GetDate().c_str(), ProductInfo::GetVersion().c_str() );
 
 	time_t cur_time;
 	time(&cur_time);

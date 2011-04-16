@@ -785,7 +785,7 @@ static bool ReportCallStack( HWND hwnd, HANDLE hFile, const void **Backtrace )
 
 	if( g_debugInfo.nBuildNumber != int(VersionNumber) )
 	{
-		Report(hwnd, hFile, (CString("Incorrect %s file (build %d, expected %d) for this version of ") + ProductInfo::getName() + " -- call stack unavailable.").c_str(),
+		Report(hwnd, hFile, (CString("Incorrect %s file (build %d, expected %d) for this version of ") + ProductInfo::GetName() + " -- call stack unavailable.").c_str(),
 			g_debugInfo.sFilename, g_debugInfo.nBuildNumber, int(VersionNumber));
 		return false;
 	}
@@ -823,7 +823,7 @@ static void DoSave()
 	Report(NULL, hFile,
 			"%s crash report (build %d)\r\n"
 			"--------------------------------------"
-			"\r\n", ProductInfo::getFullVersionString().c_str(), VersionNumber);
+			"\r\n", ProductInfo::GetFullVersionString().c_str(), VersionNumber);
 
 	ReportReason( NULL, hFile, &g_CrashInfo );
 	Report(NULL, hFile, "");
@@ -926,9 +926,9 @@ BOOL APIENTRY CrashDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 		case IDC_CRASH_SAVE:
 			if (!s_bHaveCallstack)
 				if (IDOK != MessageBox(hDlg,
-					(ProductInfo::getName() + " cannot load its crash resource file, and thus the crash dump will be "
+					(ProductInfo::GetName() + " cannot load its crash resource file, and thus the crash dump will be "
 					"missing the most important part, the call stack. Crash dumps are much less useful "
-					"without the call stack.").c_str(), (ProductInfo::getName() + " warning").c_str(), MB_OK|MB_ICONEXCLAMATION))
+					"without the call stack.").c_str(), (ProductInfo::GetName() + " warning").c_str(), MB_OK|MB_ICONEXCLAMATION))
 					return TRUE;
 
 			ViewWithNotepad( s_sCrashLogPath );
@@ -962,8 +962,7 @@ BOOL APIENTRY CrashDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			EndDialog( hDlg, FALSE );
 			break;
 		case IDC_BUTTON_REPORT:
-			GotoURL( ProductInfo::getCrashReportUrl().c_str() );
-			//GotoURL( http://sourceforge.net/tracker/?func=add&group_id=37892&atid=421366" );
+			GotoURL( ProductInfo::GetCrashReportUrl().c_str() );
 			break;
 		}
 		break;

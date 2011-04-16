@@ -132,13 +132,26 @@ int DiagnosticsUtil::GetNumMachineScores()
 
 CString DiagnosticsUtil::GetProductName()
 {
-	return CString(ProductInfo::getFullVersionString());
+	return ProductInfo::GetFullVersionString();
 }
 
 CString DiagnosticsUtil::GetProductVer()
 {
-	return CString(ProductInfo::getVersion());
+	return ProductInfo::GetVersion();
 }
+
+/* XXX: it'd be nice to stuff this in arch_setup or something,
+ * but this isn't important enough for us to go to the trouble. */
+
+#if defined(_WINDOWS)
+	#define OS_IDENTIFIER 'W'	/* Windows */
+#elif defined(UNIX)
+	#define OS_IDENTIFIER 'L'	/* Linux */
+#elif defined(DARWIN)
+	#define OS_IDENTIFIER 'M'	/* Mac OS */
+#else
+	#define OS_IDENTIFIER 'U'	/* unknown */
+#endif
 
 namespace
 {
@@ -147,7 +160,37 @@ namespace
 	 * from verstub. */
 	CString GenerateDebugSerial()
 	{
-		return CString(ProductInfo::getSerial());
+		CString sBuildNumber, sBuildDate, sRevisionTag;
+
+#if defined(OITG_DATE)
+		sBuildDate = OITG_DATE;
+#else
+		sBuildDate = "(unknown)";
+#endif
+
+#if defined(OITG_VERSION)
+		/* Split the output of 'git describe' into usable parts. */
+		{
+			vector<CString> vsParts;
+			split( OITG_VERSION, "-", vsParts );
+
+			// vsParts[0] is the tag for this branch
+			CString sBuildNumber = vsParts[1];
+			CString sRevisionTag = vsParts[2].substr(1, 3);
+		}
+#else
+		/* Dummy values until we re-implement verstub. */
+		sBuildNumber = "???";
+		sRevisionTag = "???";
+#endif
+
+		sRevisionTag.MakeUpper();
+
+		/* HACK: grab the first letter from our platform for the ID. */
+		char platform = ProductInfo::GetPlatform()[0];
+
+		return ssprintf( "OITG-%c-%s-%s-%c", OS_IDENTIFIER,
+			sBuildDate.c_str(), sRevisionTag.c_str(), platform );
 	}
 }
 
@@ -186,15 +229,6 @@ void DiagnosticsUtil::SetInputType( const CString &sType )
 {
 	g_sInputType = sType;
 }
-
-// set OPENITG LUA variables from here
-void SetProgramGlobals( lua_State* L )
-{
-	LUA->SetGlobal( "OPENITG", true );
-	LUA->SetGlobal( "OPENITG_VERSION", ProductInfo::getVersion() );
-}
-
-REGISTER_WITH_LUA_FUNCTION( SetProgramGlobals );
 
 // LUA bindings for diagnostics functions
 

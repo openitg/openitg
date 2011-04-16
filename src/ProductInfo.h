@@ -1,27 +1,30 @@
-/* ProductInfo - Branding strings. */
+/* ProductInfo - Branding strings and Lua globals. */
 
 #ifndef PRODUCT_INFO_H
 #define PRODUCT_INFO_H
 
-#ifdef HAVE_CONFIG_H 
-#include "config.h"
-#endif
+enum BuildVersion
+{
+	VERSION_ALPHA,
+	VERSION_BETA,
+	VERSION_RELEASE_CANDIDATE,
+	VERSION_ZENITH,		// working name
+	NUM_BUILD_VERSIONS
+};
 
-#undef OFFICIAL_RELEASE
-//#define OFFICIAL_RELEASE 1
+static const CString BuildVersionNames[] =
+{
+	"alpha", "beta", "RC", "zenith"	// working name
+};
 
-#include "StdString.h"
-
-class ProductInfo {
-
-	public:
-		static CString getName();
-		static CString getVersion();
-		static CString getDate();
-		static CString getPlatform();
-		static CString getCrashReportUrl();
-		static CString getFullVersionString();
-		static CString getSerial();
+namespace ProductInfo
+{
+	CString GetName();
+	CString GetVersion();
+	CString GetDate();
+	CString GetPlatform();
+	CString GetCrashReportUrl();
+	CString GetFullVersionString();
 };
 
 #endif

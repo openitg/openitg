@@ -13,7 +13,6 @@
 #include "Steps.h"
 #include "Course.h"
 #include "GameManager.h"
-#include "ProductInfo.h"
 #include "RageUtil.h"
 #include "ThemeManager.h"
 #include "MemoryCardManager.h"

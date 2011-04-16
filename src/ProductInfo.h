@@ -3,25 +3,15 @@
 #ifndef PRODUCT_INFO_H
 #define PRODUCT_INFO_H
 
-#ifdef HAVE_CONFIG_H 
-#include "config.h"
-#endif
-
-#undef OFFICIAL_RELEASE
-//#define OFFICIAL_RELEASE 1
-
-#include "StdString.h"
-
-class ProductInfo {
-
-	public:
-		static CString getName();
-		static CString getVersion();
-		static CString getDate();
-		static CString getPlatform();
-		static CString getCrashReportUrl();
-		static CString getFullVersionString();
-		static CString getSerial();
+namespace ProductInfo
+{
+	CString getName();
+	CString getVersion();
+	CString getDate();
+	CString getPlatform();
+	CString getCrashReportUrl();
+	CString getFullVersionString();
+	CString getSerial();
 };
 
 #endif

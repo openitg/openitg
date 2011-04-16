@@ -849,6 +849,12 @@ RageFileBasic *RageFileManager::OpenForWriting( const CString &sPath, int mode, 
 	for( unsigned i = 0; i < apDriverList.size(); ++i )
 	{
 		LoadedDriver &ld = *apDriverList[i];
+
+		// HACK: skip over "dirro". We need to find a more generic
+		// method for this (skipping drivers that cannot write)
+		if( ld.m_sType == "dirro" )
+			continue;
+
 		const CString path = ld.GetPath( sPath );
 		if( path.empty() )
 			continue;

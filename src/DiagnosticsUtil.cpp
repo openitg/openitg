@@ -9,6 +9,7 @@
 #include "arch/ArchHooks/ArchHooks.h"
 #include "UserPackManager.h"	// for USER_PACK_SAVE_PATH
 
+#include "Profile.h"
 #include "XmlFile.h"
 #include "ProductInfo.h"
 #include "io/ITGIO.h"
@@ -87,47 +88,36 @@ int DiagnosticsUtil::GetRevision()
 
 int DiagnosticsUtil::GetNumMachineScores()
 {
-	// Create the XML Handler and clear it, for practice
-	XNode *xml = new XNode;
-	xml->Clear();
-	
-	// Check for the file existing
-	if( !IsAFile(STATS_XML_PATH) )
-	{
-		LOG->Warn( "There is no Stats.xml file!" );
-		SAFE_DELETE( xml ); 
-		return 0;
-	}
-	
-	// Make sure you can read it
-	if( !xml->LoadFromFile(STATS_XML_PATH) )
-	{
-		LOG->Trace( "Stats.xml unloadable!" );
-		SAFE_DELETE( xml ); 
-		return 0;
-	}
-	
-	const XNode *pData = xml->GetChild( "SongScores" );
-	
-	if( pData == NULL )
-	{
-		LOG->Warn( "Error loading scores: <SongScores> node missing" );
-		SAFE_DELETE( xml ); 
-		return 0;
-	}
-	
-	unsigned int iScoreCount = 0;
-	
-	// Named here, for LoadFromFile() renames it to "Stats"
-	xml->m_sName = "SongScores";
-	
-	// For each pData Child, or the Child in SongScores...
-	FOREACH_CONST_Child( pData , p )
-		iScoreCount++;
+	const Profile *p = PROFILEMAN->GetMachineProfile();
+	int ret = 0;
 
-	SAFE_DELETE( xml ); 
+	/* XXX: this duplicates code in Profile::SaveSongScoresCreateNode.
+	 * Is there any better way to count the number of scores? */
+	FOREACHM_CONST( SongID, Profile::HighScoresForASong, p->m_SongHighScores, i )
+	{
+		const SongID &id = i->first;
+		const Profile::HighScoresForASong &hsSong = i->second;
 
-	return iScoreCount;
+		/* ignore songs that have never been played */
+		if( p->GetSongNumTimesPlayed(id) == 0 )
+			continue;
+
+		FOREACHM_CONST( StepsID, Profile::HighScoresForASteps, hsSong.m_StepsHighScores, j )
+		{
+			const StepsID &stepsID = j->first;
+			const Profile::HighScoresForASteps &hsSteps = j->second;
+			const HighScoreList &hsl = hsSteps.hsl;
+
+			/* ignore steps that have never been played */
+			if( hsl.GetNumTimesPlayed() == 0 )
+				continue;
+
+			/* we have a score; increment our return counter. */
+			++ret;
+		}
+	}
+
+	return ret;
 }
 
 CString DiagnosticsUtil::GetProductName()

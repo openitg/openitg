@@ -206,6 +206,68 @@ CString DiagnosticsUtil::GetSerialNumber()
 	return sSerial;
 }
 
+enum SerialType
+{
+	/* disassembly: 0, 1, 2, 4 respectively. there's an unknown 3. */
+	SERIAL_ITG1,
+	SERIAL_ITG2_CAB,
+	SERIAL_ITG2_KIT,
+	SERIAL_INVALID
+};
+
+/* XXX: we'll replace "VAR_A"/"VAR_B" when we know what their purposes are.
+ * VAR_A might be arbitrary; I think VAR_B is a check digit for VAR_A. */
+SerialType ParseSerialNumber( const char *serial, int *VAR_A, int *VAR_B )
+{
+	if( sscanf(serial, "ITG-1.0-%*d-%d", VAR_A ) == 1 )
+	{
+		*VAR_B = -1;	// probably unnecessary
+		return SERIAL_ITG1;
+	}
+
+	char type;
+
+	if( sscanf(serial, "ITG-%c-%*d-%d-%x", &type, VAR_A, VAR_B) != 3 )
+	{
+		*VAR_A = -1; *VAR_B = -1;	// probably unnecessary
+		return SERIAL_INVALID;
+	}
+
+	switch( type )
+	{
+	case 'C': return SERIAL_ITG2_CAB;
+	case 'K': return SERIAL_ITG2_KIT;
+	default: return SERIAL_INVALID;
+	}
+}
+
+CString DiagnosticsUtil::GetGuidFromSerial( const CString &sSerial )
+{
+	CString guid;
+	int VAR_A, VAR_B;	/* v10, v11 */
+
+	SerialType type = ParseSerialNumber( sSerial, &VAR_A, &VAR_B );
+
+	switch( type )
+	{
+	case SERIAL_ITG1:	guid = "01%06i";	break;
+	case SERIAL_ITG2_KIT:	guid = "02%x%05i";	break;
+	case SERIAL_ITG2_CAB:	guid = "03%x%05i";	break;
+	case SERIAL_INVALID:
+		guid = "ff%06x";
+		VAR_A = GetHashForString( sSerial );
+		break;
+	default:
+		ASSERT(0);
+	}
+
+	/* these include (what I assume is) a check digit */
+	if( type == SERIAL_ITG2_KIT || type == SERIAL_ITG2_CAB )
+		return ssprintf( guid, VAR_B, VAR_A );
+
+	return ssprintf( guid, VAR_A );
+}
+
 bool DiagnosticsUtil::HubIsConnected()
 {
 	vector<USBDevice> vDevices;

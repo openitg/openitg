@@ -20,6 +20,10 @@
 #include "StepsUtil.h"
 #include "Style.h"
 
+/* GUID generation for arcade */
+#include "DiagnosticsUtil.h"
+#include "iButton.h"
+
 
 ProfileManager*	PROFILEMAN = NULL;	// global and accessable from anywhere in our program
 
@@ -420,6 +424,16 @@ void ProfileManager::LoadMachineProfile()
 	{
 		Profile::CreateNewProfile(MACHINE_PROFILE_DIR, "Machine");
 		m_MachineProfile.LoadAllFromDir( MACHINE_PROFILE_DIR, false );
+	}
+
+	// Set the GUID according to the dongle if we've got it.
+	// Note that we don't use debug serials here: those aren't unique.
+	CString sSerial = iButton::GetSerialNumber();
+
+	if( !sSerial.empty() )
+	{
+		CString sGuid = DiagnosticsUtil::GetGuidFromSerial( sSerial );
+		m_MachineProfile.m_sGuid = sGuid;
 	}
 
 	// If the machine name has changed, make sure we use the new name

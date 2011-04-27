@@ -22,6 +22,8 @@ namespace DiagnosticsUtil
 	CString GetIP();
 	CString GetSerialNumber();
 
+	CString GetGuidFromSerial( const CString &sSerial );
+
 	bool HubIsConnected();
 }
 

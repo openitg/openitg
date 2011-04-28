@@ -108,12 +108,9 @@ int DiagnosticsUtil::GetNumMachineScores()
 			const Profile::HighScoresForASteps &hsSteps = j->second;
 			const HighScoreList &hsl = hsSteps.hsl;
 
-			/* ignore steps that have never been played */
-			if( hsl.GetNumTimesPlayed() == 0 )
-				continue;
-
-			/* we have a score; increment our return counter. */
-			++ret;
+			/* add all the scores in this list to our count.
+			 * (if there are no entries, no harm done.) */
+			ret += hsl.vHighScores.size();
 		}
 	}
 

@@ -223,6 +223,7 @@ void MusicWheel::LoadFromMetrics( CString sType )
 	RANDOM_PICKS_LOCKED_SONGS	.Load(sType,"RandomPicksLockedSongs");
 	MOST_PLAYED_SONGS_TO_SHOW	.Load(sType,"MostPlayedSongsToShow");
 	MODE_MENU_CHOICE_NAMES		.Load(sType,"ModeMenuChoiceNames");
+	SWAP_RANDOM_AND_ROULETTE	.Load(sType,"SwapRandomAndRoulette"); //Self-Explaining. Swaps Random and Roulette in the wheel. -Wanny&Kriz
 	vector<CString> vsModeChoiceNames;
 	split( MODE_MENU_CHOICE_NAMES, ",", vsModeChoiceNames );
 	CHOICE						.Load(sType,CHOICE_NAME,vsModeChoiceNames);
@@ -596,19 +597,29 @@ void MusicWheel::BuildWheelItemDatas( vector<WheelItemData> &arrayWheelItemDatas
 				}
 			}
 
-			if( so != SORT_ROULETTE )
+			if( so != SORT_ROULETTE ) 
 			{
-				if( SHOW_ROULETTE )
-					arrayWheelItemDatas.push_back( WheelItemData(TYPE_ROULETTE, NULL, "", NULL, RageColor(1,0,0,1)) );
-				/* Only add TYPE_PORTAL if there's at least one song on the list. */
+				/* Only add TYPE_PORTAL if there's at least one song on the list. */	
 				bool bFoundAnySong = false;
 				for( unsigned i=0; !bFoundAnySong && i < arrayWheelItemDatas.size(); i++ )
 					if( arrayWheelItemDatas[i].m_Type == TYPE_SONG )
 						bFoundAnySong = true;
-
-				if( SHOW_RANDOM && bFoundAnySong )
-					arrayWheelItemDatas.push_back( WheelItemData(TYPE_RANDOM, NULL, "", NULL, RageColor(1,0,0,1)) );
-
+				/* Toggle to swap Random and Roulette. */
+				if (SWAP_RANDOM_AND_ROULETTE) // Random first, like in DDR
+				{
+				
+					if( SHOW_RANDOM && bFoundAnySong )
+						arrayWheelItemDatas.push_back( WheelItemData(TYPE_RANDOM, NULL, "", NULL, RageColor(1,0,0,1)) );
+					if( SHOW_ROULETTE )
+						arrayWheelItemDatas.push_back( WheelItemData(TYPE_ROULETTE, NULL, "", NULL, RageColor(1,0,0,1)) );
+				}
+				else // Roulette first, normal SM behavior
+				{
+					if( SHOW_ROULETTE )
+						arrayWheelItemDatas.push_back( WheelItemData(TYPE_ROULETTE, NULL, "", NULL, RageColor(1,0,0,1)) );
+					if( SHOW_RANDOM && bFoundAnySong )
+						arrayWheelItemDatas.push_back( WheelItemData(TYPE_RANDOM, NULL, "", NULL, RageColor(1,0,0,1)) );
+				}
 				if( SHOW_PORTAL && bFoundAnySong )
 					arrayWheelItemDatas.push_back( WheelItemData(TYPE_PORTAL, NULL, "", NULL, RageColor(1,0,0,1)) );
 			}

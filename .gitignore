@@ -24,3 +24,4 @@ version.txt
 assets/utilities/itg2-util/src/.deps/
 src/libresample/src/config.h
 src/libresample/tests/testresample
+run

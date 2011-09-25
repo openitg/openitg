@@ -15,24 +15,6 @@ static const CString PUBLIC_KEY_PATH = "Data/public.rsa";
 static const CString PATCH_KEY_PATH = "Data/Patch.rsa";
 static const CString ALTERNATE_PUBLIC_KEY_DIR = "Data/keys/";
 
-#if !defined(HAVE_CRYPTOPP)
-CryptManager::CryptManager() { }
-CryptManager::~CryptManager() { }
-void CryptManager::GenerateRSAKey( unsigned int keyLength, CString privFilename, CString pubFilename, CString seed ) { }
-void CryptManager::SignFileToFile( CString sPath, CString sSignatureFile ) { }
-bool CryptManager::VerifyFileWithFile( CString sPath, CString sSignatureFile, CString sPublicKeyFile ) { return true; }
-bool CryptManager::VerifyFileWithFile( CString sPath, CString sSignatureFile )
-{
-	return true;
-}
-
-bool CryptManager::Verify( CString sPath, CString sSignature )
-{
-	return true;
-}
-
-#else
-
 // crypt headers
 #include "CryptHelpers.h"
 
@@ -217,7 +199,6 @@ bool CryptManager::Verify( CString sPath, CString sSignature )
 
 	return true;
 }
-#endif
 
 static CString BinaryToHex( const unsigned char *string, int iNumBytes )
 {

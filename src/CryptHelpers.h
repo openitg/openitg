@@ -5,6 +5,7 @@ class RageFileBasic;
 
 namespace CryptHelpers
 {
+	void Init();
 	bool GenerateRSAKey( unsigned int keyLength, CString sSeed, CString &sPublicKey, CString &sPrivateKey );
 	bool SignFile( RageFileBasic &file, CString sPrivKey, CString &sSignatureOut, CString &sError );
 	bool VerifyFile( RageFileBasic &file, CString sSignature, CString sPublicKey, CString &sError );

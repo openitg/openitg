@@ -17,7 +17,7 @@
 
 static const struct {
      int code;
-     const char *msg;
+     char *msg;
 } msgs[] = {
      { MP_OKAY, "Successful" },
      { MP_MEM,  "Out of heap" },
@@ -25,7 +25,7 @@ static const struct {
 };
 
 /* return a char * string for a given code */
-const char *mp_error_to_string(int code)
+char *mp_error_to_string(int code)
 {
    int x;
 

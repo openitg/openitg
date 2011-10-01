@@ -6,7 +6,7 @@
 
     Arbitrary precision integer arithmetic library
 
-    $Id$
+    $ID$
  */
 
 #include "mpi.h"

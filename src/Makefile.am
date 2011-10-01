@@ -22,21 +22,29 @@ LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ $(LUA_LIBS) -lXrandr -lXrender -lma
 endif
 
 if !HAVE_LIBRESAMPLE
-all: $(srcdir)/libresample/libresample.a $(srcdir)/crypto561/libcryptopp.a
+all: $(srcdir)/libresample/libresample.a $(srcdir)/libtomcrypt/libtomcrypt.a $(srcdir)/libtommath/libtommath.a
 
-clean-local: clean_libresample
+clean-local: clean_libresample clean_libtomcrypt clean_libtommath
 
 clean_libresample:
 	cd libresample && $(MAKE) clean
 
+clean_libtomcrypt:
+	cd libtomcrypt && $(MAKE) clean
+clean_libtommath:
+	cd libtommath && $(MAKE) clean
+
 $(srcdir)/libresample/libresample.a:
 	cd $(srcdir)/libresample && autoconf && sh ./configure && make
 else
-all: $(srcdir)/crypto561/libcryptopp.a
+all: $(srcdir)/libtomcrypt/libtomcrypt.a $(srcdir)/libtommath/libtommath.a
 endif
 
-$(srcdir)/crypto561/libcryptopp.a:
-	cd $(srcdir)/crypto561 && make -f GNUmakefile
+$(srcdir)/libtomcrypt/libtomcrypt.a: $(srcdir)/libtommath/libtommath.a
+	cd $(srcdir)/libtomcrypt && CFLAGS="$(CFLAGS) -DLTM_DESC" $(MAKE)
+
+$(srcdir)/libtommath/libtommath.a:
+	cd $(srcdir)/libtommath && $(MAKE)
 
 Screens = \
 Screen.cpp Screen.h \
@@ -411,24 +419,6 @@ crypto/CryptPrime.cpp crypto/CryptPrime.h crypto/CryptRSA.cpp crypto/CryptRSA.h 
 crypto/CryptRand.cpp crypto/CryptRand.h crypto/CryptSH512.cpp crypto/CryptSH512.h \
 crypto/CryptSHA.cpp crypto/CryptSHA.h
 
-#crypto561/cpu.cpp crypto561/cpu.h \
-#crypto561/secblock.h crypto561/integer.cpp crypto561/integer.h \
-#crypto561/simple.cpp crypto561/simple.h \
-#crypto561/algparam.cpp crypto561/algparam.h \
-#crypto561/misc.cpp crypto561/misc.h \
-#crypto561/algebra.cpp crypto561/algebra.h \
-#crypto561/filters.cpp crypto561/filters.h \
-#crypto561/pkcspad.cpp crypto561/pkcspad.h \
-#crypto561/cryptlib.cpp crypto561/cryptlib.h \
-#crypto561/nbtheory.cpp crypto561/nbtheory.h \
-#crypto561/sha.cpp crypto561/sha.h \
-#crypto561/pssr.cpp crypto561/pssr.h \
-#crypto561/pubkey.cpp crypto561/pubkey.h \
-#crypto561/rsa.cpp crypto561/rsa.h \
-#crypto561/osrng.cpp crypto561/osrng.h \
-#crypto561/queue.cpp crypto561/queue.h \
-#crypto561/asn.cpp crypto561/asn.h
-
 cryptopp = \
 CryptHelpers.cpp CryptHelpers.h
 
@@ -453,7 +443,8 @@ main_LDADD = \
 		  $(AUDIO_LIBS) \
 		  $(SDL_LIBS) \
 		  $(XLIBS) \
-		  $(srcdir)/crypto561/libcryptopp.a \
+		  $(srcdir)/libtomcrypt/libtomcrypt.a \
+		  $(srcdir)/libtommath/libtommath.a \
 		  -lrt 
 # -lrt ^^ is for Timer.h's <time.h>
 
@@ -533,7 +524,8 @@ test_file_errors_SOURCES = \
 		tests/test_file_errors.cpp \
 		MsdFile.cpp MsdFile.h \
 		XmlFile.cpp XmlFile.h \
-		$(srcdir)/crypto561/libcryptopp.a \
+		$(srcdir)/libtomcrypt/libtomcrypt.a \
+		$(srcdir)/libtommath/libtommath.a \
 		CryptManager.cpp CryptManager.h $(cryptopp) $(crypto)
 
 TESTS += test_timing_data

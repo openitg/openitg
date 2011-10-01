@@ -5,13 +5,17 @@
 #include "RageLog.h"
 
 // crypt headers
+#define LTM_DESC
+#define SHA1_DESC
+#define YARROW_DESC
 #include "libtomcrypt/src/headers/tomcrypt.h"
 
-static ltc_prng_descriptor *g_PRNGDesc; // HACK: this _MIGHT_ be better off as g_SigHashDesc or something
-static ltc_hash_descriptor *g_SHA1Desc;
+static const ltc_prng_descriptor *g_PRNGDesc; // HACK: this _MIGHT_ be better off as g_SigHashDesc or something
+static const ltc_hash_descriptor *g_SHA1Desc;
 
 static int g_SHA1DescId;
 static int g_PRNGDescId;
+static prng_state g_PRNGState;
 
 #define KEY_BITLENGTH 1024
 
@@ -22,6 +26,7 @@ void CryptHelpers::Init()
 	if ( g_PRNGDescId == -1 )
 		RageException::Throw( "Could not register PRNG Descriptor" );
 	g_PRNGDesc = &yarrow_desc;
+	rng_make_prng(1024, g_PRNGDescId, &g_PRNGState, NULL);
 
 	g_SHA1DescId = register_hash( &sha1_desc );
 	if ( g_SHA1DescId == -1 )
@@ -29,14 +34,59 @@ void CryptHelpers::Init()
 	g_SHA1Desc = &sha1_desc;
 }
 
-static void PKCS8EncodePrivateKey( unsigned char *buf, unsigned long bufsize, CString &sPrivateKey )
+static void PKCS8EncodePrivateKey( unsigned char *pkbuf, unsigned long bufsize, CString &sOut )
 {
-
+	
 }
 
-static bool PKCS8DecodePrivateKey( /* ... */ )
+/* "Decode" */
+static bool PKCS8DecodePrivateKey( const unsigned char *pkcsbuf, unsigned long bufsize, unsigned char *szOut, unsigned long &outsize )
 {
+	ltc_asn1_list *pkAlgObject;
+	int err = der_decode_sequence_flexi(pkcsbuf, &bufsize, &pkAlgObject);
 
+#define RET_IF_NULL_THEN_ASSIGN(x ) { if ( (x) == NULL ) return false; pkAlgObject = (x); }
+	RET_IF_NULL_THEN_ASSIGN( pkAlgObject );
+	RET_IF_NULL_THEN_ASSIGN( pkAlgObject->child );
+	RET_IF_NULL_THEN_ASSIGN( pkAlgObject->next );
+	RET_IF_NULL_THEN_ASSIGN( pkAlgObject->next );
+#undef RET_IF_NULL_THEN_ASSIGN
+
+	outsize = pkAlgObject->size;
+	memcpy( szOut, pkAlgObject->data, outsize );
+	return true;
+}
+
+static bool GetSha1ForFile( RageFileBasic &f, unsigned char *szHash )
+{
+	hash_state sha1e;
+	sha1_init(&sha1e);
+
+	int origpos = f.Tell();
+	f.Seek(0);
+	unsigned char buf[4096];
+	int got = f.Read(buf, 4096);
+	if ( got == -1 )
+		return false;
+	while (got > 0)
+	{
+		sha1_process(&sha1e, buf, got);
+		got = f.Read(buf, 4096);
+		if ( got == -1 )
+			return false;
+	}
+	sha1_done(&sha1e, szHash);
+	f.Seek(origpos);
+	return true;
+}
+
+static bool GetSha1ForFile( CString &sFile, unsigned char *szHash )
+{
+	RageFile f;
+	f.Open(sFile, RageFile::READ);
+	bool bGot = GetSha1ForFile( f, szHash );
+	f.Close();
+	return bGot;
 }
 
 bool CryptHelpers::GenerateRSAKey( unsigned int keyLength, CString sSeed, CString &sPublicKey, CString &sPrivateKey )
@@ -47,7 +97,7 @@ bool CryptHelpers::GenerateRSAKey( unsigned int keyLength, CString sSeed, CStrin
 	int iRet;
 	rsa_key key;
 
-	iRet = rsa_make_key( g_PRNGDesc, g_PRNGDescId, KEY_BITLENGTH/8, 65537, &key );
+	iRet = rsa_make_key( &g_PRNGState, g_PRNGDescId, KEY_BITLENGTH/8, 65537, &key );
 	if ( iRet != CRYPT_OK )
 	{
 		LOG->Warn( "GenerateRSAKey error: %s", error_to_string(iRet) );
@@ -68,11 +118,11 @@ bool CryptHelpers::GenerateRSAKey( unsigned int keyLength, CString sSeed, CStrin
 	iRet = rsa_export( buf, &bufsize, PK_PRIVATE, &key );
 	if ( iRet != CRYPT_OK )
 	{
-		LOG->Warn( "RSA Private Key Export error: %s", error_tO_string(iRet) );
+		LOG->Warn( "RSA Private Key Export error: %s", error_to_string(iRet) );
 		return false;
 	}
 
-	PKCS8EncodePrivateKey( buf, &bufsize, sPrivateKey );
+	PKCS8EncodePrivateKey( buf, bufsize, sPrivateKey );
 	return true;
 #endif
 }
@@ -82,51 +132,75 @@ bool CryptHelpers::SignFile( RageFileBasic &file, CString sPrivKey, CString &sSi
 #ifdef _XBOX
 	return false;
 #else
-	try {
-		StringSource privFile( sPrivKey, true );
-		RSASSA_PKCS1v15_SHA_Signer priv(privFile);
-		NonblockingRng rng;
+	unsigned char embedded_key[4096], filehash[20], sig[128];
+	unsigned long keysize = 4096, sigsize = 128;
+	int ret;
+	rsa_key key;
 
-		/* RageFileSource will delete the file we give to it, so make a copy. */
-		RageFileSource f( file.Copy(), true, new SignerFilter(rng, priv, new StringSink(sSignatureOut)) );
-	} catch( const CryptoPP::Exception &s ) {
-		LOG->Warn( "SignFileToFile failed: %s", s.what() );
+	bool bDecoded = PKCS8DecodePrivateKey((const unsigned char *)sPrivKey.data(), sPrivKey.size(), embedded_key, keysize);
+	if ( bDecoded )
+		sPrivKey.assign((const char*)embedded_key, keysize);
+
+	ret = rsa_import((const unsigned char*)sPrivKey.data(), sPrivKey.size(), &key);
+	if ( ret != CRYPT_OK )
+	{
+		LOG->Warn("Could not import private key: %s", error_to_string(ret));
 		return false;
 	}
+	bool bShaRet = GetSha1ForFile(file, filehash);
+	if ( !bShaRet )
+	{
+		LOG->Warn("Could not get SHA1 for file");
+		return false;
+	}
+	ret = rsa_sign_hash_ex( filehash, 20, sig, &sigsize, LTC_LTC_PKCS_1_V1_5, &g_PRNGState, g_PRNGDescId, g_SHA1DescId, 0, &key );
+	if ( ret != CRYPT_OK )
+	{
+		LOG->Warn("Could not sign hash file: %s", error_to_string(ret));
+		return false;
+	}
+	ASSERT( sigsize == 128 );
 
+	sSignatureOut.assign( (const char *)sig, sigsize );
 	return true;
 #endif
 }
 
 bool CryptHelpers::VerifyFile( RageFileBasic &file, CString sSignature, CString sPublicKey, CString &sError )
 {
-	try {
-		StringSource pubFile( sPublicKey, true );
-		RSASSA_PKCS1v15_SHA_Verifier pub(pubFile);
-
-		if( sSignature.size() != pub.SignatureLength() )
-		{
-			sError = ssprintf( "Invalid signature length: got %i, expected %i", sSignature.size(), pub.SignatureLength() );
-			return false;
-		}
-
-		VerifierFilter *verifierFilter = new VerifierFilter(pub);
-		verifierFilter->Put( (byte *) sSignature.data(), sSignature.size() );
-
-		/* RageFileSource will delete the file we give to it, so make a copy. */
-		RageFileSource f( file.Copy(), true, verifierFilter );
-
-		if( !verifierFilter->GetLastResult() )
-		{
-			sError = ssprintf( "Signature mismatch" );
-			return false;
-		}
-		
-		return true;
-	} catch( const CryptoPP::Exception &s ) {
-		sError = s.what();
+	unsigned char buf_hash[20];
+	rsa_key key;
+	int ret = rsa_import( (const unsigned char *)sPublicKey.data(), sPublicKey.size(), &key );
+	if ( ret != CRYPT_OK )
+	{
+		sError = ssprintf("Could not import public key: %s", error_to_string(ret));
+		LOG->Warn(sError);
 		return false;
 	}
+	bool bHashed = GetSha1ForFile( file, buf_hash );
+	if ( !bHashed )
+	{
+		sError = ssprintf("Error while SHA1 hashing file");
+		LOG->Warn(sError);
+		return false;
+	}
+	
+	int iMatch = 0;
+	ret = rsa_verify_hash_ex( (const unsigned char*)sSignature.data(), sSignature.size(),
+		buf_hash, sizeof(buf_hash), LTC_LTC_PKCS_1_V1_5, g_SHA1DescId, 0, &iMatch, &key );
+	if ( ret != CRYPT_OK )
+	{
+		sError = ssprintf("Could not verify hash: %s", error_to_string(ret));
+		LOG->Warn(sError);
+		return false;
+	}
+	if ( iMatch == 0 )
+	{
+		sError = "Signature Mismatch";
+		LOG->Warn(sError);
+		return false;
+	}
+	return true;
 }
 
 /*

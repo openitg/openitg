@@ -34,6 +34,7 @@ CryptManager::CryptManager()
 			FlushDirCache();
 		}
 	}
+	CryptHelpers::Init();
 }
 
 CryptManager::~CryptManager() {}

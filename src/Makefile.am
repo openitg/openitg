@@ -13,7 +13,7 @@ AM_CFLAGS =
 # generates enormous output.
 AM_CXXFLAGS += -finline-limit=300
 
-AM_CXXFLAGS += $(XCFLAGS)
+AM_CXXFLAGS += $(XCFLAGS) -I$(srcdir)/libtomcrypt/src/headers -I$(srcdir)/libtommath
 
 if !ITG_ARCADE
 LIBS += -lpthread -Wl,-Bstatic $(LUA_LIBS) -Wl,-Bdynamic 
@@ -41,7 +41,7 @@ all: $(srcdir)/libtomcrypt/libtomcrypt.a $(srcdir)/libtommath/libtommath.a
 endif
 
 $(srcdir)/libtomcrypt/libtomcrypt.a: $(srcdir)/libtommath/libtommath.a
-	cd $(srcdir)/libtomcrypt && CFLAGS="$(CFLAGS) -DLTM_DESC" $(MAKE)
+	cd $(srcdir)/libtomcrypt && CFLAGS="$(CFLAGS) -I$(srcdir)/../libtommath -DLTM_DESC" $(MAKE)
 
 $(srcdir)/libtommath/libtommath.a:
 	cd $(srcdir)/libtommath && $(MAKE)

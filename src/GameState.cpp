@@ -14,6 +14,7 @@
 #include "MessageManager.h"
 #include "NoteSkinManager.h"
 #include "PrefsManager.h"
+#include "RageFileManager.h"
 #include "ProfileManager.h"
 #include "ScreenManager.h"
 #include "SongManager.h"
@@ -306,6 +307,21 @@ int GameState::GetCoinsNeededToJoin() const
 		iCoinsToCharge = 0;
 
 	return iCoinsToCharge;
+}
+
+void GameState::SetSongInProgress( bool bInProgress )
+{
+#if defined(ITG_ARCADE)
+	CString sLockFile = "/rootfs/tmp/songinprogress";
+#else
+	CString sLockFile = "songinprogress";
+#endif
+	CString sWriteOut = (bInProgress) ? this->m_pCurSong->GetSongDir() : "(none)";
+
+	RageFile f;
+	f.Open(sLockFile, RageFile::WRITE);
+	f.Write( sWriteOut );
+	f.Close();
 }
 
 /*

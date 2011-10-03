@@ -118,7 +118,10 @@ void ScreenGameplay::Init()
 	/* Pause MEMCARDMAN.  If a memory card is remove, we don't want to interrupt the
 	 * player by making a noise until the game finishes. */
 	if( !GAMESTATE->m_bDemonstrationOrJukebox )
+	{	
 		MEMCARDMAN->PauseMountingThread();
+		GAMESTATE->SetSongInProgress(true);
+	}
 
 	m_pSoundMusic = NULL;
 	m_bPaused = false;
@@ -1979,6 +1982,7 @@ void ScreenGameplay::BackOutFromGameplay()
 
 void ScreenGameplay::AbortGiveUp( bool bShowText )
 {
+	GAMESTATE->SetSongInProgress(false);
 	if( m_GiveUpTimer.IsZero() )
 		return;
 
@@ -2116,7 +2120,7 @@ void ScreenGameplay::Input( const DeviceInput& DeviceI, const InputEventType typ
 void ScreenGameplay::SongFinished()
 {
 	// save any statistics
-    FOREACH_EnabledPlayer(p)
+	FOREACH_EnabledPlayer(p)
 	{
 		/* Note that adding stats is only meaningful for the counters (eg. RADAR_NUM_JUMPS),
 		 * not for the percentages (RADAR_AIR). */

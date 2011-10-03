@@ -311,11 +311,7 @@ int GameState::GetCoinsNeededToJoin() const
 
 void GameState::SetSongInProgress( bool bInProgress )
 {
-#if defined(ITG_ARCADE)
-	CString sLockFile = "/rootfs/tmp/songinprogress";
-#else
-	CString sLockFile = "songinprogress";
-#endif
+	CString sLockFile = "Data/songinprogress";
 	CString sWriteOut = (bInProgress) ? this->m_pCurSong->GetSongDir() : "(none)";
 
 	RageFile f;

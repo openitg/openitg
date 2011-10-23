@@ -21,35 +21,29 @@ int main(int argc, char **argv) {
 	int option_index = 0;
 	while (1) {
 		static struct option long_options[] = {
-			{"data", no_argument, 0, 'x'},
 			{"patch", no_argument, 0, 'p'},
 			{"decrypt", no_argument, 0, 'd'},
 			{"static", required_argument, 0, 's'},
-			/*{"source", required_argument, 0, 'i'},
-			{"dest",  required_argument, 0, 'o'},*/
+			{"help", no_argument, 0, 'h'},
 			{0, 0, 0, 0}
 		};
 
-		c = getopt_long(argc, argv, "xpds:", long_options, &option_index);
+		c = getopt_long(argc, argv, "hxpds:", long_options, &option_index);
 		option_index++;
 		if (c == -1) break;
 
 		switch(c) {
 		case 0:
-			/*if (!strcmp(long_options[option_index].name,"source") && optarg) {
-				openFile = optarg;
-			} else if (!strcmp(long_options[option_index].name,"dest") && optarg) {
-				destFile = optarg;
-			} else */
-			if (!strcmp(long_options[option_index].name,"data")) {
-				type = KEYDUMP_ITG2_FILE_DATA;
-			} else if (!strcmp(long_options[option_index].name,"patch")) {
+			if (!strcmp(long_options[option_index].name,"patch")) {
 				type = KEYDUMP_ITG2_FILE_PATCH;
 			} else if (!strcmp(long_options[option_index].name,"static")) {
-				type = KEYDUMP_ITG2_FILE_STATIC;
 				keyFile = optarg;
+				++option_index;
 			} else if (!strcmp(long_options[option_index].name,"decrypt")) {
 				direction = 1;
+			} else if (!strcmp(long_options[option_index].name,"help")) {
+				printHelp(argv[0]);
+				exit(0);
 			}
 			break;
 
@@ -66,19 +60,13 @@ int main(int argc, char **argv) {
 			break;
 
 		case 's':
-			type = KEYDUMP_ITG2_FILE_STATIC;
 			keyFile = optarg;
+			++option_index;
 			break;
 
-/*
-		case 'i':
-			openFile = optarg;
-			break;
-
-		case 'o':
-			destFile = optarg;
-			break;
-*/
+		case 'h':
+			printHelp(argv[0]);
+			exit(0);
 
 		default:
 			return -1;
@@ -110,22 +98,52 @@ int main(int argc, char **argv) {
 	}
 
 	// encrypt
-	if (direction == 0) {
+	if (direction == 0 && keyFile != NULL) {
+		// TODO: everything about this is terrible -- should be moved into itg2util.c somewhere
+		FILE *fd, *dfd, *kf;
+		char magic[2];
+		unsigned int fileSize = 0, subkeySize = 0, totalBytes = 0, numCrypts = 0, padMisses = 0, got = 0;
+		unsigned char *subkey, aesKey[24], verifyBlock[16], plaintext[16], backbuffer[16];
+
+		if ((fd = fopen(openFile, "rb")) == NULL) {
+			fprintf(stderr, "%s: fopen(%s) failed D=\n", __FUNCTION__, openFile);
+			return -1;
+		}
+
+		fread(magic, 1, 2, fd);
+		fread(&fileSize, 1, 4, fd);
+		fread(&subkeySize, 1, 4, fd);
+		subkey = (unsigned char*)malloc(subkeySize * sizeof(unsigned char));
+		got = fread(subkey, 1, subkeySize, fd);
+		if (keydump_itg2_retrieve_aes_key(subkey, 1024, aesKey, type, direction, keyFile) == -1) {
+			fprintf(stderr, "%s: could not retrieve AES key, exiting...\n", argv[0]);
+			return -1;
+		}
+		kf = fopen(keyFile, "wb");
+		if ( kf == NULL ) {
+			fprintf(stderr, "%s: could not open key file for output, exiting...\n", argv[0]);
+			return -1;
+		}
+		fwrite(aesKey, 1, 24, kf);
+		fclose(kf);
+	} else if (direction == 0) {
 		int i;
 		for (i = 0; i < 1024; i++)
 			subkey[i] = (unsigned char)rand() * 255;
-
-		if (keydump_itg2_retrieve_aes_key(subkey, 1024, aesKey, type, keyFile) == -1) {
+		
+		if (keydump_itg2_retrieve_aes_key(subkey, 1024, aesKey, type, direction, keyFile) == -1) {
 			fprintf(stderr, "%s: could not retrieve AES key, exiting...\n", argv[0]);
 			return -1;
 		}
 
-		if (keydump_itg2_encrypt_file(openFile, destFile, subkey, 1024, aesKey, type) == -1) {
+		if (keydump_itg2_encrypt_file(openFile, destFile, subkey, 1024, aesKey, type, keyFile) == -1) {
 			fprintf(stderr, "%s: could not encrypt %s, exiting...\n", argv[0], openFile);
 			return -1;
 		}
+
 	// decrypt
 	} else {
+		printf("keyFile before: %s\n", keyFile);
 		if (keydump_itg2_decrypt_file(openFile, destFile, type, keyFile) == -1) {
 			fprintf(stderr, "%s: could not decrypt %s, exiting...\n", argv[0], openFile);
 			return -1;
@@ -138,8 +156,6 @@ int main(int argc, char **argv) {
 void printHelp( const char *argv0 ) {
 	printf("Usage: %s -f <source file> -w <dest file> [extra args]\n", argv0);
 	printf("\t--decrypt (-d)\tDecrypt mode\n\n");
-	//printf("\t--source (-f)\tSource File (required argument)\n");
-	//printf("\t--dest (-w)\tDestination File (required argument)\n\n");
 	printf("\t--data (-f)\tTreat source file as data file (default)\n");
 	printf("\t--patch (-p)\tTreat source file as patch file\n");
 	printf("\t--static (-s)\tStatic Encryption/Decryption: AES key is in a separate file (required argument as key file)\n\n");

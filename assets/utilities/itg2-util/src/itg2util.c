@@ -7,7 +7,7 @@
 #include "itg2util.h"
 #include "itg2-patch-constants.h"
 
-int keydump_itg2_encrypt_file(const char *srcFile, const char *destFile, const unsigned char *subkey, const unsigned int subkeySize, const unsigned char *aesKey, const int type) {
+int keydump_itg2_encrypt_file(const char *srcFile, const char *destFile, const unsigned char *subkey, const unsigned int subkeySize, const unsigned char *aesKey, const int type, char *keyFile) {
 	FILE *fd, *dfd;
 	unsigned int numcrypts, got, fileSize;
 	int i,j;
@@ -76,6 +76,7 @@ int keydump_itg2_decrypt_file(const char *srcFile, const char *destFile, int typ
 	aes_decrypt_ctx ctx[1];
 	int i, j, got, numcrypts;
 
+	printf("keyFile after: %s\n", keyFile);
 	if ((fd = fopen(srcFile, "rb")) == NULL) {
 		fprintf(stderr, "%s: fopen(%s) failed D=\n", __FUNCTION__, srcFile);
 		return -1;
@@ -95,7 +96,8 @@ int keydump_itg2_decrypt_file(const char *srcFile, const char *destFile, int typ
 	printf("first 4 bytes of subkey: %02x %02x %02x %02x\n", subkey[0], subkey[1], subkey[2], subkey[3]);
 	fread(verifyBlock, 1, 16, fd);
 
-	if ( keydump_itg2_retrieve_aes_key(subkey, subkeySize, aesKey, type, keyFile) == -1 ) {
+	printf("keyFile before retrieve_aes_key: %s\n", keyFile);
+	if ( keydump_itg2_retrieve_aes_key(subkey, subkeySize, aesKey, type, 1, keyFile) == -1 ) {
 		fprintf(stderr, "%s: could not retrieve AES key\n", __FUNCTION__);
 		fclose(fd);
 		return -1;
@@ -151,48 +153,47 @@ int keydump_itg2_decrypt_file(const char *srcFile, const char *destFile, int typ
 	return padMisses;
 }
 
-int keydump_itg2_retrieve_aes_key(const unsigned char *subkey, const unsigned int subkeySize, unsigned char *out, int type, const char *keyFile) {
+int keydump_itg2_retrieve_aes_key(const unsigned char *subkey, const unsigned int subkeySize, unsigned char *out, int type, int direction, const char *keyFile) {
 	FILE *kfd;
 	unsigned char *SHAworkspace, *SHAout;
-	
-	switch (type) {
-	case KEYDUMP_ITG2_FILE_DATA:
-		if (getKey(subkey, out, KEYDUMP_GETKEY_ITG2, subkeySize) != 0) {
-			fprintf(stderr, "%s: getKey() failed\n", __FUNCTION__);
-			return -1;
-		}
-		break;
+	int numread = 0;
 
-	case KEYDUMP_ITG2_FILE_PATCH:
-		SHAworkspace = (unsigned char*)malloc(sizeof(unsigned char) * (subkeySize+47));
-		SHAout = (unsigned char*)malloc(sizeof(unsigned char) * 64);
-		memcpy(SHAworkspace, subkey, subkeySize);
-		memcpy(SHAworkspace+subkeySize, ITG2SubkeySalt, 47);
-		gcry_md_hash_buffer(GCRY_MD_SHA512, SHAout, SHAworkspace, subkeySize+47);
-		memcpy(out, SHAout, 24);
-		free(SHAworkspace); free(SHAout);
-		break;
-
-	case KEYDUMP_ITG2_FILE_STATIC:
-		if (keyFile == NULL) {
-			fprintf(stderr, "%s: no key file given\n", __FUNCTION__);
-		}
+	printf("keyFile after retrieve_aes_key: %s\n", keyFile);
+	if ( direction == 1 && keyFile != NULL ) {	
 		kfd = fopen(keyFile, "rb");
 		if (kfd == NULL) {
 			fprintf(stderr, "%s: cannot open key file (you sure you typed the right file?)\n", __FUNCTION__);
 			return -1;
 		}
-		if (fread(out, 1, 24, kfd) < 24) {
+		if ((numread = fread(out, 1, 24, kfd)) < 24) {
 			fprintf(stderr, "%s: unexpected key file size (sure it\'s the right file?)\n", __FUNCTION__);
 			fclose(kfd);
 			return -1;
 		}
+		printf("numread: %d\n", numread);
 		fclose(kfd);
-		break;
+	} else {
+		switch (type) {
+		case KEYDUMP_ITG2_FILE_DATA:
+			if (getKey(subkey, out, KEYDUMP_GETKEY_ITG2, subkeySize) != 0) {
+				fprintf(stderr, "%s: getKey() failed\n", __FUNCTION__);
+				return -1;
+			}
+			break;
 
-	default:
-		fprintf("%s: huh?\n", __FUNCTION__);
-		return -1;
+		case KEYDUMP_ITG2_FILE_PATCH:
+			SHAworkspace = (unsigned char*)malloc(sizeof(unsigned char) * (subkeySize+47));
+			SHAout = (unsigned char*)malloc(sizeof(unsigned char) * 64);
+			memcpy(SHAworkspace, subkey, subkeySize);
+			memcpy(SHAworkspace+subkeySize, ITG2SubkeySalt, 47);
+			gcry_md_hash_buffer(GCRY_MD_SHA512, SHAout, SHAworkspace, subkeySize+47);
+			memcpy(out, SHAout, 24);
+			free(SHAworkspace); free(SHAout);
+			break;
+		default:
+			fprintf("%s: huh?\n", __FUNCTION__);
+			return -1;
+		}
 	}
 
 	return 0;

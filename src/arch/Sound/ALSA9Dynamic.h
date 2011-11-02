@@ -12,11 +12,12 @@
 #include "ALSA9Functions.h"
 #undef FUNC
 
-#define dsnd_pcm_hw_params_alloca(ptr) { assert(ptr); *ptr = (snd_pcm_hw_params_t *) alloca(dsnd_pcm_hw_params_sizeof()); memset(*ptr, 0, dsnd_pcm_hw_params_sizeof()); }
-#define dsnd_pcm_sw_params_alloca(ptr) { assert(ptr); *ptr = (snd_pcm_sw_params_t *) alloca(dsnd_pcm_sw_params_sizeof()); memset(*ptr, 0, dsnd_pcm_sw_params_sizeof()); }
-#define dsnd_pcm_info_alloca(ptr) { assert(ptr); *ptr = (snd_pcm_info_t *) alloca(dsnd_pcm_info_sizeof()); memset(*ptr, 0, dsnd_pcm_info_sizeof()); }
-#define dsnd_ctl_card_info_alloca(ptr) { assert(ptr); *ptr = (snd_ctl_card_info_t *) alloca(dsnd_ctl_card_info_sizeof()); memset(*ptr, 0, dsnd_ctl_card_info_sizeof()); }
-#define dsnd_pcm_status_alloca(ptr) do { assert(ptr); *ptr = (snd_pcm_status_t *) alloca(dsnd_pcm_status_sizeof()); memset(*ptr, 0, dsnd_pcm_status_sizeof()); } while (0)
+#define _dsnd_alloca(ptr, type) do { *ptr = (snd_##type##_t *) alloca(dsnd_##type##_sizeof()); memset(*ptr, 0, dsnd_##type##_sizeof()); } while(0)
+#define dsnd_pcm_hw_params_alloca(ptr) _dsnd_alloca(ptr, pcm_hw_params)
+#define dsnd_pcm_sw_params_alloca(ptr) _dsnd_alloca(ptr, pcm_sw_params)
+#define dsnd_pcm_info_alloca(ptr) _dsnd_alloca(ptr, pcm_info)
+#define dsnd_ctl_card_info_alloca(ptr) _dsnd_alloca(ptr, ctl_card_info)
+#define dsnd_pcm_status_alloca(ptr) _dsnd_alloca(ptr, pcm_status)
 
 CString LoadALSA();
 void UnloadALSA();

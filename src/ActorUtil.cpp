@@ -344,15 +344,17 @@ Actor* ActorUtil::MakeActor( const RageTextureID &ID )
 			rslt = Dialog::AbortRetryIgnore( sErr, "INVALID_ACTOR" );
 			switch(rslt)
 			{
+				case Dialog::retry:
+					break;
 				case Dialog::ignore:
 					LOG->Warn( sErr );
 					return NULL;
-				case Dialog::abort:
+				default:
 					RageException::Throw(sErr);
 			}
 		}
 	}
-	while (rslt == Dialog::retry);
+	while (1);
 }
 
 void ActorUtil::SetXY( Actor& actor, const CString &sType )

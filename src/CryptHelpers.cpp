@@ -84,6 +84,7 @@ static bool GetSha1ForFile( RageFileBasic &f, unsigned char *szHash )
 	return true;
 }
 
+#ifdef UNUSED_CODE
 static bool GetSha1ForFile( CString &sFile, unsigned char *szHash )
 {
 	RageFile f;
@@ -92,6 +93,7 @@ static bool GetSha1ForFile( CString &sFile, unsigned char *szHash )
 	f.Close();
 	return bGot;
 }
+#endif
 
 bool CryptHelpers::GenerateRSAKey( unsigned int keyLength, CString sSeed, CString &sPublicKey, CString &sPrivateKey )
 {

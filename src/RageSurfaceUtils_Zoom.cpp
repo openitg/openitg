@@ -7,6 +7,12 @@
 #include <vector>
 using namespace std;
 
+union Color
+{
+	char rgb[4];
+	uint32_t value;
+};
+
 /* Coordinate 0x0 represents the exact top-left corner of a bitmap.  .5x.5
  * represents the center of the top-left pixel; 1x1 is the center of the top
  * square of pixels.  
@@ -110,7 +116,7 @@ static void ZoomSurface( const RageSurface * src, RageSurface * dst )
 			const uint8_t *c10 = ncsp + esx0[x]*4;
 			const uint8_t *c11 = ncsp + esx1[x]*4;
 
-			uint8_t color[4];
+			Color color;
 			for( int c = 0; c < 4; ++c )
 			{
 				float x0, x1;
@@ -120,9 +126,9 @@ static void ZoomSurface( const RageSurface * src, RageSurface * dst )
 				x1 += c11[c] * (1-ex0[x]);
 
 				const float res = (x0 * ey0[y]) + (x1 * (1-ey0[y])) + 0.5f;
-				color[c] = uint8_t(res);
+				color.rgb[c] = uint8_t(res);
 			}
-			*dp = *(uint32_t *) color;
+			*dp = color.value;
 
 			/* Advance destination pointer. */
 			++dp;

@@ -47,7 +47,7 @@ static void PKCS8EncodePrivateKey( unsigned char *pkbuf, unsigned long bufsize, 
 static bool PKCS8DecodePrivateKey( const unsigned char *pkcsbuf, unsigned long bufsize, unsigned char *szOut, unsigned long &outsize )
 {
 	ltc_asn1_list *pkAlgObject;
-	int err = der_decode_sequence_flexi(pkcsbuf, &bufsize, &pkAlgObject);
+	der_decode_sequence_flexi(pkcsbuf, &bufsize, &pkAlgObject);
 
 #define RET_IF_NULL_THEN_ASSIGN(x ) { if ( (x) == NULL ) return false; pkAlgObject = (x); }
 	RET_IF_NULL_THEN_ASSIGN( pkAlgObject );

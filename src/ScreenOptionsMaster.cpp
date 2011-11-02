@@ -51,7 +51,6 @@ void ScreenOptionsMaster::Init()
 	CStringArray Flags;
 	split( OPTION_MENU_FLAGS, ";", Flags, true );
 	InputMode im = INPUTMODE_INDIVIDUAL;
-	bool Explanations = false;
 	
 	for( unsigned i = 0; i < Flags.size(); ++i )
 	{
@@ -61,7 +60,7 @@ void ScreenOptionsMaster::Init()
 		if( sFlag == "together" )
 			im = INPUTMODE_SHARE_CURSOR;
 		else if( sFlag == "explanations" )
-			Explanations = true;
+			;
 		else if( sFlag == "forceallplayers" )
 		{
 			FOREACH_PlayerNumber( pn )

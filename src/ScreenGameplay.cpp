@@ -1761,17 +1761,11 @@ void ScreenGameplay::UpdateLights()
 	bool bBlinkGameButton[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS];
 	ZERO( bBlinkCabinetLight );
 	ZERO( bBlinkGameButton );
-	bool bCrossedABeat = false;
 	{
 		const float fSongBeat = GAMESTATE->m_fLightSongBeat;
 		const int iSongRow = BeatToNoteRowNotRounded( fSongBeat );
 
 		static int iRowLastCrossed = 0;
-
-		float fBeatLast = roundf(NoteRowToBeat(iRowLastCrossed));
-		float fBeatNow = roundf(NoteRowToBeat(iSongRow));
-
-		bCrossedABeat = fBeatLast != fBeatNow;
 
 		FOREACH_CabinetLight( cl )
 		{	

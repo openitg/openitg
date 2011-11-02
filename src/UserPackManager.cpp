@@ -168,7 +168,6 @@ CString UserPackManager::GetPackMountPoint( const CString &sPack )
 	CHECKPOINT_M( sPack );
 	// it should already be a valid zip by now...
 	ASSERT( pZip->Load( sPack ) );
-	UserPackMountType upmt = UPACK_MOUNT_SONGS;
 
 	CStringArray asRootEntries;
 	pZip->GetDirListing( "/", asRootEntries, true, false );

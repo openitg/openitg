@@ -176,17 +176,11 @@ void ScreenPlayLights::UpdateLights()
 	ZERO( bBlinkGameButton );
 
 	/* update the lights data */
-	bool bCrossedABeat = false;
 	{
 		const float fSongBeat = GAMESTATE->m_fLightSongBeat;
 		const int iSongRow = BeatToNoteRowNotRounded( fSongBeat );
 
 		static int iRowLastCrossed = 0;
-
-		float fBeatLast = roundf(NoteRowToBeat(iRowLastCrossed));
-		float fBeatNow = roundf(NoteRowToBeat(iSongRow));
-
-		bCrossedABeat = fBeatLast != fBeatNow;
 
 		// keep all cabinet lights (except buttons) on if the steps haven't started.
 		if( GAMESTATE->m_fSongBeat < GAMESTATE->m_pCurSong->m_fFirstBeat )

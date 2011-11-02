@@ -38,6 +38,11 @@ the external pcre header. */
 
 #include "internal.h"
 
+#ifdef __GNUC__
+#define UNUSED __attribute__((unused))
+#else
+#define UNUSED
+#endif
 
 
 /*************************************************
@@ -96,7 +101,7 @@ code. Apparently IBM isn't going to fix the problem, and we would rather not
 disable optimization (in this module it actually makes a big difference, and
 the pcre module can use all the optimization it can get). */
 
-volatile int dummy;
+volatile int dummy UNUSED;
 
 do
   {

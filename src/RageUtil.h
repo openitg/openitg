@@ -56,11 +56,14 @@ inline bool CLAMP(float &x, float l, float h)
 	return false;
 }
 
-inline void wrap( int &x, int n )
+template<typename T>
+inline void wrap( T &x, int n )
 {
-	if (x<0)
-		x += ((-x/n)+1)*n;
-	x %= n;
+	int xi = x;
+	if (xi<0)
+		xi += ((-xi/n)+1)*n;
+	xi %= n;
+	x = static_cast<T>(xi);
 }
 inline void wrap( unsigned &x, unsigned n )
 {

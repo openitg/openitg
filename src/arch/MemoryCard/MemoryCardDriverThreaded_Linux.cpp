@@ -160,6 +160,7 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 			char szLink[512];
 			memset(szLink, 0, 512);
 			int iUsbInfoIndex = 7;
+			CString sInfoBase;
 			if ( (buf.st_mode & S_IFMT) == S_IFLNK )
 			{
 				/*
@@ -177,6 +178,8 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 				 */
 				if ( sDevice.substr(0,2) == "ub" )
 			 		iUsbInfoIndex = 4;
+
+				sInfoBase = sPath;
 			}
 			else
 			{
@@ -194,6 +197,8 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 					iUsbInfoIndex = 5;
 				else
 					iUsbInfoIndex = 2;
+
+				sInfoBase = sPath + "/device";
 			}
 			sPath += "/";
 			if( iRet == -1 )
@@ -233,29 +238,33 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 						usbd.iPort = atoi( asBits[asBits.size()-1] );
 						usbd.iLevel = asBits.size() - 1;
 					}
+
+					sInfoBase += "/";
+					for( int j = 1; j < iUsbInfoIndex; ++j)
+						sInfoBase += "../";
+
+					if( ReadFile( sInfoBase + "idVendor", sBuf ) )
+						sscanf( sBuf, "%x", &usbd.idVendor );
+
+					if( ReadFile( sInfoBase + "idProduct", sBuf ) )
+						sscanf( sBuf, "%x", &usbd.idProduct );
+
+					if( ReadFile( sInfoBase + "serial", sBuf ) )
+					{
+						usbd.sSerial = sBuf;
+						TrimRight( usbd.sSerial );
+					}
+					if( ReadFile( sInfoBase + "product", sBuf ) )
+					{
+						usbd.sProduct = sBuf;
+						TrimRight( usbd.sProduct );
+					}
+					if( ReadFile( sInfoBase + "manufacturer", sBuf ) )
+					{
+						usbd.sVendor = sBuf;
+						TrimRight( usbd.sVendor );
+					}
 				}
-			}
-
-			if( ReadFile( sPath + "device/../idVendor", sBuf ) )
-				sscanf( sBuf, "%x", &usbd.idVendor );
-
-			if( ReadFile( sPath + "device/../idProduct", sBuf ) )
-				sscanf( sBuf, "%x", &usbd.idProduct );
-
-			if( ReadFile( sPath + "device/../serial", sBuf ) )
-			{
-				usbd.sSerial = sBuf;
-				TrimRight( usbd.sSerial );
-			}
-			if( ReadFile( sPath + "device/../product", sBuf ) )
-			{
-				usbd.sProduct = sBuf;
-				TrimRight( usbd.sProduct );
-			}
-			if( ReadFile( sPath + "device/../manufacturer", sBuf ) )
-			{
-				usbd.sVendor = sBuf;
-				TrimRight( usbd.sVendor );
 			}
 
 			vDevicesOut.push_back( usbd );

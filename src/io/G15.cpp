@@ -52,7 +52,7 @@ bool G15::WriteLCD( unsigned char *pData )
 	int iExpected = ARRAYLEN( pLCDData );
 	int iResult = m_pDriver->InterruptWrite( 0x02, (char*)pLCDData, iExpected, REQ_TIMEOUT );
 
-	if( iResult == iExpected );
+	if( iResult == iExpected )
 		return true;
 
 	LOG->Warn( "G15 LCD Write failed, returned %i: %s\n", iResult, m_pDriver->GetError() );

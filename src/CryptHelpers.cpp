@@ -8,6 +8,10 @@
 #define LTM_DESC
 #define SHA1_DESC
 #define YARROW_DESC
+
+// tomcrypt want to #define ENDIAN_LITTLE, which is also in our own config.h.  We're not using it in this file anyway.
+#undef ENDIAN_LITTLE
+
 #include "libtomcrypt/src/headers/tomcrypt.h"
 
 static const ltc_prng_descriptor *g_PRNGDesc; // HACK: this _MIGHT_ be better off as g_SigHashDesc or something

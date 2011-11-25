@@ -14,6 +14,8 @@ struct UsbStorageDevice
 		sDevice = "";
 		sSerial = "<none>"; // be different than a card with no serial
 		sOsMountDir = "";
+		bUsePmount = false;
+		sPmountLabel = "";
 		m_State = STATE_NONE;
 		bIsNameAvailable = false;
 		sName = "";
@@ -30,6 +32,8 @@ struct UsbStorageDevice
 	CString sSerial;
 	CString sDevice;
 	CString	sOsMountDir;	// WITHOUT trailing slash
+	bool bUsePmount;
+	CString sPmountLabel;
 	CString sSysPath;   // Linux: /sys/block name
 	enum State
 	{

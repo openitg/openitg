@@ -96,7 +96,6 @@ void LinkedOptionsMenu::Unfocus()
 
 void LinkedOptionsMenu::SetChoices( const CStringArray &asChoices )
 {
-	unsigned iPrevNumChoices = m_Rows.size();
 	ClearChoices();
 
 	for( unsigned i = 0; i < asChoices.size(); i++ )

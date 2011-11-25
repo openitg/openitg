@@ -30,8 +30,8 @@ void RageSoundDriver_ALSA9::MixerThread()
 	while(!shutdown)
 	{
 		/* Sleep for the size of one chunk. */
-		const int chunksize_frames = max_writeahead / num_chunks;
-		float sleep_secs = (float(chunksize_frames) / samplerate);
+		//const int chunksize_frames = max_writeahead / num_chunks;
+		//float sleep_secs = (float(chunksize_frames) / samplerate);
 		usleep( 20000 ); // int(1000 * sleep_secs));
 
 		LockMut( m_Mutex );

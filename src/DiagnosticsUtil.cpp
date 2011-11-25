@@ -104,7 +104,6 @@ int DiagnosticsUtil::GetNumMachineScores()
 
 		FOREACHM_CONST( StepsID, Profile::HighScoresForASteps, hsSong.m_StepsHighScores, j )
 		{
-			const StepsID &stepsID = j->first;
 			const Profile::HighScoresForASteps &hsSteps = j->second;
 			const HighScoreList &hsl = hsSteps.hsl;
 

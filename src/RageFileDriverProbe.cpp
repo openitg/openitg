@@ -29,7 +29,7 @@ RageFileObjDirect *RageFileDriverProbe::CreateInternal( const CString &sPath )
 	got = rfod->Read( sHeader, 2 );
 	SAFE_DELETE( rfod );
 
-	if ( sHeader == ":|" || sHeader == "8O" )
+	if ( got == 2 && ( sHeader == ":|" || sHeader == "8O" ))
 	{
 		LOG->Debug( "%s: returning %s as RageFileObjCrypt_ITG2", __FUNCTION__, sPath.c_str() );
 		return new RageFileObjCrypt_ITG2( "" );

@@ -118,7 +118,7 @@ static RageKeySym XSymToKeySym( int key )
 	}
 
 	/* 0...31: */
-	if( key - 0xFF00 < 0x20)
+	if( key >= 0xFF00 && key < 0xFF20)
 		return ASCIIKeySyms[key - 0xFF00];
 
 	return KEY_INVALID;

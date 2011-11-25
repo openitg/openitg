@@ -47,6 +47,7 @@ public:
 	static Preference<int>		m_iMemoryCardUsbBus[NUM_PLAYERS];
 	static Preference<int>		m_iMemoryCardUsbPort[NUM_PLAYERS];
 	static Preference<int>		m_iMemoryCardUsbLevel[NUM_PLAYERS];
+	static Preference<bool>		m_bUsePmount;
 
 	static Preference<CString>	m_sEditorMemoryCardOsMountPoint;	
 

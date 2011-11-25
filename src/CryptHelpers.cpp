@@ -8,6 +8,10 @@
 #define LTM_DESC
 #define SHA1_DESC
 #define YARROW_DESC
+
+// tomcrypt want to #define ENDIAN_LITTLE, which is also in our own config.h.  We're not using it in this file anyway.
+#undef ENDIAN_LITTLE
+
 #include "libtomcrypt/src/headers/tomcrypt.h"
 
 static const ltc_prng_descriptor *g_PRNGDesc; // HACK: this _MIGHT_ be better off as g_SigHashDesc or something
@@ -43,7 +47,7 @@ static void PKCS8EncodePrivateKey( unsigned char *pkbuf, unsigned long bufsize, 
 static bool PKCS8DecodePrivateKey( const unsigned char *pkcsbuf, unsigned long bufsize, unsigned char *szOut, unsigned long &outsize )
 {
 	ltc_asn1_list *pkAlgObject;
-	int err = der_decode_sequence_flexi(pkcsbuf, &bufsize, &pkAlgObject);
+	der_decode_sequence_flexi(pkcsbuf, &bufsize, &pkAlgObject);
 
 #define RET_IF_NULL_THEN_ASSIGN(x ) { if ( (x) == NULL ) return false; pkAlgObject = (x); }
 	RET_IF_NULL_THEN_ASSIGN( pkAlgObject );
@@ -80,6 +84,7 @@ static bool GetSha1ForFile( RageFileBasic &f, unsigned char *szHash )
 	return true;
 }
 
+#ifdef UNUSED_CODE
 static bool GetSha1ForFile( CString &sFile, unsigned char *szHash )
 {
 	RageFile f;
@@ -88,6 +93,7 @@ static bool GetSha1ForFile( CString &sFile, unsigned char *szHash )
 	f.Close();
 	return bGot;
 }
+#endif
 
 bool CryptHelpers::GenerateRSAKey( unsigned int keyLength, CString sSeed, CString &sPublicKey, CString &sPrivateKey )
 {

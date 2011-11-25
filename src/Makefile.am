@@ -41,7 +41,7 @@ all: $(srcdir)/libtomcrypt/libtomcrypt.a $(srcdir)/libtommath/libtommath.a
 endif
 
 $(srcdir)/libtomcrypt/libtomcrypt.a: $(srcdir)/libtommath/libtommath.a
-	cd $(srcdir)/libtomcrypt && CFLAGS="$(CFLAGS) -I$(srcdir)/../libtommath -DLTM_DESC" $(MAKE)
+	cd $(srcdir)/libtomcrypt && CFLAGS="$(CFLAGS) -Wno-unused-but-set-variable -I$(srcdir)/../libtommath -DLTM_DESC" $(MAKE)
 
 $(srcdir)/libtommath/libtommath.a:
 	cd $(srcdir)/libtommath && $(MAKE)
@@ -328,7 +328,7 @@ ScoreDisplayLifeTime.cpp ScoreDisplayLifeTime.h \
 ScoreDisplayNormal.cpp ScoreDisplayNormal.h ScoreDisplayOni.cpp ScoreDisplayOni.h \
 ScoreDisplayPercentage.cpp ScoreDisplayPercentage.h ScoreDisplayRave.cpp ScoreDisplayRave.h
 
-PCRE = pcre/chartables.c pcre/get.c pcre/internal.h pcre/maketables.c pcre/pcre.c pcre/pcre.h pcre/study.c
+PCRE = pcre/get.c pcre/internal.h pcre/maketables.c pcre/pcre.c pcre/pcre.h pcre/study.c
 
 Timer = timer/Timer.cpp timer/Timer.h
 
@@ -465,6 +465,7 @@ if HAVE_GTK
 bin_PROGRAMS += GtkModule.so
 GtkModule_so_LDFLAGS = -rdynamic -shared
 GtkModule_so_CPPFLAGS = $(GTK_CFLAGS) -fPIC
+GtkModule_so_CXXFLAGS = -Wno-write-strings
 GtkModule_so_LDADD = $(GTK_LIBS)
 GtkModule_so_SOURCES = arch/LoadingWindow/LoadingWindow_GtkModule.cpp
 endif

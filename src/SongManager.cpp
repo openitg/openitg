@@ -290,7 +290,7 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 	sGroupName = sDisplayName + "\'s Courses";
 
 	unsigned i = 0;
-	for ( i; i < arrayProfileCourses.size(); i++ )
+	for ( ; i < arrayProfileCourses.size(); i++ )
 	{
 		Course *crs = new Course;
 		crs->LoadFromCRSFile( arrayProfileCourses[i], true );

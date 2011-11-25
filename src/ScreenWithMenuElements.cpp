@@ -247,17 +247,11 @@ void ScreenWithMenuElements::UpdateLights()
 	ZERO( bBlinkCabinetLight );
 
 	/* update the lights data */
-	bool bCrossedABeat = false;
 	{
 		const float fSongBeat = GAMESTATE->m_fLightSongBeat;
 		const int iSongRow = BeatToNoteRowNotRounded( fSongBeat );
 
 		static int iRowLastCrossed = 0;
-
-		float fBeatLast = roundf(NoteRowToBeat(iRowLastCrossed));
-		float fBeatNow = roundf(NoteRowToBeat(iSongRow));
-
-		bCrossedABeat = fBeatLast != fBeatNow;
 
 		FOREACH_CabinetLight( cl )
 		{

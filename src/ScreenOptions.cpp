@@ -926,17 +926,11 @@ void ScreenOptions::ChangeValueInRow( PlayerNumber pn, int iDelta, bool Repeat )
 	if( Repeat && !ALLOW_REPEATING_CHANGE_VALUE_INPUT )
 		return;
 
-	bool bOneChanged = false;
-
-
 	int iCurrentChoiceWithFocus = row.GetChoiceInRowWithFocus(pn);
 	int iNewChoiceWithFocus = iCurrentChoiceWithFocus + iDelta;
 	ASSERT( iNumChoices > 0 );
 	wrap( iNewChoiceWithFocus, iNumChoices );
 	
-	if( iCurrentChoiceWithFocus != iNewChoiceWithFocus )
-		bOneChanged = true;
-
 	row.SetChoiceInRowWithFocus( pn, iNewChoiceWithFocus );
 	StoreFocus( pn );
 

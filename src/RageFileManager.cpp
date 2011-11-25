@@ -725,8 +725,6 @@ CString RageFileManager::ResolvePath( const CString &sPath_ )
 		if ( sDriverPath.empty() || pDriver->m_sRoot.empty() )
 			continue;
 
-		FileType type = pDriver->m_pDriver->GetFileType(sPath);
-
 		if ( pDriver->m_sType != "dir" && pDriver->m_sType != "dirro" )
 			continue;
 	

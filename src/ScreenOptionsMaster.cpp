@@ -51,7 +51,6 @@ void ScreenOptionsMaster::Init()
 	CStringArray Flags;
 	split( OPTION_MENU_FLAGS, ";", Flags, true );
 	InputMode im = INPUTMODE_INDIVIDUAL;
-	bool Explanations = false;
 	
 	for( unsigned i = 0; i < Flags.size(); ++i )
 	{
@@ -61,7 +60,7 @@ void ScreenOptionsMaster::Init()
 		if( sFlag == "together" )
 			im = INPUTMODE_SHARE_CURSOR;
 		else if( sFlag == "explanations" )
-			Explanations = true;
+			;
 		else if( sFlag == "forceallplayers" )
 		{
 			FOREACH_PlayerNumber( pn )
@@ -90,12 +89,12 @@ void ScreenOptionsMaster::Init()
 		Commands vCommands;
 		ParseCommands( sRowCommands, vCommands );
 		if( vCommands.v.size() != 1 )
-			RageException::Throw( "Parse error in %s::Line%i", m_sName.c_str(), i+1 );
+			RageException::Throw( "Parse error in %s::Line%s", m_sName.c_str(), sLineName.c_str() );
 
 		Command& command = vCommands.v[0];
 		pHand = OptionRowHandlerUtil::Make( command, def );
 		if( pHand == NULL )
-            RageException::Throw( "Invalid OptionRowHandler '%s' in %s::Line%i", command.GetOriginalCommandString().c_str(), m_sName.c_str(), i );
+            RageException::Throw( "Invalid OptionRowHandler '%s' in %s::%s", command.GetOriginalCommandString().c_str(), m_sName.c_str(), sLineName.c_str() );
 	}
 
 	ASSERT( OptionRowHandlers.size() == asLineNames.size() );

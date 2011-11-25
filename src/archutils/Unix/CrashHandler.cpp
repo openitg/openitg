@@ -102,9 +102,10 @@ static void NORETURN spawn_child_process( int from_parent )
 	GetExecutableName( path, sizeof(path) );
 
 	/* Use execve; it's the lowest-level of the exec calls.  The others may allocate. */
-	char *argv[3] = { path, CHILD_MAGIC_PARAMETER, NULL };
+	const char *argv[3] = { path, CHILD_MAGIC_PARAMETER, NULL };
 	char *envp[1] = { NULL };
-	execve( path, argv, envp );
+	/* The const_cast won't matter since our address space gets destroyed in a moment anyway */
+	execve( path, const_cast<char **>(argv), envp );
 
 	/* If we got here, the exec failed.  We can't call strerror. */
 	// safe_print(fileno(stderr), "Crash handler execl(", path, ") failed: ", strerror(errno), "\n", NULL);
@@ -270,7 +271,6 @@ static void RunCrashHandler( const CrashData *crash )
 		/* non-fatal */
 	}
 	       
-	static int received = 0;
 	static int active = 0;
 
 	if( active )
@@ -301,7 +301,6 @@ static void RunCrashHandler( const CrashData *crash )
 		_exit(1);
 	}
 	active = 1;
-	received = getpid();
 
 	/* Stop other threads.  XXX: This prints a spurious ptrace error if any threads
 	 * are already suspended, which happens in ForceCrashHandlerDeadlock(). */

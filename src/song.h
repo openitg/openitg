@@ -92,7 +92,6 @@ public:
 
 	CString m_sGroupName;
 
-	ProfileSlot	m_LoadedFromProfile;	// PROFILE_SLOT_INVALID if wasn't loaded from a profile
 	bool	m_bIsSymLink;
 
 	CString	m_sMainTitle, m_sSubTitle, m_sArtist;
@@ -131,6 +130,8 @@ public:
 	enum { DISPLAY_ACTUAL, DISPLAY_SPECIFIED, DISPLAY_RANDOM } m_DisplayBPMType;
 	float		m_fSpecifiedBPMMin;
 	float		m_fSpecifiedBPMMax;	// if a range, then Min != Max
+
+	ProfileSlot	m_LoadedFromProfile;
 
 	CString	m_sBannerFile;
 	CString m_sLyricsFile;

@@ -58,7 +58,6 @@ Song::Song()
 	m_ForegroundChanges = AutoPtrCopyOnWrite<VBackgroundChange>(new VBackgroundChange);
 	
 
-	m_LoadedFromProfile = PROFILE_SLOT_INVALID;
 	m_fMusicSampleStartSeconds = -1;
 	m_fMusicSampleLengthSeconds = DEFAULT_MUSIC_SAMPLE_LENGTH;
 	m_fMusicLengthSeconds = 0;
@@ -73,6 +72,7 @@ Song::Song()
 	m_bHasBanner = false;
 	m_bIsCustomSong = false;
 	m_SongOwner = PLAYER_INVALID;
+	m_LoadedFromProfile = PROFILE_SLOT_INVALID;
 }
 
 Song::~Song()

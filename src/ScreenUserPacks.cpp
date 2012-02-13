@@ -242,10 +242,10 @@ void ScreenUserPacks::Input( const DeviceInput& DeviceI, const InputEventType ty
 
 CString g_CurXferFile;
 CString g_CurSelection;
-unsigned long g_iLastCurrentBytes;
+uint64_t g_iLastCurrentBytes;
 RageTimer g_UpdateDuration;
 
-void UpdateXferProgress( unsigned long iBytesCurrent, unsigned long iBytesTotal )
+bool UpdateXferProgress( uint64_t iBytesCurrent, uint64_t iBytesTotal )
 {
 	bool bInterrupt = false;
 
@@ -259,15 +259,14 @@ void UpdateXferProgress( unsigned long iBytesCurrent, unsigned long iBytesTotal 
 
 	if ( bInterrupt )
 	{
-		InterruptCopy();
-
 		InputEventArray throwaway;
 		INPUTFILTER->GetInputEvents( throwaway );
+		return false;
 	}
 
 	// Draw() is very expensive: only do it on occasion.
 	if( DrawTimer.Ago() < DRAW_UPDATE_TIME )
-		return;
+		return true;
 
 	/* this truncates to int, but that's okay for our purposes */
 	float iTransferRate = iBytesCurrent / g_UpdateDuration.Ago();
@@ -287,10 +286,13 @@ void UpdateXferProgress( unsigned long iBytesCurrent, unsigned long iBytesTotal 
 
 	SCREENMAN->Draw();
 	DrawTimer.Touch();
+	return true;
 }
 
 void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 {
+#if 0
+	/* Not compatible with FileCopy callback system; was this ever used? -- vyhd */
 	if ( SM == SM_CancelTransfer )
 	{
 		Dialog::OK("SM_CancelTransfer");
@@ -302,6 +304,7 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 
 		LOG->Warn("Cancelled Transfer of user pack.");
 	}
+#endif
 	if ( SM == SM_LinkedMenuChange )
 	{
 		m_pCurLOM = m_pCurLOM->SwitchToNextMenu();

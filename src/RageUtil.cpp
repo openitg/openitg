@@ -1804,28 +1804,13 @@ void FileWrite(RageFileBasic& f, float fWrite)
 	f.PutLine( ssprintf("%f", fWrite) );
 }
 
-// a flag that can be used to interrupt a current copy operation
-bool g_bInterruptCopy = false;
-
-void InterruptCopy()
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, FileCopyFn CopyFn )
 {
-	g_bInterruptCopy = true;
+	CString sThrowAway;
+	return FileCopy( sSrcFile, sDstFile, sThrowAway, CopyFn );
 }
 
-/* workarounds for some pre-existing calls... */
-bool FileCopy( const CString &sSrcFile, const CString &sDstFile, void(*OnUpdate)(unsigned long, unsigned long) )
-{
-	CString sError;
-	return FileCopy( sSrcFile, sDstFile, sError, OnUpdate );
-}
-
-bool FileCopy( RageFileBasic &in, RageFileBasic &out, void (*OnUpdate)(unsigned long, unsigned long), bool *bReadError )
-{
-	CString sError;
-	return FileCopy( in, out, sError, OnUpdate, bReadError );
-}
-
-bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError, void(*OnUpdate)(unsigned long, unsigned long) )
+bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError, FileCopyFn CopyFn )
 {
 	if( !sSrcFile.CompareNoCase(sDstFile) )
 	{
@@ -1841,7 +1826,7 @@ bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError
 	if( !out.Open(sDstFile, RageFile::WRITE) )
 		return false;
 
-	if( !FileCopy(in, out, sError, OnUpdate) )
+	if( !FileCopy(in, out, sError, NULL, CopyFn) )
 	{
 		LOG->Warn( "FileCopy(%s,%s): %s",
 				sSrcFile.c_str(), sDstFile.c_str(), sError.c_str() );
@@ -1851,67 +1836,70 @@ bool FileCopy( const CString &sSrcFile, const CString &sDstFile, CString &sError
 	return true;
 }
 
-bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, void(*OnUpdate)(unsigned long, unsigned long), bool *bReadError )
+bool FileCopy( RageFileBasic &in, RageFileBasic &out, CString &sError, bool *bReadError, FileCopyFn CopyFn )
 {
-	g_bInterruptCopy = false;
+#define SAFE_SET(boolptr, val) if( boolptr ) { *boolptr = val; }
 
-	/* for reporting file progress */
-	unsigned long read = 0;
-	unsigned long total = in.GetFileSize();
+	CString data;
+	uint64_t iBytesRead = 0, iBytesTotal = in.GetFileSize();
+	bool bContinue = true;
 
-	while( !g_bInterruptCopy )
+	while( bContinue )
 	{
-		CString data;
 		if( in.Read(data, 1024*32) == -1 )
 		{
 			sError = ssprintf( "read error: %s", in.GetError().c_str() );
-			if( bReadError != NULL )
-				*bReadError = true;
+			SAFE_SET( bReadError, true );
 			return false;
 		}
+
 		if( data.empty() )
 			break;
 
-		read += data.size();
+		iBytesRead += data.size();
 
-		int i = out.Write(data);
-		if( i == -1 )
+		if( out.Write(data) == -1 )
 		{
 			sError = ssprintf( "write error: %s", out.GetError().c_str() );
-			if( bReadError != NULL )
-				*bReadError = false;
+			SAFE_SET( bReadError, false );
 			return false;
 		}
 
-		/* if we have a function pointer, calculate percentage. */
-		if( OnUpdate != NULL )
-			OnUpdate( read, total );
+		/* Report our progress if we were given a callback. CopyFn's
+		 * return value determines whether we continue copying: if it
+		 * cancels the transfer, report that as a unique error. */
+		if( CopyFn )
+		{
+			/* Continue unless the callback tells us to stop. */
+			if( (bContinue = CopyFn(iBytesRead, iBytesTotal)) )
+				continue;
+
+			sError = CString( "cancelled manually" );
+
+			LOG->Warn( "FileCopy(%s, %s) cancelled at %llu/%llu bytes",
+				in.GetDisplayPath().c_str(),
+				out.GetDisplayPath().c_str(),
+				iBytesRead, iBytesTotal );
+
+			SAFE_SET( bReadError, false );
+			return false;
+		}
 	}
 
 	if( out.Flush() == -1 )
 	{
 		sError = ssprintf( "write error: %s", out.GetError().c_str() );
-		if( bReadError != NULL )
-			*bReadError = false;
-		return false;
-	}
-
-	/* handle any interrupts if they occurred. */
-	if( g_bInterruptCopy )
-	{
-		sError = "Cancelled by user";
-		LOG->Warn( "Copying interrupted (%lu/%lu).", read, total );
-		g_bInterruptCopy = false;
-
+		SAFE_SET( bReadError, false );
 		return false;
 	}
 
 	return true;
+#undef SAFE_SET
 }
 
 /*
  * Copyright (c) 2001-2004 Chris Danford, Glenn Maynard
- * Copyright (c) 2008 BoXoRRoXoRs
+ * Copyright (c) 2008-2012 BoXoRRoXoRs
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

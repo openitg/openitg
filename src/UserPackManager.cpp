@@ -143,9 +143,9 @@ bool UserPackManager::IsPackTransferable( const CString &sPack, const CString &s
 	return true;
 }
 
-bool UserPackManager::TransferPack( const CString &sPack, const CString &sDestPack, void(*OnUpdate)(unsigned long, unsigned long), CString &sError )
+bool UserPackManager::TransferPack( const CString &sPack, const CString &sDestPack, FileCopyFn CopyFn, CString &sError )
 {
-	bool bSuccess = FileCopy( sPack, USER_PACK_SAVE_PATH + "/" + sDestPack, sError, OnUpdate );
+	bool bSuccess = FileCopy( sPack, USER_PACK_SAVE_PATH + "/" + sDestPack, sError, CopyFn );
 	if (!bSuccess)
 	{
 		FILEMAN->FlushDirCache( USER_PACK_SAVE_PATH );

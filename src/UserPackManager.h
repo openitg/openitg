@@ -11,13 +11,15 @@ static const CString USER_PACK_SAVE_PATH = "UserPacks/";
 class UserPackManager
 {
 public:
-	void GetUserPacks( CStringArray &sAddTo );
+	void GetUserPacks( vector<CString> &sAddTo );
 
 	void MountAll();
 	bool IsPackMountable( const CString &sPack, CString &sError );
 	bool IsPackTransferable( const CString &sPack, const CString &sPath, CString &sError );
 
-	bool TransferPack( const CString &sPack, const CString &sDest, void(*OnUpdate)(unsigned long, unsigned long), CString &sError );
+	/* XXX: duped from RageUtil so we don't pull in that header. */
+	bool TransferPack( const CString &sPack, const CString &sDest,
+		bool (*CopyFn)(uint64_t, uint64_t), CString &sError );
 	bool Remove( const CString &sPack );
 
 protected:

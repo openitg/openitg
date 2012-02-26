@@ -120,7 +120,6 @@ void ScreenGameplay::Init()
 	if( !GAMESTATE->m_bDemonstrationOrJukebox )
 	{	
 		MEMCARDMAN->PauseMountingThread();
-		GAMESTATE->SetSongInProgress(true);
 	}
 
 	m_pSoundMusic = NULL;
@@ -885,6 +884,7 @@ void ScreenGameplay::LoadNextSong()
 	int iPlaySongIndex = GAMESTATE->GetCourseSongIndex();
 	iPlaySongIndex %= m_apSongsQueue.size();
 	GAMESTATE->m_pCurSong.Set( m_apSongsQueue[iPlaySongIndex] );
+	GAMESTATE->SetSongInProgress( GAMESTATE->m_pCurSong->GetSongDir() );
 	STATSMAN->m_CurStageStats.vpPlayedSongs.push_back( GAMESTATE->m_pCurSong );
 
 	// No need to do this here.  We do it in SongFinished().
@@ -1976,9 +1976,11 @@ void ScreenGameplay::BackOutFromGameplay()
 
 void ScreenGameplay::AbortGiveUp( bool bShowText )
 {
-	GAMESTATE->SetSongInProgress(false);
 	if( m_GiveUpTimer.IsZero() )
 		return;
+
+	if ( !bShowText )
+		GAMESTATE->SetSongInProgress("(none)");
 
 	m_textDebug.StopTweening();
 	if( bShowText )
@@ -2129,6 +2131,7 @@ void ScreenGameplay::SongFinished()
 
 	/* Extremely important: if we don't remove attacks before moving on to the next
 	 * screen, they'll still be turned on eventually. */
+	GAMESTATE->SetSongInProgress("(none)");
 	GAMESTATE->RemoveAllActiveAttacks();
 	FOREACH_EnabledPlayer( p )
 		m_ActiveAttackList[p].Refresh();

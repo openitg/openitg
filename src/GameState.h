@@ -42,7 +42,7 @@ public:
 	void EndGame();	// called on ScreenGameOver, ScreenMusicScroll, ScreenCredits
 	void SaveCurrentSettingsToProfile( PlayerNumber pn ); // called at the beginning of each stage
 
-	void SetSongInProgress( bool bInProgress );
+	void SetSongInProgress( const CString &sWriteOut );
 
 	void Update( float fDelta );
 

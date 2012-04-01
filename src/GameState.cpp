@@ -458,12 +458,7 @@ void GameState::EndGame()
 		if( !PROFILEMAN->IsPersistentProfile(pn) )
 			continue;
 
-		bool bWasMemoryCard = PROFILEMAN->ProfileWasLoadedFromMemoryCard(pn);
-		if( bWasMemoryCard )
-			MEMCARDMAN->MountCard( pn );
 		PROFILEMAN->SaveProfile( pn );
-		if( bWasMemoryCard )
-			MEMCARDMAN->UnmountCard( pn );
 
 		PROFILEMAN->UnloadProfile( pn );
 	}

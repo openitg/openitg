@@ -308,7 +308,19 @@ bool ProfileManager::SaveProfile( PlayerNumber pn ) const
 	if( m_sProfileDir[pn].empty() )
 		return false;
 
+	if( m_bWasLoadedFromMemoryCard[pn] )
+	{
+		MemoryCardState mcs = MEMCARDMAN->GetCardState(pn);
+		if( mcs == MEMORY_CARD_STATE_READY )
+			MEMCARDMAN->MountCard(pn);
+		else if( mcs != MEMORY_CARD_STATE_MOUNTED )
+			return false;
+	}
+
 	bool b = m_Profile[pn].SaveAllToDir( m_sProfileDir[pn], PREFSMAN->m_bSignProfileData );
+
+	if( m_bWasLoadedFromMemoryCard[pn] )
+		MEMCARDMAN->UnmountCard(pn);
 
 	return b;
 }

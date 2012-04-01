@@ -268,7 +268,6 @@ MemoryCardManager::MemoryCardManager()
 
 	FOREACH_PlayerNumber( p )
 	{
-		m_bMounted[p] = false;
 		m_State[p] = MEMORY_CARD_STATE_NO_CARD;
 	}
 	
@@ -587,7 +586,7 @@ bool MemoryCardManager::MountCard( PlayerNumber pn, int iTimeout )
 	/* Pause the mounting thread when we mount the first drive. */
 	bool bStartingMemoryCardAccess = true;
 	FOREACH_PlayerNumber( p )
-		if( m_bMounted[p] )
+		if( m_State[p] == MEMORY_CARD_STATE_MOUNTED )
 			bStartingMemoryCardAccess = false; /* already did */
 	if( bStartingMemoryCardAccess )
 	{
@@ -604,7 +603,7 @@ bool MemoryCardManager::MountCard( PlayerNumber pn, int iTimeout )
 		return false;
 	}
 
-	m_bMounted[pn] = true;
+	m_State[pn] = MEMORY_CARD_STATE_MOUNTED;
 
 	RageFileDriver *pDriver = FILEMAN->GetFileDriver( MEM_CARD_MOUNT_POINT_INTERNAL[pn] );
 	if( pDriver == NULL )
@@ -640,11 +639,11 @@ bool MemoryCardManager::MountCard( PlayerNumber pn, const UsbStorageDevice &d, i
  * will block until flushed. */
 void MemoryCardManager::UnmountCard( PlayerNumber pn )
 {
-	LOG->Trace( "MemoryCardManager::UnmountCard(%i) (mounted: %i)", pn, m_bMounted[pn] );
+	LOG->Trace( "MemoryCardManager::UnmountCard(%i) (mounted: %i)", pn, m_State[pn] == MEMORY_CARD_STATE_MOUNTED );
 	if( m_Device[pn].IsBlank() )
 		return;
 
-	if( !m_bMounted[pn] )
+	if( m_State[pn] != MEMORY_CARD_STATE_MOUNTED)
 		return;
 
 	/* Leave our own filesystem drivers mounted.  Unmount the kernel mount. */
@@ -654,12 +653,12 @@ void MemoryCardManager::UnmountCard( PlayerNumber pn )
 	FILEMAN->FlushDirCache( MEM_CARD_MOUNT_POINT[pn] );
 	FILEMAN->FlushDirCache( MEM_CARD_MOUNT_POINT_INTERNAL[pn] );
 
-	m_bMounted[pn] = false;
+	m_State[pn] = MEMORY_CARD_STATE_READY;
 
 	/* Unpause the mounting thread when we unmount the last drive. */
 	bool bNeedUnpause = true;
 	FOREACH_PlayerNumber( p )
-		if( m_bMounted[p] )
+		if( m_State[p] == MEMORY_CARD_STATE_MOUNTED )
 			bNeedUnpause = false;
 	if( bNeedUnpause )
 		this->UnPauseMountingThread();

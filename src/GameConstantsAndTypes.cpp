@@ -247,6 +247,7 @@ static const CString MemoryCardStateNames[] = {
 	"error",
 	"removed",
 	"none",
+	"mounted"
 };
 XToString( MemoryCardState, NUM_MEMORY_CARD_STATES );
 

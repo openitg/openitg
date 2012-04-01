@@ -162,8 +162,8 @@ bool ProfileManager::LoadProfileFromMemoryCard( PlayerNumber pn )
 	UnloadProfile( pn );
 
 	// mount slot
-	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY ) {
-		LOG->ProfileStop(key, "Loading Profile Ended");
+	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_MOUNTED ) {
+		LOG->ProfileStop(key, "Loading Profile Ended; memory card not mounted");
 		return false;
 	}
 
@@ -229,7 +229,7 @@ Profile::LoadResult ProfileManager::LoadEditableDataFromMemoryCard( PlayerNumber
 {
 	Profile::LoadResult lr = Profile::failed_no_profile;
 
-	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
+	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_MOUNTED )
 		return lr;
 
 	vector<CString> asDirsToTry;

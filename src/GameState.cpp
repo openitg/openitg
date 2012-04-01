@@ -540,10 +540,15 @@ void GameState::FinishStage()
 	if( GAMESTATE->IsEventMode() )
 	{
 		const int iSaveProfileEvery = 3;
-		if( iOldStageIndex/iSaveProfileEvery < m_iCurrentStageIndex/iSaveProfileEvery )
+		if( MEMCARDMAN->m_bDynamicMemoryCards )
 		{
-			LOG->Trace( "Played %i stages; saving profiles ...", iSaveProfileEvery );
+			LOG->Trace( "Dynamic memory cards in use; saving all profiles ..." );
 			PROFILEMAN->SaveAllProfiles();
+		}
+		else if( iOldStageIndex/iSaveProfileEvery < m_iCurrentStageIndex/iSaveProfileEvery )
+		{
+			LOG->Trace( "Played %i stages; saving machine profile ...", iSaveProfileEvery );
+			PROFILEMAN->SaveMachineProfile();
 		}
 	}
 }

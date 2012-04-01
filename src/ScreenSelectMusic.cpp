@@ -125,6 +125,11 @@ ScreenSelectMusic::ScreenSelectMusic( CString sClassName ) : ScreenWithMenuEleme
 		FontCharAliases::ReplaceMarkers( sCancelMessage );
 		CUSTOM_SONG_CANCEL_TEXT.SetValue( sCancelMessage );
 	}
+
+	SubscribeToMessage("CardReadyP1");
+	SubscribeToMessage("CardReadyP2");
+	SubscribeToMessage("CardRemovedP1");
+	SubscribeToMessage("CardRemovedP2");
 }
 
 
@@ -2285,6 +2290,24 @@ void ScreenSelectMusic::SortOrderChanged()
 
 	// tween music sort on screen
 //	m_MusicSortDisplay.FadeOn( 0, "fade", TWEEN_TIME );
+}
+
+void ScreenSelectMusic::HandleMessage( const CString& sMessage )
+{
+	if( sMessage == "CardReadyP1" || sMessage == "CardRemovedP1" )
+	{
+		vector<PlayerNumber> vpns;
+		vpns.push_back((PlayerNumber)0);
+		AfterStepsChange(vpns);
+	}
+	else if( sMessage == "CardReadyP2" || sMessage == "CardRemovedP2" )
+	{
+		vector<PlayerNumber> vpns;
+		vpns.push_back((PlayerNumber)1);
+		AfterStepsChange(vpns);
+	}
+	else
+		Actor::HandleMessage(sMessage);
 }
 
 /*

@@ -73,6 +73,8 @@ protected:
 	void UpdateOptionsDisplays();
 	void CheckBackgroundRequests();
 
+	virtual void HandleMessage( const CString& sMessage );
+
 	vector<Steps*>		m_vpSteps;
 	vector<Trail*>		m_vpTrails;
 	int					m_iSelection[NUM_PLAYERS];

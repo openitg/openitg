@@ -12,6 +12,7 @@
 #include "RageUtil_WorkerThread.h"
 #include "arch/MemoryCard/MemoryCardDriver_Null.h"
 #include "LuaManager.h"
+#include "ProfileManager.h"
 
 MemoryCardManager*	MEMCARDMAN = NULL;	// global and accessable from anywhere in our program
 
@@ -43,6 +44,7 @@ Preference<int> MemoryCardManager::m_iMemoryCardUsbLevel[NUM_PLAYERS] =
 };
 
 Preference<bool> MemoryCardManager::m_bUsePmount( "UsePmount", false );
+Preference<bool> MemoryCardManager::m_bDynamicMemoryCards( "DynamicMemoryCards", false );
 
 Preference<CString>	MemoryCardManager::m_sEditorMemoryCardOsMountPoint( "EditorMemoryCardOsMountPoint",	"" );
 
@@ -411,7 +413,7 @@ void MemoryCardManager::CheckStateChanges()
 		MemoryCardState state = MEMORY_CARD_STATE_INVALID;
 		CString sError;
 
-		if( m_bCardsLocked )
+		if( m_bCardsLocked && !m_bDynamicMemoryCards )
 		{
 			if( m_FinalDevice[p].m_State == UsbStorageDevice::STATE_NONE )
 			{
@@ -478,6 +480,8 @@ void MemoryCardManager::CheckStateChanges()
 				if( LastState == MEMORY_CARD_STATE_READY )
 				{
 					m_soundDisconnect.Play( &params );
+					if( m_bDynamicMemoryCards )
+						PROFILEMAN->UnloadProfile(p);
 					MESSAGEMAN->Broadcast( (Message)(MESSAGE_CARD_REMOVED_P1+p) );
 				}
 				break;
@@ -494,6 +498,14 @@ void MemoryCardManager::CheckStateChanges()
 
 			m_State[p] = state;
 			m_sError[p] = sError;
+
+			if( state == MEMORY_CARD_STATE_READY && m_bCardsLocked && m_bDynamicMemoryCards )
+			{
+				MountCard(p);
+				PROFILEMAN->LoadProfileFromMemoryCard(p);
+				UnmountCard(p);
+				MESSAGEMAN->Broadcast( (Message)(MESSAGE_CARD_READY_P1+p) );
+			}
 		}
 	}
 

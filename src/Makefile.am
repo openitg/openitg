@@ -41,7 +41,7 @@ all: $(srcdir)/libtomcrypt/libtomcrypt.a $(srcdir)/libtommath/libtommath.a
 endif
 
 $(srcdir)/libtomcrypt/libtomcrypt.a: $(srcdir)/libtommath/libtommath.a
-	cd $(srcdir)/libtomcrypt && CFLAGS="$(CFLAGS) -Wno-unused-but-set-variable -I$(srcdir)/../libtommath -DLTM_DESC" $(MAKE)
+	cd $(srcdir)/libtomcrypt && CFLAGS="$(CFLAGS) -I$(srcdir)/../libtommath -DLTM_DESC" $(MAKE)
 
 $(srcdir)/libtommath/libtommath.a:
 	cd $(srcdir)/libtommath && $(MAKE)

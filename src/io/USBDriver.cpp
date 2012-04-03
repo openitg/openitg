@@ -14,7 +14,7 @@ USBDriver::~USBDriver()
 	delete m_pDriver;
 }
 
-bool USBDriver::OpenInternal( short iVendorID, short iProductID )
+bool USBDriver::OpenInternal( uint16_t iVendorID, uint16_t iProductID )
 {
 	Close();
 

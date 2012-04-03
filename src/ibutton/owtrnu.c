@@ -78,7 +78,7 @@ static SMALLINT Copy_Scratchpad(int,int,SMALLINT);
 SMALLINT owBlock(int portnum, SMALLINT do_reset, uchar *tran_buf, SMALLINT tran_len)
 {
    uchar sendpacket[320];
-   uchar sendlen=0,pos,i;
+   uchar sendlen=0,i;
 
    // check for a block too big
    if (tran_len > 160)
@@ -106,7 +106,6 @@ SMALLINT owBlock(int portnum, SMALLINT do_reset, uchar *tran_buf, SMALLINT tran_
    }
 
    // add the bytes to send
-   pos = sendlen;
    for (i = 0; i < tran_len; i++)
    {
       sendpacket[sendlen++] = tran_buf[i];

@@ -10,7 +10,7 @@
 #pragma comment (lib, "setupapi.lib" )
 #pragma comment (lib, "winusb.lib" )
 
-bool USBDriver_Impl_WinUsb::DeviceExists( short iVendorID, short iProductID )
+bool USBDriver_Impl_WinUsb::DeviceExists( uint16_t iVendorID, uint16_t iProductID )
 {
 	/* currently not implemented */
 	return false;

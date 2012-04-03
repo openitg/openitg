@@ -86,8 +86,6 @@ const GLenum RageSpriteVertexFormat = GL_T2F_C4F_N3F_V3F;
 /* If we support texture matrix scaling, a handle to the vertex program: */
 static GLhandleARB g_bTextureMatrixShader = 0;
 
-static bool g_ShaderCompiled = false;
-
 LowLevelWindow *wind;
 
 static void InvalidateAllGeometry();

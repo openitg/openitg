@@ -42,6 +42,8 @@ Preference<int> MemoryCardManager::m_iMemoryCardUsbLevel[NUM_PLAYERS] =
 	Preference<int>("MemoryCardUsbLevelP2", -1)
 };
 
+Preference<bool> MemoryCardManager::m_bUsePmount( "UsePmount", false );
+
 Preference<CString>	MemoryCardManager::m_sEditorMemoryCardOsMountPoint( "EditorMemoryCardOsMountPoint",	"" );
 
 const CString MEM_CARD_MOUNT_POINT[NUM_PLAYERS] =
@@ -385,7 +387,10 @@ void MemoryCardManager::UpdateAssignments()
 			if( m_iMemoryCardUsbLevel[p] != -1 &&
 				m_iMemoryCardUsbLevel[p] != d->iLevel )
 				continue;       // not a match
-			
+
+			if( !m_bUsePmount && d->bUsePmount )
+				continue;       // pmount disabled
+
 			LOG->Trace( "Player %i: matched %s", p+1, d->sDevice.c_str() );
 
 			assigned_device = *d;    // save a copy

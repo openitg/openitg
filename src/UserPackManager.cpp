@@ -143,9 +143,9 @@ bool UserPackManager::IsPackTransferable( const CString &sPack, const CString &s
 	return true;
 }
 
-bool UserPackManager::TransferPack( const CString &sPack, const CString &sDestPack, void(*OnUpdate)(unsigned long, unsigned long), CString &sError )
+bool UserPackManager::TransferPack( const CString &sPack, const CString &sDestPack, FileCopyFn CopyFn, CString &sError )
 {
-	bool bSuccess = FileCopy( sPack, USER_PACK_SAVE_PATH + "/" + sDestPack, sError, OnUpdate );
+	bool bSuccess = FileCopy( sPack, USER_PACK_SAVE_PATH + "/" + sDestPack, sError, CopyFn );
 	if (!bSuccess)
 	{
 		FILEMAN->FlushDirCache( USER_PACK_SAVE_PATH );
@@ -168,7 +168,6 @@ CString UserPackManager::GetPackMountPoint( const CString &sPack )
 	CHECKPOINT_M( sPack );
 	// it should already be a valid zip by now...
 	ASSERT( pZip->Load( sPack ) );
-	UserPackMountType upmt = UPACK_MOUNT_SONGS;
 
 	CStringArray asRootEntries;
 	pZip->GetDirListing( "/", asRootEntries, true, false );

@@ -43,10 +43,6 @@
 // XXX: custom song loading. remove these if we can.
 #include "RageFileDriverTimeout.h"
 
-// Draw every 1/6 second, approx. one per 10 minutes
-static RageTimer DrawTimer;
-const float DRAW_UPDATE_TIME = 0.1666667;
-
 const int NUM_SCORE_DIGITS	=	9;
 
 #define NEXT_SCREEN							THEME->GetMetric (m_sName,"NextScreen")
@@ -1327,50 +1323,72 @@ void ScreenSelectMusic::HandleScreenMessage( const ScreenMessage SM )
 	Screen::HandleScreenMessage( SM );
 }
 
-// XXX: lots of ctors/dtors and redundant calls. How can we best fix this?
-void UpdateLoadProgress( unsigned long iCurrent, unsigned long iTotal )
+/* Helper functions for custom song handling.
+ * XXX: we should find a better place for these. -- vyhd */
+namespace
 {
-	// UGLY: send a manual update to INPUTFILTER to force input buffering
-	INPUTFILTER->Update( 0 );
-
-	bool bInterrupt = false;
-
-	// if a player presses Select or ML+MR, stop loading the song.
-	FOREACH_EnabledPlayer( pn )
+	/* Returns true if either player's button presses triggered
+	 * a loading interrupt. */
+	bool IsInterrupted()
 	{
-		bInterrupt |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
-		
-		bInterrupt |= INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) &&
-			INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT));
+		/* HACK: if we're not running threaded I/O, manually poke
+		 * INPUTFILTER for events in order to force an input poll. */
+		if( DiagnosticsUtil::GetInputType().empty() )
+			INPUTFILTER->Update( 0 );
+
+		bool bInterrupt = false;
+
+		FOREACH_EnabledPlayer( pn )
+		{
+			/* Is this player pressing 'Select'? */
+			bInterrupt |= INPUTMAPPER->IsButtonDown( MenuInput(pn, MENU_BUTTON_SELECT) );
+
+			/* Is this player pressing 'MenuLeft'+'MenuRight'? */
+			bInterrupt |= INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_LEFT)) &&
+				INPUTMAPPER->IsButtonDown(MenuInput(pn, MENU_BUTTON_RIGHT));
+		}
+
+		return bInterrupt;
 	}
 
-	if( bInterrupt )
+	/* Draw() is expensive and slows down file copying;
+	 * only draw roughly six times a second. */
+	RageTimer g_DrawTimer( RageZeroTimer );
+	const float DRAW_UPDATE_TIME = 0.1666667f;
+
+	bool CopyCustomSong( uint64_t iBytesRead, uint64_t iBytesTotal )
 	{
-		InterruptCopy();
-		LOG->Warn( "Custom song load interrupted." );
+		// if a player presses Select or ML+MR, stop loading the song.
+		if( IsInterrupted() )
+		{
+			LOG->Warn( "Custom song load interrupted." );
 
-		// TRICKY DISCO: discard all input events recorded since update.
-		// otherwise, we'll get all the pressed buttons at once.
-		InputEventArray throwaway;
-		INPUTFILTER->GetInputEvents( throwaway );
+			/* TRICKY DISCO: discard all recorded input events, or
+			 * we'll process all button presses in the next frame. */
+			InputEventArray throwaway;
+			INPUTFILTER->GetInputEvents( throwaway );
+
+			return false;
+		}
+
+		/* Don't Draw() yet, but keep copying. */
+		if( g_DrawTimer.Ago() < DRAW_UPDATE_TIME )
+			return true;
+
+		float fPercent = float(iBytesRead) / float(iBytesTotal/100);
+
+		// XXX: kind of voodoo
+		SCREENMAN->OverlayMessage( ssprintf("\n\n%s\n%02.1f%%\n%s",
+			CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(),
+			fPercent,
+			CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str()
+			) );
+
+		SCREENMAN->Draw();
+		g_DrawTimer.Touch();
+
+		return true;
 	}
-
-	/* only Draw() occasionally, since this is expensive. */
-	if( DrawTimer.Ago() < DRAW_UPDATE_TIME )
-		return;
-
-	unsigned long iPercent = iCurrent / (iTotal/100);
-
-	// XXX: kind of voodoo
-	CString sMessage = ssprintf( "\n\n%s\n%lu%%\n%s",
-		CUSTOM_SONG_WAIT_TEXT.GetValue().c_str(), 
-		iPercent,
-		CUSTOM_SONG_CANCEL_TEXT.GetValue().c_str() );
-
-	SCREENMAN->OverlayMessage( sMessage );
-	SCREENMAN->Draw();
-
-	DrawTimer.Touch();
 }
 
 // run a few basic tests to be sure we aren't breaking any limits...
@@ -1415,8 +1433,8 @@ bool ScreenSelectMusic::ValidateCustomSong( Song* pSong )
 
 		// we can copy the music. destination is determined with
 		// "m_sGameplayMusic" so we can change that from one place
-		bCopied = FileCopy( GAMESTATE->m_pCurSong->GetMusicPath(), 
-		GAMESTATE->m_pCurSong->m_sGameplayMusic, sError, &UpdateLoadProgress );
+		bCopied = FileCopy( GAMESTATE->m_pCurSong->GetMusicPath(),
+		GAMESTATE->m_pCurSong->m_sGameplayMusic, sError, CopyCustomSong );
 
 		// failed, most likely a permissions error
 		if( !bCopied && !sError.empty() )
@@ -1552,7 +1570,7 @@ void ScreenSelectMusic::MenuStart( PlayerNumber pn )
 
 						bError = !pSong->CheckCustomSong( sError );
 						// TODO: give custom song for course xfer its own progress function
-						if (!bError) bError = !FileCopy( pSong->GetMusicPath(), sNewPath, &UpdateLoadProgress );
+						if (!bError) bError = !FileCopy( pSong->GetMusicPath(), sNewPath, CopyCustomSong );
 #ifndef WIN32
 						MEMCARDMAN->UnmountCard( pSong->m_SongOwner );
 #endif

@@ -118,11 +118,6 @@ protected:
 
 	Song *FindSong( CString sGroup, CString sSong );
 
-	/* m_pMachineSongs holds all the songs that are	loaded by default to the machine.
-	 * m_pCustomSongs holds songs that were loaded from a USB drive; they can safely be deleted after a round.
-	 * m_pSongs is the combination of the above two, and must be rebuilt after a round ends. */
-	vector<Song*>		m_pMachineSongs;	// all songs that are on by default
-	vector<Song*>		m_pCustomSongs;
 	vector<Song*>		m_pSongs;	// all songs that can be played
 	vector<Song*>		m_pBestSongs[NUM_PROFILE_SLOTS];
 	vector<Song*>		m_pShuffledSongs;	// used by GetRandomSong

@@ -26,7 +26,7 @@ static struct usb_device *FindDevice( int iVendorID, int iProductID )
 	return NULL;
 }
 
-bool USBDriver_Impl_Libusb::DeviceExists( short iVendorID, short iProductID )
+bool USBDriver_Impl_Libusb::DeviceExists( uint16_t iVendorID, uint16_t iProductID )
 {
 	return FindDevice(iVendorID, iProductID) != NULL;
 }

@@ -115,11 +115,7 @@ void SongManager::InitSongsFromDisk( LoadingWindow *ld )
 {
 	RageTimer tm;
 	
-	/* this loads the songs into m_pMachineSongs */
 	LoadStepManiaSongDir( SONGS_DIR, ld );
-
-	/* now, copy them into m_pSongs */
-	m_pSongs.insert( m_pSongs.begin(), m_pMachineSongs.begin(), m_pMachineSongs.end() );
 
 	LOG->Trace( "Found %d songs in %f seconds.", (int)m_pSongs.size(), tm.GetDeltaTime() );
 }
@@ -224,7 +220,7 @@ void SongManager::LoadStepManiaSongDir( CString sDir, LoadingWindow *ld )
 				continue;
 			}
 			
-			m_pMachineSongs.push_back( pNewSong );
+			m_pSongs.push_back( pNewSong );
 			loaded++;
 		}
 
@@ -290,7 +286,7 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 	sGroupName = sDisplayName + "\'s Courses";
 
 	unsigned i = 0;
-	for ( i; i < arrayProfileCourses.size(); i++ )
+	for ( ; i < arrayProfileCourses.size(); i++ )
 	{
 		Course *crs = new Course;
 		crs->LoadFromCRSFile( arrayProfileCourses[i], true );
@@ -429,9 +425,6 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 		
 		LOG->Trace( "Loading custom song '%s'...", pNewSong->m_sMainTitle.c_str() );
 		
-		// TODO: load everything into m_pCustomSongs, then insert() into m_pSongs,
-		// instead of manually inserting the song into both arrays.
-		m_pCustomSongs.push_back( pNewSong );
 		m_pSongs.push_back( pNewSong );
 		iSongsLoaded++;
 	}
@@ -473,7 +466,7 @@ void SongManager::LoadGroupSymLinks(CString sDir, CString sGroupFolder)
 
 			pNewSong->m_bIsSymLink = true;	// Very important so we don't double-parse later
 			pNewSong->m_sGroupName = sGroupFolder;
-			m_pMachineSongs.push_back( pNewSong );
+			m_pSongs.push_back( pNewSong );
 		}
 	}
 }
@@ -513,17 +506,8 @@ void SongManager::FreeSongs()
 	m_sSongGroupNames.clear();
 	m_sSongGroupBannerPaths.clear();
 
-	for( unsigned i=0; i<m_pCustomSongs.size(); i++ )
-		SAFE_DELETE( m_pCustomSongs[i] );
-	m_pCustomSongs.clear();
-
-	for( unsigned i=0; i<m_pMachineSongs.size(); i++ )
-		SAFE_DELETE( m_pMachineSongs[i] );
-	m_pMachineSongs.clear();
-
-	// m_pSongs is simply cleared because all its pointers
-	// were already freed in the two previous vectors
-	m_pSongs.clear();
+	for( unsigned i=0; i<m_pSongs.size(); i++ )
+		SAFE_DELETE( m_pSongs[i] );
 
 	m_sSongGroupBannerPaths.clear();
 
@@ -1499,20 +1483,16 @@ void SongManager::FreeAllLoadedPlayerCourses()
 
 void SongManager::FreeAllLoadedPlayerSongs()
 {
-	// if we don't have any songs to free, don't bother
-	if( m_pCustomSongs.empty() )
-		return;
-
 	LOG->Trace( "SongManager::FreeAllLoadedPlayerSongs()" );
 
-	/* free the previously loaded song data */
-	for( unsigned i = 0; i < m_pCustomSongs.size(); i++ )
-		SAFE_DELETE( m_pCustomSongs[i] );
-	m_pCustomSongs.clear();
-
-	/* Now, we just need to rebuild m_pSongs from m_pMachineSongs. */
-	m_pSongs.clear();
-	m_pSongs.insert( m_pSongs.begin(), m_pMachineSongs.begin(), m_pMachineSongs.end() );
+	for(unsigned i = 0; i < m_pSongs.size(); i++)
+	{
+		if (m_pSongs[i]->m_SongOwner != PLAYER_INVALID)
+		{
+			SAFE_DELETE(m_pSongs[i]);
+			m_pSongs.erase( m_pSongs.begin()+i );
+		}
+	}
 }
 
 void SongManager::FreeAllLoadedFromProfile( ProfileSlot slot )

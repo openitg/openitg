@@ -9,7 +9,7 @@ public:
 	static USBDriver_Impl* Create();
 
 	/* returns true if a USB device exists with this VID/PID */
-	static bool DeviceExists( short iVendorID, short iProductID );
+	static bool DeviceExists( uint16_t iVendorID, uint16_t iProductID );
 
 	USBDriver_Impl();
 	virtual ~USBDriver_Impl();

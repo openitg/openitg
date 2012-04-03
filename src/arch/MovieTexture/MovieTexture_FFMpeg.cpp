@@ -32,6 +32,10 @@ namespace avcodec
 		#endif
 	}
 	#endif
+	
+	#if !defined (AV_VERSION_INT)
+		#define AV_VERSION_INT(a, b, c) (a<<16 | b<<8 | c)
+	#endif
 
 	void img_convert__(AVPicture *dst, int dst_pix_fmt,
 			const AVPicture *src, int pix_fmt,
@@ -581,7 +585,11 @@ int URLRageFile_read( avcodec::URLContext *h, unsigned char *buf, int size )
 	return f->Read( buf, size );
 }
 
+#if LIBAVFORMAT_BUILD > AV_VERSION_INT(52, 67, 0)
+int URLRageFile_write( avcodec::URLContext *h, const unsigned char *buf, int size )
+#else
 int URLRageFile_write( avcodec::URLContext *h, unsigned char *buf, int size )
+#endif
 {
 	RageFile *f = (RageFile *) h->priv_data;
 	return f->Write( buf, size );

@@ -160,6 +160,7 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 			char szLink[512];
 			memset(szLink, 0, 512);
 			int iUsbInfoIndex = 7;
+			CString sInfoBase;
 			if ( (buf.st_mode & S_IFMT) == S_IFLNK )
 			{
 				/*
@@ -177,6 +178,8 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 				 */
 				if ( sDevice.substr(0,2) == "ub" )
 			 		iUsbInfoIndex = 4;
+
+				sInfoBase = sPath;
 			}
 			else
 			{
@@ -194,6 +197,8 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 					iUsbInfoIndex = 5;
 				else
 					iUsbInfoIndex = 2;
+
+				sInfoBase = sPath + "/device";
 			}
 			sPath += "/";
 			if( iRet == -1 )
@@ -233,30 +238,36 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 						usbd.iPort = atoi( asBits[asBits.size()-1] );
 						usbd.iLevel = asBits.size() - 1;
 					}
+
+					sInfoBase += "/";
+					for( int j = 1; j < iUsbInfoIndex; ++j)
+						sInfoBase += "../";
+
+					if( ReadFile( sInfoBase + "idVendor", sBuf ) )
+						sscanf( sBuf, "%x", &usbd.idVendor );
+
+					if( ReadFile( sInfoBase + "idProduct", sBuf ) )
+						sscanf( sBuf, "%x", &usbd.idProduct );
+
+					if( ReadFile( sInfoBase + "serial", sBuf ) )
+					{
+						usbd.sSerial = sBuf;
+						TrimRight( usbd.sSerial );
+					}
+					if( ReadFile( sInfoBase + "product", sBuf ) )
+					{
+						usbd.sProduct = sBuf;
+						TrimRight( usbd.sProduct );
+					}
+					if( ReadFile( sInfoBase + "manufacturer", sBuf ) )
+					{
+						usbd.sVendor = sBuf;
+						TrimRight( usbd.sVendor );
+					}
 				}
 			}
 
-			if( ReadFile( sPath + "device/../idVendor", sBuf ) )
-				sscanf( sBuf, "%x", &usbd.idVendor );
-
-			if( ReadFile( sPath + "device/../idProduct", sBuf ) )
-				sscanf( sBuf, "%x", &usbd.idProduct );
-
-			if( ReadFile( sPath + "device/../serial", sBuf ) )
-			{
-				usbd.sSerial = sBuf;
-				TrimRight( usbd.sSerial );
-			}
-			if( ReadFile( sPath + "device/../product", sBuf ) )
-			{
-				usbd.sProduct = sBuf;
-				TrimRight( usbd.sProduct );
-			}
-			if( ReadFile( sPath + "device/../manufacturer", sBuf ) )
-			{
-				usbd.sVendor = sBuf;
-				TrimRight( usbd.sVendor );
-			}
+			usbd.sPmountLabel = "openitg-"+sDevice;
 
 			vDevicesOut.push_back( usbd );
 		}
@@ -311,14 +322,6 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 			}
 		}
 	}
-
-	for( unsigned i=0; i<vDevicesOut.size(); i++ )
-	{
-		UsbStorageDevice& usbd = vDevicesOut[i];
-		LOG->Trace( "    sDevice: %s, iBus: %d, iLevel: %d, iPort: %d, id: %04X:%04X, Vendor: '%s', Product: '%s', sSerial: \"%s\", sOsMountDir: %s",
-				usbd.sDevice.c_str(), usbd.iBus, usbd.iLevel, usbd.iPort, usbd.idVendor, usbd.idProduct, usbd.sVendor.c_str(),
-				usbd.sProduct.c_str(), usbd.sSerial.c_str(), usbd.sOsMountDir.c_str() );
-	}
 	
 	/* Remove any devices that we couldn't find a mountpoint for. */
 	for( unsigned i=0; i<vDevicesOut.size(); i++ )
@@ -326,11 +329,29 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 		UsbStorageDevice& usbd = vDevicesOut[i];
 		if( usbd.sOsMountDir.empty() )
 		{
-			LOG->Trace( "Ignoring %s (couldn't find in /etc/fstab)", usbd.sDevice.c_str() );
-			
-			vDevicesOut.erase( vDevicesOut.begin()+i );
-			--i;
+			if( usbd.iBus != -1 )
+			{
+				LOG->Trace( "Using pmount for USB device %s", usbd.sDevice.c_str() );
+
+				usbd.bUsePmount = true;
+				usbd.sOsMountDir = "/media/"+usbd.sPmountLabel;
+			}
+			else
+			{
+				LOG->Trace( "Ignoring %s (couldn't find in /etc/fstab)", usbd.sDevice.c_str() );
+
+				vDevicesOut.erase( vDevicesOut.begin()+i );
+				--i;
+			}
 		}
+	}
+
+	for( unsigned i=0; i<vDevicesOut.size(); i++ )
+	{
+		UsbStorageDevice& usbd = vDevicesOut[i];
+		LOG->Trace( "    sDevice: %s, iBus: %d, iLevel: %d, iPort: %d, id: %04X:%04X, Vendor: '%s', Product: '%s', sSerial: \"%s\", sOsMountDir: %s, bUsePmount: %d",
+				usbd.sDevice.c_str(), usbd.iBus, usbd.iLevel, usbd.iPort, usbd.idVendor, usbd.idProduct, usbd.sVendor.c_str(),
+				usbd.sProduct.c_str(), usbd.sSerial.c_str(), usbd.sOsMountDir.c_str(), usbd.bUsePmount );
 	}
 	
 	LOG->Trace( "Done with GetUSBStorageDevices" );
@@ -341,8 +362,12 @@ bool MemoryCardDriverThreaded_Linux::Mount( UsbStorageDevice* pDevice )
 {
 	ASSERT( !pDevice->sDevice.empty() );
 	
-        CString sCommand = "mount " + pDevice->sDevice;
-        bool bMountedSuccessfully = ExecuteCommand( sCommand );
+	CString sCommand;
+	if( pDevice->bUsePmount )
+		sCommand = "pmount " + pDevice->sDevice + " " + pDevice->sPmountLabel;
+	else
+		sCommand = "mount " + pDevice->sDevice;
+	bool bMountedSuccessfully = ExecuteCommand( sCommand );
 
 	return bMountedSuccessfully;
 }
@@ -357,7 +382,11 @@ void MemoryCardDriverThreaded_Linux::Unmount( UsbStorageDevice* pDevice )
 	 * by new devices until those are closed.  Without this, if something
 	 * causes the device to not unmount here, we'll never unmount it; that
 	 * causes a device name leak, eventually running us out of mountpoints. */
-	CString sCommand = "sync; umount -l \"" + pDevice->sDevice + "\"";
+	CString sCommand = "sync; ";
+	if( pDevice->bUsePmount )
+		sCommand += "pumount \"" + pDevice->sDevice + "\"";
+	else
+		sCommand += "umount -l \"" + pDevice->sDevice + "\"";
 	ExecuteCommand( sCommand );
 }
 

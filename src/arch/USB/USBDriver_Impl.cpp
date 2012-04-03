@@ -28,7 +28,7 @@ USBDriver_Impl* USBDriver_Impl::Create()
 }
 
 /* XXX: can we do this better? */
-bool USBDriver_Impl::DeviceExists( short iVendorID, short iProductID )
+bool USBDriver_Impl::DeviceExists( uint16_t iVendorID, uint16_t iProductID )
 {
 #if defined(HAS_USBDRIVER_IMPL_WINUSB)
 	return USBDriver_Impl_WinUSB::DeviceExists( iVendorID, iProductID );

@@ -331,13 +331,14 @@ bool ScreenArcadePatch::GetXMLData( RageFileDriverZip *fZip, CString &sGame, CSt
 	return true;
 }
 
-static void UpdateProgress( unsigned long iCurrent, unsigned long iTotal )
+bool UpdateProgress( uint64_t iCurrent, uint64_t iTotal )
 {
 	float fPercent = iCurrent / (iTotal/100);
 	CString sProgress = ssprintf( "Copying patch (%.0f%%)\n\n"
 		"Please do not remove the USB Card.", fPercent );
 
 	PATCH_TEXT( sProgress );
+	return true;
 }
 
 /* helper functions to get the actual file paths for CHMODing. */
@@ -471,7 +472,7 @@ void ScreenArcadePatch::PatchMain()
 	}
 
 	CString sError;
-	if( FileCopy( patch, *m_PatchFile, sError, &UpdateProgress) )
+	if( FileCopy( patch, *m_PatchFile, sError, NULL, UpdateProgress) )
 	{
 		STATE_TEXT( "Patch copied! Checking..." );
 		PATCH_TEXT( "" );
@@ -585,9 +586,9 @@ void ScreenArcadePatch::PatchMain()
 		RageFile fCopyTo;
 		fCopyTo.Open( TEMP_PATCH_DIR + sCleanPath, RageFile::WRITE );
 
-		if( !FileCopy(*fCopyFrom, fCopyTo) )
+		if( !FileCopy(*fCopyFrom, fCopyTo, sError) )
 		{
-			PATCH_TEXT( ssprintf("Could not copy \"%s\":\n" "%s", sCleanPath.c_str(),sError.c_str()) );
+			PATCH_TEXT( ssprintf("Could not copy \"%s\":\n" "%s", sCleanPath.c_str(), sError.c_str()) );
 
 			m_State = PATCH_ERROR;
 			SAFE_DELETE( fCopyFrom );

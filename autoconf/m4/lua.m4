@@ -26,6 +26,12 @@ else
 		AC_CHECK_LIB(lua, lua_open, LIB_LUA=-llua)
 	fi
 	if test "$LIB_LUA" = ""; then
+		AC_CHECK_LIB(lua, luaL_newstate, LIB_LUA=-llua)
+		if test "$LIB_LUA" != ""; then
+			AC_DEFINE([HAVE_LUA51], [1], [The system has Lua 5.1 instead of Lua 5.0])
+		fi
+	fi
+	if test "$LIB_LUA" = ""; then
 		AC_CHECK_LIB(lua50, lua_open, LIB_LUA=-llua50)
 	fi
 	if test "$LIB_LUA" = ""; then

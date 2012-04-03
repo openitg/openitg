@@ -1,0 +1,5 @@
+This commit introduces a performance bug
+
+"saving stats" on both home and arcade versions is slow.  This happens because
+the link checks for data to be empty after it has been initialized.  The fix
+will say it fixes "The FileCopy bug", and is coming soon.

@@ -289,7 +289,7 @@ void ScreenTextEntry::MoveY( int iDir )
 	do
 	{
 		m_iFocusY = (KeyboardRow)(m_iFocusY + iDir);
-		wrap( m_iFocusY, NUM_KEYBOARD_ROWS );
+		wrap( (int&)m_iFocusY, NUM_KEYBOARD_ROWS );
 
 		// HACK: Round to nearest option so that we always stop 
 		// on KEYBOARD_ROW_SPECIAL.

@@ -1,0 +1,8 @@
+Discovered a bug where the Letter A, S-, C+, etc does not spin properly during
+the post-song score summary screen.  The commit 334f186 introduces this bug.
+since things compile and seem to work fine without it, I am reverting it.
+
+The detailed description is:  The wrap function converts a float into an int,
+so if you have a float smaller than 1 it becomes zero.  If you always add only
+less than 1 to it (say, an angle or fractional value) it stays zero forever,
+hence a letter no longer spins.

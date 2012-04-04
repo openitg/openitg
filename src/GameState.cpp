@@ -309,10 +309,10 @@ int GameState::GetCoinsNeededToJoin() const
 	return iCoinsToCharge;
 }
 
-void GameState::SetSongInProgress( bool bInProgress )
+void GameState::SetSongInProgress( const CString &sWriteOut )
 {
 	CString sLockFile = "Data/songinprogress";
-	CString sWriteOut = (bInProgress) ? this->m_pCurSong->GetSongDir() : "(none)";
+	LOG->Debug("GameState::SetSongInProgress( %s )", sWriteOut.c_str());
 
 	RageFile f;
 	f.Open(sLockFile, RageFile::WRITE);

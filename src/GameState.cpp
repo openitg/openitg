@@ -366,13 +366,15 @@ void GameState::PlayersFinalized()
 
 	MEMCARDMAN->LockCards();
 
+	FOREACH_HumanPlayer( pn )
+	{
+		MEMCARDMAN->MountCard( pn, 600 );
+		PROFILEMAN->LoadFirstAvailableProfile( pn );	// load full profile
+	}
+
 	// apply saved default modifiers if any
 	FOREACH_HumanPlayer( pn )
 	{
-		MEMCARDMAN->MountCard( pn );
-
-		PROFILEMAN->LoadFirstAvailableProfile( pn );	// load full profile
-
 		if (PREFSMAN->m_bCustomSongs && !GAMESTATE->IsCourseMode())
 		{
 			SONGMAN->LoadPlayerSongs( pn );		// load custom songs, if any
@@ -385,7 +387,10 @@ void GameState::PlayersFinalized()
 		}
 
 		MEMCARDMAN->UnmountCard( pn );
+	}
 
+	FOREACH_HumanPlayer( pn )
+	{
 		if( !PROFILEMAN->IsPersistentProfile(pn) )
 			continue;	// skip
 

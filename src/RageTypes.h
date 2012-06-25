@@ -95,7 +95,7 @@ public:
 	friend RageVector4 operator * ( float f, const RageVector4& other )	{ return other*f; }
 
 	float x, y, z, w;
-} ALIGN(16);
+};
 
 struct RageColor
 {
@@ -159,7 +159,7 @@ public:
 
 	CString ToString() { return ssprintf( "%f,%f,%f,%f", r, g, b, a ); }
 	float r, g, b, a;
-} ALIGN(16);
+};
 
 /* Convert floating-point 0..1 value to integer 0..255 value. *
  *
@@ -281,7 +281,7 @@ public:
     RageMatrix GetTranspose() const;
 
 	float m[4][4];
-} ALIGN(16);
+};
 
 RageColor scale( float x, float l1, float h1, const RageColor &a, const RageColor &b );
 

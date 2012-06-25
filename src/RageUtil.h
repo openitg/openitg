@@ -56,21 +56,33 @@ inline bool CLAMP(float &x, float l, float h)
 	return false;
 }
 
-inline void wrap( int &x, int n )
+template<typename T>
+inline void wrap( T &x, T n )
 {
-	if (x<0)
-		x += ((-x/n)+1)*n;
+	int xi = x;
+	if (xi<0)
+		xi += ((-xi/n)+1)*n;
+	xi %= n;
+	x = static_cast<T>(xi);
+}
+
+template<>
+inline void wrap<unsigned>( unsigned &x, unsigned n )
+{
 	x %= n;
 }
-inline void wrap( unsigned &x, unsigned n )
-{
-	x %= n;
-}
-inline void wrap( float &x, float n )
+
+template<>
+inline void wrap<float>( float &x, float n )
 {
 	if (x<0)
 		x += truncf(((-x/n)+1))*n;
 	x = fmodf(x,n);
+}
+
+inline void wrap( int &x, size_t n )
+{
+	wrap<int>(x, n);
 }
 
 inline float fracf( float f ) { return f - truncf(f); }

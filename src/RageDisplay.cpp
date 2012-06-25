@@ -546,7 +546,7 @@ RageSurface *RageDisplay::CreateSurfaceFromPixfmt( PixelFormat pixfmt,
 }
 
 RageDisplay::PixelFormat RageDisplay::FindPixelFormat( 
-	int bpp, int Rmask, int Gmask, int Bmask, int Amask, bool realtime )
+	int bpp, unsigned Rmask, unsigned Gmask, unsigned Bmask, unsigned Amask, bool realtime )
 {
 	PixelFormatDesc tmp = { bpp, { Rmask, Gmask, Bmask, Amask } };
 

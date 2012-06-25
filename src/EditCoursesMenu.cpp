@@ -170,7 +170,7 @@ bool EditCoursesMenu::CanGoRight()
 {
 	int num_values[NUM_ROWS] = 
 	{
-		m_pCourses.size(),
+		(int)m_pCourses.size(),
 		1,
 		NUM_ACTIONS,
 		(int)GetSelectedCourse()->m_entries.size(),

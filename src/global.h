@@ -147,14 +147,6 @@ void ShowWarning( const char *file, int line, const char *message ); // don't pu
 #define PRINTF(a,b)
 #endif
 
-#if !defined(ALIGN)
-#if defined(__GNUC__)
-#define ALIGN(n) __attribute__((aligned(n)))
-#else
-#define ALIGN(n)
-#endif
-#endif
-
 /* Include this here to make sure our assertion handler is always
  * used.  (This file is a dependency of most everything anyway,
  * so there's no real problem putting it here.) */

@@ -32,6 +32,7 @@ public:
 	Profile::LoadResult LoadEditableDataFromMemoryCard( PlayerNumber pn, Profile *pProfile );
 	bool FastLoadProfileNameFromMemoryCard( CString sRootDir, CString &sName ) const;
 	void SaveAllProfiles() const;
+	void SaveAllProfilesAsync() const;
 	bool SaveProfile( PlayerNumber pn ) const;
 	void UnloadProfile( PlayerNumber pn );
 

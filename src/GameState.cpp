@@ -543,7 +543,7 @@ void GameState::FinishStage()
 		if( MEMCARDMAN->m_bDynamicMemoryCards )
 		{
 			LOG->Trace( "Dynamic memory cards in use; saving all profiles ..." );
-			PROFILEMAN->SaveAllProfiles();
+			PROFILEMAN->SaveAllProfilesAsync();
 		}
 		else if( iOldStageIndex/iSaveProfileEvery < m_iCurrentStageIndex/iSaveProfileEvery )
 		{

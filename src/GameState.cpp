@@ -511,6 +511,12 @@ void GameState::CommitStageStats()
 	m_bStatsCommitted = true;
 
 	STATSMAN->CommitStatsToProfiles();
+
+	if( MEMCARDMAN->m_bDynamicMemoryCards )
+	{
+		LOG->Trace( "Dynamic memory cards in use; saving all profiles ..." );
+		PROFILEMAN->SaveAllProfilesAsync();
+	}
 }
 
 /* Called by ScreenSelectMusic (etc).  Increment the stage counter if we just played a
@@ -540,12 +546,7 @@ void GameState::FinishStage()
 	if( GAMESTATE->IsEventMode() )
 	{
 		const int iSaveProfileEvery = 3;
-		if( MEMCARDMAN->m_bDynamicMemoryCards )
-		{
-			LOG->Trace( "Dynamic memory cards in use; saving all profiles ..." );
-			PROFILEMAN->SaveAllProfilesAsync();
-		}
-		else if( iOldStageIndex/iSaveProfileEvery < m_iCurrentStageIndex/iSaveProfileEvery )
+		if( !MEMCARDMAN->m_bDynamicMemoryCards && iOldStageIndex/iSaveProfileEvery < m_iCurrentStageIndex/iSaveProfileEvery )
 		{
 			LOG->Trace( "Played %i stages; saving machine profile ...", iSaveProfileEvery );
 			PROFILEMAN->SaveMachineProfile();

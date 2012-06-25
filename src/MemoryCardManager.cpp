@@ -717,6 +717,13 @@ void MemoryCardManager::UnPauseMountingThread()
 {
 	LOG->Trace( "MemoryCardManager::UnPauseMountingThread" );
 
+	FOREACH_PlayerNumber( p )
+		if( m_State[p] == MEMORY_CARD_STATE_MOUNTED )
+		{
+			LOG->Trace( "Card %i still mounted, not unpausing yet", p);
+			return;
+		}
+
 	g_pWorker->SetMountThreadState( ThreadedMemoryCardWorker::detect_and_mount );
 
 	/* End the timeout period. */

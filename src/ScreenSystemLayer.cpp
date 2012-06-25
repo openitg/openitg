@@ -179,6 +179,7 @@ CString ScreenSystemLayer::GetCreditsMessage( PlayerNumber pn ) const
 		case MEMORY_CARD_STATE_CHECKING:	return CREDITS_CARD_CHECKING.GetValue();
 		case MEMORY_CARD_STATE_REMOVED:		return CREDITS_CARD_REMOVED.GetValue();
 		case MEMORY_CARD_STATE_READY:
+		case MEMORY_CARD_STATE_MOUNTED:
 			{
 				// If the profile failed to load and there was no usable backup...
 				if( PROFILEMAN->LastLoadWasTamperedOrCorrupt(pn) && !PROFILEMAN->LastLoadWasFromLastGood(pn) )

@@ -782,7 +782,7 @@ RageSurface *RageSurfaceUtils::LoadSurface( CString file )
 {
 	RageFile f;
 	if( !f.Open( file ) )
-		return false;
+		return NULL;
 
 	SurfaceHeader h;
 	if( f.Read( &h, sizeof(h) ) != sizeof(h) )

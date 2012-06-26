@@ -13,6 +13,8 @@
 #include "arch/MemoryCard/MemoryCardDriver_Null.h"
 #include "LuaManager.h"
 #include "ProfileManager.h"
+#include "GameState.h"
+#include "PlayerState.h"
 
 MemoryCardManager*	MEMCARDMAN = NULL;	// global and accessable from anywhere in our program
 
@@ -505,6 +507,16 @@ void MemoryCardManager::CheckStateChanges()
 				PROFILEMAN->LoadProfileFromMemoryCard(p);
 				UnmountCard(p);
 				MESSAGEMAN->Broadcast( (Message)(MESSAGE_CARD_READY_P1+p) );
+
+				Profile* pProfile = PROFILEMAN->GetProfile(p);
+
+				CString sModifiers;
+				if( pProfile->GetDefaultModifiers( GAMESTATE->m_pCurGame, sModifiers ) )
+				{
+					PlayerOptions *pOptions = &GAMESTATE->m_pPlayerState[p]->m_PlayerOptions;
+					pOptions->ResetSavedPrefs();
+					pOptions->FromString( sModifiers );
+				}
 			}
 		}
 	}

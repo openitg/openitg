@@ -2296,15 +2296,21 @@ void ScreenSelectMusic::HandleMessage( const CString& sMessage )
 {
 	if( sMessage == "CardReadyP1" || sMessage == "CardRemovedP1" )
 	{
-		vector<PlayerNumber> vpns;
-		vpns.push_back((PlayerNumber)0);
-		AfterStepsChange(vpns);
+		if(GAMESTATE->IsHumanPlayer(PLAYER_1))
+		{
+			vector<PlayerNumber> vpns;
+			vpns.push_back(PLAYER_1);
+			AfterStepsChange(vpns);
+		}
 	}
 	else if( sMessage == "CardReadyP2" || sMessage == "CardRemovedP2" )
 	{
-		vector<PlayerNumber> vpns;
-		vpns.push_back((PlayerNumber)1);
-		AfterStepsChange(vpns);
+		if(GAMESTATE->IsHumanPlayer(PLAYER_2))
+		{
+			vector<PlayerNumber> vpns;
+			vpns.push_back(PLAYER_2);
+			AfterStepsChange(vpns);
+		}
 	}
 	else
 		Actor::HandleMessage(sMessage);

@@ -1240,6 +1240,8 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 				bool found = false;
 				for (unsigned i = 0; i < sPossibleSpeedMods.size(); i++)
 				{
+					sDefaultMods[0].MakeLower();
+					sPossibleSpeedMods[0].MakeLower();
 					if (sDefaultMods[0] == sPossibleSpeedMods[i]) found = true;
 				}
 				if (!found)

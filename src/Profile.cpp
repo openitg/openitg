@@ -1237,11 +1237,11 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 				}
 				CHECKPOINT_M("CustomSpeedMod check 3");
 				split(m_sDefaultModifiers[GAMESTATE->GetCurrentGame()->m_szName], ", ", sDefaultMods);
+				sDefaultMods[0].MakeLower();
 				bool found = false;
 				for (unsigned i = 0; i < sPossibleSpeedMods.size(); i++)
 				{
-					sDefaultMods[0].MakeLower();
-					sPossibleSpeedMods[0].MakeLower();
+					sPossibleSpeedMods[i].MakeLower();
 					if (sDefaultMods[0] == sPossibleSpeedMods[i]) found = true;
 				}
 				if (!found)

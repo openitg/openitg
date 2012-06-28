@@ -220,11 +220,10 @@ public:
 	}
 	void ImportOption( const OptionRowDefinition &def, const vector<PlayerNumber> &vpns, vector<bool> vbSelectedOut[NUM_PLAYERS] ) const
 	{
-		int iFallbackOption = -1;
-		bool bUseFallbackOption = true;
-
 		FOREACH_CONST( PlayerNumber, vpns, pn )
 		{
+			int iFallbackOption = -1;
+			bool bUseFallbackOption = true;
 			PlayerNumber p = *pn;
 			vector<bool> &vbSelOut = vbSelectedOut[p];
 

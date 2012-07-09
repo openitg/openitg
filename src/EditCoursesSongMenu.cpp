@@ -77,8 +77,8 @@ bool EditCoursesSongMenu::CanGoRight()
 {
 	int num_values[NUM_ROWS] = 
 	{
-		m_aGroups.size(),
-		m_aSongs.size(),
+		(int)m_aGroups.size(),
+		(int)m_aSongs.size(),
 		NUM_COURSE_ENTRY_TYPES,
 		NUM_DIFFICULTIES+1,
 		11,

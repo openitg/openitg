@@ -238,13 +238,13 @@ bool EditMenu::CanGoRight()
 {
 	int num_values[NUM_EDIT_MENU_ROWS] = 
 	{
-		m_sGroups.size(),
-		m_pSongs.size(),
-		m_StepsTypes.size(),
-		m_vpSteps.size(),
-		m_StepsTypes.size(),
-		m_vpSourceSteps.size(),
-		m_Actions.size()
+		(int)m_sGroups.size(),
+		(int)m_pSongs.size(),
+		(int)m_StepsTypes.size(),
+		(int)m_vpSteps.size(),
+		(int)m_StepsTypes.size(),
+		(int)m_vpSourceSteps.size(),
+		(int)m_Actions.size()
 	};
 
 	return m_iSelection[m_SelectedRow] != (num_values[m_SelectedRow]-1);

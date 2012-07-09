@@ -59,7 +59,7 @@ namespace avcodec
 struct AVPixelFormat_t
 {
 	int bpp;
-	int masks[4];
+	unsigned masks[4];
 	avcodec::PixelFormat pf;
 	bool HighColor;
 	bool ByteSwapOnLittleEndian;

@@ -5,8 +5,8 @@
 
 #include "arch/USB/USBDriver_Impl.h"
 
-const short G15_VENDOR_ID = 0x046D;
-const short G15_PRODUCT_ID[] = { 0xC227, 0xC251 };
+const unsigned short G15_VENDOR_ID = 0x046D;
+const unsigned short G15_PRODUCT_ID[] = { 0xC227, 0xC251 };
 
 const unsigned NUM_PRODUCT_IDS = ARRAYLEN( G15_PRODUCT_ID );
 

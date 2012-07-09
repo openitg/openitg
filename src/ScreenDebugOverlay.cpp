@@ -327,16 +327,12 @@ bool ScreenDebugOverlay::OverlayInput( const DeviceInput& DeviceI, const InputEv
 
 			BitmapText &txt2 = m_textFunction[i];
 
-			int iWrap;
-
 			switch( i )
 			{
 			case DebugLine_Autoplay:
 				{
 					PlayerController pc = (PlayerController)(PREFSMAN->m_AutoPlay+1);
-					iWrap = (int)pc;
-					wrap( iWrap, NUM_PLAYER_CONTROLLERS );
-					pc = (PlayerController)iWrap;
+					wrap( pc, NUM_PLAYER_CONTROLLERS );
 					PREFSMAN->m_AutoPlay.Set( pc );
 					FOREACH_HumanPlayer(pn)
 						GAMESTATE->m_pPlayerState[pn]->m_PlayerController = PREFSMAN->m_AutoPlay;
@@ -357,9 +353,7 @@ bool ScreenDebugOverlay::OverlayInput( const DeviceInput& DeviceI, const InputEv
 					if( type != IET_FIRST_PRESS )
 						return true; /* eat the input but do nothing */
 					SongOptions::AutosyncType as = (SongOptions::AutosyncType)(GAMESTATE->m_SongOptions.m_AutosyncType+1);
-					iWrap = (int)as;
-					wrap( iWrap, SongOptions::NUM_AUTOSYNC_TYPES );
-					as = (SongOptions::AutosyncType)iWrap;
+					wrap( as, SongOptions::NUM_AUTOSYNC_TYPES );
 					GAMESTATE->m_SongOptions.m_AutosyncType = as;
 					MESSAGEMAN->Broadcast( MESSAGE_AUTOSYNC_CHANGED );
 				}
@@ -367,9 +361,7 @@ bool ScreenDebugOverlay::OverlayInput( const DeviceInput& DeviceI, const InputEv
 			case DebugLine_CoinMode:
 				{
 					CoinMode cm = (CoinMode)(PREFSMAN->m_CoinMode+1);
-					iWrap = (int)cm;
-					wrap( iWrap, NUM_COIN_MODES );
-					cm = (CoinMode)iWrap;
+					wrap( cm, NUM_COIN_MODES );
 					PREFSMAN->m_CoinMode.Set( cm );
 					SCREENMAN->RefreshCreditsMessages();
 				}

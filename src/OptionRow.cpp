@@ -414,7 +414,7 @@ void OptionRow::AfterImportOptions()
 	//
 	// HACK: Set focus to one item in the row, which is "go down"
 	//
-	if( m_bFirstItemGoesDown )
+	if( m_bFirstItemGoesDown && m_RowDef.name != "Speed" )
 		FOREACH_PlayerNumber( p )
 			m_iChoiceInRowWithFocus[p] = 0;	
 }

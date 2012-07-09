@@ -262,7 +262,6 @@ void OptionRow::AfterImportOptions()
 					m_vbSelected[p][0] = true;
 				
 				m_iChoiceInRowWithFocus[p] = GetOneSelection(p, true);	// focus on the selection we just set
-				LOG->Debug("Row %s has focus on %d for player %d", m_RowDef.name.c_str(), m_iChoiceInRowWithFocus[p], p);
 			}
 			break;
 		case SELECT_MULTIPLE:

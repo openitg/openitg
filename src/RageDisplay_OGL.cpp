@@ -673,7 +673,7 @@ void RageDisplay_OGL::ResolutionChanged()
 // need to be reloaded.
 CString RageDisplay_OGL::TryVideoMode( VideoModeParams p, bool &bNewDeviceOut )
 {
-	LOG->Trace( "RageDisplay_OGL::TryVideoMode( { .windowed=%d, .width=%d, .height=%d, .bpp=%d, .rate=%d, .vsync=%d )", p.windowed, p.width, p.height, p.bpp, p.rate, p.vsync );
+//	LOG->Trace( "RageDisplay_OGL::TryVideoMode( { .windowed=%d, .width=%d, .height=%d, .bpp=%d, .rate=%d, .vsync=%d )", p.windowed, p.width, p.height, p.bpp, p.rate, p.vsync );
 	CString err;
 	err = wind->TryVideoMode( p, bNewDeviceOut );
 	if( err != "" )

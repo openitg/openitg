@@ -235,7 +235,11 @@ fi
 AM_CONDITIONAL(HAVE_FFMPEG, test "$have_ffmpeg" = "yes")
 AM_CONDITIONAL(HAVE_LIBRESAMPLE, test "$have_libresample" = "yes")
 
-AC_ARG_WITH(sse2, AC_HELP_STRING([--with-sse2], [Enable SSE2 optimization]), with_sse2=$withval, with_sse2=$have_sse2)
+# Don't use SSE2 by default; some GCC versions misoptimise the code, which
+# causes Heisenbugs, and we don't want to inflict that pain unnecessarily.
+# Only supply it if the user specifically asks.
+
+AC_ARG_WITH(sse2, AC_HELP_STRING([--with-sse2], [Enable SSE2 optimization]), with_sse2=$withval, with_sse2=no)
 if test "$with_sse2" = "yes"; then
 	CFLAGS="$CFLAGS -msse2"
 	CXXFLAGS="$CXXFLAGS -msse2"

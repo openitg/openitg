@@ -1100,13 +1100,11 @@ int main(int argc, char* argv[])
 	LUA			= new LuaManager;
 	GAMESTATE	= new GameState;
 
-	/* This requires PREFSMAN, for PREFSMAN->m_bShowLoadingWindow. */
+	/* This requires PREFSMAN, for g_bShowLoadingWindow. */
 	LoadingWindow *loading_window = LoadingWindow::Create();
-	if( loading_window == NULL )
-		RageException::Throw( "Couldn't open any loading windows." );
 
-	srand( time(NULL) );	// seed number generator	
-	
+	srand( time(NULL) );	// seed number generator
+
 	/* Do this early, so we have debugging output if anything else fails.  LOG and
 	 * Dialog must be set up first.  It shouldn't take long, but it might take a
 	 * little time; do this after the LoadingWindow is shown, since we don't want

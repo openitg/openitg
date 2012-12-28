@@ -1,5 +1,6 @@
 #include "global.h"
 #include "LoadingWindow.h"
+#include "LoadingWindow_Null.h" // fallback
 #include "Preference.h"
 #include "RageLog.h"
 #include "arch/arch_default.h"
@@ -15,11 +16,6 @@ LoadingWindow *LoadingWindow::Create()
 	if( !g_bShowLoadingWindow )
 		return new LoadingWindow_Null;
 
-#if defined(UNIX) && !defined(HAVE_GTK)
-	return new LoadingWindow_Null;
-#endif
-
-	/* don't load Null by default. */
 	const CString drivers = "xbox,win32,cocoa,gtk,sdl";
 	vector<CString> DriversToTry;
 	split( drivers, ",", DriversToTry, true );
@@ -47,9 +43,13 @@ LoadingWindow *LoadingWindow::Create()
 	}
 
 	if( ret )
+	{
 		LOG->Info( "Loading window: %s", Driver.c_str() );
+		return ret;
+	}
 
-	return ret;
+	LOG->Warn( "Couldn't open any loading windows." );
+	return new LoadingWindow_Null;
 }
 
 /*

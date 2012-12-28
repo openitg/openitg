@@ -849,7 +849,11 @@ RageFileBasic *RageFileManager::OpenForWriting( const CString &sPath, int mode, 
 	for( unsigned i = 0; i < apDriverList.size(); ++i )
 	{
 		LoadedDriver &ld = *apDriverList[i];
-		const CString path = ld.GetPath( sPath );
+
+		if( ld.m_sType == "dirro" )
+			continue;
+
+		const CString &path = ld.GetPath( sPath );
 		if( path.empty() )
 			continue;
 

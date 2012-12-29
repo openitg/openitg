@@ -4,9 +4,6 @@
 #include "Foreach.h"
 #include "arch/arch_default.h"
 
-#include "arch/Lights/LightsDriver_Dynamic.h"
-#include "arch/Lights/LightsDriver_Dynamic_Unix.h"
-
 #include "arch/Lights/LightsDriver_SystemMessage.h"
 #include "arch/Lights/LightsDriver_External.h"
 
@@ -15,95 +12,21 @@ DriverList LightsDriver::m_pDriverList;
 #include "RageFileManager.h"
 #include "RageUtil.h"
 
-#if defined(_WINDOWS)
-#define LIB_EXTENSION ".dll"
-#elif defined(LINUX)
-#define LIB_EXTENSION ".so"
-#endif
-
-const CString GetModuleDir()
-{
-	static CString sModulePath;
-
-	if( !sModulePath.empty() )
-		return sModulePath;
-
-	vector<RageFileManager::DriverLocation> mountpoints;
-	FILEMAN->GetLoadedDrivers( mountpoints );
-
-	for( unsigned i = 0; i < mountpoints.size(); ++i )
-	{
-		RageFileManager::DriverLocation *l = &mountpoints[i];
-
-		if( l->Type != "dir" )
-			continue;
-
-		if( l->MountPoint == "/" )
-			sModulePath = l->Root + "/Data/Modules/";
-		else if( l->MountPoint == "/Data" )
-			sModulePath = l->Root + "/Modules/";
-
-		if( !sModulePath.empty() )
-			break;
-	}
-
-	// extraneous dots will screw up the system-level paths.
-	CollapsePath(sModulePath);
-
-	LOG->Debug( "GetModuleDir(): returning %s", sModulePath.c_str() );
-	return sModulePath;
-}
-
-/* XXX: can we find a better place for this? */
-static LightsDriver *TryModuleDriver( const CString &sName )
-{
-	/* e.g. "stdout" looks for "LightsDriver_Stdout.so" */
-	CString sDriverName = "LightsDriver_" + sName + LIB_EXTENSION;
-
-	CString sRagePath = "Data/Modules/" + sDriverName;
-	CString sRealPath = GetModuleDir() + sDriverName;
-
-	if( !IsAFile(sRagePath) )
-		return NULL;
-
-#if defined(LINUX)
-	LightsDriver_Dynamic *ret = new LightsDriver_Dynamic_Unix( sRealPath );
-#else
-	LightsDriver_Dynamic *ret = NULL;
-	// TODO: LightsDriver_Dynamic_Win32
-	return NULL;
-#endif
-
-	ret->Load();
-
-	/* if this module couldn't actually load, don't return it. */
-	if( !ret->IsLoaded() )
-		SAFE_DELETE( ret );
-
-	return ret;
-}
-
 void LightsDriver::Create( const CString &sDrivers, vector<LightsDriver *> &Add )
 {
 	LOG->Trace( "Initializing lights drivers: %s", sDrivers.c_str() );
 
 	vector<CString> asDriversToTry;
 	split( sDrivers, ",", asDriversToTry, true );
-	
+
 	FOREACH_CONST( CString, asDriversToTry, Driver )
 	{
 		RageDriver *pRet = m_pDriverList.Create( *Driver );
 
 		if( pRet == NULL )
 		{
-			/* no built-in driver was found. See if any modules match this name. */
-			pRet = TryModuleDriver( *Driver );
-
-			if( pRet == NULL )
-			{
-				LOG->Trace( "Unknown lights driver: %s", Driver->c_str() );
-				continue;
-			}
+			LOG->Trace( "Unknown lights driver: %s", Driver->c_str() );
+			continue;
 		}
 
 		LightsDriver *pDriver = dynamic_cast<LightsDriver *>( pRet );

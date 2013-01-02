@@ -4,7 +4,10 @@
 #include <gtk/gtk.h>
 #include "loading.xpm"
 
+#include <cstdio>
+
 static GtkWidget *label;
+static GtkWidget *progress;
 static GtkWidget *window;
 
 extern "C" const char *Init( int *argc, char ***argv )
@@ -19,14 +22,25 @@ extern "C" const char *Init( int *argc, char ***argv )
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_CENTER );
+	gtk_window_set_decorated( GTK_WINDOW(window), FALSE );
+	gtk_window_set_deletable( GTK_WINDOW(window), FALSE );
+
+	gtk_widget_set_size_request( window, 468, -1 );
 	gtk_widget_realize(window);
-	loadmap = gdk_pixmap_create_from_xpm_d(window->window,NULL,NULL,loading);
+
+	loadmap = gdk_pixmap_create_from_xpm_d(window->window,NULL,NULL, const_cast<char**>(loading));
 	loadimage = gtk_image_new_from_pixmap(loadmap,NULL);
+
 	label = gtk_label_new(NULL);
 	gtk_label_set_justify(GTK_LABEL(label),GTK_JUSTIFY_CENTER);
+
+	progress = gtk_progress_bar_new();
+	gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR(progress), 0.5f );
+
 	vbox = gtk_vbox_new(FALSE,5);
 	gtk_container_add(GTK_CONTAINER(window),vbox);
 	gtk_box_pack_start(GTK_BOX(vbox),loadimage,FALSE,FALSE,0);
+	gtk_box_pack_end(GTK_BOX(vbox),progress,FALSE,FALSE,0);
 	gtk_box_pack_end(GTK_BOX(vbox),label,TRUE,TRUE,0);
 
 	gtk_widget_show_all(window);
@@ -46,6 +60,13 @@ extern "C" void SetText( const char *s )
 {
 	gtk_label_set_text(GTK_LABEL(label), s);
 	gtk_widget_show(label);
+	gtk_main_iteration_do(FALSE);
+}
+
+extern "C" void SetProgress( unsigned a, unsigned z )
+{
+	gdouble fProgress = (z == 0) ? 0 : (gdouble(a) / gdouble(z));
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(progress), fProgress);
 	gtk_main_iteration_do(FALSE);
 }
 

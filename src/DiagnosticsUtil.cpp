@@ -132,12 +132,12 @@ int DiagnosticsUtil::GetNumMachineScores()
 
 CString DiagnosticsUtil::GetProductName()
 {
-	return CString(ProductInfo::getFullVersionString());
+	return ProductInfo::GetFullVersion();
 }
 
 CString DiagnosticsUtil::GetProductVer()
 {
-	return CString(ProductInfo::getVersion());
+	return ProductInfo::GetBuildRevision();
 }
 
 namespace
@@ -147,7 +147,7 @@ namespace
 	 * from verstub. */
 	CString GenerateDebugSerial()
 	{
-		return CString(ProductInfo::getSerial());
+		return CString();
 	}
 }
 
@@ -191,7 +191,7 @@ void DiagnosticsUtil::SetInputType( const CString &sType )
 void SetProgramGlobals( lua_State* L )
 {
 	LUA->SetGlobal( "OPENITG", true );
-	LUA->SetGlobal( "OPENITG_VERSION", ProductInfo::getVersion() );
+	LUA->SetGlobal( "OPENITG_VERSION", ProductInfo::GetVersion() );
 }
 
 REGISTER_WITH_LUA_FUNCTION( SetProgramGlobals );

@@ -11,7 +11,7 @@
 
 #include <set>
 
-static const CString g_sClassName = ProductInfo::getName() + " LowLevelWindow_Win32";
+static const CString g_sClassName = ProductInfo::GetName() + " LowLevelWindow_Win32";
 
 static HWND g_hWndMain;
 static HDC g_HDC;

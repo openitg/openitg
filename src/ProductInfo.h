@@ -3,31 +3,27 @@
 #ifndef PRODUCT_INFO_H
 #define PRODUCT_INFO_H
 
-#ifdef HAVE_CONFIG_H 
-#include "config.h"
-#endif
+namespace ProductInfo
+{
+	/* Binary name + release (e.g. "OpenITG", "beta3") */
+	const CString& GetName();
+	const CString& GetVersion();
 
-#undef OFFICIAL_RELEASE
-//#define OFFICIAL_RELEASE 1
+	/* Binary name + build type + release (e.g. "OpenITG AC beta3") */
+	const CString& GetFullVersion();
 
-#include "StdString.h"
+	/* Build data (e.g. "2012-12-31", "beta3-105-g63a1100") */
+	const CString& GetBuildDate();
+	const CString& GetBuildRevision();
 
-class ProductInfo {
-
-	public:
-		static CString getName();
-		static CString getVersion();
-		static CString getDate();
-		static CString getPlatform();
-		static CString getCrashReportUrl();
-		static CString getFullVersionString();
-		static CString getSerial();
+	/* Crash report URL */
+	const CString& GetCrashReportURL();
 };
 
 #endif
 
 /*
- * (c) 2003-2009 Chris Danford, BoXoRRoXoRs
+ * (c) 2003-2013 Chris Danford, Marc Cannon
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

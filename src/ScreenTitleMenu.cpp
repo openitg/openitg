@@ -15,7 +15,6 @@
 #include "CodeDetector.h"
 #include "RageTextureManager.h"
 #include "UnlockManager.h"
-#include "ProductInfo.h"
 #include "LightsManager.h"
 #include "CommonMetrics.h"
 #include "Game.h"
@@ -67,7 +66,7 @@ void ScreenTitleMenu::Init()
 	m_textVersion.LoadFromFont( THEME->GetPathF("Common","normal") );
 	m_textVersion.SetName( "Version" );
 	/* easier debugging, plus product placement ;D */
-	m_textVersion.SetText( ProductInfo::getName() );
+	m_textVersion.SetText( ProductInfo::GetFullVersion() );
 	this->AddChild( &m_textVersion );
 	SET_XY_AND_ON_COMMAND( m_textVersion );
 

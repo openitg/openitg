@@ -1093,11 +1093,6 @@ Profile::LoadResult Profile::LoadEditableDataFromDir( CString sDir )
 	if( m_iWeightPounds != 0 )
 		CLAMP( m_iWeightPounds, 20, 1000 );
 
-	if ( ! PREFSMAN->m_bAllowExtraPlayerOptions )
-	{
-		LOG->Warn( "AllowExtraPlayerOptions turned off, skipping Extra.ini" );
-		return success;
-	}
 	if ( FILEMAN->GetFileSizeInBytes(efn) > MAX_EDITABLE_INI_SIZE_BYTES )
 	{
 		LOG->Warn( "The file '%s' is unreasonably large.  It won't be loaded.", efn.c_str() );

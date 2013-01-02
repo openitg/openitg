@@ -203,9 +203,6 @@ PrefsManager::PrefsManager() :
 	m_fCustomsLoadTimeout	( "CustomsLoadTimeout", 5.0f ),
 
 	m_iCustomMaxSeconds	( "CustomMaxSeconds", 120 ),
-	m_iCustomMaxSizeMB	( "CustomMaxSizeMB", 5 ),
-	m_iCustomMaxStepsSizeKB	( "CustomMaxStepSizeKB", 100 ),
-	m_bAllowExtraPlayerOptions ( "AllowExtraPlayerOptions", false ),
 
 	m_bCustomCourses	( "CourseEdits", false ),
 

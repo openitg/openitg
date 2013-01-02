@@ -315,7 +315,7 @@ void SongManager::LoadPlayerCourses( PlayerNumber pn )
 			delete crs;
 			continue;
 		}
-		
+
 		// TODO: softcode this to a settable preference
 		if ( crs->GetEstimatedNumStages() > 5 )
 		{
@@ -407,17 +407,9 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 			break;
 		}
 
-		// we want to stop right on the number, not after. "Greater than" is added as a safeguard.
-		if( PREFSMAN->m_iCustomsLoadMax > 0 && iSongsLoaded >= PREFSMAN->m_iCustomsLoadMax )
-		{
-			LOG->Warn( "Loading interrupted. Limit of %i songs was reached, after %f seconds.",
-			(int)PREFSMAN->m_iCustomsLoadMax, LoadTimer.Ago() );
-			break;
-		}
-
 		CString sSongDirName = arraySongDirs[j];
 		Song* pNewSong = new Song;
-		
+
 		// we need a custom loader for these songs.
 		if( !pNewSong->LoadFromCustomSongDir( sSongDirName, sGroupName, pn ) )
 		{
@@ -426,9 +418,9 @@ void SongManager::LoadPlayerSongs( PlayerNumber pn )
 			delete pNewSong;
 			continue;
 		}
-		
+
 		LOG->Trace( "Loading custom song '%s'...", pNewSong->m_sMainTitle.c_str() );
-		
+
 		// TODO: load everything into m_pCustomSongs, then insert() into m_pSongs,
 		// instead of manually inserting the song into both arrays.
 		m_pCustomSongs.push_back( pNewSong );

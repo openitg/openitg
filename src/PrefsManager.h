@@ -179,7 +179,6 @@ public:
 	// Player songs options
 	Preference<bool>	m_bCustomSongs;
 	Preference<bool>	m_bCustomSongPreviews;
-	Preference<int>		m_iCustomsLoadMax;
 	Preference<float>	m_fCustomsLoadTimeout;
 	Preference<int>		m_iCustomMaxSeconds;
 

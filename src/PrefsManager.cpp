@@ -199,9 +199,7 @@ PrefsManager::PrefsManager() :
 	m_bCustomSongs			( "SongEdits", false ),
 	m_bCustomSongPreviews		( "CustomSongPreviews", false ),
 
-	m_iCustomsLoadMax		( "CustomsLoadMax", 50 ),
 	m_fCustomsLoadTimeout	( "CustomsLoadTimeout", 5.0f ),
-
 	m_iCustomMaxSeconds	( "CustomMaxSeconds", 120 ),
 
 	m_bCustomCourses	( "CourseEdits", false ),

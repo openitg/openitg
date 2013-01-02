@@ -326,12 +326,6 @@ static void CustomsLoadTimeout( int &sel, bool ToSel, const ConfOption *pConfOpt
 	MoveMap( sel, PREFSMAN->m_fCustomsLoadTimeout, ToSel, mapping, ARRAYLEN(mapping) );
 }
 
-static void CustomsLoadMax( int &sel, bool ToSel, const ConfOption *pConfOption )
-{
-	const int mapping[] = { 10, 20, 30, 40, 50, 60, 70, 0 };
-	MoveMap( sel, PREFSMAN->m_iCustomsLoadMax, ToSel, mapping, ARRAYLEN(mapping) );
-}
-
 static void MarvelousTiming( int &sel, bool ToSel, const ConfOption *pConfOption )
 {
 	const PrefsManager::MarvelousTiming mapping[] = { PrefsManager::MARVELOUS_NEVER, PrefsManager::MARVELOUS_COURSES_ONLY, PrefsManager::MARVELOUS_EVERYWHERE };
@@ -600,8 +594,6 @@ static void InitializeConfOptions()
 													"3:30", "4:00", "4:30", "5:00", "5:30",
 													"6:00", "7:00", "10:00", "UNLIMITED" ) );
 	ADD( ConfOption( "CustomsLoadTimeout",				CustomsLoadTimeout,	"5s", "10s", "15s", "20s", "25s", "30s", "45s", "1m" ) );
-	ADD( ConfOption( "CustomsLoadMax",				CustomsLoadMax,		"10", "20", "30", "40", "50", "60", "UNLIMITED" ) );
-
 	ADD( ConfOption( "CustomSongPreviews",				CustomSongPreviews,	"OFF", "ON" ) );
 
 	/* Machine options */

@@ -1189,20 +1189,20 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 	pNode->GetChildValue( "TotalMines",						m_iTotalMines );
 	pNode->GetChildValue( "TotalHands",						m_iTotalHands );
 
-	if( IsMachine() )
+	CString sData;
+	if( pNode->GetChildValue( "Data", sData ) )
 	{
-		CString sData;
-		if( pNode->GetChildValue( "Data", sData ) )
+		/* IMPORTANT: sandbox this call. We're taking arbitrary
+		 * Lua from a source whose chain of trust has been broken. */
+		m_SavedLuaData.LoadFromString( sData, true );
+
+		if( m_SavedLuaData.GetLuaType() != LUA_TTABLE )
 		{
-			m_SavedLuaData.LoadFromString( sData );
-			if( m_SavedLuaData.GetLuaType() != LUA_TTABLE )
-			{
-				LOG->Warn( "Profile data did not evaluate to a table" );
-				Lua *L = LUA->Get();
-				lua_newtable( L );
-				m_SavedLuaData.SetFromStack( L );
-				LUA->Release( L );
-			}
+			LOG->Warn( "Profile data did not evaluate to a table" );
+			Lua *L = LUA->Get();
+			lua_newtable( L );
+			m_SavedLuaData.SetFromStack( L );
+			LUA->Release( L );
 		}
 	}
 

@@ -271,8 +271,14 @@ bool LuaHelpers::RunScriptFile( const CString &sFile )
 	return true;
 }
 
-bool LuaHelpers::RunScriptOnStack( Lua *L, CString &sError, int iArgs, int iReturnValues )
+bool LuaHelpers::RunScriptOnStack( Lua *L, CString &sError, int iArgs, int iReturnValues, bool bSandbox )
 {
+	if( bSandbox )
+	{
+		lua_newtable( L );
+		lua_setfenv( L, -2 );
+	}
+
 	int ret = lua_pcall( L, iArgs, iReturnValues, 0 );
 	if( ret )
 	{
@@ -285,7 +291,7 @@ bool LuaHelpers::RunScriptOnStack( Lua *L, CString &sError, int iArgs, int iRetu
 	return true;
 }
 
-bool LuaHelpers::RunScript( Lua *L, const CString &sScript, const CString &sName, CString &sError, int iReturnValues )
+bool LuaHelpers::RunScript( Lua *L, const CString &sScript, const CString &sName, CString &sError, int iReturnValues, bool bSandbox )
 {
 	// load string
 	{
@@ -301,14 +307,14 @@ bool LuaHelpers::RunScript( Lua *L, const CString &sScript, const CString &sName
 	}
 
 	// evaluate
-	return LuaHelpers::RunScriptOnStack( L, sError, 0, iReturnValues );
+	return LuaHelpers::RunScriptOnStack( L, sError, 0, iReturnValues, bSandbox );
 }
 
 
-bool LuaHelpers::RunScript( Lua *L, const CString &sExpression, const CString &sName, int iReturnValues )
+bool LuaHelpers::RunScript( Lua *L, const CString &sExpression, const CString &sName, int iReturnValues, bool bSandbox )
 {
 	CString sError;
-	if( !LuaHelpers::RunScript( L, sExpression, sName.size()? sName:CString("in"), sError, iReturnValues ) )
+	if( !LuaHelpers::RunScript( L, sExpression, sName.size()? sName:CString("in"), sError, iReturnValues, bSandbox ) )
 	{
 		sError = ssprintf( "Lua runtime error parsing \"%s\": %s", sName.size()? sName.c_str():sExpression.c_str(), sError.c_str() );
 		Dialog::OK( sError, "LUA_ERROR" );

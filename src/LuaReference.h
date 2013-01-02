@@ -55,14 +55,20 @@ private:
 class LuaExpression: public LuaReference
 {
 public:
-	LuaExpression( const CString &sExpression = "" ) { if( sExpression != "" ) SetFromExpression( sExpression ); }
+	LuaExpression( const CString &sExpression = "", bool bSandbox = false )
+	{
+		m_bSandboxed = bSandbox;
+		if( sExpression != "" ) SetFromExpression( sExpression );
+	}
+
 	void SetFromExpression( const CString &sExpression );
-	CString GetExpression() const { return m_sExpression; }
+	const CString& GetExpression() const { return m_sExpression; }
 protected:
 	virtual void Register();
 
 private:
 	CString m_sExpression;
+	bool m_bSandboxed;
 };
 
 /* Reference a trivially restorable Lua object (any object that Serialize can handle).
@@ -71,7 +77,7 @@ class LuaData: public LuaReference
 {
 public:
 	virtual CString Serialize() const;
-	virtual void LoadFromString( const CString &s );
+	virtual void LoadFromString( const CString &s, bool bSandbox = false );
 
 protected:
 	virtual void BeforeReset();
@@ -79,6 +85,7 @@ protected:
 
 	CString m_sSerializedData;
 	bool m_bWasSet;
+	bool m_bSandboxed;
 };
 
 class LuaTable: public LuaData

@@ -114,7 +114,7 @@ void SongManager::Reload( LoadingWindow *ld )
 void SongManager::InitSongsFromDisk( LoadingWindow *ld )
 {
 	RageTimer tm;
-	
+
 	/* this loads the songs into m_pMachineSongs */
 	LoadStepManiaSongDir( SONGS_DIR, ld );
 
@@ -185,37 +185,62 @@ void SongManager::LoadStepManiaSongDir( CString sDir, LoadingWindow *ld )
 		sDir += "/";
 
 	// Find all group directories in "Songs" folder
-	CStringArray arrayGroupDirs;
+	vector<CString> arrayGroupDirs;
 	GetDirListing( sDir+"*", arrayGroupDirs, true );
 	SortCStringArray( arrayGroupDirs );
 
-	for( unsigned i=0; i< arrayGroupDirs.size(); i++ )	// for each dir in /Songs/
-	{
-		CString sGroupDirName = arrayGroupDirs[i];
+	/* Build a list of song directories to read through */
+	if( ld )
+		ld->SetText( "Building Songs directory..." );
 
-		SanityCheckGroupDir(sDir+sGroupDirName);
+	unsigned iNumSongsLoaded = 0, iNumSongsToLoad = 0;
+	vector< vector<CString> > arrayGroupSongDirs( arrayGroupDirs.size(), vector<CString>() );
+
+	for( unsigned i=0; i< arrayGroupDirs.size(); ++i )	// for each dir in /Songs/
+	{
+		const CString &sGroupDirName = arrayGroupDirs[i];
+		const CString sGroupDirPath = sDir + sGroupDirName;
+
+		SanityCheckGroupDir( sGroupDirPath );
 
 		// Find all Song folders in this group directory
-		CStringArray arraySongDirs;
-		GetDirListing( sDir+sGroupDirName + "/*", arraySongDirs, true, true );
+		vector<CString> &arraySongDirs = arrayGroupSongDirs[i];
+		GetDirListing( sGroupDirPath + "/*" /**/, arraySongDirs, true, true );
 		SortCStringArray( arraySongDirs );
 
-		LOG->Trace("Attempting to load %i songs from \"%s\"", int(arraySongDirs.size()),
-				   (sDir+sGroupDirName).c_str() );
-		int loaded = 0;
+		iNumSongsToLoad += arraySongDirs.size();
+		LOG->Trace( "Found %d song folders in \"%s\"", arraySongDirs.size(), sGroupDirPath.c_str() );
+	}
 
-		for( unsigned j=0; j< arraySongDirs.size(); ++j )	// for each song dir
+	ASSERT( arrayGroupDirs.size() == arrayGroupSongDirs.size() );
+
+	for( unsigned i = 0; i < arrayGroupSongDirs.size(); ++i )
+	{
+		vector<CString> &arraySongDirs = arrayGroupSongDirs[i];
+		const CString &sGroupDirName = arrayGroupDirs[i];
+
+		unsigned iLoadedFromThisDir = 0;
+
+		for( unsigned j = 0; j < arraySongDirs.size(); ++j )
 		{
-			CString sSongDirName = arraySongDirs[j];
+			const CString &sSongDirName = arraySongDirs[j];
+			++iNumSongsLoaded;
 
-			// this is a song directory.  Load a new song!
 			if( ld )
 			{
-				ld->SetText( ssprintf("Loading songs...\n%s\n%s",
-									  Basename(sGroupDirName).c_str(),
-									  Basename(sSongDirName).c_str()));
+				ld->SetProgress( iNumSongsLoaded, iNumSongsToLoad );
+
+				ld->SetText(
+					ssprintf("Loading songs (%d of %d)...\n%s\n%s",
+						iNumSongsLoaded, iNumSongsToLoad,
+						Basename(sGroupDirName).c_str(),
+						Basename(sSongDirName).c_str()
+					)
+				);
+
 				ld->Paint();
 			}
+
 			Song* pNewSong = new Song;
 			if( !pNewSong->LoadFromSongDir( sSongDirName ) )
 			{
@@ -223,22 +248,23 @@ void SongManager::LoadStepManiaSongDir( CString sDir, LoadingWindow *ld )
 				delete pNewSong;
 				continue;
 			}
-			
+
 			m_pMachineSongs.push_back( pNewSong );
-			loaded++;
+			++iLoadedFromThisDir;
 		}
 
-		LOG->Trace("Loaded %i songs from \"%s\"", loaded, (sDir+sGroupDirName).c_str() );
+		LOG->Trace("Loaded %i songs from \"%s\"", iLoadedFromThisDir, (sDir+sGroupDirName).c_str() );
 
 		/* Don't add the group name if we didn't load any songs in this group. */
-		if(!loaded) continue;
+		if( iLoadedFromThisDir == 0 )
+			continue;
 
 		/* Add this group to the group array. */
 		AddGroup(sDir, sGroupDirName);
 
 		/* Cache and load the group banner. */
 		BANNERCACHE->CacheBanner( GetGroupBannerPath(sGroupDirName) );
-		
+
 		/* Load the group sym links (if any)*/
 		LoadGroupSymLinks(sDir, sGroupDirName);
 	}

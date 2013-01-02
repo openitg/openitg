@@ -19,6 +19,7 @@ public:
 	virtual void Paint() = 0;
 	virtual void SetText(CString str) { }
 	virtual void SetIcon( const RageSurface *pIcon ) { }
+	virtual void SetProgress( unsigned iCurrent, unsigned iTarget ) { }
 };
 
 #endif

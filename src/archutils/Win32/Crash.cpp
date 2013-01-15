@@ -41,8 +41,10 @@ static void DoSave();
 ///////////////////////////////////////////////////////////////////////////
 
 extern HINSTANCE g_hInstance;
-extern unsigned long VersionNumber;
-extern const char *const VersionTime;
+
+/* TODO: clean up Windows build data, then fix this back up. */
+unsigned long VersionNumber = 1;
+const char *const VersionTime = "(unknown)";
 
 extern HINSTANCE g_hInstance;
 #define BACKTRACE_MAX_SIZE 100
@@ -785,8 +787,13 @@ static bool ReportCallStack( HWND hwnd, HANDLE hFile, const void **Backtrace )
 
 	if( g_debugInfo.nBuildNumber != int(VersionNumber) )
 	{
-		Report(hwnd, hFile, (CString("Incorrect %s file (build %d, expected %d) for this version of ") + ProductInfo::GetName() + " -- call stack unavailable.").c_str(),
-			g_debugInfo.sFilename, g_debugInfo.nBuildNumber, int(VersionNumber));
+		Report( hwnd, hFile,
+			"Incorrect %s file (build %d, expected %d) -- call stack unavailable.").c_str(),
+			g_debugInfo.sFilename,
+			g_debugInfo.nBuildNumber,
+			int(VersionNumber)
+		);
+
 		return false;
 	}
 
@@ -823,7 +830,7 @@ static void DoSave()
 	Report(NULL, hFile,
 			"%s crash report (build %d)\r\n"
 			"--------------------------------------"
-			"\r\n", ProductInfo::GetFullVersionString().c_str(), VersionNumber);
+			"\r\n", ProductInfo::GetFullVersion().c_str(), VersionNumber);
 
 	ReportReason( NULL, hFile, &g_CrashInfo );
 	Report(NULL, hFile, "");
@@ -962,7 +969,7 @@ BOOL APIENTRY CrashDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 			EndDialog( hDlg, FALSE );
 			break;
 		case IDC_BUTTON_REPORT:
-			GotoURL( ProductInfo::GetCrashReportUrl().c_str() );
+			GotoURL( ProductInfo::GetCrashReportURL().c_str() );
 			break;
 		}
 		break;

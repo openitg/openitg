@@ -144,7 +144,7 @@ void LuaExpression::Register()
 {
 	Lua *L = LUA->Get();
 
-	if( !LuaHelpers::RunScript(L, m_sExpression, "expression", 1) )
+	if( !LuaHelpers::RunScript(L, m_sExpression, "expression", 1, m_bSandboxed) )
 	{
 		this->SetFromNil();
 		LUA->Release( L );
@@ -183,18 +183,25 @@ CString LuaData::Serialize() const
 	return sRet;
 }
 
-void LuaData::LoadFromString( const CString &s )
+void LuaData::LoadFromString( const CString &s, bool bSandbox )
 {
+	m_bSandboxed = bSandbox;
+
 	Lua *L = LUA->Get();
 
 	/* Restore the serialized data by evaluating it. */
 	CString sError;
-	if( !LuaHelpers::RunScript( L, s, "serialization", sError, 1 ) )
+	if( !LuaHelpers::RunScript(L, s, "serialization", sError, 1, m_bSandboxed) )
 	{
 		/* Serialize() should never return an invalid script.  Drop the failed
-		 * script into the log (it may be too big to pass to FAIL_M) and fail. */
+		 * script into the log (it may be too big to pass to FAIL_M) and fail.
+		 *
+		 * Sandboxed scripts may fail due to attempting to escape the sandbox;
+		 * log a warning, but don't fail in that case.  */
 		LOG->Warn( "Unserialization of \"%s\" failed: %s", s.c_str(), sError.c_str() );
-		FAIL_M( "Unserialization failed" );
+
+		if( !m_bSandboxed )
+			FAIL_M( "Unserialization failed" );
 	}
 
 	this->SetFromStack( L );
@@ -215,7 +222,7 @@ void LuaData::Register()
 	if( !m_bWasSet )
 		return;
 
-	LoadFromString( m_sSerializedData );
+	LoadFromString( m_sSerializedData, m_bSandboxed );
 	m_sSerializedData.erase( m_sSerializedData.begin(), m_sSerializedData.end() );
 }
 

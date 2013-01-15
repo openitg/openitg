@@ -4,6 +4,7 @@
 typedef const char *(*INIT)(int *argc, char ***argv);
 typedef void (*SHUTDOWN)();
 typedef void (*SETTEXT)( const char *s );
+typedef void (*SETPROGRESS)( unsigned a, unsigned z );
 
 #endif
 

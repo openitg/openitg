@@ -13,6 +13,7 @@ public:
 	~LoadingWindow_Gtk();
 
 	void SetText(CString str);
+	void SetProgress( unsigned iCurrent, unsigned iTarget );
 	void Paint() { }
 };
 

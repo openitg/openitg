@@ -80,16 +80,17 @@ namespace LuaHelpers
 	/* Run the function with arguments at the top of the stack, with the given
 	 * number of arguments.  The specified number of return values are left on
 	 * the Lua stack.  On error, nils are left on the stack, sError is set and
-	 * false is returned. */
-	bool RunScriptOnStack( Lua *L, CString &sError, int iArgs = 0, int iReturnValues = 0 );
+	 * false is returned. If bSandbox is true, the script is given a blank env
+	 * to run in instead of the full Lua environment. */
+	bool RunScriptOnStack( Lua *L, CString &sError, int iArgs = 0, int iReturnValues = 0, bool bSandbox = false );
 
 	/* Run a script with the given name.  Return values are left on the Lua stack.
 	 * Returns false on error, with sError set. */
-	bool RunScript( Lua *L, const CString &sScript, const CString &sName, CString &sError, int iReturnValues = 0 );
+	bool RunScript( Lua *L, const CString &sScript, const CString &sName, CString &sError, int iReturnValues = 0, bool bSandbox = false );
 
 	/* Convenience: run a script with one return value, displaying an error on failure.
 	 * The return value is left on the Lua stack. */
-	bool RunScript( Lua *L, const CString &sExpression, const CString &sName = "", int iReturnValues = 0 );
+	bool RunScript( Lua *L, const CString &sExpression, const CString &sName = "", int iReturnValues = 0, bool bSandbox = false );
 
 	bool RunScriptFile( const CString &sFile );
 

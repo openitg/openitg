@@ -235,7 +235,11 @@ fi
 AM_CONDITIONAL(HAVE_FFMPEG, test "$have_ffmpeg" = "yes")
 AM_CONDITIONAL(HAVE_LIBRESAMPLE, test "$have_libresample" = "yes")
 
-AC_ARG_WITH(sse2, AC_HELP_STRING([--with-sse2], [Enable SSE2 optimization]), with_sse2=$withval, with_sse2=$have_sse2)
+# Don't use SSE2 by default; some GCC versions misoptimise the code, which
+# causes Heisenbugs, and we don't want to inflict that pain unnecessarily.
+# Only supply it if the user specifically asks.
+
+AC_ARG_WITH(sse2, AC_HELP_STRING([--with-sse2], [Enable SSE2 optimization]), with_sse2=$withval, with_sse2=no)
 if test "$with_sse2" = "yes"; then
 	CFLAGS="$CFLAGS -msse2"
 	CXXFLAGS="$CXXFLAGS -msse2"
@@ -312,37 +316,44 @@ fi
 
 AC_CHECK_PROG([have_git], [git], yes, no)
 
-oitg_git=no
+have_git_repo=no
 if test "$have_git" = "yes"; then
 	if test -d .git; then
-		oitg_git=yes
+		have_git_repo=yes
 	else
-		echo "Warning: This is not a git checkout of OpenITG, can't determine version!"
+		echo "Warning: This is not a git checkout, can't determine version!"
 	fi
 else
-	echo "Warning: git is not installed, can't determine OpenITG version!"
+	echo "Warning: git is not installed, can't determine version!"
 fi
 
-if test "$oitg_git" = "yes"; then
-	oitg_version=`git describe`
-	oitg_date=`git log -1 --pretty="format:%ad"`
+if test "$have_git_repo" = "yes"; then
+	build_version=`git tag`
+	build_rev_date=`git log -1 --pretty="format:%ad" --date="short"`
+	build_rev_tag=`git describe`
 
-	# only define this if we actually have it
-	AC_DEFINE_UNQUOTED(OITG_VERSION, "$oitg_version", [OpenITG version])
+	# If the rev_tag and the version are the same, this is
+	# an official release; otherwise, it's a dev build.
+	if test "$build_version" != "$build_rev_tag"; then
+		build_version="$build_version DEV"
+	fi
 
 else
-	oitg_version="unknown version"
-	oitg_date=`date +"%Y%m%d"`
+	build_version="unknown version"
+	build_rev_date="unknown date"
+	build_rev_tag="unknown revision"
 fi
 
-AC_DEFINE_UNQUOTED(OITG_DATE, "$oitg_date", [OpenITG version date])
+AC_DEFINE_UNQUOTED(BUILD_VERSION, "$build_version", [Version tag])
+AC_DEFINE_UNQUOTED(BUILD_DATE, "$build_rev_date", [Date of source revision])
+AC_DEFINE_UNQUOTED(BUILD_REVISION_TAG, "$build_rev_tag", [ID of source revision])
 
 AC_OUTPUT
 
 echo
 echo
 
-echo "OpenITG $oitg_version ($oitg_date)"
+echo "OpenITG $build_version (revision $build_rev_tag, $build_rev_date)"
 
 echo
 

@@ -1643,32 +1643,6 @@ bool Song::CheckCustomSong( CString &sError )
 		return false;
 	}
 
-	// music too big?
-	if( PREFSMAN->m_iCustomMaxSizeMB > 0 )
-	{
-		int iLimit = 1024*1024*PREFSMAN->m_iCustomMaxSizeMB;
-
-		if( FILEMAN->GetFileSizeInBytes(GetMusicPath()) > iLimit )
-		{
-			sError = ssprintf( "This song is too big.\nThe maximum size is %u MB.", 
-				(int)PREFSMAN->m_iCustomMaxSizeMB );
-			return false;
-		}
-	}
-	
-	// SM file too big?
-	if( PREFSMAN->m_iCustomMaxStepsSizeKB > 0 )
-	{
-		int iLimit = 1024*PREFSMAN->m_iCustomMaxStepsSizeKB;
-		
-		if( FILEMAN->GetFileSizeInBytes(GetSongFilePath()) > iLimit )
-		{
-			sError = ssprintf( "The .SM file is too big.\nMaximum size is %u KB.",
-				(int)PREFSMAN->m_iCustomMaxStepsSizeKB );
-			return false;
-		}
-	}
-
 	/* we used to use this to test music length, but we only care about steps length.
 	 * do this anyway, as a simple check to make sure the song can actually load. */
 	CString sResult;

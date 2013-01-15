@@ -848,7 +848,7 @@ RageFileBasic *RageFileManager::OpenForWriting( const CString &sPath, int mode, 
 	{
 		LoadedDriver &ld = *apDriverList[i];
 
-		// HACK: skip over "dirro". We need to find a more generic
+		// HACK: skip over "dirro". We should find a more generic
 		// method for this (skipping drivers that cannot write)
 		if( ld.m_sType == "dirro" )
 			continue;
@@ -885,6 +885,7 @@ RageFileBasic *RageFileManager::OpenForWriting( const CString &sPath, int mode, 
 
 		int iThisError;
 		RageFileBasic *pRet = ld.m_pDriver->Open( sDriverPath, mode, iThisError );
+
 		if( pRet )
 		{
 			UnreferenceAllDrivers( apDriverList );

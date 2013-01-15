@@ -15,7 +15,7 @@ test -z "$srcdir" && srcdir=.
 PKG_NAME="stepmania"
 
 AUTOHEADER=autoheader
-ACLOCAL_OPTIONS="-Iautoconf/m4/"
+ACLOCAL_OPTIONS=-Iautoconf/m4/
 AUTOMAKE_OPTIONS=-a
 
 AUTOCONF=autoconf

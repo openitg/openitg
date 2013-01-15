@@ -14,6 +14,7 @@ static void *Handle = NULL;
 static INIT Module_Init;
 static SHUTDOWN Module_Shutdown;
 static SETTEXT Module_SetText;
+static SETPROGRESS Module_SetProgress;
 
 LoadingWindow_Gtk::LoadingWindow_Gtk()
 {
@@ -22,7 +23,7 @@ LoadingWindow_Gtk::LoadingWindow_Gtk()
 CString LoadingWindow_Gtk::Init()
 {
 	ASSERT( Handle == NULL );
-	
+
 	Handle = dlopen( DirOfExecutable + "/" + "GtkModule.so", RTLD_NOW );
 	if( Handle == NULL )
 		return ssprintf( "dlopen(): %s", dlerror() );
@@ -36,6 +37,10 @@ CString LoadingWindow_Gtk::Init()
 	Module_SetText = (SETTEXT) dlsym(Handle, "SetText");
 	if( !Module_SetText )
 		return "Couldn't load symbol Module_SetText";
+
+	Module_SetProgress = (SETPROGRESS) dlsym(Handle, "SetProgress");
+	if( !Module_SetProgress )
+		return "Couldn't load symbol Module_SetProgress";
 
 	const char *ret = Module_Init( &g_argc, &g_argv );
 	if( ret != NULL )
@@ -57,6 +62,11 @@ LoadingWindow_Gtk::~LoadingWindow_Gtk()
 void LoadingWindow_Gtk::SetText( CString s )
 {
 	Module_SetText( s );
+}
+
+void LoadingWindow_Gtk::SetProgress( unsigned iCurrent, unsigned iTarget )
+{
+	Module_SetProgress( iCurrent, iTarget );
 }
 
 /*

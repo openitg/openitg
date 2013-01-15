@@ -3,34 +3,27 @@
 #ifndef PRODUCT_INFO_H
 #define PRODUCT_INFO_H
 
-enum BuildVersion
-{
-	VERSION_ALPHA,
-	VERSION_BETA,
-	VERSION_RELEASE_CANDIDATE,
-	VERSION_ZENITH,		// working name
-	NUM_BUILD_VERSIONS
-};
-
-static const CString BuildVersionNames[] =
-{
-	"alpha", "beta", "RC", "zenith"	// working name
-};
-
 namespace ProductInfo
 {
-	CString GetName();
-	CString GetVersion();
-	CString GetDate();
-	CString GetPlatform();
-	CString GetCrashReportUrl();
-	CString GetFullVersionString();
+	/* Binary name + release (e.g. "OpenITG", "beta3") */
+	const CString& GetName();
+	const CString& GetVersion();
+
+	/* Binary name + build type + release (e.g. "OpenITG AC beta3") */
+	const CString& GetFullVersion();
+
+	/* Build data (e.g. "2012-12-31", "beta3-105-g63a1100") */
+	const CString& GetBuildDate();
+	const CString& GetBuildRevision();
+
+	/* Crash report URL */
+	const CString& GetCrashReportURL();
 };
 
 #endif
 
 /*
- * (c) 2003-2009 Chris Danford, BoXoRRoXoRs
+ * (c) 2003-2013 Chris Danford, Marc Cannon
  * All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a

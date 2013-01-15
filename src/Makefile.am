@@ -210,8 +210,6 @@ Lights = arch/Lights/LightsDriver.cpp arch/Lights/LightsDriver.h \
 		arch/Lights/LightsDriver_SystemMessage.cpp arch/Lights/LightsDriver_SystemMessage.h \
 		arch/Lights/LightsDriver_ActorMessage.cpp arch/Lights/LightsDriver_ActorMessage.h \
 		arch/Lights/LightsDriver_External.cpp arch/Lights/LightsDriver_External.h \
-		arch/Lights/LightsDriver_Dynamic.cpp arch/Lights/LightsDriver_Dynamic.h \
-		arch/Lights/LightsDriver_Dynamic_Unix.cpp arch/Lights/LightsDriver_Dynamic_Unix.h \
 		arch/Lights/LightsDriver_PacDrive.cpp arch/Lights/LightsDriver_PacDrive.h \
 		arch/Lights/LightsDriver_G15.cpp arch/Lights/LightsDriver_G15.h
 

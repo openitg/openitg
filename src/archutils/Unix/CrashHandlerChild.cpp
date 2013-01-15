@@ -283,9 +283,9 @@ static void child_process()
 		exit(1);
 	}
 
-    fprintf(CrashDump, "%s crash report", ProductInfo::GetFullVersionString().c_str() );
+    fprintf(CrashDump, "%s crash report", ProductInfo::GetFullVersion().c_str() );
 #if defined(HAVE_VERSION_INFO)
-    fprintf(CrashDump, " (build %u)", ProductInfo::GetVersion().c_str() );
+    fprintf(CrashDump, " (build %u)", ProductInfo::GetBuildRevision().c_str() );
 #endif
     fprintf(CrashDump, "\n");
     fprintf(CrashDump, "--------------------------------------\n");
@@ -351,7 +351,7 @@ static void child_process()
 
 #if defined(DARWIN)
     InformUserOfCrash( sCrashInfoPath );
-    
+
     /* Forcibly kill our parent. */
     kill( getppid(), SIGKILL );
 #else
@@ -361,18 +361,18 @@ static void child_process()
     if( tty == NULL )
         tty = stderr;
 
-    fprintf(tty,
-			"\n"
-            + ProductInfo::GetName()
-			+ " has crashed.  Debug information has been output to\n"
-            "\n"
-            "    " + sCrashInfoPath + "\n"
-            "\n"
-            "Please report a bug at:\n"
-            "\n"
-            "    " + ProductInfo::GetCrashReportUrl() + "\n"
-            "\n"
-            );
+	fprintf(tty,
+		"\n"
+		+ ProductInfo::GetName()
+		+ " has crashed.  Debug information has been output to\n"
+		"\n"
+		"    " + sCrashInfoPath + "\n"
+		"\n"
+		"Please report a bug at:\n"
+		"\n"
+		"    " + ProductInfo::GetCrashReportURL() + "\n"
+		"\n"
+	);
 
 #endif
 

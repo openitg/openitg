@@ -1,5 +1,4 @@
 #include "global.h"
-#include "RageSoundReader_Resample.h"
 #include "RageSoundReader_Resample_Fast.h"
 #include "RageSoundReader_Resample_Good.h"
 

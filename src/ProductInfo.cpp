@@ -1,5 +1,4 @@
 #include "global.h" // also pulls in config.h
-#include "StdString.h"
 #include "ProductInfo.h"
 
 /* XXX: workaround until the Windows build can pull Git versioning. */

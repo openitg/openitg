@@ -1,15 +1,12 @@
 #include "global.h"
 #include "ScreenSystemLayer.h"
 #include "PrefsManager.h"
-#include "ThemeManager.h"
 #include "ActorUtil.h"
 #include "GameState.h"
 #include "MemoryCardManager.h"
-#include "Profile.h"
 #include "ProfileManager.h"
 #include "RageDisplay.h"
 #include "RageLog.h"
-#include "Command.h"
 #include "ScreenDimensions.h"
 
 

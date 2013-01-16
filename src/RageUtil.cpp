@@ -1,6 +1,5 @@
 #include "global.h"
 #include "RageUtil.h"
-#include "RageMath.h"
 #include "RageLog.h"
 #include "RageFile.h"
 
@@ -165,7 +164,6 @@ CString SecondsToMMSSMsMsMs( float fSecs )
 }
 
 #include "LuaFunctions.h"
-#include "LuaManager.h"
 LuaFunction( SecondsToMMSS, SecondsToMMSS( IArg(1) ) )
 LuaFunction( SecondsToHHMMSS, SecondsToHHMMSS( IArg(1) ) )
 

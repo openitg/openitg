@@ -1,15 +1,11 @@
 #include "global.h"
 #include "PrefsManager.h"
 #include "RageLog.h"
-#include "song.h"
 #include "Course.h"
-#include "RageUtil.h"
 #include "UnlockManager.h"
 #include "SongManager.h"
 #include "GameState.h"
 #include "ProfileManager.h"
-#include "ThemeManager.h"
-#include "Foreach.h"
 #include "Steps.h"
 #include <float.h>
 

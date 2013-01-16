@@ -3,7 +3,6 @@
 #include "Preference.h"
 #include "RageLog.h"
 #include "RageInput.h"
-#include "RageUtil.h"
 #include "RageThreads.h"
 
 InputFilter*	INPUTFILTER = NULL;	// global and accessable from anywhere in our program

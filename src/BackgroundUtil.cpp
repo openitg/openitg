@@ -1,6 +1,5 @@
 #include "global.h"
 #include "BackgroundUtil.h"
-#include "RageUtil.h"
 #include "song.h"
 #include "Foreach.h"
 #include "IniFile.h"

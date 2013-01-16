@@ -1,11 +1,7 @@
 #include "global.h"
 #include "RageFileDriverProbe.h"
-#include "RageFileDriverDirect.h"
-#include "RageFileDriverDirectHelpers.h"
-#include "RageFileManager.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-#include "RageUtil_FileDB.h"
 
 REGISTER_FILE_DRIVER( Probe, "PRB" );
 

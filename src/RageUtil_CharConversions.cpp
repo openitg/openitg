@@ -1,5 +1,4 @@
 #include "global.h"
-#include "RageUtil_CharConversions.h"
 
 #include "RageUtil.h"
 #include "RageLog.h"

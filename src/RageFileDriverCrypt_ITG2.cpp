@@ -1,12 +1,9 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageUtil.h"
-#include "RageFile.h"
-#include "RageException.h"
 #include "RageFileDriverCrypt_ITG2.h"
 
 // utilities for the crypto handling
-#include "aes/aes.h"
 #include "iButton.h"
 #include "crypto/CryptSH512.h"
 

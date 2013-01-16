@@ -1,7 +1,6 @@
 #include "global.h"
 
 #include "ScoreDisplayPercentage.h"
-#include "ThemeManager.h"
 #include "StatsManager.h"
 #include "PlayerState.h"
 

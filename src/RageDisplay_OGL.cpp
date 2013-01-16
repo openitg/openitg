@@ -24,7 +24,6 @@
 
 #include "RageSurface.h"
 #include "RageSurfaceUtils.h"
-#include "PrefsManager.h" // XXX
 #include "ScreenDimensions.h" // XXX
 
 /* Windows's broken gl.h defines GL_EXT_paletted_texture incompletely: */
@@ -41,15 +40,9 @@
 #include "RageDisplay.h"
 #include "RageDisplay_OGL.h"
 #include "RageDisplay_OGL_Extensions.h"
-#include "RageUtil.h"
 #include "RageLog.h"
-#include "RageTimer.h"
-#include "RageException.h"
-#include "RageTexture.h"
 #include "RageTextureManager.h"
 #include "RageMath.h"
-#include "RageTypes.h"
-#include "RageUtil.h"
 
 #include "arch/LowLevelWindow/LowLevelWindow.h"
 

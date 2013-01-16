@@ -9,11 +9,8 @@
 #include "global.h"
 #include "RageLog.h"
 #include "GameState.h"
-#include "LightsManager.h"
-#include "GameInput.h"
 #include "Game.h"
 #include "IniFile.h"
-#include "PlayerNumber.h"
 #include "LightsMapper.h"
 
 #define LIGHTS_INI_PATH "Data/LightsMaps.ini"

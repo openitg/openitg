@@ -1,7 +1,5 @@
 #include "global.h"
 #include "DifficultyRating.h"
-#include "ThemeManager.h"
-#include "RageUtil.h"
 
 const int ORIENTATION_LEFT = 0;
 const int ORIENTATION_CENTER = 1;

@@ -1,8 +1,6 @@
 #include "global.h"
 #include "DancingCharacters.h"
-#include "GameConstantsAndTypes.h"
 #include "RageDisplay.h"
-#include "RageUtil.h"
 #include "RageMath.h"
 #include "GameState.h"
 #include "song.h"

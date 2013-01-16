@@ -1,13 +1,9 @@
 #include "global.h"
-#include "CourseUtil.h"
-#include "Course.h"
-#include "RageTimer.h"
 #include "ProfileManager.h"
 #include "SongManager.h"
 #include "XmlFile.h"
 #include "GameState.h"
 #include "Style.h"
-#include "Foreach.h"
 
 
 //

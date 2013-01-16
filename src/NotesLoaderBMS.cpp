@@ -1,16 +1,12 @@
 #include "global.h"
 #include "NotesLoaderBMS.h"
-#include "NoteData.h"
-#include "GameConstantsAndTypes.h"
 #include "RageLog.h"
 #include "GameManager.h"
-#include "RageException.h"
 #include "RageFile.h"
 #include "StepsUtil.h"
 #include "song.h"
 #include "Steps.h"
 #include "RageUtil_CharConversions.h"
-#include "NoteTypes.h"
 
 /*	BMS encoding:     tap-hold
 	4&8panel:   Player1     Player2

@@ -1,9 +1,5 @@
 #include "global.h"
 #include "HelpDisplay.h"
-#include "RageUtil.h"
-#include "PrefsManager.h"
-#include "RageLog.h"
-#include "ThemeManager.h"
 #include "ActorUtil.h"
 
 REGISTER_ACTOR_CLASS( HelpDisplay )
@@ -130,7 +126,6 @@ LUA_REGISTER_CLASS( HelpDisplay )
 #include "GameState.h"
 #include "Course.h"
 #include "Style.h"
-#include "Foreach.h"
 
 REGISTER_ACTOR_CLASS( GenreDisplay )
 

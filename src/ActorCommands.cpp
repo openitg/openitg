@@ -1,8 +1,6 @@
 #include "global.h"
 #include "ActorCommands.h"
-#include "Command.h"
 #include "Foreach.h"
-#include "RageUtil.h"
 #include <sstream>
 #include "LuaBinding.h"
 

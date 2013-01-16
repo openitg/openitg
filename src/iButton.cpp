@@ -4,7 +4,6 @@
 #include "iButton.h"
 
 extern "C" {
-#include "ibutton/ownet.h"
 #include "ibutton/shaib.h"
 }
 

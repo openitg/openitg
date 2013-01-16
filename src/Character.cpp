@@ -1,7 +1,6 @@
 #include "global.h"
 #include "Character.h"
 #include "IniFile.h"
-#include "RageUtil.h"
 
 
 bool Character::Load( CString sCharDir )

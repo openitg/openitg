@@ -1,13 +1,6 @@
 #include "global.h"
-#include "ScrollingList.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
-#include "RageLog.h"
-#include "PrefsManager.h"
-#include "Course.h"
-#include "SongManager.h"
 #include "ThemeManager.h"
+#include "ScrollingList.h"
 
 enum BANNER_PREFS_TYPES
 {

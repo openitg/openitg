@@ -1,16 +1,8 @@
 #include "global.h"
 #include "CourseEntryDisplay.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
-#include "RageLog.h"
-#include "PrefsManager.h"
-#include "Course.h"
 #include "SongManager.h"
-#include "ThemeManager.h"
 #include "Steps.h"
 #include "GameState.h"
-#include "Style.h"
 #include "ActorUtil.h"
 
 #define SEPARATE_COURSE_METERS		THEME->GetMetricB(m_sName,"SeparateCourseMeters")

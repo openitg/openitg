@@ -1,6 +1,5 @@
 #include "global.h"
 #include "StageStats.h"
-#include "GameState.h"
 #include "Foreach.h"
 #include "Steps.h"
 #include "song.h"

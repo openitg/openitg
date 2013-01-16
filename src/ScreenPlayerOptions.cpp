@@ -1,9 +1,7 @@
 #include "global.h"
 #include "ScreenPlayerOptions.h"
-#include "ScreenManager.h"
 #include "RageLog.h"
 #include "GameState.h"
-#include "ThemeManager.h"
 #include "AnnouncerManager.h"
 #include "GameSoundManager.h"
 #include "ScreenSongOptions.h"
@@ -12,7 +10,6 @@
 #include "ScreenDimensions.h"
 #include "Style.h"
 #include "PlayerState.h"
-#include "Foreach.h"
 
 #define PREV_SCREEN		THEME->GetMetric ("ScreenPlayerOptions","PrevScreen")
 #define NEXT_SCREEN		THEME->GetMetric ("ScreenPlayerOptions","NextScreen")

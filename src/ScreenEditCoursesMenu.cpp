@@ -1,15 +1,8 @@
 #include "global.h"
 #include "ScreenEditCoursesMenu.h"
-#include "SongManager.h"
-#include "ScreenManager.h"
-#include "GameConstantsAndTypes.h"
-#include "RageUtil.h"
-#include "GameManager.h"
 #include "RageLog.h"
 #include "GameState.h"
 #include "GameSoundManager.h"
-#include "ThemeManager.h"
-#include "Steps.h"
 
 
 #define NEXT_SCREEN					THEME->GetMetric (m_sName,"NextScreen")

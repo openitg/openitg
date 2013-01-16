@@ -1,5 +1,4 @@
 #include "global.h"
-#include "LuaManager.h"
 #include "LuaFunctions.h"
 #include "LuaReference.h"
 #include "RageUtil.h"
@@ -7,7 +6,6 @@
 #include "RageFile.h"
 #include "RageThreads.h"
 #include "arch/Dialog/Dialog.h"
-#include "Foreach.h"
 
 LuaManager *LUA = NULL;
 static LuaFunctionList *g_LuaFunctions = NULL;

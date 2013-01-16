@@ -13,7 +13,6 @@
 #include "RageSoundReader_WAV.h"
 #include "RageUtil.h"
 #include "RageLog.h"
-#include "RageFile.h"
 
 namespace
 {

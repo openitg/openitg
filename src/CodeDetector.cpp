@@ -1,6 +1,5 @@
 #include "global.h"
 #include "CodeDetector.h"
-#include "PlayerOptions.h"
 #include "GameState.h"
 #include "InputQueue.h"
 #include "InputMapper.h"
@@ -8,7 +7,6 @@
 #include "RageLog.h"
 #include "Game.h"
 #include "Style.h"
-#include "RageUtil.h"
 #include "PrefsManager.h"
 #include "PlayerState.h"
 

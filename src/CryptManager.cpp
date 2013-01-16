@@ -1,12 +1,10 @@
 #include "global.h"
 #include "CryptManager.h"
-#include "RageUtil.h"
 #include "RageLog.h"
 #include "PrefsManager.h"
 #include "RageFileManager.h"
 #include "crypto/CryptMD5.h"
 
-#include "arch/arch_platform.h" // hack: HAVE_ stuff should not be defined by arch
 
 CryptManager*	CRYPTMAN	= NULL;	// global and accessable from anywhere in our program
 

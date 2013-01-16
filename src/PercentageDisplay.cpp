@@ -2,11 +2,8 @@
 
 #include "PercentageDisplay.h"
 #include "GameState.h"
-#include "ThemeManager.h"
 #include "PrefsManager.h"
 #include "ActorUtil.h"
-#include "RageLog.h"
-#include "StageStats.h"
 #include "PlayerState.h"
 #include "LuaFunctions.h"
 

@@ -1,16 +1,9 @@
 #include "global.h"
 #include "ScreenCredits.h"
 #include "GameSoundManager.h"
-#include "RageLog.h"
 #include "SongManager.h"
-#include "ThemeManager.h"
 #include "AnnouncerManager.h"
-#include "Sprite.h"
-#include "song.h"
-#include "BitmapText.h"
-#include "ActorUtil.h"
 #include "SongUtil.h"
-#include "RageUtil.h"
 
 
 #define BACKGROUNDS_SPACING_X				THEME->GetMetricF("ScreenCredits","BackgroundsSpacingX")

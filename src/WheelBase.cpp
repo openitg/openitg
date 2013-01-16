@@ -1,21 +1,10 @@
 #include "global.h"
 #include "WheelBase.h"
-#include "RageUtil.h"
-#include "GameManager.h"
-#include "PrefsManager.h"
 #include "ScreenManager.h"	// for sending SM_PlayMusicSample
 #include "RageLog.h"
-#include "GameConstantsAndTypes.h"
 #include "GameState.h"
 #include "RageMath.h"
-#include "ThemeManager.h"
-#include "RageTextureManager.h"
-#include "GameCommand.h"
 #include "ActorUtil.h"
-#include "Foreach.h"
-#include "Style.h"
-#include "ThemeMetric.h"
-#include "ScreenDimensions.h"
 
 
 	

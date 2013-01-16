@@ -1,6 +1,5 @@
 #include "global.h"	// testing updates
 #include "Command.h"
-#include "RageUtil.h"
 #include "RageLog.h"
 #include "arch/Dialog/Dialog.h"
 #include "LuaManager.h"

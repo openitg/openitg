@@ -1,13 +1,6 @@
-#include "global.h"
 #include "LinkedOptionsMenu.h"
-#include "BitmapText.h"
-#include "ThemeManager.h"
-#include "RageLog.h"
 #include "ActorUtil.h"
-#include "ThemeMetric.h"
-#include "arch/Dialog/DialogDriver.h"
 #include "ScreenManager.h"
-#include "CodeDetector.h"
 
 #ifdef MSVC
 /* It's going to be a pain to fix these. Disable for now. */

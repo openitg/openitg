@@ -1,7 +1,5 @@
 #include "global.h"
 #include "ScoreDisplayAliveTime.h"
-#include "RageUtil.h"
-#include "StageStats.h"
 #include "XmlFile.h"
 #include "GameState.h"
 #include "StatsManager.h"

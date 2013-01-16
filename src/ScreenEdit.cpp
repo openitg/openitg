@@ -1,43 +1,28 @@
 #include "global.h"
 #include "ScreenEdit.h"
-#include "PrefsManager.h"
 #include "SongManager.h"
-#include "ScreenManager.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
 #include "GameManager.h"
-#include "GameConstantsAndTypes.h"
 #include "RageLog.h"
 #include "GameSoundManager.h"
 #include "GameState.h"
 #include "InputMapper.h"
 #include "RageLog.h"
-#include "ThemeManager.h"
-#include "ProfileManager.h"
 #include "RageFile.h"
 #include "NotesWriterSM.h"
 #include "ScreenMiniMenu.h"
 #include "NoteSkinManager.h"
 #include "MemoryCardManager.h"
-#include "Steps.h"
 #include <utility>
-#include "NoteFieldPositioning.h"
 #include "NoteDataUtil.h"
-#include "SongUtil.h"
 #include "StepsUtil.h"
-#include "Foreach.h"
 #include "ScreenDimensions.h"
-#include "ThemeMetric.h"
-#include "PlayerState.h"
 #include "ScreenTextEntry.h"
 #include "Style.h"
-#include "ActorUtil.h"
 #include "ScreenPrompt.h"
 #include "CommonMetrics.h"
 #include "ScreenPlayerOptions.h"	// for SM_BackFromPlayerOptions
 #include "ScreenSongOptions.h"	// for SM_BackFromSongOptions
 #include <float.h>
-#include "BackgroundUtil.h"
 
 //
 // Defines specific to ScreenEdit

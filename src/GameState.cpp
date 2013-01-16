@@ -1,40 +1,25 @@
 #include "global.h"
 #include "RageFile.h"
 #include "RageLog.h"
-#include "RageUtil.h"
-#include "Foreach.h"
-#include "IniFile.h"
-#include "AnnouncerManager.h"
 #include "Bookkeeper.h"
 #include "GameState.h"
-#include "GameManager.h"
-#include "InputMapper.h"
 #include "LightsManager.h"
 #include "MemoryCardManager.h"
-#include "MessageManager.h"
 #include "NoteSkinManager.h"
 #include "PrefsManager.h"
-#include "RageFileManager.h"
 #include "ProfileManager.h"
-#include "ScreenManager.h"
 #include "SongManager.h"
 #include "StatsManager.h"
-#include "ThemeManager.h"
-#include "UnlockManager.h"
 #include "CommonMetrics.h"
 #include "CommonMetrics.h"
-#include "GameConstantsAndTypes.h"
-#include "NoteFieldPositioning.h"
 #include "PlayerState.h"
 #include "Character.h"
 #include "GameCommand.h"
 #include "Actor.h"
 #include "Game.h"
 #include "Style.h"
-#include "Screen.h"
 #include "song.h"
 #include "Steps.h"
-#include "Course.h"
 #include "LuaReference.h"
 #include "StepMania.h"
 
@@ -339,7 +324,7 @@ void GameState::SetSongInProgress( const CString &sWriteOut )
  *   Clears data which was stored by CommitStageStats.
  *
  * EndGame() - the game is finished
- * 
+ *
  */
 void GameState::BeginGame()
 {

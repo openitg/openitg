@@ -6,8 +6,6 @@
  */
 
 #include "global.h"
-#include "RageFileBasic.h"
-#include "RageFile.h"
 #include "RageUtil.h"
 #include "RageFileDriver.h"
 

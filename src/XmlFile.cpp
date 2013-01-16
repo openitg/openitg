@@ -3,7 +3,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "RageFile.h"
 #include "RageLog.h"
 #include "RageUtil.h"
 #include "DateTime.h"

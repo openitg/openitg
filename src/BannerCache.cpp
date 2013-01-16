@@ -1,8 +1,5 @@
 #include "global.h"
-
-#include "Foreach.h"
 #include "RageDisplay.h"
-#include "RageUtil.h"
 #include "RageLog.h"
 #include "RageSurface_Load.h"
 #include "BannerCache.h"
@@ -10,7 +7,6 @@
 #include "Sprite.h"
 #include "PrefsManager.h"
 #include "RageDisplay.h"
-#include "RageTexture.h"
 #include "RageTextureManager.h"
 #include "RageSurface.h"
 #include "RageSurfaceUtils.h"
@@ -18,7 +14,6 @@
 #include "RageSurfaceUtils_Dither.h"
 #include "RageSurfaceUtils_Zoom.h"
 
-#include "Banner.h"
 
 #define CACHE_DIR "Cache/"
 #define BANNER_CACHE_INDEX CACHE_DIR "banners.cache"

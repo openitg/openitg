@@ -1,15 +1,8 @@
 #include "global.h"
 #include "DifficultyMeter.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
 #include "GameState.h"
-#include "PrefsManager.h"
-#include "ThemeManager.h"
 #include "Steps.h"
-#include "Course.h"
 #include "SongManager.h"
-#include "ActorUtil.h"
-#include "Style.h"
 #include "XmlFile.h"
 
 // lua start

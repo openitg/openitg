@@ -1,17 +1,12 @@
 #include "global.h"
 #include "MemoryCardManager.h"
-#include "arch/MemoryCard/MemoryCardDriver.h"	// for UsbStorageDevice
 #include "ScreenManager.h"
 #include "ThemeManager.h"
 #include "RageLog.h"
-#include "RageFileManager.h"
-#include "RageFileDriver.h"
 #include "RageFileDriverTimeout.h"
-#include "MessageManager.h"
 #include "Foreach.h"
 #include "RageUtil_WorkerThread.h"
 #include "arch/MemoryCard/MemoryCardDriver_Null.h"
-#include "LuaManager.h"
 
 MemoryCardManager*	MEMCARDMAN = NULL;	// global and accessable from anywhere in our program
 
@@ -714,7 +709,6 @@ void MemoryCardManager::UnPauseMountingThread()
 }
 
 // lua start
-#include "LuaBinding.h"
 
 // new lua
 

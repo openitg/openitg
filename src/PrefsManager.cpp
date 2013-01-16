@@ -1,15 +1,9 @@
 #include "global.h"
 #include "PrefsManager.h"
 #include "IniFile.h"
-#include "GameState.h"
-#include "RageDisplay.h"
-#include "RageUtil.h"
-#include "arch/arch_default.h"
-#include "RageSoundReader_Resample.h" /* for ResampleQuality */
-#include "RageFile.h"
+#include "RageDisplay.h" /* for REFRESH_DEFAULT */
 #include "ProductInfo.h"
 #include "Foreach.h"
-#include "Preference.h"
 #include "RageLog.h"
 
 #define DEFAULTS_INI_PATH	"Data/Defaults.ini"	// these can be overridden

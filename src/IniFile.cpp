@@ -3,7 +3,6 @@
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "RageFile.h"
-#include "Foreach.h"
 
 IniFile::IniFile()
 {

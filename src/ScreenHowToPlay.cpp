@@ -1,21 +1,13 @@
 #include "global.h"
 #include <cstdlib>
 #include "ScreenHowToPlay.h"
-#include "ThemeManager.h"
 #include "GameState.h"
-#include "Game.h"
-#include "RageLog.h"
 #include "RageDisplay.h"
-#include "SongManager.h"
-#include "NoteFieldPositioning.h"
 #include "GameManager.h"
 #include "NotesLoaderSM.h"
 #include "GameSoundManager.h"
-#include "Model.h"
-#include "ThemeMetric.h"
 #include "PlayerState.h"
 #include "Style.h"
-#include "ActorUtil.h"
 
 static const ThemeMetric<CString>		STEPFILE			("ScreenHowToPlay","Stepfile");
 static const ThemeMetric<int>			NUM_PERFECTS		("ScreenHowToPlay","NumPerfects");

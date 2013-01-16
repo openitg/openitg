@@ -1,8 +1,5 @@
 #include "global.h"
 #include "OptionsCursor.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
 #include "ThemeManager.h"
 
 

@@ -1,20 +1,13 @@
 #include "global.h"
 #include "RageLog.h"
 #include "MemoryCardManager.h"		// for HasPatch
-#include "ProfileManager.h"		// for HasPatch
-#include "GameConstantsAndTypes.h"	// for memory card state
 #include "ScreenArcadePatch.h"
-#include "ScreenMessage.h"	// for AutoScreenMessage
-#include "ActorUtil.h"		// for SET_XY_AND_ON_COMMAND
 #include "DiagnosticsUtil.h"	// for GetRevision()
-#include "RageUtil.h"		// for join
 #include "HelpDisplay.h"	// so we can set the help text
 #include "CryptHelpers.h"	// to verify signature
 #include "XmlFile.h"		// for XML data handling
 
 // manual file handling
-#include "RageFileManager.h"
-#include "RageFile.h"
 #include "RageFileDriverTimeout.h"
 #include "RageFileDriverZip.h"
 #include "RageFileDriverSlice.h"

@@ -1,10 +1,8 @@
 #include "global.h"
 #include "Grade.h"
-#include "RageUtil.h"
 #include "ThemeManager.h"
 #include "RageLog.h"
 #include "EnumHelper.h"
-#include "LuaManager.h"
 #include "LuaFunctions.h"
 
 LuaFunction( GradeToString,			GradeToString((Grade)IArg(1)) )

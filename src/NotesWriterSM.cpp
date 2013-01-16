@@ -1,13 +1,10 @@
 #include "global.h"
 #include "NotesWriterSM.h"
 #include "Steps.h"
-#include "RageUtil.h"
 #include "GameManager.h"
 #include "RageLog.h"
-#include "RageFile.h"
 #include "RageFileManager.h"
 #include "song.h"
-#include "NoteTypes.h"
 #include <cstring>
 #include <cerrno>
 #include "Foreach.h"

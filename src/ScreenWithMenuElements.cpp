@@ -3,16 +3,13 @@
 #include "MenuTimer.h"
 #include "HelpDisplay.h"
 #include "RageLog.h"
-#include "ThemeManager.h"
 #include "GameState.h"
 #include "Style.h"
 #include "PrefsManager.h"
-#include "ScreenManager.h"
 #include "GameSoundManager.h"
 #include "AnnouncerManager.h"
 
 /* XXX: lights loading stuff...can we trim this down? */
-#include "RageUtil.h"
 #include "LightsManager.h"
 #include "NotesLoaderSM.h"
 

@@ -1,7 +1,6 @@
 #include "global.h"
-#include "LuaReference.h"
 #include "LuaManager.h"
-#include "LuaBinding.h"
+#include "LuaReference.h"
 #include "Foreach.h"
 #include "RageLog.h"
 #include "SubscriptionManager.h"

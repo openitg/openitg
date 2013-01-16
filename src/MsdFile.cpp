@@ -18,8 +18,6 @@
 
 #include "global.h"
 #include "MsdFile.h"
-#include "RageLog.h"
-#include "RageUtil.h"
 #include "RageFile.h"
 
 void MsdFile::AddParam( char *buf, int len )

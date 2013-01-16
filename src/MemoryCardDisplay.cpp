@@ -2,7 +2,6 @@
 #include "MemoryCardDisplay.h"
 #include "ThemeManager.h"
 #include "MemoryCardManager.h"
-#include "RageUtil.h"
 
 
 MemoryCardDisplay::MemoryCardDisplay()

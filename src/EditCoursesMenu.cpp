@@ -3,13 +3,7 @@
 #include "RageLog.h"
 #include "SongManager.h"
 #include "GameState.h"
-#include "ThemeManager.h"
-#include "GameManager.h"
-#include "Steps.h"
-#include "song.h"
-#include "Course.h"
 #include "ScreenMiniMenu.h"
-#include "ScreenManager.h"
 #include "PlayerState.h"
 #include "ScreenPlayerOptions.h"	// for SM_BackFromPlayerOptions
 #include "ScreenSongOptions.h"	// for SM_BackFromSongOptions

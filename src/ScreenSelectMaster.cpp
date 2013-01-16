@@ -1,17 +1,10 @@
 #include "global.h"
 #include "ScreenSelectMaster.h"
-#include "ScreenManager.h"
-#include "PrefsManager.h"
-#include "GameManager.h"
-#include "ThemeManager.h"
 #include "GameSoundManager.h"
 #include "GameState.h"
 #include "AnnouncerManager.h"
-#include "GameCommand.h"
-#include "ActorUtil.h"
 #include "RageLog.h"
 #include <set>
-#include "Foreach.h"
 #include "RageSoundManager.h"
 
 AutoScreenMessage( SM_PlayPostSwitchPage )

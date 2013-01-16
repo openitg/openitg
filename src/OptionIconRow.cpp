@@ -1,9 +1,7 @@
 #include "global.h"
 #include "OptionIconRow.h"
 #include "ThemeManager.h"
-#include "PlayerOptions.h"
 #include "GameState.h"
-#include "RageLog.h"
 #include "PlayerState.h"
 
 

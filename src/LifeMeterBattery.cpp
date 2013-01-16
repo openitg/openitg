@@ -1,7 +1,6 @@
 #include "global.h"
 #include "LifeMeterBattery.h"
 #include "GameState.h"
-#include "ThemeManager.h"
 #include "Steps.h"
 #include "StatsManager.h"
 

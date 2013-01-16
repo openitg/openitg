@@ -2,20 +2,16 @@
 #include "ScoreKeeperMAX2.h"
 #include "GameState.h"
 #include "PrefsManager.h"
-#include "Steps.h"
 #include "PrefsManager.h"
 #include "ScreenManager.h"
 #include "GameState.h"
-#include "Course.h"
 #include "SongManager.h"
 #include "NoteDataUtil.h"
-#include "RageLog.h"
 #include "StageStats.h"
 #include "ProfileManager.h"
 #include "NetworkSyncManager.h"
 #include "PlayerState.h"
 #include "Style.h"
-#include "song.h"
 
 ScoreKeeperMAX2::ScoreKeeperMAX2( 
 		PlayerState* pPlayerState,

@@ -1,20 +1,10 @@
 #include "global.h"
 #include "MusicWheelItem.h"
-#include "RageUtil.h"
 #include "SongManager.h"
-#include "GameManager.h"
-#include "PrefsManager.h"
-#include "ScreenManager.h"	// for sending SM_PlayMusicSample
-#include "RageLog.h"
-#include "GameConstantsAndTypes.h"
 #include "GameState.h"
-#include "ThemeManager.h"
 #include "Steps.h"
-#include "song.h"
-#include "Course.h"
 #include "ProfileManager.h"
 #include "ActorUtil.h"
-#include "ThemeMetric.h"
 
 CString GRADE_X_NAME( size_t p ) { return ssprintf("GradeP%dX",int(p+1)); }
 CString GRADE_Y_NAME( size_t p ) { return ssprintf("GradeP%dY",int(p+1)); }

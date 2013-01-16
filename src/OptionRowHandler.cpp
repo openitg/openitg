@@ -1,27 +1,18 @@
 #include "global.h"
 #include "OptionRowHandler.h"
-#include "LuaManager.h"
 #include "ScreenOptionsMasterPrefs.h"
 #include "NoteSkinManager.h"
-#include "RageUtil.h"
 #include "RageLog.h"
 #include "GameState.h"
-#include "Course.h"
 #include "Steps.h"
 #include "Style.h"
 #include "song.h"
 #include "SongManager.h"
 #include "Character.h"
 #include "PrefsManager.h"
-#include "StepsUtil.h"
 #include "GameManager.h"
-#include "Foreach.h"
-#include "ScreenManager.h"
-#include "GameSoundManager.h"
 #include "CommonMetrics.h"
 #include "ProfileManager.h"
-#include "PlayerNumber.h"
-#include "ThemeMetric.h" // To be able of defining metrics -Wanny
 
 #define ENTRY(s)					THEME->GetMetric ("ScreenOptionsMaster",s)
 #define ENTRY_MODE(s,i)				THEME->GetMetric ("ScreenOptionsMaster",ssprintf("%s,%i",(s).c_str(),(i+1)))

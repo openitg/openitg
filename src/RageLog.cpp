@@ -1,9 +1,8 @@
 #include "global.h"
-#include "arch/ArchHooks/ArchHooks.h"
 #include "RageLog.h"
+#include "RageFile.h"
 #include "RageUtil.h"
 #include "RageTimer.h"
-#include "RageFile.h"
 #include "RageThreads.h"
 #include "timer/Timer.h"
 #include <ctime>

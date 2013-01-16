@@ -6,7 +6,6 @@
 #include "global.h"
 #include "RageInputDevice.h"
 #include "RageUtil.h"
-#include "EnumHelper.h"
 
 CString RageKeySymToString( RageKeySym key )
 {

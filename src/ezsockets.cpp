@@ -6,7 +6,6 @@
 |   UDP/NON-TCP Support by Adam Lowman.                             |
 \*******************************************************************/
 
-#include "global.h"
 #include "ezsockets.h"
 
 #if defined(_XBOX)

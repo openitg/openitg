@@ -1,7 +1,6 @@
 #include "global.h"
 #include "RageSurface_Load_JPEG.h"
 #include "RageUtil.h"
-#include "RageLog.h"
 #include "RageFile.h"
 #include "RageSurface.h"
 

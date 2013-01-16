@@ -5,12 +5,9 @@
  */
 
 #include "global.h"
-#include "RageMath.h"
 #include "RageTypes.h"
 #include "RageUtil.h"
-#include "RageDisplay.h"
-#include "RageLog.h"
-#include "arch/Dialog/Dialog.h"
+#include "RageMath.h"
 #include <float.h>
 
 void RageVec3ClearBounds( RageVector3 &mins, RageVector3 &maxs )

@@ -22,7 +22,6 @@
 #include "global.h"
 
 #include "RageTimer.h"
-#include "RageLog.h"
 
 #include "arch/ArchHooks/ArchHooks.h"
  

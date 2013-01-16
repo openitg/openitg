@@ -1,6 +1,5 @@
 #include "global.h"
 #include "RageLog.h"
-#include "ScreenManager.h"
 #include "ScreenEndlessBreak.h"
 #include "ScreenDimensions.h"
 

@@ -1,21 +1,11 @@
 #include "global.h"
 
 #include "ScreenAttract.h"
-#include "ScreenManager.h"
-#include "GameConstantsAndTypes.h"
-#include "RageUtil.h"
-#include "StepMania.h"
 #include "PrefsManager.h"
 #include "RageLog.h"
-#include "SongManager.h"
 #include "GameState.h"
-#include "GameManager.h"
-#include "InputMapper.h"
-#include "ThemeManager.h"
 #include "GameSoundManager.h"
 #include "RageSoundManager.h"
-#include "CommonMetrics.h"
-#include "BGAnimation.h"
 
 #define NEXT_SCREEN			THEME->GetMetric (m_sName,"NextScreen")
 #define START_SCREEN(sScreenName)	THEME->GetMetric (sScreenName,"StartScreen")

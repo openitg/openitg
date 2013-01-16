@@ -10,12 +10,7 @@
 #include "RageSoundManager.h"
 #include "GameSoundManager.h"
 #include "RageInput.h"
-#include "RageTimer.h"
-#include "RageException.h"
-#include "RageMath.h"
 #include "RageDisplay.h"
-#include "RageThreads.h"
-#include "CryptHelpers.h"
 
 #include "arch/ArchHooks/ArchHooks.h"
 #include "arch/LoadingWindow/LoadingWindow.h"
@@ -29,14 +24,12 @@
 #endif
 
 #include "Screen.h"
-#include "ScreenDimensions.h"
 #include "CodeDetector.h"
 #include "CommonMetrics.h"
 #include "Game.h"
 #include "RageSurface.h"
 #include "RageSurface_Load.h"
 #include "CatalogXml.h"
-#include "DiagnosticsUtil.h"
 
 #if !defined(SUPPORT_OPENGL) && !defined(SUPPORT_D3D)
 #define SUPPORT_OPENGL
@@ -45,7 +38,6 @@
 //
 // StepMania global classes
 //
-#include "ThemeManager.h"
 #include "NoteSkinManager.h"
 #include "PrefsManager.h"
 #include "SongManager.h"
@@ -53,24 +45,18 @@
 #include "AnnouncerManager.h"
 #include "ProfileManager.h"
 #include "MemoryCardManager.h"
-#include "ScreenManager.h"
-#include "LuaManager.h"
 #include "GameManager.h"
 #include "FontManager.h"
-#include "InputFilter.h"
 #include "InputMapper.h"
 #include "InputQueue.h"
 #include "SongCacheIndex.h"
 #include "BannerCache.h"
 #include "UnlockManager.h"
-#include "RageFileManager.h"
-#include "RageFileDriverZip.h"
 #include "Bookkeeper.h"
 #include "LightsManager.h"
 #include "ModelManager.h"
 #include "CryptManager.h"
 #include "NetworkSyncManager.h"
-#include "MessageManager.h"
 #include "StatsManager.h"
 #include "UserPackManager.h"
 
@@ -425,7 +411,6 @@ static void CheckSettings()
 
 #include "RageDisplay_Null.h"
 
-#include "archutils/Win32/VideoDriverInfo.h"
 
 
 struct VideoCardDefaults

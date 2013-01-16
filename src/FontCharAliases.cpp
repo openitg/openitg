@@ -1,8 +1,6 @@
 #include "global.h"
 #include "FontCharAliases.h"
 #include "Font.h"
-#include "RageUtil.h"
-#include "RageLog.h"
 
 #include <map>
 

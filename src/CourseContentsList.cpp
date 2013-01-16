@@ -1,18 +1,8 @@
 #include "global.h"
 #include "CourseContentsList.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
-#include "RageLog.h"
-#include "PrefsManager.h"
-#include "Course.h"
-#include "SongManager.h"
-#include "ThemeManager.h"
-#include "Steps.h"
 #include "GameState.h"
-#include "Style.h"
-#include "RageTexture.h"
 #include "CourseEntryDisplay.h"
+#include "Trail.h"
 
 const int MAX_VISIBLE_ITEMS = 5;
 const int MAX_ITEMS = MAX_VISIBLE_ITEMS+2;

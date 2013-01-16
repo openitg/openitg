@@ -1,17 +1,10 @@
 #include "global.h"
 #include "LifeMeterBar.h"
 #include "PrefsManager.h"
-#include "RageException.h"
-#include "RageTimer.h"
 #include "GameState.h"
-#include "RageMath.h"
-#include "ThemeManager.h"
-#include "song.h"
 #include "StatsManager.h"
 #include "ThemeMetric.h"
 #include "PlayerState.h"
-#include "Quad.h"
-#include "ActorUtil.h"
 #include "StreamDisplay.h"
 
 
@@ -324,7 +317,6 @@ void LifeMeterBar::DrawPrimitives()
 {
 	ActorFrame::DrawPrimitives();
 }
-#include "RageLog.h"
 void LifeMeterBar::UpdateNonstopLifebar(const int cleared, 
 		const int total, int ProgressiveLifebarDifficulty)
 {

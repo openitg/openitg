@@ -1,9 +1,6 @@
 #include "global.h"
 #include "RageFileDriverCrypt.h"
-#include "RageFileDriverDirectHelpers.h"
 #include "RageLog.h"
-#include "RageUtil.h"
-#include "RageUtil_FileDB.h"
 
 int RageFileObjCrypt::ReadDirect( void *pBuffer, size_t iBytes )
 {

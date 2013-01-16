@@ -5,8 +5,6 @@
 #include "GameState.h"
 #include "RageLog.h"
 #include "InputFilter.h"
-#include "RageUtil.h"
-#include "PrefsManager.h"
 #include "RageInput.h"
 #include "Game.h"
 #include "Style.h"

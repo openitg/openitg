@@ -2,7 +2,6 @@
 #include "NoteFieldPositioning.h"
 
 #include "RageDisplay.h"
-#include "RageLog.h"
 #include "GameState.h"
 #include "Style.h"
 

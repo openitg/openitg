@@ -1,18 +1,13 @@
 #include "global.h"
 #include "RageLog.h"
-#include "RageUtil.h"
-#include "RageTimer.h"
 #include "ProfileManager.h"
 #include "SongManager.h"
-#include "LuaManager.h"
 #include "DiagnosticsUtil.h"
 #include "arch/ArchHooks/ArchHooks.h"
 #include "UserPackManager.h"	// for USER_PACK_SAVE_PATH
 
-#include "Profile.h"
 #include "XmlFile.h"
 #include "ProductInfo.h"
-#include "io/ITGIO.h"
 #include "io/USBDevice.h"
 
 #include "iButton.h"

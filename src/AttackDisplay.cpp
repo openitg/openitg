@@ -2,7 +2,6 @@
 #include "AttackDisplay.h"
 #include "ThemeManager.h"
 #include "GameState.h"
-#include "ActorUtil.h"
 #include "Character.h"
 #include "RageLog.h"
 #include "RageTextureManager.h"

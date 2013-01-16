@@ -1,8 +1,5 @@
-#include "global.h"
 #include "UserPackManager.h"
-#include "RageFileManager.h"
 #include "RageUtil.h"
-#include "Foreach.h"
 #include "RageLog.h"
 #include "RageFileDriverZip.h"
 #include "arch/ArchHooks/ArchHooks.h"

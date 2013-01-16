@@ -2,8 +2,6 @@
 #include "ScreenTestFonts.h"
 #include "FontManager.h"
 #include "RageTextureManager.h"
-#include "ScreenManager.h"
-#include "GameConstantsAndTypes.h"
 #include "ScreenDimensions.h"
 
 

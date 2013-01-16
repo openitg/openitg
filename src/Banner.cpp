@@ -2,13 +2,9 @@
 #include "Banner.h"
 #include "PrefsManager.h"
 #include "SongManager.h"
-#include "RageUtil.h"
 #include "song.h"
 #include "RageTextureManager.h"
-#include "Course.h"
 #include "Character.h"
-#include "ThemeMetric.h"
-#include "RageLog.h"
 
 ThemeMetric<bool> SCROLL_RANDOM		("Banner","ScrollRandom");
 ThemeMetric<bool> SCROLL_ROULETTE		("Banner","ScrollRoulette");

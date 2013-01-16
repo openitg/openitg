@@ -1,32 +1,19 @@
 #include "global.h"
 #include "SongManager.h"
-#include "IniFile.h"
 #include "RageLog.h"
 #include "MsdFile.h"
-#include "NotesLoaderDWI.h"
 #include "BannerCache.h"
 
 #include "GameState.h"
 #include "PrefsManager.h"
-#include "RageException.h"
 #include "arch/LoadingWindow/LoadingWindow.h"
-#include "Course.h"
 
-#include "AnnouncerManager.h"
-#include "ThemeManager.h"
-#include "GameManager.h"
-#include "RageFile.h"
 #include "RageTextureManager.h"
 #include "Sprite.h"
 #include "ProfileManager.h"
-#include "MemoryCardManager.h"
 #include "NotesLoaderSM.h"
-#include "SongUtil.h"
-#include "StepsUtil.h"
-#include "CourseUtil.h"
 #include "RageFileManager.h"
 #include "UnlockManager.h"
-#include "Foreach.h"
 #include "StatsManager.h"
 #include "Style.h"
 #include "BackgroundUtil.h"
@@ -1543,7 +1530,6 @@ int SongManager::GetNumStepsLoadedFromProfile()
 
 
 // lua start
-#include "LuaBinding.h"
 
 template<class T>
 class LunaSongManager : public Luna<T>
@@ -1598,7 +1584,6 @@ LUA_REGISTER_CLASS( SongManager )
 
 
 
-#include "LuaFunctions.h"
 
 CString GetCurrentSongDisplayTitle()
 {

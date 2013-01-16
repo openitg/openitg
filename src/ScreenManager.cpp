@@ -18,19 +18,13 @@
  */
 
 #include "global.h"
-#include "ScreenManager.h"
 #include "PrefsManager.h"
 #include "RageLog.h"
-#include "RageUtil.h"
-#include "GameState.h"
 #include "GameSoundManager.h"
 #include "RageDisplay.h"
 #include "SongManager.h"
 #include "RageTextureManager.h"
-#include "ThemeManager.h"
 #include "Screen.h"
-#include "BGAnimation.h"
-#include "Foreach.h"
 #include "ActorUtil.h"
 
 ScreenManager*	SCREENMAN = NULL;	// global and accessable from anywhere in our program
@@ -652,7 +646,6 @@ void ScreenManager::PlaySharedBackgroundOffCommand()
 }
 
 // lua start
-#include "LuaBinding.h"
 
 template<class T>
 class LunaScreenManager: public Luna<T>

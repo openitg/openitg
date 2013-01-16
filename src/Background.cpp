@@ -1,27 +1,19 @@
 #include "global.h"
 #include "Background.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "RageException.h"
-#include "RageTimer.h"
 #include "RageLog.h"
 #include "RageTextureManager.h"
 #include "GameState.h"
 #include "PrefsManager.h"
-#include "NoteTypes.h"
 #include "Steps.h"
 #include "DancingCharacters.h"
 #include "BeginnerHelper.h"
 #include "StatsManager.h"
 #include "ScreenDimensions.h"
-#include "ThemeMetric.h"
 #include "PlayerState.h"
-#include "Command.h"
 #include "ActorUtil.h"
 #include <set>
 #include <float.h>
 #include "XmlFile.h"
-#include "BackgroundUtil.h"
 #include "song.h"
 
 ThemeMetric<float> LEFT_EDGE					("Background","LeftEdge");

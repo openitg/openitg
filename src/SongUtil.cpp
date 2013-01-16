@@ -1,5 +1,4 @@
 #include "global.h"
-#include "SongUtil.h"
 #include "song.h"
 #include "Steps.h"
 #include "GameState.h"
@@ -9,7 +8,6 @@
 #include "SongManager.h"
 #include "XmlFile.h"
 #include "PrefsManager.h"
-#include "Foreach.h"
 #include "UnlockManager.h"
 
 

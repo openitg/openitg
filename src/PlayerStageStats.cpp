@@ -1,15 +1,12 @@
 #include "global.h"
 #include "PlayerStageStats.h"
 #include "RageLog.h"
-#include "PrefsManager.h"
 #include "ThemeManager.h"
 #include "Foreach.h"
 #include "LuaFunctions.h"
-#include "LuaManager.h"
 #include <float.h>
 #include "GameState.h"
 #include "Course.h"
-#include "Steps.h"
 #include "ScoreKeeperMAX2.h"
 
 #define GRADE_PERCENT_TIER(i)			THEME->GetMetricF("PlayerStageStats",ssprintf("GradePercent%s",GradeToString((Grade)i).c_str()))

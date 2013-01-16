@@ -1,14 +1,7 @@
 #include "global.h"
 #include "TextBanner.h"
-#include "RageUtil.h"
 #include "song.h"
-#include "PrefsManager.h"
-#include "ThemeManager.h"
-#include "SongManager.h"
-#include "RageTextureManager.h"
 #include "ActorUtil.h"
-#include "ThemeMetric.h"
-#include "Command.h"
 
 
 void TextBanner::Load( CString sType )

@@ -1,8 +1,6 @@
 #include "global.h"
 #include "RageInput.h"
-#include "RageLog.h"
 #include "arch/InputHandler/InputHandler.h"
-#include "Preference.h"
 
 RageInput*		INPUTMAN	= NULL;		// globally accessable input device
 

@@ -1,29 +1,13 @@
 #include "global.h"
-#include "HelpDisplay.h"
 #include "ScreenUserPacks.h"
-#include "Screen.h"
 #include "ScreenPrompt.h"
-#include "ScreenWithMenuElements.h"
-#include "PlayerNumber.h"
-#include "SongManager.h"
-#include "RageThreads.h"
 #include "MemoryCardManager.h"
-#include "ScreenDimensions.h"
-#include "RageFileManager.h"
 #include "CodeDetector.h"
-#include "RageFileDriverZip.h"
-#include "CryptManager.h"
-#include "RageUtil.h"
 #include "RageLog.h"
-#include "ProfileManager.h"
 #include "InputMapper.h"
 #include "UserPackManager.h"
-#include "ThemeManager.h"
 #include "DiagnosticsUtil.h"
-#include "RageUtil_FileDB.h" /* defines FileSet */
-#include "RageFileDriverDirect.h" /* defines DirectFilenameDB */
 #include "arch/ArchHooks/ArchHooks.h"
-#include "arch/Dialog/DialogDriver.h"
 
 #define NEXT_SCREEN					THEME->GetMetric (m_sName,"NextScreen")
 #define PREV_SCREEN					THEME->GetMetric (m_sName,"PrevScreen")

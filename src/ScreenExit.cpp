@@ -1,10 +1,5 @@
 #include "global.h"
 #include "ScreenExit.h"
-#include "RageUtil.h"
-#include "RageSoundManager.h"
-#include "GameSoundManager.h"
-#include "RageSound.h"
-#include "RageLog.h"
 #include "StepMania.h"
 
 /* This screen used to wait for sounds to stop.  However, implementing GetPlayingSounds()

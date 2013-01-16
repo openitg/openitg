@@ -3,12 +3,8 @@
 #include "RageTextureManager.h"
 #include "BannerCache.h"
 #include "song.h"
-#include "RageLog.h"
-#include "Course.h"
 #include "PrefsManager.h"
-#include "ThemeManager.h"
 #include "SongManager.h"
-#include "ThemeMetric.h"
 #include "ActorUtil.h"
 
 // lua start

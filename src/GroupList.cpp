@@ -1,9 +1,6 @@
 #include "global.h"
 #include "GroupList.h"
-#include "ThemeManager.h"
 #include "SongManager.h"
-#include "RageLog.h"
-#include "ThemeMetric.h"
 
 /* If this actor is used anywhere other than SelectGroup, we
  * can add a setting that changes which metric group we pull

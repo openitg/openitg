@@ -1,7 +1,6 @@
 #include "global.h"
 #include "ScreenDebugOverlay.h"
 #include "ScreenDimensions.h"
-#include "PrefsManager.h"
 #include "RageLog.h"
 #include "GameState.h"
 #include "PlayerState.h"

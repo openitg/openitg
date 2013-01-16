@@ -1,8 +1,6 @@
 #include "global.h"
 #include "ActorScroller.h"
 #include "ActorCollision.h"
-#include "RageUtil.h"
-#include "RageDisplay.h"
 #include "IniFile.h"
 #include "arch/Dialog/Dialog.h"
 #include "RageLog.h"

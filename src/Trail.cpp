@@ -4,7 +4,6 @@
 #include "Steps.h"
 #include "song.h"
 #include "PlayerOptions.h"
-#include "NoteData.h"
 #include "NoteDataUtil.h"
 
 void TrailEntry::GetAttackArray( AttackArray &out ) const

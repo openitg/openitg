@@ -1,12 +1,7 @@
 #include "global.h"
 #include "ScreenBranch.h"
 #include "RageLog.h"
-#include "ScreenManager.h"
-#include "ThemeManager.h"
-#include "LuaManager.h"
 #include "GameCommand.h"
-#include "RageUtil.h"
-#include "Command.h"
 
 #define CHOICES						THEME->GetMetric (m_sName,"Choices")
 #define CONDITION(choice)			THEME->GetMetric (m_sName,"Condition"+choice)

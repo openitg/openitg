@@ -2,11 +2,8 @@
 #include "BGAnimation.h"
 #include "IniFile.h"
 #include "BGAnimationLayer.h"
-#include "RageUtil.h"
 #include "ActorUtil.h"
 #include "Foreach.h"
-#include "Command.h"
-#include "LuaManager.h"
 
 
 REGISTER_ACTOR_CLASS( BGAnimation )

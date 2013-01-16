@@ -1,7 +1,6 @@
 #include "global.h"
 #include "NoteDataWithScoring.h"
 #include "NoteData.h"
-#include "StageStats.h"
 #include "StatsManager.h"
 #include <float.h>
 

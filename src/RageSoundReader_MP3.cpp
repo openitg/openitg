@@ -2,7 +2,6 @@
 
 #include "global.h"
 #include "RageSoundReader_MP3.h"
-#include "RageLog.h"
 #include "RageUtil.h"
 
 #include <cstdio>

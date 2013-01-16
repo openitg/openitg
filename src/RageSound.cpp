@@ -23,15 +23,12 @@
 #include "global.h"
 #include "RageSound.h"
 #include "RageSoundManager.h"
-#include "RageUtil.h"
 #include "RageLog.h"
-#include "RageException.h"
 #include "PrefsManager.h"
 #include "arch/ArchHooks/ArchHooks.h"
 #include "RageSoundUtil.h"
 
 #include "RageSoundReader_Preload.h"
-#include "RageSoundReader_Resample.h"
 #include "RageSoundReader_FileReader.h"
 
 const int channels = 2;

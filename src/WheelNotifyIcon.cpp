@@ -1,11 +1,5 @@
 #include "global.h"
-#include "WheelNotifyIcon.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
 #include "MusicWheel.h"
-#include "WheelNotifyIcon.h"
-#include "RageTimer.h"
-#include "ThemeManager.h"
 
 
 static ThemeMetric<bool>	SHOW_TRAINING	("WheelNotifyIcon","ShowTraining");

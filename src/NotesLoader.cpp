@@ -1,7 +1,5 @@
 #include "global.h"
 #include "NotesLoader.h"
-#include "NoteTypes.h"
-#include "GameManager.h"
 
 bool NotesLoader::Loadable( CString sPath )
 {

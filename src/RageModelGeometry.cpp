@@ -1,10 +1,8 @@
 #include "global.h"
 #include "RageModelGeometry.h"
-#include "RageUtil.h"
 #include "RageFile.h"
 #include "RageMath.h"
 #include "RageDisplay.h"
-#include "IniFile.h" // Added by Ym2413a, needed for code changes.
 
 RageModelGeometry::RageModelGeometry ()
 {

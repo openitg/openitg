@@ -1,14 +1,8 @@
 #include "global.h"
 #include "MenuTimer.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
 #include "ScreenManager.h"
 #include "AnnouncerManager.h"
-#include "ThemeManager.h"
-#include "Font.h"
 #include "GameSoundManager.h"
-#include "ThemeMetric.h"
 #include "ActorUtil.h"
 
 CString WARNING_COMMAND_NAME( size_t i ) { return ssprintf("WarningCommand%d",int(i)); }

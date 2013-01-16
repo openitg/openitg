@@ -2,8 +2,6 @@
 #include "DifficultyDisplay.h"
 #include "song.h"
 #include "ThemeMetric.h"
-#include "Command.h"
-#include "RageUtil.h"
 
 ThemeMetric<apActorCommands>  ICONONCOMMAND	("DifficultyDisplay","IconOnCommand");
 ThemeMetric<apActorCommands>  ICONOFFCOMMAND	("DifficultyDisplay","IconOffCommand");

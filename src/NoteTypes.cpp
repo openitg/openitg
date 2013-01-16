@@ -1,6 +1,5 @@
 #include "global.h"
 #include "NoteTypes.h"
-#include "RageUtil.h"
 
 TapNote TAP_EMPTY					( TapNote::empty,		TapNote::SubType_invalid,	TapNote::original, "", 0, false, 0 );
 TapNote TAP_ORIGINAL_TAP			( TapNote::tap,			TapNote::SubType_invalid,	TapNote::original, "", 0, false, 0 );

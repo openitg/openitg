@@ -1,10 +1,5 @@
 #include "global.h"
 #include "Judgment.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
-#include "GameState.h"
-#include "ThemeManager.h"
 #include "ThemeMetric.h"
 
 static ThemeMetric<apActorCommands>	MARVELOUS_COMMAND		("Judgment","MarvelousCommand");

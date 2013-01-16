@@ -21,7 +21,6 @@
 #include "song.h"
 #include "RageSoundReader_Chain.h"
 #include "RageSoundManager.h"
-#include "RageLog.h"
 
 void AutoKeysounds::Load( PlayerNumber pn, const NoteData& ndAutoKeysoundsOnly )
 {

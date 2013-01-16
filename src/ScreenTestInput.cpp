@@ -1,18 +1,14 @@
 #include "global.h"
 #include "RageLog.h"
 #include "RageInput.h"
-#include "ScreenManager.h"
 #include "LightsManager.h"
 #include "InputMapper.h"
 #include "GameState.h"
 #include "GameManager.h"
-#include "GameSoundManager.h"
 #include "PrefsManager.h"
-#include "ThemeManager.h"
 #include "Game.h"
 #include "ScreenDimensions.h"
 #include "ScreenTestInput.h"
-#include "PlayerNumber.h"
 
 
 REGISTER_SCREEN_CLASS( ScreenTestInput );

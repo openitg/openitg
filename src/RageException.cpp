@@ -1,5 +1,4 @@
 #include "global.h"
-#include "RageException.h"
 #include "RageUtil.h"
 #include "RageLog.h"
 #include "StepMania.h"

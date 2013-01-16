@@ -2,7 +2,6 @@
 #include "RageFileDriverDirect.h"
 #include "RageFileDriverDirectHelpers.h"
 #include "RageUtil.h"
-#include "RageUtil_FileDB.h"
 #include "RageLog.h"
 
 #include <fcntl.h>

@@ -2,9 +2,7 @@
 #include "ScreenMusicScroll.h"
 #include "SongManager.h"
 #include "GameSoundManager.h"
-#include "ThemeManager.h"
 #include "AnnouncerManager.h"
-#include "song.h"
 #include "SongUtil.h"
 #include "ScreenDimensions.h"
 

@@ -2,7 +2,6 @@
 #include "RageSurface_Load_BMP.h"
 #include "RageFile.h"
 #include "RageUtil.h"
-#include "RageLog.h"
 #include "RageSurface.h"
 using namespace FileReading;
 

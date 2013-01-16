@@ -1,10 +1,5 @@
 #include "global.h"
 #include "ScreenExitCommand.h"
-#include "RageUtil.h"
-#include "RageSoundManager.h"
-#include "GameSoundManager.h"
-#include "RageSound.h"
-#include "RageLog.h"
 #include "StepMania.h"
 
 #ifdef WIN32

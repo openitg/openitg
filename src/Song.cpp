@@ -1,33 +1,22 @@
 /* TODO: LoadFromCustomSongDir tries to save cache data. Where? */
 
 #include "global.h"
-#include "song.h"
-#include "Steps.h"
-#include "RageUtil.h"
 #include "RageLog.h"
-#include "IniFile.h"
-#include "NoteData.h"
 #include "RageSoundReader_FileReader.h"
 #include "RageSurface_Load.h"
-#include "RageException.h"
 #include "SongCacheIndex.h"
 #include "GameManager.h"
 #include "PrefsManager.h"
 #include "Style.h"
-#include "GameState.h"
-#include "FontCharAliases.h"
 #include "TitleSubstitution.h"
 #include "BannerCache.h"
 #include "Sprite.h"
-#include "RageFile.h"
 #include "RageFileManager.h"
 #include "RageSurface.h"
-#include "NoteDataUtil.h"
 #include "ProfileManager.h"
 #include "Foreach.h"
 #include "UnlockManager.h"
 #include "BackgroundUtil.h"
-#include "PlayerNumber.h"
 
 #include "NotesLoaderSM.h"
 #include "NotesLoaderDWI.h"
@@ -36,7 +25,6 @@
 #include "NotesWriterDWI.h"
 #include "NotesWriterSM.h"
 
-#include "LyricsLoader.h"
 
 #include <set>
 #include <float.h>
@@ -1672,7 +1660,6 @@ bool Song::CheckCustomSong( CString &sError )
 
 
 // lua start
-#include "LuaBinding.h"
 
 template<class T>
 class LunaSong : public Luna<T>

@@ -1,9 +1,6 @@
 #include "global.h"
 #include "TimingData.h"
 #include "PrefsManager.h"
-#include "RageUtil.h"
-#include "RageLog.h"
-#include "NoteTypes.h"
 #include <float.h>
 
 void BPMSegment::SetBPM( float f )

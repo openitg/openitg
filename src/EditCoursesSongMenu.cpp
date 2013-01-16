@@ -2,13 +2,6 @@
 #include "EditCoursesSongMenu.h"
 #include "RageLog.h"
 #include "SongManager.h"
-#include "GameState.h"
-#include "ThemeManager.h"
-#include "GameManager.h"
-#include "Steps.h"
-#include "song.h"
-#include "Course.h"
-#include "ScreenManager.h"
 
 #define ARROWS_X( i )			THEME->GetMetricF("EditCoursesSongMenu",ssprintf("Arrows%dX",i+1))
 #define ROW_LABELS_X			THEME->GetMetricF("EditCoursesSongMenu","RowLabelsX")

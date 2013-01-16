@@ -2,15 +2,10 @@
 #include "BitmapText.h"
 #include "IniFile.h"
 #include "FontManager.h"
-#include "RageLog.h"
-#include "RageException.h"
-#include "RageTimer.h"
 #include "RageDisplay.h"
 #include "ThemeManager.h"
-#include "GameConstantsAndTypes.h"
 #include "Font.h"
 #include "ActorUtil.h"	// for BeginHandleArgs
-#include "LuaBinding.h"
 
 // lua start
 LUA_REGISTER_CLASS( BitmapText )

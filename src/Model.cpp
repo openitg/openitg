@@ -1,18 +1,13 @@
 #include "global.h"
 #include "Model.h"
-#include "ModelTypes.h"
 #include "RageMath.h"
 #include "RageDisplay.h"
-#include "RageUtil.h"
-#include "RageTextureManager.h"
 #include "IniFile.h"
 #include "RageFile.h"
-#include "RageLog.h"
 #include "ActorUtil.h"
 #include <cerrno>
 #include "ModelManager.h"
 #include "Foreach.h"
-#include "LuaBinding.h"
 
 // lua start
 LUA_REGISTER_CLASS( Model )

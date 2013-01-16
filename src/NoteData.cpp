@@ -6,8 +6,6 @@
 
 #include "global.h"
 #include "NoteData.h"
-#include "RageUtil.h"
-#include "RageLog.h"
 
 
 NoteData::NoteData()

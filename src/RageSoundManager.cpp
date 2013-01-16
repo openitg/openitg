@@ -3,11 +3,8 @@
 
 #include "global.h"
 #include "RageSoundManager.h"
-#include "RageException.h"
-#include "RageUtil.h"
 #include "RageSound.h"
 #include "RageLog.h"
-#include "RageTimer.h"
 #include "Preference.h"
 
 #include "arch/Sound/RageSoundDriver.h"

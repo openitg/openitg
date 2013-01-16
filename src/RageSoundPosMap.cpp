@@ -1,7 +1,6 @@
 #include "global.h"
 #include "RageSoundPosMap.h"
 #include "RageLog.h"
-#include "RageUtil.h"
 #include "RageTimer.h"
 
 /* The number of frames we should keep pos_map data for.  This being too high

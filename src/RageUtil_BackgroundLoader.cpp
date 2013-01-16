@@ -1,10 +1,8 @@
 #include "global.h"
 #include "RageUtil_BackgroundLoader.h"
-#include "RageFile.h"
 #include "RageFileManager.h"
 #include "RageUtil.h"
 #include "RageLog.h"
-#include "RageThreads.h"
 
 
 /* If we're on an OS with a good caching system, writing to our own cache will only

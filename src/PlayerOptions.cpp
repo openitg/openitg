@@ -1,17 +1,13 @@
 #include "global.h"
 #include "PlayerOptions.h"
-#include "RageUtil.h"
 #include "RageLog.h"
 #include "GameState.h"
 #include "NoteSkinManager.h"
 #include "song.h"
 #include "Course.h"
 #include "Steps.h"
-#include "ThemeManager.h"
-#include "Foreach.h"
 #include "Style.h"
 #include "CommonMetrics.h"
-#include "GameConstantsAndTypes.h"
 #include "arch/Dialog/Dialog.h"
 
 #define ONE( arr ) { for( unsigned Z = 0; Z < ARRAYLEN(arr); ++Z ) arr[Z]=1.0f; }

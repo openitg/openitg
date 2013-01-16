@@ -1,12 +1,8 @@
 #include "global.h"
 #include "NotesLoaderKSF.h"
-#include "RageException.h"
 #include "RageUtil_CharConversions.h"
 #include "MsdFile.h"
 #include "RageLog.h"
-#include "RageUtil.h"
-#include "NoteData.h"
-#include "NoteTypes.h"
 
 #if 0
 void KSFLoader::RemoveHoles( NoteData &out, const Song &song )

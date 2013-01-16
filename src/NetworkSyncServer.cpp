@@ -1,6 +1,5 @@
 #include "global.h"
 #include "NetworkSyncServer.h"
-#include "RageLog.h"
 #include "PrefsManager.h"
 #include <time.h>
 

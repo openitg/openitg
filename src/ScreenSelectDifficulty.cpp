@@ -1,16 +1,9 @@
 #include "global.h"
 #include "ScreenSelectDifficulty.h"
-#include "ScreenManager.h"
-#include "PrefsManager.h"
 #include "GameSoundManager.h"
-#include "GameManager.h"
-#include "ThemeManager.h"
 #include "GameState.h"
 #include "AnnouncerManager.h"
-#include "GameCommand.h"
-#include "ActorUtil.h"
 #include "ScreenDimensions.h"
-#include "Command.h"
 
 #define NUM_CHOICES_ON_PAGE_1				THEME->GetMetricI(m_sName,"NumChoicesOnPage1")
 #define LOCK_INPUT_SECONDS					THEME->GetMetricF(m_sName,"LockInputSeconds")

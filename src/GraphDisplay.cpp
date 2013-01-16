@@ -1,13 +1,10 @@
 #include "global.h"
 #include "GraphDisplay.h"
-#include "ThemeManager.h"
 #include "RageTextureManager.h"
 #include "RageDisplay.h"
-#include "RageUtil.h"
 #include "StageStats.h"
 #include "Foreach.h"
 #include "song.h"
-#include "RageLog.h"
 
 //#define DIVIDE_LINE_WIDTH			THEME->GetMetricI(m_sName,"TexturedBottomHalf")
 

@@ -3,9 +3,7 @@
 #include "ScreenSandbox.h"
 #include "ScreenTestSound.h"
 #include "ScreenTestFonts.h"
-#include "ScreenManager.h"
 #include "GameSoundManager.h"
-#include "ThemeManager.h"
 #include "CommonMetrics.h"
 
 

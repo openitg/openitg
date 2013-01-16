@@ -1,6 +1,5 @@
 #include "global.h"
 #include "CombinedLifeMeterTug.h"
-#include "ThemeManager.h"
 #include "GameState.h"
 #include "PrefsManager.h"
 #include "ThemeMetric.h"

@@ -1,9 +1,7 @@
 #include "global.h"
 #include "Transition.h"
-#include "RageUtil.h"
 #include "ScreenManager.h"
 #include "IniFile.h"
-#include "RageFile.h"
 
 
 /*

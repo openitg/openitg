@@ -5,17 +5,12 @@
 #include "AnnouncerManager.h"
 #include "NoteSkinManager.h"
 #include "PlayerOptions.h"
-#include "SongOptions.h"
 #include "RageDisplay.h"
-#include "RageUtil.h"
 #include "GameManager.h"
 #include "GameState.h"
-#include "InputMapper.h"
 #include "StepMania.h"
 #include "Game.h"
 #include "Foreach.h"
-#include "GameConstantsAndTypes.h"
-#include "RageLog.h"
 
 static void GetDefaultModifiers( PlayerOptions &po, SongOptions &so )
 {

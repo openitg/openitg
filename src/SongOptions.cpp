@@ -1,6 +1,5 @@
 #include "global.h"
 #include "SongOptions.h"
-#include "RageUtil.h"
 #include "PrefsManager.h"
 
 void SongOptions::Init() 

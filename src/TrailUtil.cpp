@@ -1,6 +1,5 @@
 #include "global.h"
 #include "TrailUtil.h"
-#include "Trail.h"
 #include "Course.h"
 #include "XmlFile.h"
 #include "GameManager.h"

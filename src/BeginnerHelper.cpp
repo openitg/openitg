@@ -1,12 +1,9 @@
 #include "global.h"
 
-#include "ActorUtil.h"
 #include "BeginnerHelper.h"
 #include "GameState.h"
 #include "PrefsManager.h"
-#include "RageLog.h"
 #include "RageDisplay.h"
-#include "Steps.h"
 #include "Style.h"
 #include "Model.h"
 #include "ScreenDimensions.h"

@@ -1,7 +1,5 @@
 #include "global.h"
 #include "ScreenSplash.h"
-#include "ThemeManager.h"
-#include "RageUtil.h"
 
 AutoScreenMessage( SM_PrepScreen )
 

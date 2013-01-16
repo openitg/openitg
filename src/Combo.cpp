@@ -1,13 +1,8 @@
 #include "global.h"
 #include "Combo.h"
-#include "ThemeManager.h"
 #include "StatsManager.h"
-#include "ScreenManager.h"
 #include "GameState.h"
 #include "song.h"
-#include "Command.h"
-#include "PlayerState.h"
-#include "RageLog.h"
 
 Combo::Combo()
 {

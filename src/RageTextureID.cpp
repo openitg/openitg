@@ -1,7 +1,5 @@
 #include "global.h"
-#include "RageTextureID.h"
 #include "RageTextureManager.h"
-#include "RageUtil.h"
 
 void RageTextureID::Init()
 {

@@ -4,15 +4,8 @@
 #include "song.h"
 #include "Steps.h"
 #include "Style.h"
-#include "DifficultyMeter.h"
-#include "RageLog.h"
-#include "BitmapText.h"
-#include "SongManager.h"
-#include "ThemeManager.h"
 #include "StepsUtil.h"
 #include "CommonMetrics.h"
-#include "Command.h"
-#include "Foreach.h"
 
 #define MAX_METERS NUM_DIFFICULTIES + MAX_EDITS_PER_SONG
 

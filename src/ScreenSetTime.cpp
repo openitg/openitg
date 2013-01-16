@@ -1,13 +1,9 @@
 #include "global.h"
 #include "ScreenSetTime.h"
-#include "ScreenManager.h"
 #include "RageLog.h"
 #include "InputMapper.h"
 #include "GameState.h"
 #include "GameSoundManager.h"
-#include "ThemeManager.h"
-#include "DateTime.h"
-#include "EnumHelper.h"
 #include "arch/ArchHooks/ArchHooks.h"
 
 static const CString SetTimeSelectionNames[] = {

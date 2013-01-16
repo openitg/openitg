@@ -1,13 +1,7 @@
 #include "global.h"
 #include "ScreenPrompt.h"
-#include "PrefsManager.h"
-#include "ScreenManager.h"
-#include "GameSoundManager.h"
-#include "GameConstantsAndTypes.h"
 #include "GameState.h"
 #include "Style.h"
-#include "ThemeManager.h"
-#include "ScreenDimensions.h"
 #include "ActorUtil.h"
 
 PromptAnswer ScreenPrompt::s_LastAnswer = ANSWER_YES;

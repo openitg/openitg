@@ -1,14 +1,7 @@
 #include "global.h"
 #include "Screen.h"
-#include "GameManager.h"
 #include "GameState.h"
 #include "PrefsManager.h"
-#include "RageSound.h"
-#include "ThemeManager.h"
-#include "ScreenManager.h"
-#include "GameSoundManager.h"
-#include "ProfileManager.h"
-#include "ActorUtil.h"
 
 #define NEXT_SCREEN					THEME->GetMetric (m_sName,"NextScreen")
 #define PREV_SCREEN					THEME->GetMetric (m_sName,"PrevScreen")

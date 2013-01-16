@@ -1,6 +1,5 @@
 #include "global.h"
 #include "NoteDataUtil.h"
-#include "RageUtil.h"
 #include "RageLog.h"
 #include "PlayerOptions.h"
 #include "song.h"

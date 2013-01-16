@@ -1,5 +1,4 @@
 #include "global.h"
-#include "RageSurface_Load.h"
 #include "RageSurface_Load_PNG.h"
 #include "RageSurface_Load_JPEG.h"
 #include "RageSurface_Load_GIF.h"

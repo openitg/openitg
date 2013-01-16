@@ -1,13 +1,7 @@
 #include "global.h"
 #include "ModeSwitcher.h"
-#include "RageUtil.h"
 #include "GameState.h"
-#include "PrefsManager.h"
-#include "SongManager.h"
-#include "ThemeManager.h"
 #include "Style.h"
-#include "song.h"
-#include "ActorUtil.h"
 #include "GameManager.h"
 #include "Game.h"
 

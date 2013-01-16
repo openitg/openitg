@@ -1,13 +1,9 @@
 #include "global.h"
 #include "BPMDisplay.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
 #include "GameState.h"
 #include "Course.h"
 #include "Style.h"
 #include "ActorUtil.h"
-#include "CommonMetrics.h"
 
 #include <limits.h>
 

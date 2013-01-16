@@ -1,13 +1,8 @@
 #include "global.h"
 #include "GrooveRadar.h"
-#include "RageUtil.h"
-#include "PrefsManager.h"
-#include "GameConstantsAndTypes.h"
-#include "ThemeManager.h"
 #include "Steps.h"
 #include "RageDisplay.h"
 #include "RageMath.h"
-#include "ThemeMetric.h"
 #include "CommonMetrics.h"
 
 #define		LABEL_OFFSET_X( i )		THEME->GetMetricF("GrooveRadar",ssprintf("Label%dOffsetX",i+1))

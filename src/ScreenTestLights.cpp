@@ -1,14 +1,8 @@
 #include "global.h"
 #include "ScreenTestLights.h"
-#include "ScreenManager.h"
-#include "GameConstantsAndTypes.h"
 #include "RageLog.h"
 #include "GameState.h"
-#include "GameSoundManager.h"
-#include "ThemeManager.h"
-#include "LightsManager.h"
 #include "Game.h"
-#include "ScreenDimensions.h"
 
 
 REGISTER_SCREEN_CLASS( ScreenTestLights );

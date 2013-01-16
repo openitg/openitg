@@ -1,17 +1,8 @@
 #include "global.h"
 #include "OptionsList.h"
 #include "GameState.h"
-#include "RageLog.h"
-#include "Course.h"
-#include "SongUtil.h"
-#include "StepsUtil.h"
-#include "Font.h"
 #include "Style.h"
-#include "CodeDetector.h"
-#include "InputMapper.h"
 #include "PlayerState.h"
-#include "ScreenDimensions.h"
-#include "RageSound.h"
 
 #define LINE(sLineName)				THEME->GetMetric (m_sName,ssprintf("Line%s",sLineName.c_str()))
 #define MAX_ITEMS_BEFORE_SPLIT			THEME->GetMetricI(m_sName,"MaxItemsBeforeSplit")

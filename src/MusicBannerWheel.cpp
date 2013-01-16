@@ -10,17 +10,12 @@ TODO:
 
 
 #include "MusicBannerWheel.h"
-#include "RageUtil.h"
 #include "GameState.h"
 #include "PrefsManager.h"
 #include "RageLog.h"
-#include "SongManager.h"
-#include "ThemeManager.h"
 #include "GameSoundManager.h"
 #include "Style.h"
 #include "song.h"
-#include "Steps.h"
-#include "ActorUtil.h"
 
 #define BANNERSPACING THEME->GetMetricI("ScreenEz2SelectMusic","BannerSpacing")
 #define MAXSONGSINBUFFER 5

@@ -3,7 +3,6 @@
 #include "global.h"
 #include "HighScore.h"
 #include "PrefsManager.h"
-#include "GameConstantsAndTypes.h"
 #include "ThemeManager.h"
 #include "XmlFile.h"
 #include "Foreach.h"

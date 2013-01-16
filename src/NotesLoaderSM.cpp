@@ -1,13 +1,10 @@
 #include "global.h"
 #include "NotesLoaderSM.h"
 #include "GameManager.h"
-#include "RageException.h"
 #include "MsdFile.h"
 #include "RageLog.h"
-#include "RageUtil.h"
 #include "SongManager.h"
 #include "RageFileManager.h"
-#include "NoteTypes.h"
 #include "BackgroundUtil.h"
 
 #define MAX_EDIT_SIZE_BYTES  20*1024	// 20 KB

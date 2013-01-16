@@ -1,8 +1,5 @@
 #include "global.h"
 #include "NotesWriterDWI.h"
-#include "NoteTypes.h"
-#include "NoteData.h"
-#include "RageUtil.h"
 #include "RageLog.h"
 #include "RageFile.h"
 #include "NoteDataUtil.h"

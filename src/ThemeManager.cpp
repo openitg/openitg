@@ -1,25 +1,13 @@
 #include "global.h"
-#include "ThemeManager.h"
 #include "RageLog.h"
 #include "PrefsManager.h"
-#include "RageException.h"
-#include "RageTimer.h"
-#include "RageUtil.h"
-#include "Game.h"
 #include "IniFile.h"
-#include "RageTimer.h"
 #include "Font.h"
 #include "FontCharAliases.h"
-#include "RageDisplay.h"
 #include "arch/Dialog/Dialog.h"
-#include "RageFile.h"
 #include "ScreenManager.h"
 #include "StepMania.h"
-#include "Foreach.h"
-#include "ThemeMetric.h"
-#include "LuaManager.h"
 #include "ScreenDimensions.h"
-#include "Command.h"
 
 
 ThemeManager*	THEME = NULL;	// global object accessable from anywhere in the program
@@ -761,7 +749,6 @@ float ThemeManager::GetMetricF( const CString &sClassName, const CString &sValue
 	return LuaHelpers::RunExpressionF( sValue );
 }
 
-// #include "LuaManager.h"
 bool ThemeManager::GetMetricB( const CString &sClassName, const CString &sValueName )
 {
 	CString sValue = GetMetric( sClassName, sValueName );	// Use non-raw so that Lua expressions are allowed
@@ -948,7 +935,6 @@ CString ThemeManager::GetBlankGraphicPath()
 }
 
 // lua start
-#include "LuaBinding.h"
 
 template<class T>
 class LunaThemeManager : public Luna<T>

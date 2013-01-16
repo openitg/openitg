@@ -1,7 +1,5 @@
 #include "global.h"
 #include "Foreground.h"
-#include "RageUtil.h"
-#include "IniFile.h"
 #include "GameState.h"
 #include "RageTextureManager.h"
 #include "ActorUtil.h"

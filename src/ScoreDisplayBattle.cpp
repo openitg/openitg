@@ -1,14 +1,10 @@
 #include "global.h"
 #include "ScoreDisplayBattle.h"
-#include "RageUtil.h"
 #include "RageLog.h"
-#include "PrefsManager.h"
 #include "RageLog.h"
-#include "GameState.h"
 #include "ThemeManager.h"
 #include "RageTextureManager.h"
 #include "PlayerState.h"
-#include "Command.h"
 
 #define ITEM_X( i )				THEME->GetMetricF("ScoreDisplayBattle",ssprintf("Item%dX",i+1))
 #define ITEM_Y( i )				THEME->GetMetricF("ScoreDisplayBattle",ssprintf("Item%dY",i+1))

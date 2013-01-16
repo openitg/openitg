@@ -1,6 +1,5 @@
 #include "global.h"
 #include "RollingNumbers.h"
-#include "RageUtil.h"
 #include "XmlFile.h"
 #include "ActorUtil.h"
 

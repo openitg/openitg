@@ -1,9 +1,5 @@
 #include "global.h"
 #include "HoldJudgment.h"
-#include "RageUtil.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
-#include "ThemeManager.h"
 #include "ThemeMetric.h"
 
 ThemeMetric<apActorCommands>	OK_COMMAND	("HoldJudgment","OKCommand");

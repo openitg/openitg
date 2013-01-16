@@ -1,17 +1,10 @@
 #include "global.h"
 #include "PaneDisplay.h"
-#include "ThemeManager.h"
 #include "GameState.h"
-#include "song.h"
 #include "Steps.h"
-#include "RageLog.h"
 #include "ProfileManager.h"
 #include "SongManager.h"
-#include "Course.h"
-#include "Style.h"
-#include "Command.h"
 #include "ActorUtil.h"
-#include "Foreach.h"
 #include "PercentageDisplay.h"
 
 #define SHIFT_X(p)			THEME->GetMetricF(sType, ssprintf("ShiftP%iX", p+1))

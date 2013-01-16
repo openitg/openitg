@@ -1,11 +1,5 @@
 /* Basic screen functions */
 #include "global.h"
-#include "RageLog.h"
-#include "RageTimer.h"
-#include "RageUtil.h"
-#include "ThemeManager.h"
-#include "ScreenManager.h"
-#include "LightsManager.h"
 #include "ScreenArcadeStart.h"
 
 /* diagnostics functions */
@@ -15,9 +9,6 @@
 #include "io/USBDevice.h"
 
 /* Input board loading/testing */
-#include "io/USBDriver.h"
-#include "io/PIUIO.h"
-#include "io/ITGIO.h"
 
 /* InputHandler loading */
 #include "RageInput.h"

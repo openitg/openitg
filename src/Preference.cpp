@@ -1,9 +1,7 @@
 #include "global.h"
-#include "Preference.h"
 #include "PrefsManager.h"
 #include "IniFile.h"
 #include "RageLog.h"
-#include "LuaFunctions.h"
 #include "LuaManager.h"
 #include "MessageManager.h"
 

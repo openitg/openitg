@@ -1,7 +1,6 @@
 #include "global.h"
 #include "SnapDisplay.h"
 #include "GameState.h"
-#include "ThemeManager.h"
 #include "Style.h"
 #include "ScreenDimensions.h"
 

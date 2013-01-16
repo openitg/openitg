@@ -1,8 +1,6 @@
 #include "global.h"
-#include "Difficulty.h"
 #include "GameState.h"
 #include "ThemeMetric.h"
-#include "LuaManager.h"
 #include "LuaFunctions.h"
 
 

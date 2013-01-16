@@ -1,17 +1,10 @@
 #include "global.h"
-#include "RageLog.h"
-#include "RageUtil.h"
-#include "RageTimer.h"
 #include "GameState.h"
 #include "GameManager.h"
 #include "InputMapper.h"
-#include "LightsManager.h"
 #include "PrefsManager.h"
-#include "GameInput.h"	// for GameController
-#include "Foreach.h"
 #include "CommonMetrics.h"
 #include "Actor.h"
-#include "Game.h"
 #include "Style.h"
 
 #include "arch/Lights/LightsDriver.h"

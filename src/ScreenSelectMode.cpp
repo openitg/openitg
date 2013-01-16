@@ -1,17 +1,8 @@
 #include "global.h"
 #include "ScreenSelectMode.h"
-#include "ScreenManager.h"
-#include "PrefsManager.h"
-#include "GameConstantsAndTypes.h"
-#include "PrefsManager.h"
-#include "GameManager.h"
 #include "RageLog.h"
-#include "AnnouncerManager.h"
 #include "GameState.h"
-#include "RageException.h"
 #include "GameState.h"
-#include "ThemeManager.h"
-#include "ActorUtil.h"
 
 /* Constants */
 

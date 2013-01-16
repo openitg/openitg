@@ -1,13 +1,9 @@
 #include "global.h"
 #include "ModelTypes.h"
 #include "IniFile.h"
-#include "RageUtil.h"
 #include "RageFile.h"
 #include "RageMath.h"
-#include "RageTexture.h"
 #include "RageTextureManager.h"
-#include "RageLog.h"
-#include "RageDisplay.h"
 #include "Foreach.h"
 
 AnimatedTexture::AnimatedTexture()

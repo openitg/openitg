@@ -21,7 +21,6 @@
 
 #include "RageDisplay_OGL_Extensions.h"
 #include "RageLog.h"
-#include "RageUtil.h"
 #include "arch/LowLevelWindow/LowLevelWindow.h"
 
 GLExt_t GLExt;

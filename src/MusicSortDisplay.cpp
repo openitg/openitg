@@ -1,7 +1,6 @@
 #include "global.h"
 #include "MusicSortDisplay.h"
 #include "ThemeManager.h"
-#include "RageUtil.h"
 
 
 MusicSortDisplay::MusicSortDisplay()

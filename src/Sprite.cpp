@@ -5,15 +5,10 @@
 #include "RageTextureManager.h"
 #include "IniFile.h"
 #include "RageLog.h"
-#include "RageException.h"
-#include "PrefsManager.h"
 #include "RageDisplay.h"
-#include "RageTexture.h"
 #include "ActorUtil.h"
 #include "arch/Dialog/Dialog.h"
 #include "Foreach.h"
-#include "LuaBinding.h"
-#include "LuaManager.h"
 
 
 // lua start

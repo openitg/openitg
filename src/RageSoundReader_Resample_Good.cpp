@@ -1,5 +1,4 @@
 #include "global.h"
-#include "RageLog.h"
 #include "RageUtil.h"
 #include "RageSoundReader_Resample_Good.h"
 
@@ -18,7 +17,6 @@
 
 #endif
 
-#include "RageTimer.h"
 
 #define channels source->GetNumChannels()
 

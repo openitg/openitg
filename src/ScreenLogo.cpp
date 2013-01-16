@@ -1,7 +1,5 @@
 #include "global.h"
 #include "ScreenLogo.h"
-#include "ActorUtil.h"
-#include "ThemeManager.h"
 #include "GameState.h"
 #include "Game.h"
 

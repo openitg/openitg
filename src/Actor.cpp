@@ -1,20 +1,12 @@
 #include "global.h"
 #include "Actor.h"
 #include "RageDisplay.h"
-#include "PrefsManager.h"
-#include "RageUtil.h"
 #include "RageMath.h"
-#include "GameConstantsAndTypes.h"
 #include "RageLog.h"
 #include "arch/Dialog/Dialog.h"
 #include "Foreach.h"
 #include "XmlFile.h"
-#include "LuaBinding.h"
-#include "Command.h"
-#include "ActorCommands.h"
 #include "ThemeManager.h"
-#include "LuaReference.h"
-#include "MessageManager.h"
 #include "LightsManager.h" // for NUM_CABINET_LIGHTS
 
 

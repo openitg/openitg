@@ -1,17 +1,10 @@
 #include "global.h"
 #include "ScreenOptions.h"
-#include "RageUtil.h"
-#include "ScreenManager.h"
 #include "PrefsManager.h"
-#include "GameConstantsAndTypes.h"
 #include "RageLog.h"
 #include "GameState.h"
-#include "ThemeManager.h"
 #include "InputMapper.h"
-#include "ActorUtil.h"
-#include "ProfileManager.h"
 #include "ScreenDimensions.h"
-#include "Command.h"
 
 
 /*

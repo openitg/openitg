@@ -3,14 +3,10 @@
 #include "GameState.h"
 #include "IniFile.h"
 #include "RageMath.h"
-#include "RageLog.h"
 #include "song.h"
 #include "ActorCollision.h"
 #include "Sprite.h"
-#include "RageDisplay.h"
 #include "ActorUtil.h"
-#include "arch/ArchHooks/ArchHooks.h"
-#include "LuaManager.h"
 
 
 const float PARTICLE_SPEED = 300;

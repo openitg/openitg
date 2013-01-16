@@ -15,7 +15,7 @@ test -z "$srcdir" && srcdir=.
 PKG_NAME="stepmania"
 
 AUTOHEADER=autoheader
-ACLOCAL_OPTIONS=-Iautoconf/m4/
+ACLOCAL_OPTIONS='-I autoconf/m4/'
 AUTOMAKE_OPTIONS=-a
 
 AUTOCONF=autoconf
@@ -42,15 +42,14 @@ DIE=0
 if automake-1.9 --version > /dev/null 2>&1; then
         ACLOCAL=aclocal-1.9
         AUTOMAKE=automake-1.9
-        ACLOCAL_OPTIONS='-I autoconf/m4/'
 elif automake-1.8 --version > /dev/null 2>&1; then
         ACLOCAL=aclocal-1.8
         AUTOMAKE=automake-1.8
-        ACLOCAL_OPTIONS='-I autoconf/m4/'
 elif automake-1.7 --version > /dev/null 2>&1; then
         ACLOCAL=aclocal-1.7
         AUTOMAKE=automake-1.7
-        ACLOCAL_OPTIONS='-I autoconf/m4/'
+else
+        ACLOCAL_OPTIONS='-Iautoconf/m4/'
 fi
 
 # If none of those were found, check if "automake" exists, and check the version.

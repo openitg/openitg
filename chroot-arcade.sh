@@ -52,7 +52,7 @@ echo "Installing necessary dev packages..."
 echo "deb $DEBIAN_SARGE_MIRROR $SARGE_DIST_NAME main contrib non-free" >/etc/apt/sources.list
 echo "$DEBIAN_SARGE_BACKPORTS" >>/etc/apt/sources.list
 apt-get update
-apt-get install build-essential gettext automake1.8 gcc g++ libavcodec-dev libavformat-dev libxt-dev libogg-dev libpng-dev libjpeg-dev libvorbis-dev libusb-dev libglu1-mesa-dev libx11-dev libxrandr-dev liblua50-dev liblualib50-dev nvidia-glx-dev libmad0-dev libasound-dev git-core
+apt-get install build-essential gettext automake1.8 gcc g++ libavcodec-dev libavformat-dev libxt-dev libogg-dev libpng-dev libjpeg-dev libvorbis-dev libusb-dev libglu1-mesa-dev libx11-dev libxrandr-dev liblua50-dev liblualib50-dev nvidia-glx-dev libmad0-dev libasound2-dev git-core automake1.7 autoconf gettext
 echo "OpenITG AC chroot successfully set up!"
 exec /bin/bash
 !

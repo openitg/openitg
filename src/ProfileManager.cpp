@@ -19,6 +19,7 @@
 #include "XmlFile.h"
 #include "StepsUtil.h"
 #include "Style.h"
+#include "RageUtil_WorkerThread.h"
 
 /* GUID generation for arcade */
 #include "DiagnosticsUtil.h"
@@ -37,9 +38,62 @@ const CString LAST_GOOD_DIR	=	"LastGood/";
 static Preference<CString> g_sMemoryCardProfileImportSubdirs( "MemoryCardProfileImportSubdirs", "" );
 
 
+class ThreadedProfileWorker: public RageWorkerThread
+{
+public:
+	ThreadedProfileWorker();
+	virtual ~ThreadedProfileWorker();
+
+	void SaveAllProfiles();
+
+private:
+	virtual void HandleRequest( int iRequest );
+
+	enum
+	{
+		REQ_SAVEALL = 1
+	};
+};
+
+ThreadedProfileWorker::ThreadedProfileWorker():
+	RageWorkerThread("ProfileWorker")
+{
+	StartThread();
+}
+
+ThreadedProfileWorker::~ThreadedProfileWorker()
+{
+	StopThread();
+}
+
+void ThreadedProfileWorker::SaveAllProfiles()
+{
+	if( IsTimedOut() )
+		return;
+
+	DoRequest( REQ_SAVEALL );
+}
+
+void ThreadedProfileWorker::HandleRequest( int iRequest )
+{
+	if( iRequest == REQ_SAVEALL )
+	{
+		LOG->Trace( "ProfileWorker: Begin async profile save" );
+		PROFILEMAN->SaveAllProfiles();
+		LOG->Trace( "ProfileWorker: Done with async profile save" );
+	}
+}
+
+static ThreadedProfileWorker *g_pWorker = NULL;
+
+
 ProfileManager::ProfileManager()
 {
+	ASSERT( g_pWorker == NULL );
+
 	LOG->Trace( "ProfileManager::ProfileManager()" );
+
+	g_pWorker = new ThreadedProfileWorker;
 }
 
 ProfileManager::~ProfileManager()
@@ -162,8 +216,8 @@ bool ProfileManager::LoadProfileFromMemoryCard( PlayerNumber pn )
 	UnloadProfile( pn );
 
 	// mount slot
-	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY ) {
-		LOG->ProfileStop(key, "Loading Profile Ended");
+	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_MOUNTED ) {
+		LOG->ProfileStop(key, "Loading Profile Ended; memory card not mounted");
 		return false;
 	}
 
@@ -229,7 +283,7 @@ Profile::LoadResult ProfileManager::LoadEditableDataFromMemoryCard( PlayerNumber
 {
 	Profile::LoadResult lr = Profile::failed_no_profile;
 
-	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
+	if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_MOUNTED )
 		return lr;
 
 	vector<CString> asDirsToTry;
@@ -303,12 +357,35 @@ void ProfileManager::SaveAllProfiles() const
 	}
 }
 
+void ProfileManager::SaveAllProfilesAsync() const
+{
+	LOG->Trace( "Requesting async profile save" );
+	g_pWorker->SetTimeout(0.2);
+	g_pWorker->SaveAllProfiles();
+	if(g_pWorker->IsTimedOut())
+		LOG->Trace( "Async profile save continuing in background" );
+	else
+		LOG->Trace( "Profile save complete within 200msec" );
+}
+
 bool ProfileManager::SaveProfile( PlayerNumber pn ) const
 {
 	if( m_sProfileDir[pn].empty() )
 		return false;
 
+	if( m_bWasLoadedFromMemoryCard[pn] )
+	{
+		MemoryCardState mcs = MEMCARDMAN->GetCardState(pn);
+		if( mcs == MEMORY_CARD_STATE_READY )
+			MEMCARDMAN->MountCard(pn);
+		else if( mcs != MEMORY_CARD_STATE_MOUNTED )
+			return false;
+	}
+
 	bool b = m_Profile[pn].SaveAllToDir( m_sProfileDir[pn], PREFSMAN->m_bSignProfileData );
+
+	if( m_bWasLoadedFromMemoryCard[pn] )
+		MEMCARDMAN->UnmountCard(pn);
 
 	return b;
 }

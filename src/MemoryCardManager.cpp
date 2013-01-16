@@ -12,6 +12,9 @@
 #include "RageUtil_WorkerThread.h"
 #include "arch/MemoryCard/MemoryCardDriver_Null.h"
 #include "LuaManager.h"
+#include "ProfileManager.h"
+#include "GameState.h"
+#include "PlayerState.h"
 
 MemoryCardManager*	MEMCARDMAN = NULL;	// global and accessable from anywhere in our program
 
@@ -43,6 +46,7 @@ Preference<int> MemoryCardManager::m_iMemoryCardUsbLevel[NUM_PLAYERS] =
 };
 
 Preference<bool> MemoryCardManager::m_bUsePmount( "UsePmount", false );
+Preference<bool> MemoryCardManager::m_bDynamicMemoryCards( "DynamicMemoryCards", false );
 
 Preference<CString>	MemoryCardManager::m_sEditorMemoryCardOsMountPoint( "EditorMemoryCardOsMountPoint",	"" );
 
@@ -268,7 +272,6 @@ MemoryCardManager::MemoryCardManager()
 
 	FOREACH_PlayerNumber( p )
 	{
-		m_bMounted[p] = false;
 		m_State[p] = MEMORY_CARD_STATE_NO_CARD;
 	}
 	
@@ -412,7 +415,7 @@ void MemoryCardManager::CheckStateChanges()
 		MemoryCardState state = MEMORY_CARD_STATE_INVALID;
 		CString sError;
 
-		if( m_bCardsLocked )
+		if( m_bCardsLocked && !m_bDynamicMemoryCards )
 		{
 			if( m_FinalDevice[p].m_State == UsbStorageDevice::STATE_NONE )
 			{
@@ -479,6 +482,8 @@ void MemoryCardManager::CheckStateChanges()
 				if( LastState == MEMORY_CARD_STATE_READY )
 				{
 					m_soundDisconnect.Play( &params );
+					if( m_bDynamicMemoryCards )
+						PROFILEMAN->UnloadProfile(p);
 					MESSAGEMAN->Broadcast( (Message)(MESSAGE_CARD_REMOVED_P1+p) );
 				}
 				break;
@@ -495,6 +500,24 @@ void MemoryCardManager::CheckStateChanges()
 
 			m_State[p] = state;
 			m_sError[p] = sError;
+
+			if( state == MEMORY_CARD_STATE_READY && m_bCardsLocked && m_bDynamicMemoryCards )
+			{
+				MountCard(p);
+				PROFILEMAN->LoadProfileFromMemoryCard(p);
+				UnmountCard(p);
+				MESSAGEMAN->Broadcast( (Message)(MESSAGE_CARD_READY_P1+p) );
+
+				Profile* pProfile = PROFILEMAN->GetProfile(p);
+
+				CString sModifiers;
+				if( pProfile->GetDefaultModifiers( GAMESTATE->m_pCurGame, sModifiers ) )
+				{
+					PlayerOptions *pOptions = &GAMESTATE->m_pPlayerState[p]->m_PlayerOptions;
+					pOptions->ResetSavedPrefs();
+					pOptions->FromString( sModifiers );
+				}
+			}
 		}
 	}
 
@@ -587,7 +610,7 @@ bool MemoryCardManager::MountCard( PlayerNumber pn, int iTimeout )
 	/* Pause the mounting thread when we mount the first drive. */
 	bool bStartingMemoryCardAccess = true;
 	FOREACH_PlayerNumber( p )
-		if( m_bMounted[p] )
+		if( m_State[p] == MEMORY_CARD_STATE_MOUNTED )
 			bStartingMemoryCardAccess = false; /* already did */
 	if( bStartingMemoryCardAccess )
 	{
@@ -604,7 +627,7 @@ bool MemoryCardManager::MountCard( PlayerNumber pn, int iTimeout )
 		return false;
 	}
 
-	m_bMounted[pn] = true;
+	m_State[pn] = MEMORY_CARD_STATE_MOUNTED;
 
 	RageFileDriver *pDriver = FILEMAN->GetFileDriver( MEM_CARD_MOUNT_POINT_INTERNAL[pn] );
 	if( pDriver == NULL )
@@ -640,11 +663,11 @@ bool MemoryCardManager::MountCard( PlayerNumber pn, const UsbStorageDevice &d, i
  * will block until flushed. */
 void MemoryCardManager::UnmountCard( PlayerNumber pn )
 {
-	LOG->Trace( "MemoryCardManager::UnmountCard(%i) (mounted: %i)", pn, m_bMounted[pn] );
+	LOG->Trace( "MemoryCardManager::UnmountCard(%i) (mounted: %i)", pn, m_State[pn] == MEMORY_CARD_STATE_MOUNTED );
 	if( m_Device[pn].IsBlank() )
 		return;
 
-	if( !m_bMounted[pn] )
+	if( m_State[pn] != MEMORY_CARD_STATE_MOUNTED)
 		return;
 
 	/* Leave our own filesystem drivers mounted.  Unmount the kernel mount. */
@@ -654,12 +677,12 @@ void MemoryCardManager::UnmountCard( PlayerNumber pn )
 	FILEMAN->FlushDirCache( MEM_CARD_MOUNT_POINT[pn] );
 	FILEMAN->FlushDirCache( MEM_CARD_MOUNT_POINT_INTERNAL[pn] );
 
-	m_bMounted[pn] = false;
+	m_State[pn] = MEMORY_CARD_STATE_READY;
 
 	/* Unpause the mounting thread when we unmount the last drive. */
 	bool bNeedUnpause = true;
 	FOREACH_PlayerNumber( p )
-		if( m_bMounted[p] )
+		if( m_State[p] == MEMORY_CARD_STATE_MOUNTED )
 			bNeedUnpause = false;
 	if( bNeedUnpause )
 		this->UnPauseMountingThread();
@@ -705,6 +728,13 @@ void MemoryCardManager::PauseMountingThread( int iTimeout )
 void MemoryCardManager::UnPauseMountingThread()
 {
 	LOG->Trace( "MemoryCardManager::UnPauseMountingThread" );
+
+	FOREACH_PlayerNumber( p )
+		if( m_State[p] == MEMORY_CARD_STATE_MOUNTED )
+		{
+			LOG->Trace( "Card %i still mounted, not unpausing yet", p);
+			return;
+		}
 
 	g_pWorker->SetMountThreadState( ThreadedMemoryCardWorker::detect_and_mount );
 

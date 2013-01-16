@@ -28,8 +28,6 @@ public:
 	bool MountCard( PlayerNumber pn, int iTimeout = 10 );
 	void UnmountCard( PlayerNumber pn );
 
-	bool IsMounted( PlayerNumber pn ) const { return m_bMounted[pn]; }
-
 	/* When paused, no changes in memory card state will be noticed until unpaused. */
 	void PauseMountingThread( int iTimeout = 10 );
 	void UnPauseMountingThread();
@@ -48,6 +46,7 @@ public:
 	static Preference<int>		m_iMemoryCardUsbPort[NUM_PLAYERS];
 	static Preference<int>		m_iMemoryCardUsbLevel[NUM_PLAYERS];
 	static Preference<bool>		m_bUsePmount;
+	static Preference<bool>		m_bDynamicMemoryCards;
 
 	static Preference<CString>	m_sEditorMemoryCardOsMountPoint;	
 
@@ -61,7 +60,6 @@ protected:
 	vector<UsbStorageDevice> m_vStorageDevices;	// all currently connected
 
 	bool	m_bCardsLocked;
-	bool	m_bMounted[NUM_PLAYERS];	// card is currently mounted
 
 	UsbStorageDevice m_Device[NUM_PLAYERS];	// device in the memory card slot, blank if none
 	UsbStorageDevice m_FinalDevice[NUM_PLAYERS];	// device in the memory card slot when we finalized, blank if none

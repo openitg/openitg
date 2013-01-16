@@ -444,11 +444,12 @@ PlayerNumber GetFirstReadyMemoryCard()
 {
 	FOREACH_PlayerNumber( pn )
 	{
-		if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
+		MemoryCardState mcs = MEMCARDMAN->GetCardState(pn);
+		if( mcs == MEMORY_CARD_STATE_READY )
+			MEMCARDMAN->MountCard(pn);
+		else if( mcs != MEMORY_CARD_STATE_MOUNTED )
 			continue;	// skip
 
-		if( !MEMCARDMAN->IsMounted(pn) )
-			MEMCARDMAN->MountCard(pn);
 		return pn;
 	}
 
@@ -961,10 +962,12 @@ void GameCommand::ApplySelf( const vector<PlayerNumber> &vpns ) const
 		bool bTriedToCopy = false;
 		FOREACH_PlayerNumber( pn )
 		{
-			if( MEMCARDMAN->GetCardState(pn) != MEMORY_CARD_STATE_READY )
+			MemoryCardState mcs = MEMCARDMAN->GetCardState(pn);
+			if( mcs == MEMORY_CARD_STATE_READY )
+				MEMCARDMAN->MountCard(pn);
+			else if( mcs != MEMORY_CARD_STATE_MOUNTED )
 				continue;
 
-			MEMCARDMAN->MountCard(pn);
 			bTriedToCopy = true;
 
 			CString sDir = MEM_CARD_MOUNT_POINT[pn];

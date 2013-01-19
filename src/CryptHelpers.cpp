@@ -14,6 +14,17 @@
 
 #include "libtomcrypt/src/headers/tomcrypt.h"
 
+/* XXX huge hack to get stuff working */
+#if defined(WIN32)
+	#if defined(_DEBUG)
+		#pragma comment(lib, "libtomcrypt/Debug/tomcrypt.lib")
+		#pragma comment(lib, "libtommath/Debug/tommath.lib")
+	#else
+		#pragma comment(lib, "libtomcrypt/Release/tomcrypt.lib")
+		#pragma comment(lib, "libtommath/Release/tommath.lib")
+	#endif
+#endif
+
 static const ltc_prng_descriptor *g_PRNGDesc; // HACK: this _MIGHT_ be better off as g_SigHashDesc or something
 static const ltc_hash_descriptor *g_SHA1Desc;
 

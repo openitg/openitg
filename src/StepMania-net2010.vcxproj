@@ -94,30 +94,41 @@
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(TargetDir)</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)/build-vs2008/$(ProjectName)/$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)/build-vs2010/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(TargetDir)</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)/build-vs2008/$(ProjectName)/$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)/build-vs2010/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='FastDebug|Win32'">FastDebug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='FastDebug|Win32'">FastDebug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='FastDebug|Win32'">$(TargetDir)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='FastDebug|Win32'">$(SolutionDir)/build-vs2010/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='FastDebug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release-Arcade|Win32'">./../Program\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release-Arcade|Win32'">./../Release-arcade\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release-Arcade|Win32'">$(TargetDir)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release-Arcade|Win32'">$(SolutionDir)/build-vs2010/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release-Arcade|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release-Home|Win32'">$(TargetDir)</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release-Home|Win32'">$(SolutionDir)/build-vs2008/$(ProjectName)/$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release-Home|Win32'">$(SolutionDir)/build-vs2010/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release-Home|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release-Home-SSE2|Win32'">$(TargetDir)</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release-Home-SSE2|Win32'">$(SolutionDir)/build-vs2008/$(ProjectName)/$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release-Home-SSE2|Win32'">$(SolutionDir)/build-vs2010/$(ProjectName)/$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release-Home-SSE2|Win32'">false</LinkIncremental>
     <PostBuildEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Release-Home-SSE2|Win32'">true</PostBuildEventUseInBuild>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='FastDebug|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='FastDebug|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release-Arcade|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release-Arcade|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release-Home-SSE2|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release-Home-SSE2|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release-Home|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release-Home|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProgramFiles)\Microsoft DirectX 9.0 SDK (October 2004)\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
-      <Command>archutils\Win32\verinc
-cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
-</Command>
+      <Command>archutils\Win32\gen-git-verinfo.bat</Command>
+      <Message>Pull revision info from Git</Message>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -154,7 +165,7 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" /FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" </AdditionalOptions>
       <AdditionalDependencies>shell32.lib;gdi32.lib;user32.lib;ole32.lib;advapi32.lib;libusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../Program/OpenITG-debug.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -175,12 +186,16 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
     <PostBuildEvent>
       <Command>archutils\Win32\mapconv "$(IntDir)$(TargetName).map" "$(TargetDir)\OpenITG-debug.vdi"</Command>
     </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>archutils\Win32\verinc &amp; 
+cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)/verstub.obj"</Command>
+      <Message>Create build-specific info for Windows debug</Message>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
-      <Command>archutils\Win32\verinc
-cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
-</Command>
+      <Command>archutils\Win32\gen-git-verinfo.bat</Command>
+      <Message>Pull revision info from Git</Message>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -222,7 +237,7 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" </AdditionalOptions>
       <AdditionalDependencies>libusb.lib;shell32.lib;gdi32.lib;user32.lib;ole32.lib;advapi32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../Program/OpenITG-PC.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -240,12 +255,16 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
     <PostBuildEvent>
       <Command>archutils\Win32\mapconv "$(IntDir)$(TargetName).map" "$(TargetDir)\OpenITG-AC.vdi"</Command>
     </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>archutils\Win32\verinc &amp; 
+cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)/verstub.obj"</Command>
+      <Message>Create build-specific info for Windows debug</Message>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='FastDebug|Win32'">
     <PreBuildEvent>
-      <Command>archutils\Win32\verinc
-cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
-</Command>
+      <Command>archutils\Win32\gen-git-verinfo.bat</Command>
+      <Message>Pull revision info from Git</Message>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -280,7 +299,7 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" </AdditionalOptions>
       <AdditionalDependencies>libusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../Program/StepMania-debug.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -299,12 +318,16 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
     <PostBuildEvent>
       <Command>archutils\Win32\mapconv "$(IntDir)$(TargetName).map" "$(TargetDir)\StepMania.vdi"</Command>
     </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>archutils\Win32\verinc &amp; 
+cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)/verstub.obj"</Command>
+      <Message>Create build-specific info for Windows debug</Message>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Arcade|Win32'">
     <PreBuildEvent>
-      <Command>archutils\Win32\verinc
-cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
-</Command>
+      <Command>archutils\Win32\gen-git-verinfo.bat</Command>
+      <Message>Pull revision info from Git</Message>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -347,7 +370,7 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" </AdditionalOptions>
       <AdditionalDependencies>libusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../Program/OpenITG-AC.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -366,12 +389,16 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
     <PostBuildEvent>
       <Command>archutils\Win32\mapconv "$(IntDir)$(TargetName).map" "$(TargetDir)\OpenITG-AC.vdi"</Command>
     </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>archutils\Win32\verinc &amp; 
+cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)/verstub.obj"</Command>
+      <Message>Create build-specific info for Windows debug</Message>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Home|Win32'">
     <PreBuildEvent>
-      <Command>archutils\Win32\verinc
-cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
-</Command>
+      <Command>archutils\Win32\gen-git-verinfo.bat</Command>
+      <Message>Pull revision info from Git</Message>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -415,7 +442,7 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" /FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" </AdditionalOptions>
       <AdditionalDependencies>libusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>../Program/OpenITG-PC.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -434,13 +461,16 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
     <PostBuildEvent>
       <Command>archutils\Win32\mapconv "$(IntDir)$(TargetName).map" "$(TargetDir)\OpenITG-PC.vdi"</Command>
     </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>archutils\Win32\verinc &amp; 
+cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)/verstub.obj"</Command>
+      <Message>Create build-specific info for Windows debug</Message>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Home-SSE2|Win32'">
     <PreBuildEvent>
-      <Command>archutils\Win32\verinc-svn
-archutils\Win32\verinc
-cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
-</Command>
+      <Command>archutils\Win32\gen-git-verinfo.bat</Command>
+      <Message>Pull revision info from Git</Message>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -484,7 +514,7 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" </AdditionalOptions>
       <AdditionalDependencies>libusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>../Program/OpenITG-PC-SSE2.exe</OutputFile>
@@ -508,8 +538,23 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
       <Command>archutils\Win32\mapconv "$(IntDir)$(TargetName).map" "$(TargetDir)\OpenITG-PC-SSE2.vdi"
 </Command>
     </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>archutils\Win32\verinc &amp; 
+cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)/verstub.obj"</Command>
+      <Message>Create build-specific info for Windows debug</Message>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ibutton\crcutil.c" />
+    <ClCompile Include="ibutton\ds2480ut.c" />
+    <ClCompile Include="ibutton\owerr.c" />
+    <ClCompile Include="ibutton\owllu.c" />
+    <ClCompile Include="ibutton\ownetu.c" />
+    <ClCompile Include="ibutton\owsesu.c" />
+    <ClCompile Include="ibutton\owtrnu.c" />
+    <ClCompile Include="ibutton\sha18.c" />
+    <ClCompile Include="ibutton\shaib.c" />
+    <ClCompile Include="ibutton\win32lnk.c" />
     <ClCompile Include="Screen.cpp" />
     <ClCompile Include="ScreenArcadeDiagnostics.cpp" />
     <ClCompile Include="ScreenArcadePatch.cpp" />
@@ -701,7 +746,6 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
     <ClCompile Include="arch\LowLevelWindow\LowLevelWindow_Win32.cpp" />
     <ClCompile Include="arch\Lights\LightsDriver.cpp" />
     <ClCompile Include="arch\Lights\LightsDriver_ActorMessage.cpp" />
-    <ClCompile Include="arch\Lights\LightsDriver_Dynamic.cpp" />
     <ClCompile Include="arch\Lights\LightsDriver_External.cpp" />
     <ClCompile Include="arch\Lights\LightsDriver_G15.cpp" />
     <ClCompile Include="arch\Lights\LightsDriver_PacDrive.cpp" />
@@ -1086,6 +1130,10 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ibutton\ds2480.h" />
+    <ClInclude Include="ibutton\owfile.h" />
+    <ClInclude Include="ibutton\ownet.h" />
+    <ClInclude Include="ibutton\shaib.h" />
     <ClInclude Include="Screen.h" />
     <ClInclude Include="ScreenArcadeDiagnostics.h" />
     <ClInclude Include="ScreenArcadePatch.h" />
@@ -1289,7 +1337,6 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)"\
     <ClInclude Include="arch\LowLevelWindow\LowLevelWindow_Win32.h" />
     <ClInclude Include="arch\Lights\LightsDriver.h" />
     <ClInclude Include="arch\Lights\LightsDriver_ActorMessage.h" />
-    <ClInclude Include="arch\Lights\LightsDriver_Dynamic.h" />
     <ClInclude Include="arch\Lights\LightsDriver_External.h" />
     <ClInclude Include="arch\Lights\LightsDriver_G15.h" />
     <ClInclude Include="arch\Lights\LightsDriver_Null.h" />

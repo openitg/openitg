@@ -788,7 +788,7 @@ static bool ReportCallStack( HWND hwnd, HANDLE hFile, const void **Backtrace )
 	if( g_debugInfo.nBuildNumber != int(VersionNumber) )
 	{
 		Report( hwnd, hFile,
-			"Incorrect %s file (build %d, expected %d) -- call stack unavailable.").c_str(),
+			"Incorrect %s file (build %d, expected %d) -- call stack unavailable.",
 			g_debugInfo.sFilename,
 			g_debugInfo.nBuildNumber,
 			int(VersionNumber)

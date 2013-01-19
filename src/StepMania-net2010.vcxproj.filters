@@ -85,6 +85,9 @@
     <Filter Include="BaseClasses">
       <UniqueIdentifier>{8e416c61-9b4a-497e-942b-ac1bb9992bc2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Special I/O\iButton">
+      <UniqueIdentifier>{d1e0ead5-46be-415c-a80b-dc3b0660bffa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Screen.cpp">
@@ -631,9 +634,6 @@
       <Filter>StepMania\arch\Lights</Filter>
     </ClCompile>
     <ClCompile Include="arch\Lights\LightsDriver_ActorMessage.cpp">
-      <Filter>StepMania\arch\Lights</Filter>
-    </ClCompile>
-    <ClCompile Include="arch\Lights\LightsDriver_Dynamic.cpp">
       <Filter>StepMania\arch\Lights</Filter>
     </ClCompile>
     <ClCompile Include="arch\Lights\LightsDriver_External.cpp">
@@ -1416,6 +1416,36 @@
     <ClCompile Include="BaseClasses\wxutil.cpp">
       <Filter>BaseClasses</Filter>
     </ClCompile>
+    <ClCompile Include="ibutton\crcutil.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ibutton\ds2480ut.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ibutton\owerr.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ibutton\owllu.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ibutton\ownetu.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ibutton\owsesu.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ibutton\owtrnu.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ibutton\sha18.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ibutton\shaib.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
+    <ClCompile Include="ibutton\win32lnk.c">
+      <Filter>Special I/O\iButton</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Screen.h">
@@ -2001,9 +2031,6 @@
       <Filter>StepMania\arch\Lights</Filter>
     </ClInclude>
     <ClInclude Include="arch\Lights\LightsDriver_ActorMessage.h">
-      <Filter>StepMania\arch\Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="arch\Lights\LightsDriver_Dynamic.h">
       <Filter>StepMania\arch\Lights</Filter>
     </ClInclude>
     <ClInclude Include="arch\Lights\LightsDriver_External.h">
@@ -2722,6 +2749,18 @@
     </ClInclude>
     <ClInclude Include="io\PIUIO.h">
       <Filter>Special I/O</Filter>
+    </ClInclude>
+    <ClInclude Include="ibutton\ds2480.h">
+      <Filter>Special I/O\iButton</Filter>
+    </ClInclude>
+    <ClInclude Include="ibutton\owfile.h">
+      <Filter>Special I/O\iButton</Filter>
+    </ClInclude>
+    <ClInclude Include="ibutton\ownet.h">
+      <Filter>Special I/O\iButton</Filter>
+    </ClInclude>
+    <ClInclude Include="ibutton\shaib.h">
+      <Filter>Special I/O\iButton</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

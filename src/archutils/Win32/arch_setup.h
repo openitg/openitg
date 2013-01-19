@@ -37,6 +37,9 @@
 #define isnan _isnan
 #define finite _finite
 
+#pragma warning( disable : 4996 ) /* '_stricmp': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _stricmp. */
+/* I tried defining stricmp to _stricmp and that's what VS2010 gave me; clearly, the only winning move is not to play. */
+
 /* mkdir is missing the mode arg */
 #define mkdir(p,m) mkdir(p)
 

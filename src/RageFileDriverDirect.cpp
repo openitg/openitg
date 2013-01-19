@@ -13,6 +13,12 @@
 #include <dirent.h>
 #include <fcntl.h>
 #else
+#define open _open
+#define lseek _lseek
+#define read _read
+#define write _write
+#define close _close
+#define rmdir _rmdir
 #if !defined(_XBOX)
 #include <windows.h>
 #endif

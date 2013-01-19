@@ -52,8 +52,7 @@ int main(void)
 		fprintf(f,
 			"unsigned long VersionNumber = %ld;\n"
 			"extern const char *const VersionTime = \"%s\";\n"
-			"extern const char *const VersionDate = \"%s\";\n"
-			"extern const bool VersionSVN = false;\n",
+			"extern const char *const VersionDate = \"%s\";\n",
 			build, strtime, strdate );
 
 		fclose( f );

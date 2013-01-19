@@ -1,3 +1,4 @@
+#include "global.h"
 #include "UserPackManager.h"
 #include "RageUtil.h"
 #include "RageLog.h"

@@ -1,5 +1,4 @@
 #include "global.h"
-
 #include "StepMania.h"
 
 //
@@ -71,6 +70,7 @@
 
 #if defined(WIN32) && !defined(XBOX)
 #include <windows.h>
+#include "archutils/Win32/VideoDriverInfo.h"
 #endif
 
 #if defined(UNIX)

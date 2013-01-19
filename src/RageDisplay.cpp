@@ -1,3 +1,4 @@
+#include "global.h"
 #include "RageDisplay.h"
 #include "RageLog.h"
 #include "RageMath.h"

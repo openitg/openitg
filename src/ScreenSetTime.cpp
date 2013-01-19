@@ -5,6 +5,7 @@
 #include "GameState.h"
 #include "GameSoundManager.h"
 #include "arch/ArchHooks/ArchHooks.h"
+#include <ctime>
 
 static const CString SetTimeSelectionNames[] = {
 	"Year", 

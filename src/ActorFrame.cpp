@@ -6,6 +6,10 @@
 #include "RageDisplay.h"
 #include "ScreenDimensions.h"
 
+#if defined(DEBUG)
+#include "arch/Dialog/Dialog.h"
+#endif
+
 // lua start
 LUA_REGISTER_CLASS( ActorFrame )
 // lua end

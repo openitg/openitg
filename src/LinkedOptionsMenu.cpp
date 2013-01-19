@@ -1,8 +1,9 @@
-#include "LinkedOptionsMenu.h"
-#include "ActorUtil.h"
+#include "global.h"
 #include "ScreenManager.h"
+#include "ActorUtil.h"
+#include "LinkedOptionsMenu.h"
 
-#ifdef MSVC
+#ifdef _MSC_VER
 /* It's going to be a pain to fix these. Disable for now. */
 #pragma warning( disable : 4018 )	// signed/unsigned mismatch
 #pragma warning( disable : 4244 )	// conversion, possible loss of data

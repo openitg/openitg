@@ -1,3 +1,4 @@
+#include "global.h"
 #include "Timer.h"
 
 ProfilingTimer::ProfilingTimer() {

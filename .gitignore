@@ -16,8 +16,6 @@ src/.deps/
 src/Makefile
 src/archutils/Unix/verinc
 src/config.h
-src/version.bin
-src/verstub.cpp
 src/stamp-h1
 version.h
 version.txt
@@ -25,3 +23,20 @@ assets/utilities/itg2-util/src/.deps/
 src/libresample/src/config.h
 src/libresample/tests/testresample
 run
+
+# Visual Studio build artefacts
+*.obj
+build-vs2008
+build-vs2010
+ipch
+*.user
+Debug
+Release
+Release-SSE2
+*.sdf
+*.suo
+*.pdb
+
+# Windows build artefacts
+src/verstub.cpp
+src/version.bin

@@ -1,11 +1,15 @@
 #include "global.h" // also pulls in config.h
 #include "ProductInfo.h"
 
-/* XXX: workaround until the Windows build can pull Git versioning. */
-#if !defined(HAVE_CONFIG_H)
-	#define BUILD_VERSION "beta3 DEV"
-	#define BUILD_DATE "unknown date"
-	#define BUILD_REVISION_TAG "unknown revision"
+#if defined(HAVE_CONFIG_H)
+	/* included in global.h */
+#elif defined(WIN32)
+#include "verinfo.h"
+#else
+#define BUILD_VERSION "unknown version"
+#define BUILD_REV_DATE "unknown date"
+#define BUILD_REV_TAG "unknown revision"
+#warning No build information is available.
 #endif
 
 /*

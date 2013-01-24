@@ -1,6 +1,48 @@
 #ifndef TOMCRYPT_CUSTOM_H_
 #define TOMCRYPT_CUSTOM_H_
 
+/*
+ * Begin StepMania modifications
+ */
+
+#define LTC_SOURCE
+
+/* Use libtommath: */
+#define LTM_DESC
+#define USE_LTM
+
+/* Remove everything by default... */
+#define LTC_NO_CIPHERS
+#define LTC_NO_HASHES
+#define LTC_NO_MACS
+#define LTC_NO_PRNGS
+#define LTC_NO_CURVES
+#define LTC_NO_MODES
+#define LTC_NO_PKCS
+#define LTC_NO_ROLC
+
+/* ...and manually pull in the modules we want. */
+
+/* StepMania stuff */
+#define LTC_CTR_MODE /* needed for yarrow */
+#define LTC_YARROW_AES 3 /* 3 = aes (full) */
+#define LTC_YARROW
+#define LTC_SHA1
+
+/* ITG encryption */
+#define LTC_ECB_MODE
+#define LTC_RIJNDAEL
+#define LTC_SHA512
+
+/* RSA key signing/verification */
+#define LTC_DER
+#define LTC_PKCS_1
+#define LTC_MRSA
+
+/*
+ * End StepMania modifications
+ */
+
 /* macros for various libc functions you can change for embedded targets */
 #ifndef XMALLOC
    #ifdef malloc 

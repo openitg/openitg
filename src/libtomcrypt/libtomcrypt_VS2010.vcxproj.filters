@@ -1089,6 +1089,9 @@
     <ClCompile Include="src\prngs\yarrow.c">
       <Filter>prngs</Filter>
     </ClCompile>
+    <ClCompile Include="src\ciphers\aes\aes.c">
+      <Filter>ciphers\aes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\headers\tomcrypt.h">
@@ -1130,10 +1133,5 @@
     <ClInclude Include="src\headers\tomcrypt_prng.h">
       <Filter>headers</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="src\ciphers\aes\aes.c">
-      <Filter>ciphers\aes</Filter>
-    </CustomBuild>
   </ItemGroup>
 </Project>

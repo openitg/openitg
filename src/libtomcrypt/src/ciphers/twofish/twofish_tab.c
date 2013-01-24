@@ -14,6 +14,7 @@
     Twofish tables, Tom St Denis
  */
 #ifdef LTC_TWOFISH_TABLES
+#include "tomcrypt_macros.h"
 
 /* pre generated 8x8 tables from the four 4x4s */
 static const unsigned char SBOX[2][256] = {

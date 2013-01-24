@@ -1,5 +1,9 @@
 /* ---- PRNG Stuff ---- */
 #ifdef LTC_YARROW
+#ifndef LTC_CTR_MODE
+	#error Yarrow requires LTC_CTR_MODE
+#endif
+
 struct yarrow_prng {
     int                   cipher, hash;
     unsigned char         pool[MAXBLOCKSIZE];

@@ -12,6 +12,10 @@
 
 #ifdef LTC_SHA384
 
+#ifndef LTC_SHA512
+	#error SHA384 requires LTC_SHA512
+#endif
+
 /** 
    @param sha384.c
    LTC_SHA384 hash included in sha512.c, Tom St Denis

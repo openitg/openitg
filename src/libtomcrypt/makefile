@@ -30,7 +30,7 @@ endif
 endif
 
 # Compilation flags. Note the += does not write over the user's CFLAGS!
-CFLAGS += -c -I./testprof/ -I./src/headers/ -Wall -Wsign-compare -W -Wshadow -Wno-unused-parameter -DLTC_SOURCE
+CFLAGS += -c -I./testprof/ -I./src/headers/ -Wall -Wsign-compare -W -Wshadow -Wno-unused-parameter
 
 # additional warnings (newer GCC 3.4 and higher)
 ifdef GCC_34

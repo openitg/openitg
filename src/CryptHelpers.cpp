@@ -4,11 +4,6 @@
 #include "RageUtil.h"
 #include "RageLog.h"
 
-// crypt headers
-#define LTM_DESC
-#define SHA1_DESC
-#define YARROW_DESC
-
 // tomcrypt want to #define ENDIAN_LITTLE, which is also in our own config.h.  We're not using it in this file anyway.
 #undef ENDIAN_LITTLE
 
@@ -20,8 +15,13 @@
 		#pragma comment(lib, "libtomcrypt/Debug/tomcrypt.lib")
 		#pragma comment(lib, "libtommath/Debug/tommath.lib")
 	#else
-		#pragma comment(lib, "libtomcrypt/Release/tomcrypt.lib")
-		#pragma comment(lib, "libtommath/Release/tommath.lib")
+		#if defined(WITH_SSE2)
+			#pragma comment(lib, "libtomcrypt/Release-SSE2/tomcrypt.lib")
+			#pragma comment(lib, "libtommath/Release-SSE2/tommath.lib")
+		#else
+			#pragma comment(lib, "libtomcrypt/Release/tomcrypt.lib")
+			#pragma comment(lib, "libtommath/Release/tommath.lib")
+		#endif
 	#endif
 #endif
 

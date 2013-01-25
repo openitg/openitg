@@ -5,11 +5,15 @@
 #define SUPPORT_OPENGL
 #endif
 
-/* We're using different macros through the codebase. Declare them all here */
+/* We're using different macros through the codebase. Declare them all here: */
 #ifdef _WIN32
 #define WIN32
 #define WINDOWS
 #define _WINDOWS
+#endif
+
+#ifdef _DEBUG
+#define DEBUG
 #endif
 
 #define SUPPORT_D3D

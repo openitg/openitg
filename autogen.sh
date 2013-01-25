@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/sh +e
+
 # Run this to generate configure, the initial makefiles, etc.
 #
 # Source (non-CVS) distributions should come with a "configure" script

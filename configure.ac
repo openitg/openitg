@@ -338,6 +338,16 @@ if test "$have_git_repo" = "yes"; then
 		build_version="$build_version DEV"
 	fi
 
+	# HACK: the arcade chroot's git version is too old to understand our
+	# desired YYYY-MM-DD format. If we don't get a date in that format,
+	# fall back to today's date.
+
+	# HACK x2 COMBO!!: 'expr', in bash 2.05, doesn't seem to parse
+	# {n} for matching n repeats, hence the brain-dead regex.
+
+	if ! [ expr "$build_rev_date" : '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$' > /dev/null ]; then
+		build_rev_date=`date +%Y-%m-%d`
+	fi
 else
 	build_version="unknown version"
 	build_rev_date="unknown date"

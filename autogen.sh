@@ -40,18 +40,18 @@ DIE=0
 }
 
 # Try automake-1.9, 1.8, and 1.7.
+# HACK: automake 1.7/1.8 choke without a space after -I. Override here.
 if automake-1.9 --version > /dev/null 2>&1; then
         ACLOCAL=aclocal-1.9
         AUTOMAKE=automake-1.9
 elif automake-1.8 --version > /dev/null 2>&1; then
         ACLOCAL=aclocal-1.8
         AUTOMAKE=automake-1.8
+		ACLOCAL_OPTIONS="-I autoconf/m4/"
 elif automake-1.7 --version > /dev/null 2>&1; then
         ACLOCAL=aclocal-1.7
         AUTOMAKE=automake-1.7
-
-	# Workaround for AC building
-	ACLOCAL_OPTIONS="-I autoconf/m4/"
+		ACLOCAL_OPTIONS="-I autoconf/m4/"
 fi
 
 # If none of those were found, check if "automake" exists, and check the version.

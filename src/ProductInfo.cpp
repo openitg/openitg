@@ -44,7 +44,7 @@ VERSION_STRING( Version, BUILD_VERSION );
 VERSION_STRING( BuildDate, BUILD_DATE );
 VERSION_STRING( BuildRevision, BUILD_REVISION_TAG );
 
-VERSION_STRING( CrashReportURL, "<to be determined>" );
+VERSION_STRING( CrashReportURL, "https://github.com/openitg/openitg/issues" );
 
 VERSION_STRING( FullVersion, g_sName + " " + GetPlatform() + " " + g_sVersion );
 

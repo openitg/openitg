@@ -4,7 +4,7 @@ with the goal of adding arcade-like ITG-style behavior and serving as a drop-in
 replacement for the ITG binary on arcade cabinents.
 
 Project homepage: https://github.com/openitg/openitg/wiki
-Project bug tracker: http://wush.net/bugzilla/terabyte/
+Project bug tracker: https://github.com/openitg/openitg/issues
 Project IRC channel: #openitg on irc.badnik.com
 Project source code: https://github.com/openitg/openitg
 

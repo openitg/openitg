@@ -1,0 +1,5 @@
+Stuff in this build, but not in trunk
+-------------------------------------
+-New LightsDrivers:
+     LightsDriver_Dynamic: use external libraries to control lights (Unix, Windows)
+-foo

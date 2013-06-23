@@ -1,0 +1,55 @@
+
+OpenITG - an open-source rhythm dancing game which is a fork of StepMania 3.95
+with the goal of adding arcade-like ITG-style behavior and serving as a drop-in
+replacement for the ITG binary on arcade cabinents.
+
+TODOs:
+
+1. Getting Started Guide - build and development
+2. streamline build process - works out of box
+3. streamline arcade build process - works out of chroot
+4. test / bugfix beta-3 (currently master branch)
+5. arcade revision sign utility
+6. self-contained cache-rebuilding solution
+7. OpenGL Driver uses fix function pipeline rather than shader
+
+Very Long Term
+1. Kernel source with ITG patches to rebuild kernels (talk to us, should live in a separate repo)
+2. StepMania 4.0 LUA Bindings
+3. StepMania 4.0 Theme metrics
+
+Very brief "how to checkout"
+1. git clone git://github.com/openitg/openitg.git
+
+Very brief "how to contribute"
+1. Create an account at github.org
+2. Goto https://github.com/openitg/openitg
+3. Click "fork"
+4. git clone git@github.com:<username>/openitg.git
+5. Edit files...
+6. git add <filename>
+7. git commit # now your change is committed locally
+8. git push # now your change is pushed to your github
+9. From github.org/<username>/openitg, click "pull request"
+10. Write a short description of your change.  Be sure to include the goal, any
+bugs fixed, features added, etc, and any credit you wish to have.  Click "send
+pull request".
+
+Create an account at github.org
+2. Goto https://github.com/openitg/openitgCreate an account at github.org
+2. Goto https://github.com/openitg/openitgCreate an account at github.org
+2. Goto https://github.com/openitg/openitg1. git clone git://github.com/openitg/openitg.git
+2. Edit files...
+3. git add <filename>
+4. git commit
+
+
+Very brief "how to build":
+
+1. Install all dependencies (see dependencies.txt)
+2. ./autogen.sh
+3. ./configure
+4. make
+5. pray
+
+

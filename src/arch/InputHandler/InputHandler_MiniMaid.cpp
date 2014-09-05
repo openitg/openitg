@@ -1,3 +1,6 @@
+// Thanks to buzzert for starting this code
+// Finished and tested by MooingLemur 2014-09-05
+
 #include "global.h"
 
 #include "RageLog.h"
@@ -15,11 +18,10 @@
 
 // Lights stuff
 static const uint64_t CABINET_LIGHTS = (1 * 8);
-static const uint64_t P1_PAD_LIGHTS  = (2 * 8);
-static const uint64_t P2_PAD_LIGHTS  = (3 * 8);
+static const uint64_t PAD_LIGHTS     = (2 * 8);
 static const uint64_t BASS_LIGHTS    = (4 * 8);
 
-static const uint64_t ALL_ON = 0x10000FC00;
+static const uint64_t ALL_ON = 0x10F0FFC00;
 
 REGISTER_INPUT_HANDLER( MiniMaid );
 
@@ -114,11 +116,8 @@ void InputHandler_MiniMaid::SetLightsMappings()
 	
 	uint32_t iGameLights[MAX_GAME_CONTROLLERS][MAX_GAME_BUTTONS] = {
 		// { L, R, U, D }
-		// Packet index [2]
-		{ 4, 8, 1, 2 }, // Player 1
-		
-		// Packet index [3]
-		{ (4 << 8), (8 << 8), (1 << 8), (2 << 8) }  // Player 2
+		{ (1 << 2) , (1 << 3) , (1 << 0), (1 << 1) }, // Player 1
+		{ (1 << 10), (1 << 11), (1 << 8), (1 << 9) }  // Player 2
 	};
 	
 	m_LightsMappings.SetCabinetLights(iCabinetLights);
@@ -145,11 +144,10 @@ void InputHandler_MiniMaid::UpdateLights()
 	}
 	
 	// Pad Lights
-	// ... TODO
         FOREACH_GameController( gc )
 		FOREACH_GameButton( gb )
 			if( ls->m_bGameButtonLights[gc][gb] )
-				m_iLightsField |= (uint64_t)m_LightsMappings.m_iGameLights[gc][gb] << P1_PAD_LIGHTS;
+				m_iLightsField |= (uint64_t)m_LightsMappings.m_iGameLights[gc][gb] << PAD_LIGHTS;
 	
 	while ( !m_pBoard.Write( m_iLightsField ) )
 		Reconnect();

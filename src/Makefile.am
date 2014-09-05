@@ -145,7 +145,7 @@ LIBS += -lusb
 
 USBIO = io/USBDriver.cpp io/USBDriver.h io/PIUIO.cpp io/PIUIO.h io/ITGIO.cpp \
 	io/ITGIO.h io/PacDrive.cpp io/PacDrive.h io/G15.cpp io/G15.h \
-	io/USBDevice.h
+	io/USBDevice.h io/MiniMaid.cpp io/MiniMaid.h
 
 DataStructures += $(USBIO)
 USBDriver += arch/USB/USBDriver_Impl_Libusb.cpp arch/USB/USBDriver_Impl_Libusb.h
@@ -196,7 +196,9 @@ InputHandler += arch/InputHandler/InputHandler_PIUIO.h \
 		arch/InputHandler/InputHandler_Iow.cpp \
 		arch/InputHandler/InputHandler_MK3.h \
 		arch/InputHandler/InputHandler_MK3.cpp \
-		arch/InputHandler/InputHandler_MK3Helper.h
+		arch/InputHandler/InputHandler_MK3Helper.h \
+		arch/InputHandler/InputHandler_MiniMaid.h \
+		arch/InputHandler/InputHandler_MiniMaid.cpp
 
 
 

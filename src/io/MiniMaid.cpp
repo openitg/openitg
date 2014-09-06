@@ -4,8 +4,8 @@
 #include "RageLog.h"
 #include "arch/USB/USBDriver_Impl.h"
 
-const short MINIMAID_VENDOR_ID = 0xbeef;
-const short MINIMAID_PRODUCT_ID = 0x5730;
+const uint16_t MINIMAID_VENDOR_ID = 0xbeef;
+const uint16_t MINIMAID_PRODUCT_ID = 0x5730;
 
 // From the HID spec:
 static const int HID_REPORT_TYPE_INPUT = 0x01;
@@ -21,13 +21,12 @@ const unsigned REQ_TIMEOUT = 10000;
 
 bool MiniMaid::DeviceMatches( int iVID, int iPID )
 {
-	LOG->Warn("DEBUG: testing for minimaid");
-	if( iVID != MINIMAID_VENDOR_ID )
+	if( iVID != MINIMAID_VENDOR_ID ) 
 		return false;
 
 	if( iPID == MINIMAID_PRODUCT_ID )
 		return true;
-
+		
 	return false;
 }
 

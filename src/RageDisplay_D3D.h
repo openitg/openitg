@@ -14,15 +14,15 @@ public:
 	virtual CString GetApiDescription() const { return "D3D"; }
 
 	void ResolutionChanged();
-	const PixelFormatDesc *GetPixelFormatDesc(PixelFormat pf) const;
+	const PixelFormatDesc *GetPixelFormatDesc(RagePixelFormat pf) const;
 
 	bool BeginFrame();	
 	void EndFrame();
 	VideoModeParams GetVideoModeParams() const;
 	void SetBlendMode( BlendMode mode );
-	bool SupportsTextureFormat( PixelFormat pixfmt, bool realtime=false );
+	bool SupportsTextureFormat( RagePixelFormat pixfmt, bool realtime=false );
 	unsigned CreateTexture( 
-		PixelFormat pixfmt, 
+		RagePixelFormat pixfmt, 
 		RageSurface* img, 
 		bool bGenerateMipMaps );
 	void UpdateTexture( 

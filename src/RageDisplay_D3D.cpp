@@ -192,7 +192,7 @@ static D3DFORMAT D3DFORMATS[RageDisplay::NUM_PIX_FORMATS] =
 	D3DFMT_UNKNOWN /* no ABGR */
 };
 
-const RageDisplay::PixelFormatDesc *RageDisplay_D3D::GetPixelFormatDesc(PixelFormat pf) const
+const RageDisplay::PixelFormatDesc *RageDisplay_D3D::GetPixelFormatDesc(RagePixelFormat pf) const
 {
 	ASSERT( pf < NUM_PIX_FORMATS );
 	return &PIXEL_FORMAT_DESC[pf];
@@ -652,7 +652,7 @@ void RageDisplay_D3D::EndFrame()
 	ProcessStatsOnFlip();
 }
 
-bool RageDisplay_D3D::SupportsTextureFormat( PixelFormat pixfmt, bool realtime )
+bool RageDisplay_D3D::SupportsTextureFormat( RagePixelFormat pixfmt, bool realtime )
 {
 #if defined(XBOX)
 	// Lazy...  Xbox handles paletted textures completely differently
@@ -1306,7 +1306,7 @@ void RageDisplay_D3D::DeleteTexture( unsigned uTexHandle )
 
 
 unsigned RageDisplay_D3D::CreateTexture( 
-	PixelFormat pixfmt,
+	RagePixelFormat pixfmt,
 	RageSurface* img,
 	bool bGenerateMipMaps )
 {
@@ -1399,7 +1399,7 @@ void RageDisplay_D3D::UpdateTexture(
 		if(D3DFORMATS[texpixfmt] == desc.Format) break;
 	ASSERT( texpixfmt != NUM_PIX_FORMATS );
 
-	RageSurface *Texture = CreateSurfaceFromPixfmt(PixelFormat(texpixfmt), lr.pBits, width, height, lr.Pitch);
+	RageSurface *Texture = CreateSurfaceFromPixfmt(RagePixelFormat(texpixfmt), lr.pBits, width, height, lr.Pitch);
 	ASSERT( Texture );
 	RageSurfaceUtils::Blit( img, Texture, width, height );
 

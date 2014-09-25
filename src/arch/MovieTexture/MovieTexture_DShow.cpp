@@ -442,7 +442,7 @@ void MovieTexture_DShow::CreateTexture()
 	if(m_uTexHandle)
 		return;
 
-	RageDisplay::PixelFormat pixfmt;
+	RageDisplay::RagePixelFormat pixfmt;
 	switch( TEXTUREMAN->GetPrefs().m_iMovieColorDepth )
 	{
 	default:

@@ -38,7 +38,7 @@ public:
 	/* Read converted data.  Returns the number of bytes filled.
 	 * If eof() has been called and the output is completely
 	 * flushed, returns -1. */
-	int read(void *data, unsigned bytes);
+	int read(void *data, size_t bytes);
 };
 
 #endif

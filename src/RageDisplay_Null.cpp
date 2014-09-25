@@ -82,7 +82,7 @@ RageSurface* RageDisplay_Null::CreateScreenshot()
 	return image;
 }
 
-const RageDisplay::PixelFormatDesc *RageDisplay_Null::GetPixelFormatDesc(PixelFormat pf) const
+const RageDisplay::PixelFormatDesc *RageDisplay_Null::GetPixelFormatDesc(RagePixelFormat pf) const
 {
 	ASSERT( pf < NUM_PIX_FORMATS );
 	return &PIXEL_FORMAT_DESC[pf];

@@ -145,7 +145,7 @@ static void FixLilEndian()
 #endif
 }
 
-static int FindCompatibleAVFormat( RageDisplay::PixelFormat &pixfmt, bool HighColor )
+static int FindCompatibleAVFormat( RageDisplay::RagePixelFormat &pixfmt, bool HighColor )
 {
 	for( int i = 0; AVPixelFormats[i].bpp; ++i )
 	{
@@ -745,7 +745,7 @@ void MovieTexture_FFMpeg::CreateTexture()
 	m_iTextureHeight = power_of_two(m_iImageHeight);
 
 	/* Bogus assignment to shut gcc up. */
-    RageDisplay::PixelFormat pixfmt = RageDisplay::FMT_RGBA8;
+    RageDisplay::RagePixelFormat pixfmt = RageDisplay::FMT_RGBA8;
 	bool PreferHighColor = (TEXTUREMAN->GetPrefs().m_iMovieColorDepth == 32);
 	m_AVTexfmt = FindCompatibleAVFormat( pixfmt, PreferHighColor );
 

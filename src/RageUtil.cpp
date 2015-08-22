@@ -346,9 +346,9 @@ CString vssprintf( const char *szFormat, va_list argList )
 #  include <D3DX8Core.h>
 #else
 #  include <windows.h>
-#  include <dxerr8.h>
+#  include <DxErr.h>
 #  if defined(_MSC_VER) && !defined(_XBOX)
-#    pragma comment(lib, "dxerr8.lib")
+#    pragma comment(lib, "DxErr.lib")
 #  endif
 #endif
 
@@ -363,7 +363,7 @@ CString hr_ssprintf( int hr, const char *fmt, ...)
 	char szError[1024] = "";
 	D3DXGetErrorString( hr, szError, sizeof(szError) );
 #else	
-	const char *szError = DXGetErrorString8( hr );
+	const char *szError = DXGetErrorString(hr);
 #endif
 
 	return s + ssprintf( " (%s)", szError );

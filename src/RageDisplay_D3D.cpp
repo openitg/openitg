@@ -51,7 +51,7 @@ CString GetErrorString( HRESULT hr )
 // Globals
 //
 #if !defined(XBOX)
-HMODULE					g_D3D8_Module = NULL;
+HMODULE					g_D3D9_Module = NULL;
 #endif
 LPDIRECT3D9				g_pd3d = NULL;
 LPDIRECT3DDEVICE9		g_pd3dDevice = NULL;
@@ -210,8 +210,7 @@ RageDisplay_D3D::RageDisplay_D3D()
 }
 
 #define D3D_NOT_INSTALLED \
-	"DirectX 8.1 or greater is not installed.  You can download it from:\n" \
-	"http://www.microsoft.com/downloads/details.aspx?FamilyID=a19bed22-0b25-4e5d-a584-6389d8a3dad0&displaylang=en"
+	"DirectX 9 or greater is not installed."
 
 CString RageDisplay_D3D::Init( VideoModeParams p )
 {
@@ -221,26 +220,26 @@ CString RageDisplay_D3D::Init( VideoModeParams p )
 	LOG->MapLog("renderer", "Current renderer: Direct3D");
 
 	typedef IDirect3D9 * (WINAPI * Direct3DCreate9_t) (UINT SDKVersion);
-	Direct3DCreate9_t pDirect3DCreate8;
+	Direct3DCreate9_t pDirect3DCreate9;
 #if defined(XBOX)
 	pDirect3DCreate8 = Direct3DCreate8;
 #else
-	g_D3D8_Module = LoadLibrary("D3D8.dll");
-	if(!g_D3D8_Module)
+	g_D3D9_Module = LoadLibrary("D3D9.dll");
+	if(!g_D3D9_Module)
 		return D3D_NOT_INSTALLED;
 
-	pDirect3DCreate8 = (Direct3DCreate9_t) GetProcAddress(g_D3D8_Module, "Direct3DCreate8");
-	if(!pDirect3DCreate8)
+	pDirect3DCreate9 = (Direct3DCreate9_t) GetProcAddress(g_D3D9_Module, "Direct3DCreate9");
+	if(!pDirect3DCreate9)
 	{
-		LOG->Trace( "Direct3DCreate8 not found" );
+		LOG->Trace( "Direct3DCreate9 not found" );
 		return D3D_NOT_INSTALLED;
 	}
 #endif
 
-	g_pd3d = pDirect3DCreate8( D3D_SDK_VERSION );
+	g_pd3d = pDirect3DCreate9( D3D_SDK_VERSION );
 	if(!g_pd3d)
 	{
-		LOG->Trace( "Direct3DCreate8 failed" );
+		LOG->Trace( "Direct3DCreate9 failed" );
 		return D3D_NOT_INSTALLED;
 	}
 
@@ -301,10 +300,10 @@ RageDisplay_D3D::~RageDisplay_D3D()
 	    g_pd3d->Release();
 
 #if !defined(XBOX)
-	if( g_D3D8_Module )
+	if( g_D3D9_Module )
 	{
-		FreeLibrary( g_D3D8_Module );
-		g_D3D8_Module = NULL;
+		FreeLibrary( g_D3D9_Module );
+		g_D3D9_Module = NULL;
 	}
 #endif
 

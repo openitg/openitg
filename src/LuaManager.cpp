@@ -381,7 +381,18 @@ bool LuaHelpers::RunExpressionS( const CString &str, CString &sOut )
 	if( lua_isfunction( L, -1 ) )
 		RageException::Throw( "result is a function; did you forget \"()\"?" );
 
-	sOut = lua_tostring( L, -1 );
+	int isbool = lua_isboolean(L, -1);
+	if(isbool)
+	{
+		/* lua_tostring automatically converts number to string, but not booleans */
+		int boolOut = lua_toboolean( L, -1 );
+		sOut = boolOut ? "1" : "0";
+	}
+	else
+	{
+		sOut = lua_tostring( L, -1 );
+	}
+
 	lua_pop( L, 1 );
 
 	LUA->Release(L);

@@ -193,7 +193,7 @@ void ScoreKeeperMAX2::OnNextSong( int iSongInCourseIndex, const Steps* pSteps, c
 	m_iTapNotesHit = 0;
 }
 
-static int GetScore(int p, int B, int S, int n)
+static int GetScore(int p, int B, int64_t S, int n)
 {
 	/* There's a problem with the scoring system described below.  B/S is truncated
 	 * to an int.  However, in some cases we can end up with very small base scores.
@@ -275,8 +275,8 @@ void ScoreKeeperMAX2::AddScore( TapNoteScore score )
 
 	m_iTapNotesHit++;
 
-	const int N = m_iNumTapsAndHolds;
-	const int sum = (N * (N + 1)) / 2;
+	const int64_t N = m_iNumTapsAndHolds;
+	const int64_t sum = (N * (N + 1)) / 2;
 	const int B = m_iMaxPossiblePoints/10;
 
 	// Don't use a multiplier if the player has failed

@@ -82,10 +82,8 @@
  * for arcade cabinets without testing it first... -- vyhd */
 
 #if defined(ITG_ARCADE) && defined(LINUX)
-#define PATCH_DIR	"/stats/patch"
 #define PATCH_FILE	"/rootfs/stats/patch/patch.zip"
 #else
-#define PATCH_DIR	"Data/patch"
 #define PATCH_FILE	"Data/patch/patch.zip"
 #endif
 
@@ -1045,12 +1043,19 @@ int main(int argc, char* argv[])
 	if( IsADirectory(PATCH_DATA_DIR) )
 	{
 		LOG->Info( "VFS: mounting Data/patch/patch/." );
-		FILEMAN->Mount( "dirro", PATCH_DATA_DIR, "/", false );
+
+		// IsADirectory checks against the VFS, but we need to mount against a physical path
+		CString physicalPath = FILEMAN->ResolvePath( PATCH_DATA_DIR );
+		FILEMAN->Mount( "dirro", physicalPath, "/", false );
 	}
 	else if( IsAFile(PATCH_FILE) )
 	{
 		LOG->Info( "VFS: mounting patch.zip." );
-		FILEMAN->Mount( "patch", PATCH_DIR, "/Patch" );
+
+		CString patchFileVirtualDir = Dirname(PATCH_FILE);
+		CString patchDirPhysicalPath = FILEMAN->ResolvePath( patchFileVirtualDir );
+
+		FILEMAN->Mount( "patch", patchDirPhysicalPath, "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
 	else

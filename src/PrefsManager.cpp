@@ -295,6 +295,7 @@ PrefsManager::PrefsManager() :
 	m_bLogCheckpoints				( "LogCheckpoints",				false ),
 
 	/* Game-specific prefs: */
+	m_sTheme						( "Theme",						"default" ),
 	m_sDefaultModifiers				( "DefaultModifiers",			"" )
 
 #if defined(XBOX)

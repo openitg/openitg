@@ -312,6 +312,7 @@ public:
 	Preference<bool>	m_bLogCheckpoints;
 
 	/* Game-specific prefs: */
+	Preference<CString> m_sTheme;
 	Preference<CString>	m_sDefaultModifiers;
 
 #if defined(XBOX)

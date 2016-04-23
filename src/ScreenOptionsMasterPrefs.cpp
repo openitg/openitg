@@ -187,12 +187,12 @@ static void Theme( int &sel, bool ToSel, const ConfOption *pConfOption )
 	{
 		sel = 0;
 		for( unsigned i=1; i<choices.size(); i++ )
-			if( !stricmp(choices[i], THEME->GetCurThemeName()) )
+			if( !stricmp(choices[i], PREFSMAN->m_sTheme.Get()) )
 				sel = i;
 	} else {
 		const CString sNewTheme = choices[sel];
 		if( THEME->GetCurThemeName() != sNewTheme )
-			THEME->SwitchThemeAndLanguage( sNewTheme, THEME->GetCurLanguage() );
+			PREFSMAN->m_sTheme.Set( sNewTheme ); // OPT_APPLY_THEME will load the theme
 	}
 }
 

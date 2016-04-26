@@ -407,14 +407,6 @@ void ScreenGameplay::Init()
 		m_pPrimaryScoreDisplay[p]->SetName( ssprintf("ScoreP%d",p+1) );
 		m_pPrimaryScoreDisplay[p]->SetEffectClock( CLOCK_BGM_BEAT );
 
-		/* used for comparing players' scores */
-		/* UGLY: we can't use ActorUtil here due to an Actor derivative in a pointer, so manually add it */
-		if( m_bCompareScores )
-		{
-			m_pPrimaryScoreDisplay[p]->AddCommand( "Ahead", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"AheadCommand") );
-			m_pPrimaryScoreDisplay[p]->AddCommand( "Behind", THEME->GetMetricA( m_sName, m_pPrimaryScoreDisplay[p]->GetName()+"BehindCommand") );
-		}
-
 		SET_XY( *m_pPrimaryScoreDisplay[p] );
 		if( GAMESTATE->m_PlayMode != PLAY_MODE_RAVE || SHOW_SCORE_IN_RAVE ) /* XXX: ugly */
 			this->AddChild( m_pPrimaryScoreDisplay[p] );

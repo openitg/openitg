@@ -1,11 +1,13 @@
 # only tested with autoconf 2.57
 AC_PREREQ(2.53)
-AC_INIT(src/StepMania.cpp)
+
+AC_INIT([OpenITG], [1.0])
+AC_CONFIG_SRCDIR([src/StepMania.cpp])
+
 AC_CONFIG_AUX_DIR(autoconf)
 AC_CANONICAL_TARGET
-
-AM_INIT_AUTOMAKE(OpenITG, 1.01)
-AM_CONFIG_HEADER(src/config.h)
+AM_INIT_AUTOMAKE([subdir-objects])
+AM_CONFIG_HEADER([src/config.h])
 AM_MAINTAINER_MODE
 
 # We don't want PROG_CC/CXX default settings, but don't ignore explicit settings.

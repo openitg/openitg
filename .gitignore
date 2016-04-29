@@ -1,8 +1,10 @@
 *.[oa]
+*.Po
 *.exe
 *.in
 *.so
 *.sw?
+.dirstamp
 Makefile
 a.out
 aclocal.m4

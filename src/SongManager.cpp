@@ -84,13 +84,7 @@ void SongManager::Reload( LoadingWindow *ld )
 	const bool OldVal = PREFSMAN->m_bFastLoad;
 	PREFSMAN->m_bFastLoad.Set( false );
 
-#if defined(LINUX) && defined(ITG_ARCADE)
-	system("mount -o remount,rw /itgdata");
-#endif
 	InitAll( ld );
-#if defined(LINUX) && defined(ITG_ARCADE)
-	system("mount -o remount,ro /itgdata");
-#endif
 
 	// reload scores afterward
 	PROFILEMAN->LoadMachineProfile();

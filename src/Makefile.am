@@ -200,14 +200,17 @@ InputHandler += arch/InputHandler/InputHandler_PIUIO.h \
 		arch/InputHandler/InputHandler_MK3Helper.h
 
 MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture.h \
-		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h \
-		arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h \
+		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h
+
+if HAVE_FFMPEG
+MovieTexture += arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h \
 		arch/MovieTexture/FFMpeg_Helper_Common.h
 
-if !HAVE_FFMPEG
+if HAVE_LEGACY_FFMPEG
 MovieTexture += arch/MovieTexture/FFMpeg_Helper_Legacy.cpp arch/MovieTexture/FFMpeg_Helper_Legacy.h
 else
 MovieTexture += arch/MovieTexture/FFMpeg_Helper.cpp arch/MovieTexture/FFMpeg_Helper.h
+endif
 endif
 
 ####		arch/MovieTexture/MovieTexture_Generic.cpp arch/MovieTexture/MovieTexture_Generic.h
@@ -458,12 +461,7 @@ if !HAVE_LIBRESAMPLE
 main_LDADD += $(srcdir)/libresample/libresample.a
 endif
 
-if !HAVE_FFMPEG
-openitg_LDADD = $(main_LDADD) \
-	$(srcdir)/ffmpeg/lib/libavformat.a $(srcdir)/ffmpeg/lib/libavcodec.a
-else
 openitg_LDADD = $(main_LDADD)
-endif
 
 if HAVE_GTK
 bin_PROGRAMS += GtkModule.so

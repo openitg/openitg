@@ -12,13 +12,13 @@ namespace avcodec
 	#else
 	extern "C"
 	{
-		#if defined(HAVE_FFMPEG)
+		#if defined(HAVE_LEGACY_FFMPEG)
+			#include "ffmpeg/include/ffmpeg/avformat.h"
+		#else
 			#include <libavformat/avformat.h>
 			#include <libswscale/swscale.h>
 			#include <libavutil/avutil.h>
 			#include <libavutil/pixdesc.h>
-		#else
-			#include "ffmpeg/include/ffmpeg/avformat.h"
 		#endif
 	}
 	#endif

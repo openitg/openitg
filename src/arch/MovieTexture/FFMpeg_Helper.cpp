@@ -70,7 +70,7 @@ static CString averr_ssprintf( int err, const char *fmt, ... )
 	va_end(va);
 	char szError[1024];
 
-	avcodec::av_make_error_string(szError, 1024, err);
+	avcodec::av_strerror(err, szError, 1024);
 	return s + " (" + szError + ")";
 }
 

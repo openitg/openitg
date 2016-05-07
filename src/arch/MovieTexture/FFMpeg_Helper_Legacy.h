@@ -1,6 +1,7 @@
 #ifndef FFMPEG_HELPER
 #define FFMPEG_HELPER
 
+#define OITG_AV_PIXFMT_NAME avcodec::PixelFormat
 #include "FFMpeg_Helper_Common.h"
 
 class FFMpeg_Helper

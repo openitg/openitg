@@ -37,7 +37,7 @@ struct AVPixelFormat_t
 {
 	int bpp;
 	unsigned masks[4];
-	avcodec::AVPixelFormat pf;
+	OITG_AV_PIXFMT_NAME pf;
 	bool HighColor;
 	bool ByteSwapOnLittleEndian;
 };

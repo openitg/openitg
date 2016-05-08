@@ -347,7 +347,7 @@ else
 fi
 
 if test "$have_git_repo" = "yes"; then
-	build_version=`git tag`
+	build_version=`git describe --abbrev=0`
 	build_rev_date=`git log -1 --pretty="format:%ad" --date="short"`
 	build_rev_tag=`git describe`
 

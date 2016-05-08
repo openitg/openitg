@@ -39,8 +39,8 @@ case $compile in
 	test "$DEFAULT_CXXFLAGS" = "yes" && CXXFLAGS="$CXXFLAGS -O3"
 	;;
 	debug)
-	test "$DEFAULT_CFLAGS" = "yes" && CFLAGS="$CFLAGS -g"
-	test "$DEFAULT_CXXFLAGS" = "yes" && CXXFLAGS="$CXXFLAGS -g"
+	test "$DEFAULT_CFLAGS" = "yes" && CFLAGS="$CFLAGS -O0 -g3"
+	test "$DEFAULT_CXXFLAGS" = "yes" && CXXFLAGS="$CXXFLAGS -O0 -g3"
 	;;
 	fast)
 	test "$DEFAULT_CFLAGS" = "yes" && CFLAGS="$CFLAGS -O2 -fno-inline"
@@ -115,15 +115,30 @@ fi
 # SDL_LIBS="`echo $SDL_LIBS | sed 's_-L/usr/lib/\?[[ $]]__'`"
 
 have_libpng=yes
-AC_CHECK_LIB(png, png_create_read_struct, [x=y], have_libpng=no, [-lz -lm]) # x=y to stop autoconf from messing with LIBS
-AC_CHECK_HEADER(png.h, , have_libpng=no)
+PNG_LIBS=
+PNG_CFLAGS=
+AC_CHECK_LIB(png12, png_create_read_struct, [x=y], have_libpng=no, 
+             [-lz -lm])
+if test "$have_libpng" = "yes"; then
+    png_header_found=yes
+    AC_CHECK_HEADER(/usr/include/libpng12/png.h, , png_header_found=no)
+    if test "$png_header_found" = "yes"; then
+        CXXFLAGS="$CXXFLAGS -I/usr/include/libpng12"
+    else
+        AC_CHECK_HEADER(png.h, , have_libpng=no)
+    fi
+    LIBS="$LIBS -lpng12 -lz -lm"
+else
+    AC_CHECK_LIB(png, png_create_read_struct, [x=y], have_libpng=no, [-lz -lm]) # x=y to stop autoconf from messing with LIBS
+    AC_CHECK_HEADER(png.h, , have_libpng=no)
+    LIBS="$LIBS -lpng -lz -lm"
+fi
 if test "$have_libpng" = "no"; then
   echo
   echo "*** libpng is required to build StepMania; please make sure that"
   echo "*** it is installed to continue the build process."
   exit 1
 fi
-LIBS="$LIBS -lpng -lz -lm"
 
 AC_ARG_WITH(jpeg, AC_HELP_STRING([--without-jpeg], [Disable JPEG support]), with_jpeg=$withval, with_jpeg=yes)
 
@@ -179,9 +194,10 @@ have_sse2=no
 
 # search for system libs if not building for arcade
 if test "$itg_arcade" = "no"; then
-	AC_SEARCH_LIBS(avcodec_init, [avcodec], have_libavcodec=yes,  have_libavcodec=no)
-	AC_SEARCH_LIBS(guess_format, [avformat], have_libavformat=yes,  have_libavformat=no)
-	AC_SEARCH_LIBS(swscale_version, [swscale], have_libswscale=yes,  have_libswscale=no)
+	AC_SEARCH_LIBS(avcodec_find_decoder, [avcodec], have_libavcodec=yes, have_libavcodec=no)
+	AC_SEARCH_LIBS(avformat_open_input, [avformat], have_libavformat=yes, have_libavformat=no)
+	AC_SEARCH_LIBS(swscale_version, [swscale], have_libswscale=yes, have_libswscale=no)
+    AC_SEARCH_LIBS(av_frame_free, [avutil], have_libavutil=yes, have_libavutil=no)
 
 	have_libresample=yes
 	AC_CHECK_LIB(resample, resample_open, [x=y], have_libresample=static, [-lm])
@@ -225,7 +241,8 @@ if test "$itg_arcade" = "no"; then
 	  AC_MSG_RESULT($have_libswscale)
 	fi
 
-	if test "$have_libavformat" = "yes" -a "$have_libavcodec" = "yes" -a "$have_libswscale" = "yes"; then
+	if test "$have_libavformat" = "yes" -a "$have_libavcodec" = "yes" \
+            -a "$have_libswscale" = "yes" -a "$have_libavutil" = "yes"; then
 		have_ffmpeg=yes
 		AC_DEFINE(HAVE_FFMPEG, 1, [FFMPEG support available])
 	fi
@@ -359,6 +376,10 @@ fi
 AC_DEFINE_UNQUOTED(BUILD_VERSION, "$build_version", [Version tag])
 AC_DEFINE_UNQUOTED(BUILD_DATE, "$build_rev_date", [Date of source revision])
 AC_DEFINE_UNQUOTED(BUILD_REVISION_TAG, "$build_rev_tag", [ID of source revision])
+
+AC_SUBST(CFLAGS)
+AC_SUBST(CXXFLAGS)
+AC_SUBST(LDFLAGS)
 
 AC_OUTPUT
 

@@ -41,6 +41,7 @@ Contributions:
  - Lightning (OpenITG logo & title screen theme stuff)
  - xjen0vax (theme metrics, Long/Marathon notifiers)
  - Wanny (font overrides for several screens, announcer bugfixes)
+ - augustg (countless bugfixes)
 
 If we forgot to mention you, hit us up at one of the following places:
         irc.badnik.net channel #openitg

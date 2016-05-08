@@ -90,9 +90,7 @@ if test "$with_ffmpeg" = "yes"; then
         ffmpeg_option=legacy
         AC_DEFINE(HAVE_LEGACY_FFMPEG, 1, [Legacy FFMPEG support available])
         AC_DEFINE(HAVE_FFMPEG, 1, [FFMPEG support available])
-        
-        #CFLAGS=" $CFLAGS"
-		#CXXFLAGS="$FFMPEG_CXXFLAGS $CXXFLAGS"
+
 		LIBS="-L$PWD/src/ffmpeg/lib -lavformat -lavcodec $LIBS"
     fi
 fi

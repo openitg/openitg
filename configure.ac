@@ -180,6 +180,7 @@ SM_ZLIB
 SM_AUDIO
 SM_TLS
 SM_LIBUSB
+SM_FFMPEG
 
 # for linux joystick hotplug
 have_inotify=no
@@ -188,71 +189,22 @@ AC_CHECK_HEADER([sys/inotify.h],
 	AC_DEFINE(HAVE_INOTIFY, 1, [inotify support in kernel])
 ,)
 
-have_ffmpeg=static
 have_libresample=static
-have_sse2=no
 
 # search for system libs if not building for arcade
 if test "$itg_arcade" = "no"; then
-	AC_SEARCH_LIBS(avcodec_find_decoder, [avcodec], have_libavcodec=yes, have_libavcodec=no)
-	AC_SEARCH_LIBS(avformat_open_input, [avformat], have_libavformat=yes, have_libavformat=no)
-	AC_SEARCH_LIBS(swscale_version, [swscale], have_libswscale=yes, have_libswscale=no)
-    AC_SEARCH_LIBS(av_frame_free, [avutil], have_libavutil=yes, have_libavutil=no)
-
 	have_libresample=yes
 	AC_CHECK_LIB(resample, resample_open, [x=y], have_libresample=static, [-lm])
 	if test "$have_libresample" = "yes"; then
 		LIBS="$LIBS -lresample"
 	fi
-
-	if test "$have_libavcodec" = "yes"; then
-	  AC_MSG_CHECKING([for libavcodec >= 0.5.2])
-	  AC_TRY_RUN([
-	      #include <libavcodec/avcodec.h>
-	      int main()
-	      {
-		      return ( LIBAVCODEC_VERSION_INT < 0x341401 )? 1:0;
-	      }
-	      ],,have_libavcodec=no,)
-	  AC_MSG_RESULT($have_libavcodec)
-	fi
-
-	if test "$have_libavformat" = "yes"; then
-	  AC_MSG_CHECKING([for libavformat >= 0.5.2])
-	  AC_TRY_RUN([
-	      #include <libavformat/avformat.h>
-	      int main()
-	      {
-		      return ( LIBAVFORMAT_VERSION_INT < 0x341F00 )? 1:0;
-	      }
-	      ],,have_libavformat=no,)
-	  AC_MSG_RESULT($have_libavformat)
-	fi
-
-	if test "$have_libswscale" = "yes"; then
-	  AC_MSG_CHECKING([for libswscale >= 0.5.2])
-	  AC_TRY_RUN([
-	      #include <libswscale/swscale.h>
-	      int main()
-	      {
-		      return ( LIBSWSCALE_VERSION_INT < 0x000701 )? 1:0;
-	      }
-	      ],,have_libswscale=no,)
-	  AC_MSG_RESULT($have_libswscale)
-	fi
-
-	if test "$have_libavformat" = "yes" -a "$have_libavcodec" = "yes" \
-            -a "$have_libswscale" = "yes" -a "$have_libavutil" = "yes"; then
-		have_ffmpeg=yes
-		AC_DEFINE(HAVE_FFMPEG, 1, [FFMPEG support available])
-	fi
-
-	# test if processor supports SSE2
-	AC_TRY_RUN([int main() { int a,d; asm ("cpuid":"=a"(a),"=d"(d):"0"(1)); return d & (1 << 26) ? 0 : 1; }], have_sse2=yes, have_sse2=no)
 fi
 
-AM_CONDITIONAL(HAVE_FFMPEG, test "$have_ffmpeg" = "yes")
 AM_CONDITIONAL(HAVE_LIBRESAMPLE, test "$have_libresample" = "yes")
+
+# test if processor supports SSE2
+have_sse2=no
+AC_TRY_RUN([int main() { int a,d; asm ("cpuid":"=a"(a),"=d"(d):"0"(1)); return d & (1 << 26) ? 0 : 1; }], have_sse2=yes, have_sse2=no)
 
 # Don't use SSE2 by default; some GCC versions misoptimise the code, which
 # causes Heisenbugs, and we don't want to inflict that pain unnecessarily.
@@ -393,7 +345,7 @@ echo
 echo "Arcade build		$itg_arcade"
 echo "SSE2 optimizations	$with_sse2 (supported: $have_sse2)"
 echo "SDL			$enable_sdl"
-echo "FFMPEG			$have_ffmpeg"
+echo "FFMPEG			$have_ffmpeg ($ffmpeg_option)"
 echo "libresample		$have_libresample"
 echo "GTK2			$enable_gtk2"
 echo "ALSA			$alsa"

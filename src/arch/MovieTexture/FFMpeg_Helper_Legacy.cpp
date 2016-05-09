@@ -10,13 +10,13 @@ void img_convert__(avcodec::AVPicture *dst, int dst_pix_fmt,
         const avcodec::AVPicture *src, int pix_fmt,
         int width, int height)
 {
-    #if !defined(HAVE_FFMPEG)
+    #if defined(HAVE_LEGACY_FFMPEG)
         avcodec::img_convert(dst, dst_pix_fmt, src, pix_fmt, width, height);
     #else
         static avcodec::SwsContext* context = 0;
         context = avcodec::sws_getCachedContext(context, width, height, (avcodec::PixelFormat)pix_fmt, width, height, (avcodec::PixelFormat)dst_pix_fmt, avcodec::SWS_BICUBIC, NULL, NULL, NULL);
         avcodec::sws_scale(context, const_cast<uint8_t**>(src->data), const_cast<int*>(src->linesize), 0, height, dst->data, dst->linesize);
-    #endif // !HAVE_FFMPEG
+    #endif // HAVE_LEGACY_FFMPEG
 }
 
 AVPixelFormat_t AVPixelFormats[5] = {
@@ -28,7 +28,7 @@ AVPixelFormat_t AVPixelFormats[5] = {
 		  0x0000FF00,
 		  0x000000FF,
 		  0xFF000000 },
-#if !defined(HAVE_FFMPEG)
+#if defined(HAVE_LEGACY_FFMPEG)
 		avcodec::PIX_FMT_RGBA32,
 		true,
 		false

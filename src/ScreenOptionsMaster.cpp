@@ -221,7 +221,7 @@ void ScreenOptionsMaster::HandleScreenMessage( const ScreenMessage SM )
 			// Override ScreenOptions's calling of ExportOptions
 			//
 			m_iChangeMask = 0;
-		
+
 			CHECKPOINT;
 
 			for( unsigned r = 0; r < OptionRowHandlers.size(); ++r )
@@ -247,7 +247,11 @@ void ScreenOptionsMaster::HandleScreenMessage( const ScreenMessage SM )
 			if( (m_iChangeMask & OPT_APPLY_THEME) || 
 				(m_iChangeMask & OPT_APPLY_GRAPHICS) ||
 				(m_iChangeMask & OPT_APPLY_ASPECT_RATIO) )
+			{
+				CString sNewTheme = PREFSMAN->m_sTheme.Get();
+				THEME->SwitchThemeAndLanguage( sNewTheme, THEME->GetCurLanguage() );
 				ApplyGraphicOptions();
+			}
 
 			if( m_iChangeMask & OPT_SAVE_PREFERENCES )
 			{

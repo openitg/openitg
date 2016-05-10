@@ -301,7 +301,7 @@ void ResetGame()
 		if( THEME->DoesThemeExist( sGameName ) )
 			THEME->SwitchThemeAndLanguage( sGameName, THEME->GetCurLanguage() );
 		else
-			THEME->SwitchThemeAndLanguage( "default", THEME->GetCurLanguage() );
+			THEME->SwitchThemeAndLanguage( PREFSMAN->m_sTheme.GetDefault(), THEME->GetCurLanguage() );
 		TEXTUREMAN->DoDelayedDelete();
 	}
 	SaveGamePrefsToDisk();
@@ -818,6 +818,7 @@ void ReadGamePrefsFromDisk( bool bSwitchToLastPlayedGame )
 	ini.GetValue( sGameName, "Announcer",			sAnnouncer );
 	ini.GetValue( sGameName, "Theme",				sTheme );
 	ini.GetValue( sGameName, "DefaultModifiers",	sDefaultModifiers );
+	PREFSMAN->m_sTheme.Set( sTheme );
 	PREFSMAN->m_sDefaultModifiers.Set( sDefaultModifiers );
 
 	// it's OK to call these functions with names that don't exist.
@@ -838,7 +839,7 @@ void SaveGamePrefsToDisk()
 	ini.ReadFile( GAMEPREFS_INI_PATH );	// it's OK if this fails
 
 	ini.SetValue( sGameName, "Announcer",			ANNOUNCER->GetCurAnnouncerName() );
-	ini.SetValue( sGameName, "Theme",				THEME->GetCurThemeName() );
+	ini.SetValue( sGameName, "Theme",				PREFSMAN->m_sTheme );
 	ini.SetValue( sGameName, "DefaultModifiers",	PREFSMAN->m_sDefaultModifiers );
 	ini.SetValue( "Options", "Game",				(CString)GAMESTATE->GetCurrentGame()->m_szName );
 

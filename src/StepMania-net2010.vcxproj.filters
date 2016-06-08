@@ -1446,6 +1446,9 @@
     <ClCompile Include="ibutton\win32lnk.c">
       <Filter>Special I/O\iButton</Filter>
     </ClCompile>
+    <ClCompile Include="arch\MovieTexture\FFMpeg_Helper_Legacy.cpp">
+      <Filter>StepMania\arch\MovieTexture</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Screen.h">
@@ -2762,6 +2765,9 @@
     <ClInclude Include="ibutton\shaib.h">
       <Filter>Special I/O\iButton</Filter>
     </ClInclude>
+    <ClInclude Include="arch\MovieTexture\FFMpeg_Helper_Legacy.h">
+      <Filter>StepMania\arch\MovieTexture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="archutils\Win32\StepMania.ico">
@@ -2771,6 +2777,7 @@
     <None Include="archutils\Win32\DialogErrorHeader.bmp" />
     <None Include="archutils\Win32\OpenITG.ico" />
     <None Include="StepMania.xpm" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="archutils\Win32\WindowsResources.rc">

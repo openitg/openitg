@@ -1883,7 +1883,7 @@ Difficulty GameState::GetEasiestStepsDifficulty() const
 	{
 		if( this->m_pCurSteps[p] == NULL )
 		{
-			LOG->Warn( "GetEasiestNotesDifficulty called but p%i hasn't chosen notes", p+1 );
+			LOG->Warn( "GetEasiestStepsDifficulty called but p%i hasn't chosen notes", p+1 );
 			continue;
 		}
 		dc = min( dc, this->m_pCurSteps[p]->GetDifficulty() );

@@ -52,7 +52,7 @@ AVPixelFormat_t AVPixelFormats[5] = {
 			0x7C00,
 			0x03E0,
 			0x001F,
-			0x8000 },
+			0x0000 },
 		avcodec::AV_PIX_FMT_RGB555,
 		false,
 		false
@@ -96,6 +96,7 @@ FFMpeg_Helper::FFMpeg_Helper()
 	m_cctx=NULL;
 	m_ioctx=NULL;
 	m_stream=NULL;
+	m_swsctx=NULL;
 	this->frame=NULL;
 	current_packet_offset = -1;
 	Init();
@@ -358,18 +359,22 @@ void FFMpeg_Helper::RenderFrame(RageSurface *img, int tex_fmt)
 	uint8_t *out_b[4] = { img->pixels, NULL, NULL, NULL };
 	int out_s[4] = { img->pitch, 0, 0, 0 };
 
-	static avcodec::SwsContext* context = 0;
-	context = avcodec::sws_getCachedContext(context,
-			m_width, m_height, m_cctx->pix_fmt,
-			m_width, m_height, AVPixelFormats[tex_fmt].pf,
-			SWS_BICUBIC, NULL, NULL, NULL);
-	if (context == NULL)
+	if (m_swsctx == NULL)
+	{
+		m_swsctx = avcodec::sws_getCachedContext(m_swsctx,
+				m_width, m_height, m_cctx->pix_fmt,
+				m_width, m_height, AVPixelFormats[tex_fmt].pf,
+				SWS_BICUBIC, NULL, NULL, NULL);
+
+	}
+
+	if (m_swsctx == NULL)
 	{
 		LOG->Warn("FFMpeg_Helper: Could not allocate scaling context");
 	}
 	else
 	{
-		avcodec::sws_scale(context,
+		avcodec::sws_scale(m_swsctx,
 				this->frame->data, this->frame->linesize,
 				0, m_height,
 				out_b, out_s);

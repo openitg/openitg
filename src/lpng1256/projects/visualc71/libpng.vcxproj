@@ -365,7 +365,7 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <Lib>
-      <OutputFile>$(OutDir)libpngd.lib</OutputFile>
+      <OutputFile>$(OutDir)libpng.lib</OutputFile>
       <AdditionalLibraryDirectories>$(SolutionDir)zlib\zdll.lib</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>

@@ -52,7 +52,7 @@ AVPixelFormat_t AVPixelFormats[5] = {
 			0x7C00,
 			0x03E0,
 			0x001F,
-			0x8000 },
+			0x0000 },
 		avcodec::AV_PIX_FMT_RGB555,
 		false,
 		false

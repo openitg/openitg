@@ -145,12 +145,14 @@ CString FFMpeg_Helper::Open(CString what)
 		SAFE_DELETE(m_pFile);
 		return ssprintf("Error opening \"%s\": %s", what.c_str(), sErr.c_str());
 	}
+	CHECKPOINT_M( what );
 
 	m_fctx = avcodec::avformat_alloc_context();
 	if (m_fctx == NULL)
 	{
 		return ssprintf( "AVCodec(%s): Could not allocate avformat context", what.c_str() );
 	}
+	CHECKPOINT_M( ssprintf("%d", m_fctx->bit_rate) );
 
 	m_ioctx = avcodec::avio_alloc_context( ctxbuffer, FFCTX_BUFFER_SIZE, 0,
 			m_pFile, &URLRageFile_read, NULL, &URLRageFile_seek );
@@ -158,6 +160,8 @@ CString FFMpeg_Helper::Open(CString what)
 	{
 		return ssprintf( "AVCodec (%s): Couldn't allocate AVIO context", what.c_str() );
 	}
+
+	CHECKPOINT_M( ssprintf("%lu", m_ioctx->pos) );
 
 	m_fctx->pb = m_ioctx;
 	int ret = avcodec::avformat_open_input( &m_fctx, NULL, NULL, NULL );
@@ -178,6 +182,8 @@ CString FFMpeg_Helper::Open(CString what)
 	{
 		return ssprintf( averr_ssprintf(ret, "AVCodec (%s): Couldn't find codec", what.c_str()) );
 	}
+
+	CHECKPOINT_M( ssprintf("%d", ret) );
 
 	avcodec::AVStream *stream = m_fctx->streams[ret];
 	if ( stream == NULL )
@@ -211,6 +217,7 @@ CString FFMpeg_Helper::Open(CString what)
 
 	if (this->frame == NULL)
 	{
+		CHECKPOINT;
 		this->frame = avcodec::av_frame_alloc();
 		if (this->frame == NULL)
 		{
@@ -248,6 +255,7 @@ void FFMpeg_Helper::Close()
 	}
 	if ( m_pFile )
 	{
+		CHECKPOINT_M( m_pFile->GetPath() );
 		SAFE_DELETE( m_pFile );
 	}
 }
@@ -365,7 +373,6 @@ void FFMpeg_Helper::RenderFrame(RageSurface *img, int tex_fmt)
 				m_width, m_height, m_cctx->pix_fmt,
 				m_width, m_height, AVPixelFormats[tex_fmt].pf,
 				SWS_BICUBIC, NULL, NULL, NULL);
-
 	}
 
 	if (m_swsctx == NULL)

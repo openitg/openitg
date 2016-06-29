@@ -52,7 +52,7 @@ AVPixelFormat_t AVPixelFormats[5] = {
 			0x7C00,
 			0x03E0,
 			0x001F,
-			0x8000 },
+			0x0000 },
 		avcodec::AV_PIX_FMT_RGB555,
 		false,
 		false
@@ -96,6 +96,7 @@ FFMpeg_Helper::FFMpeg_Helper()
 	m_cctx=NULL;
 	m_ioctx=NULL;
 	m_stream=NULL;
+	m_swsctx=NULL;
 	this->frame=NULL;
 	current_packet_offset = -1;
 	Init();
@@ -144,12 +145,14 @@ CString FFMpeg_Helper::Open(CString what)
 		SAFE_DELETE(m_pFile);
 		return ssprintf("Error opening \"%s\": %s", what.c_str(), sErr.c_str());
 	}
+	CHECKPOINT_M( what );
 
 	m_fctx = avcodec::avformat_alloc_context();
 	if (m_fctx == NULL)
 	{
 		return ssprintf( "AVCodec(%s): Could not allocate avformat context", what.c_str() );
 	}
+	CHECKPOINT_M( ssprintf("%d", m_fctx->bit_rate) );
 
 	m_ioctx = avcodec::avio_alloc_context( ctxbuffer, FFCTX_BUFFER_SIZE, 0,
 			m_pFile, &URLRageFile_read, NULL, &URLRageFile_seek );
@@ -157,6 +160,8 @@ CString FFMpeg_Helper::Open(CString what)
 	{
 		return ssprintf( "AVCodec (%s): Couldn't allocate AVIO context", what.c_str() );
 	}
+
+	CHECKPOINT_M( ssprintf("%lu", m_ioctx->pos) );
 
 	m_fctx->pb = m_ioctx;
 	int ret = avcodec::avformat_open_input( &m_fctx, NULL, NULL, NULL );
@@ -177,6 +182,8 @@ CString FFMpeg_Helper::Open(CString what)
 	{
 		return ssprintf( averr_ssprintf(ret, "AVCodec (%s): Couldn't find codec", what.c_str()) );
 	}
+
+	CHECKPOINT_M( ssprintf("%d", ret) );
 
 	avcodec::AVStream *stream = m_fctx->streams[ret];
 	if ( stream == NULL )
@@ -210,6 +217,7 @@ CString FFMpeg_Helper::Open(CString what)
 
 	if (this->frame == NULL)
 	{
+		CHECKPOINT;
 		this->frame = avcodec::av_frame_alloc();
 		if (this->frame == NULL)
 		{
@@ -247,6 +255,7 @@ void FFMpeg_Helper::Close()
 	}
 	if ( m_pFile )
 	{
+		CHECKPOINT_M( m_pFile->GetPath() );
 		SAFE_DELETE( m_pFile );
 	}
 }
@@ -358,18 +367,21 @@ void FFMpeg_Helper::RenderFrame(RageSurface *img, int tex_fmt)
 	uint8_t *out_b[4] = { img->pixels, NULL, NULL, NULL };
 	int out_s[4] = { img->pitch, 0, 0, 0 };
 
-	static avcodec::SwsContext* context = 0;
-	context = avcodec::sws_getCachedContext(context,
-			m_width, m_height, m_cctx->pix_fmt,
-			m_width, m_height, AVPixelFormats[tex_fmt].pf,
-			SWS_BICUBIC, NULL, NULL, NULL);
-	if (context == NULL)
+	if (m_swsctx == NULL)
+	{
+		m_swsctx = avcodec::sws_getCachedContext(m_swsctx,
+				m_width, m_height, m_cctx->pix_fmt,
+				m_width, m_height, AVPixelFormats[tex_fmt].pf,
+				SWS_BICUBIC, NULL, NULL, NULL);
+	}
+
+	if (m_swsctx == NULL)
 	{
 		LOG->Warn("FFMpeg_Helper: Could not allocate scaling context");
 	}
 	else
 	{
-		avcodec::sws_scale(context,
+		avcodec::sws_scale(m_swsctx,
 				this->frame->data, this->frame->linesize,
 				0, m_height,
 				out_b, out_s);

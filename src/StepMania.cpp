@@ -82,10 +82,8 @@
  * for arcade cabinets without testing it first... -- vyhd */
 
 #if defined(ITG_ARCADE) && defined(LINUX)
-#define PATCH_DIR	"/stats/patch"
 #define PATCH_FILE	"/rootfs/stats/patch/patch.zip"
 #else
-#define PATCH_DIR	"Data/patch"
 #define PATCH_FILE	"Data/patch/patch.zip"
 #endif
 
@@ -303,7 +301,7 @@ void ResetGame()
 		if( THEME->DoesThemeExist( sGameName ) )
 			THEME->SwitchThemeAndLanguage( sGameName, THEME->GetCurLanguage() );
 		else
-			THEME->SwitchThemeAndLanguage( "default", THEME->GetCurLanguage() );
+			THEME->SwitchThemeAndLanguage( PREFSMAN->m_sTheme.GetDefault(), THEME->GetCurLanguage() );
 		TEXTUREMAN->DoDelayedDelete();
 	}
 	SaveGamePrefsToDisk();
@@ -820,6 +818,7 @@ void ReadGamePrefsFromDisk( bool bSwitchToLastPlayedGame )
 	ini.GetValue( sGameName, "Announcer",			sAnnouncer );
 	ini.GetValue( sGameName, "Theme",				sTheme );
 	ini.GetValue( sGameName, "DefaultModifiers",	sDefaultModifiers );
+	PREFSMAN->m_sTheme.Set( sTheme );
 	PREFSMAN->m_sDefaultModifiers.Set( sDefaultModifiers );
 
 	// it's OK to call these functions with names that don't exist.
@@ -840,7 +839,7 @@ void SaveGamePrefsToDisk()
 	ini.ReadFile( GAMEPREFS_INI_PATH );	// it's OK if this fails
 
 	ini.SetValue( sGameName, "Announcer",			ANNOUNCER->GetCurAnnouncerName() );
-	ini.SetValue( sGameName, "Theme",				THEME->GetCurThemeName() );
+	ini.SetValue( sGameName, "Theme",				PREFSMAN->m_sTheme );
 	ini.SetValue( sGameName, "DefaultModifiers",	PREFSMAN->m_sDefaultModifiers );
 	ini.SetValue( "Options", "Game",				(CString)GAMESTATE->GetCurrentGame()->m_szName );
 
@@ -1045,12 +1044,19 @@ int main(int argc, char* argv[])
 	if( IsADirectory(PATCH_DATA_DIR) )
 	{
 		LOG->Info( "VFS: mounting Data/patch/patch/." );
-		FILEMAN->Mount( "dirro", PATCH_DATA_DIR, "/", false );
+
+		// IsADirectory checks against the VFS, but we need to mount against a physical path
+		CString physicalPath = FILEMAN->ResolvePath( PATCH_DATA_DIR );
+		FILEMAN->Mount( "dirro", physicalPath, "/", false );
 	}
 	else if( IsAFile(PATCH_FILE) )
 	{
 		LOG->Info( "VFS: mounting patch.zip." );
-		FILEMAN->Mount( "patch", PATCH_DIR, "/Patch" );
+
+		CString patchFileVirtualDir = Dirname(PATCH_FILE);
+		CString patchDirPhysicalPath = FILEMAN->ResolvePath( patchFileVirtualDir );
+
+		FILEMAN->Mount( "patch", patchDirPhysicalPath, "/Patch" );
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
 	else
@@ -1144,18 +1150,8 @@ int main(int argc, char* argv[])
 	/* depends on SONGINDEX: */
 	SONGMAN		= new SongManager();
 
-	//
-	// 9/25/08: moved the cache sink to /itgdata because
-	//    it would fill up all of stats if the user has too many songs
-	//       --infamouspat
-	//
-#ifdef ITG_ARCADE
-	system( "mount -o remount,rw /itgdata" );
-#endif
 	SONGMAN->InitAll( loading_window );		// this takes a long time
-#ifdef ITG_ARCADE
-	system( "mount -o remount,ro /itgdata" );
-#endif
+
 	CRYPTMAN	= new CryptManager;	// need to do this before ProfileMan
 	MEMCARDMAN	= new MemoryCardManager;
 	PROFILEMAN	= new ProfileManager;

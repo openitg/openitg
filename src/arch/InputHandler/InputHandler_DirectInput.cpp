@@ -24,8 +24,8 @@ static BOOL CALLBACK EnumDevices( const DIDEVICEINSTANCE *pdidInstance, void *pC
 
 	switch( pdidInstance->dwDevType & 0xFF )
 	{
-	case DIDEVTYPE_KEYBOARD: device.type = device.KEYBOARD; break;
-	case DIDEVTYPE_JOYSTICK: device.type = device.JOYSTICK; break;
+	case DI8DEVTYPE_KEYBOARD: device.type = device.KEYBOARD; break;
+	case DI8DEVTYPE_JOYSTICK: device.type = device.JOYSTICK; break;
 	default: return DIENUM_CONTINUE;
 	}
 
@@ -78,17 +78,17 @@ InputHandler_DInput::InputHandler_DInput()
 	g_NumJoysticks = 0;
 
 	AppInstance inst;	
-	HRESULT hr = DirectInputCreate(inst.Get(), DIRECTINPUT_VERSION, &dinput, NULL);
+	HRESULT hr = DirectInput8Create(inst.Get(), DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID *) &dinput, NULL);
 	if ( hr != DI_OK )
 		RageException::Throw( hr_ssprintf(hr, "InputHandler_DInput: DirectInputCreate") );
 
 	LOG->Trace( "InputHandler_DInput: IDirectInput::EnumDevices(DIDEVTYPE_KEYBOARD)" );
-	hr = dinput->EnumDevices( DIDEVTYPE_KEYBOARD, EnumDevices, NULL, DIEDFL_ATTACHEDONLY );
+	hr = dinput->EnumDevices( DI8DEVTYPE_KEYBOARD, EnumDevices, NULL, DIEDFL_ATTACHEDONLY );
 	if ( hr != DI_OK )
 		RageException::Throw( hr_ssprintf(hr, "InputHandler_DInput: IDirectInput::EnumDevices") );
 
 	LOG->Trace( "InputHandler_DInput: IDirectInput::EnumDevices(DIDEVTYPE_JOYSTICK)" );
-	hr = dinput->EnumDevices( DIDEVTYPE_JOYSTICK, EnumDevices, NULL, DIEDFL_ATTACHEDONLY );
+	hr = dinput->EnumDevices( DI8DEVTYPE_JOYSTICK, EnumDevices, NULL, DIEDFL_ATTACHEDONLY );
 	if ( hr != DI_OK )
 		RageException::Throw( hr_ssprintf(hr, "InputHandler_DInput: IDirectInput::EnumDevices") );
 
@@ -267,14 +267,14 @@ void InputHandler_DInput::UpdatePolled(DIDevice &device, const RageTimer &tm)
 
 		switch(in.type)
 		{
-		case in.BUTTON:
+		case input_t::BUTTON:
 		{
 			DeviceInput di(dev, JOY_1 + in.num, -1, tm);
 			ButtonPressed(di, !!state.rgbButtons[in.ofs - DIJOFS_BUTTON0]);
 			break;
 		}
 
-		case in.AXIS:
+		case input_t::AXIS:
 		{
 			JoystickButton neg = NUM_JOYSTICK_BUTTONS, pos = NUM_JOYSTICK_BUTTONS;
 			int val = 0;
@@ -321,7 +321,7 @@ void InputHandler_DInput::UpdatePolled(DIDevice &device, const RageTimer &tm)
 			break;
 		}
 
-		case in.HAT:
+		case input_t::HAT:
 			if( in.num == 0 )
 			{
 				const int pos = TranslatePOV(state.rgdwPOV[in.ofs - DIJOFS_POV(0)]);
@@ -370,15 +370,15 @@ void InputHandler_DInput::UpdateBuffered(DIDevice &device, const RageTimer &tm)
 		
 			switch(in.type)
 			{
-			case in.KEY:
+			case input_t::KEY:
 				ButtonPressed(DeviceInput(dev, in.num, -1, tm), !!(evtbuf[i].dwData & 0x80));
 				break;
 
-			case in.BUTTON:
+			case input_t::BUTTON:
 				ButtonPressed(DeviceInput(dev, JOY_1 + in.num, -1, tm), !!evtbuf[i].dwData);
 				break;
 
-			case in.AXIS:
+			case input_t::AXIS:
 			{
 				int up = 0, down = 0;
 				switch(in.ofs)
@@ -402,7 +402,7 @@ void InputHandler_DInput::UpdateBuffered(DIDevice &device, const RageTimer &tm)
 				ButtonPressed(DeviceInput(dev, down, max(+l,0), tm), int(evtbuf[i].dwData) > 50);
 				break;
 			}
-			case in.HAT:
+			case input_t::HAT:
 		    {
 				const int pos = TranslatePOV(evtbuf[i].dwData);
 				ButtonPressed(DeviceInput(dev, JOY_HAT_UP, -1, tm), !!(pos & HAT_UP_MASK));

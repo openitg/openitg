@@ -1,3 +1,4 @@
+/* vim: set noet */
 #define __STDC_CONSTANT_MACROS
 //#include <stdint.h>
 #include "global.h"
@@ -17,437 +18,18 @@
 #include <windows.h>
 #endif
 
-namespace avcodec
-{
-	#if defined(_WIN32)
-		#include "ffmpeg/include/ffmpeg/avformat.h"
-	#else
-	extern "C"
-	{
-		#if defined(HAVE_FFMPEG)
-			#include <libavformat/avformat.h>
-			#include <libswscale/swscale.h>
-		#else
-			#include "ffmpeg/include/ffmpeg/avformat.h"
-		#endif
-	}
-	#endif
-	
-	#if !defined (AV_VERSION_INT)
-		#define AV_VERSION_INT(a, b, c) (a<<16 | b<<8 | c)
-	#endif
-
-	void img_convert__(AVPicture *dst, int dst_pix_fmt,
-			const AVPicture *src, int pix_fmt,
-			int width, int height)
-	{
-		#if !defined(HAVE_FFMPEG)
-			img_convert(dst, dst_pix_fmt, src, pix_fmt, width, height);
-		#else
-			static SwsContext* context = 0;
-			context = sws_getCachedContext(context, width, height, (PixelFormat)pix_fmt, width, height, (PixelFormat)dst_pix_fmt, SWS_BICUBIC, NULL, NULL, NULL);
-			sws_scale(context, const_cast<uint8_t**>(src->data), const_cast<int*>(src->linesize), 0, height, dst->data, dst->linesize);
-		#endif // !HAVE_FFMPEG
-	}
-};
-
-#if defined(_MSC_VER)
-	#pragma comment(lib, "ffmpeg/lib/avcodec.lib")
-	#pragma comment(lib, "ffmpeg/lib/avformat.lib")
-#endif
-
-struct AVPixelFormat_t
-{
-	int bpp;
-	unsigned masks[4];
-	avcodec::PixelFormat pf;
-	bool HighColor;
-	bool ByteSwapOnLittleEndian;
-} AVPixelFormats[] = {
-	{ 
-		/* This format is really ARGB, and is affected by endianness, unlike PIX_FMT_RGB24
-		 * and PIX_FMT_BGR24. */
-		32,
-		{ 0x00FF0000,
-		  0x0000FF00,
-		  0x000000FF,
-		  0xFF000000 },
-#if !defined(HAVE_FFMPEG)
-		avcodec::PIX_FMT_RGBA32,
-		true,
-		false
+#if defined(HAVE_LEGACY_FFMPEG)
+#include "FFMpeg_Helper_Legacy.h"
 #else
-		avcodec::PIX_FMT_ARGB,
- 		true,
-		true
+#include "FFMpeg_Helper.h"
 #endif
-	},
-	{ 
-		24,
-		{ 0xFF0000,
-		  0x00FF00,
-		  0x0000FF,
-		  0x000000 },
-		avcodec::PIX_FMT_RGB24,
-		true,
-		true
-	},
-	{ 
-		24,
-		{ 0x0000FF,
-		  0x00FF00,
-		  0xFF0000,
-		  0x000000 },
-		avcodec::PIX_FMT_BGR24,
-		true,
-		true
-	},
-	{
-		16,
-		{ 0x7C00,
-		  0x03E0,
-		  0x001F,
-		  0x8000 },
-		avcodec::PIX_FMT_RGB555,
-		false,
-		false
-	},
-	{ 0, { 0,0,0,0 }, avcodec::PIX_FMT_NB, true, false }
-};
-
-static void FixLilEndian()
-{
-#if defined(ENDIAN_LITTLE)
-	static bool Initialized = false;
-	if( Initialized )
-		return; 
-	Initialized = true;
-
-	for( int i = 0; i < AVPixelFormats[i].bpp; ++i )
-	{
-		AVPixelFormat_t &pf = AVPixelFormats[i];
-
-		if( !pf.ByteSwapOnLittleEndian )
-			continue;
-
-		for( int mask = 0; mask < 4; ++mask)
-		{
-			int m = pf.masks[mask];
-			switch( pf.bpp )
-			{
-				case 24: m = Swap24(m); break;
-				case 32: m = Swap32(m); break;
-				default: ASSERT(0);
-			}
-			pf.masks[mask] = m;
-		}
-	}
-#endif
-}
-
-static int FindCompatibleAVFormat( RageDisplay::RagePixelFormat &pixfmt, bool HighColor )
-{
-	for( int i = 0; AVPixelFormats[i].bpp; ++i )
-	{
-		AVPixelFormat_t &fmt = AVPixelFormats[i];
-		if( fmt.HighColor != HighColor )
-			continue;
-
-		pixfmt = DISPLAY->FindPixelFormat( fmt.bpp,
-				fmt.masks[0],
-				fmt.masks[1],
-				fmt.masks[2],
-				fmt.masks[3],
-				true /* realtime */
-				);
-
-		if( pixfmt == RageDisplay::NUM_PIX_FORMATS )
-			continue;
-
-		return i;
-	}
-
-	return -1;
-}
-
-class FFMpeg_Helper
-{
-public:
-	avcodec::AVFormatContext *m_fctx;
-	avcodec::AVStream *m_stream;
-	bool GetNextTimestamp;
-	float CurrentTimestamp, Last_IP_Timestamp;
-	int FrameNumber;
-
-	float LastFrameDelay;
-
-	float pts;
-
-	avcodec::AVPacket pkt;
-	int current_packet_offset;
-
-	avcodec::AVFrame frame;
-
-	FFMpeg_Helper();
-	~FFMpeg_Helper();
-	int GetFrame();
-	void Init();
-	float GetTimestamp() const;
-
-private:
-	/* 0 = no EOF
-	 * 1 = EOF from ReadPacket
-	 * 2 = EOF from ReadPacket and DecodePacket */
-	int eof;
-
-	int ReadPacket();
-	int DecodePacket();
-	float TimestampOffset;
-};
-
-FFMpeg_Helper::FFMpeg_Helper()
-{
-	m_fctx=NULL;
-	m_stream=NULL;
-	current_packet_offset = -1;
-	Init();
-}
-
-FFMpeg_Helper::~FFMpeg_Helper()
-{
-	if( current_packet_offset != -1 )
-	{
-		avcodec::av_free_packet( &pkt );
-		current_packet_offset = -1;
-	}
-}
-
-void FFMpeg_Helper::Init()
-{
-	eof = 0;
-	GetNextTimestamp = true;
-	CurrentTimestamp = 0, Last_IP_Timestamp = 0;
-	LastFrameDelay = 0;
-	pts = -1;
-	FrameNumber = -1; /* decode one frame and you're on the 0th */
-	TimestampOffset = 0;
-
-	if( current_packet_offset != -1 )
-	{
-		avcodec::av_free_packet( &pkt );
-		current_packet_offset = -1;
-	}
-}
-
-/* Read until we get a frame, EOF or error.  Return -1 on error, 0 on EOF, 1 if we have a frame. */
-int FFMpeg_Helper::GetFrame()
-{
-	while( 1 )
-	{
-		int ret = DecodePacket();
-		if( ret == 1 )
-			break;
-		if( ret == -1 )
-			return -1;
-		if( ret == 0 && eof > 0 )
-			return 0; /* eof */
-
-		ASSERT( ret == 0 );
-		ret = ReadPacket();
-		if( ret < 0 )
-			return ret; /* error */
-	}
-
-	++FrameNumber;
-
-	if( FrameNumber == 1 )
-	{
-		/* Some videos start with a timestamp other than 0.  I think this is used
-		 * when audio starts before the video.  We don't want to honor that, since
-		 * the DShow renderer doesn't and we don't want to break sync compatibility.
-		 *
-		 * Look at the second frame.  (If we have B-frames, the first frame will be an
-		 * I-frame with the timestamp of the next P-frame, not its own timestamp, and we
-		 * want to ignore that and look at the next B-frame.) */
-		const float expect = LastFrameDelay;
-		const float actual = CurrentTimestamp;
-		if( actual - expect > 0 )
-		{
-			LOG->Trace("Expect %f, got %f -> %f", expect, actual, actual - expect );
-			TimestampOffset = actual - expect;
-		}
-	}
-
-	return 1;
-}
-
-float FFMpeg_Helper::GetTimestamp() const
-{
-	/* The first frame always has a timestamp of 0. */
-	if( FrameNumber == 0 )
-		return 0;
-
-	return CurrentTimestamp - TimestampOffset;
-}
-
-/* Read a packet.  Return -1 on error, 0 on EOF, 1 on OK. */
-int FFMpeg_Helper::ReadPacket()
-{
-	if( eof > 0 )
-		return 0;
-
-	while( 1 )
-	{
-		//CHECKPOINT;
-		if( current_packet_offset != -1 )
-		{
-			current_packet_offset = -1;
-			avcodec::av_free_packet( &pkt );
-		}
-
-		int ret = avcodec::av_read_frame( m_fctx, &pkt );
-		/* XXX: why is avformat returning AVERROR_NOMEM on EOF? */
-		if( ret < 0 )
-		{
-			/* EOF. */
-			eof = 1;
-			pkt.size = 0;
-			
-			return 0;
-		}
-
-		if( pkt.stream_index == m_stream->index )
-		{
-			current_packet_offset = 0;
-			return 1;
-		}
-
-		/* It's not for the video stream; ignore it. */
-		avcodec::av_free_packet( &pkt );
-	}
-}
-
-
-/* Decode data from the current packet.  Return -1 on error, 0 if the packet is finished,
- * and 1 if we have a frame (we may have more data in the packet). */
-int FFMpeg_Helper::DecodePacket()
-{
-	if( eof == 0 && current_packet_offset == -1 )
-		return 0; /* no packet */
-
-	while( eof == 1 || (eof == 0 && current_packet_offset < pkt.size) )
-	{
-		if ( GetNextTimestamp )
-		{
-			if (pkt.dts != int64_t(AV_NOPTS_VALUE))
-#if (LIBAVCODEC_BUILD >= 4754)
-				pts = (float)pkt.dts * m_stream->time_base.num / m_stream->time_base.den;
-#else
- 				pts = (float)pkt.dts / AV_TIME_BASE;
-#endif
-			else
-				pts = -1;
-			GetNextTimestamp = false;
-		}
-
-		/* If we have no data on the first frame, just return EOF; passing an empty packet
-		 * to avcodec_decode_video in this case is crashing it.  However, passing an empty
-		 * packet is normal with B-frames, to flush.  This may be unnecessary in newer
-		 * versions of avcodec, but I'm waiting until a new stable release to upgrade. */
-		if( pkt.size == 0 && FrameNumber == -1 )
-			return 0; /* eof */
-
-		int got_frame;
-		//CHECKPOINT;
-		/* Hack: we need to send size = 0 to flush frames at the end, but we have
-		 * to give it a buffer to read from since it tries to read anyway. */
-		static uint8_t dummy[FF_INPUT_BUFFER_PADDING_SIZE] = { 0 };
-		int len = avcodec::avcodec_decode_video(
-#if (LIBAVCODEC_BUILD >= 4754)
-				m_stream->codec, 
-#else
- 				&m_stream->codec, 
-#endif
-				&frame, &got_frame,
-				pkt.size? pkt.data:dummy, pkt.size );
-		//CHECKPOINT;
-
-		if (len < 0)
-		{
-			LOG->Warn("avcodec_decode_video: %i", len);
-			return -1; // XXX
-		}
-
-		current_packet_offset += len;
-
-		if (!got_frame)
-		{
-			if( eof == 1 )
-				eof = 2;
-			continue;
-		}
-
-		GetNextTimestamp = true;
-
-		if (pts != -1)
-		{
-			CurrentTimestamp = pts;
-		}
-		else
-		{
-			/* If the timestamp is zero, this frame is to be played at the
-			 * time of the last frame plus the length of the last frame. */
-			CurrentTimestamp += LastFrameDelay;
-		}
-
-		/* Length of this frame: */
-#if (LIBAVCODEC_BUILD >= 4754)
-		LastFrameDelay = (float)m_stream->codec->time_base.num / m_stream->codec->time_base.den;
-#else
- 		LastFrameDelay = (float)m_stream->codec.frame_rate_base / m_stream->codec.frame_rate;
-#endif
-		LastFrameDelay += frame.repeat_pict * (LastFrameDelay * 0.5f);
-
-		return 1;
-	}
-
-	return 0; /* packet done */
-}
 
 void MovieTexture_FFMpeg::ConvertFrame()
 {
 	ASSERT_M( m_ImageWaiting == FRAME_DECODED, ssprintf("%i", m_ImageWaiting ) );
 
-	avcodec::AVPicture pict;
-	pict.data[0] = (unsigned char *)m_img->pixels;
-	pict.linesize[0] = m_img->pitch;
-
-#if (LIBAVCODEC_BUILD >= 4754)
-	avcodec::img_convert__(&pict, AVPixelFormats[m_AVTexfmt].pf,
-			(avcodec::AVPicture *) &decoder->frame, decoder->m_stream->codec->pix_fmt, 
-			decoder->m_stream->codec->width, decoder->m_stream->codec->height);
-#else
-	avcodec::img_convert__(&pict, AVPixelFormats[m_AVTexfmt].pf,
-			(avcodec::AVPicture *) &decoder->frame, decoder->m_stream->codec.pix_fmt, 
-			decoder->m_stream->codec.width, decoder->m_stream->codec.height);
-#endif
+    decoder->RenderFrame(m_img, m_AVTexfmt);
 	m_ImageWaiting = FRAME_WAITING;
-}
-
-static avcodec::AVStream *FindVideoStream( avcodec::AVFormatContext *m_fctx )
-{
-    for( int stream = 0; stream < m_fctx->nb_streams; ++stream )
-	{
-		avcodec::AVStream *enc = m_fctx->streams[stream];
-#if (LIBAVCODEC_BUILD >= 4754)
-        if( enc->codec->codec_type == avcodec::CODEC_TYPE_VIDEO )
-			return enc;
-#else
-        if( enc->codec.codec_type == avcodec::CODEC_TYPE_VIDEO )
-			return enc;
-#endif
-	}
-	return NULL;
 }
 
 MovieTexture_FFMpeg::MovieTexture_FFMpeg( RageTextureID ID ):
@@ -457,8 +39,6 @@ MovieTexture_FFMpeg::MovieTexture_FFMpeg( RageTextureID ID ):
 	LOG->Trace( "MovieTexture_FFMpeg::MovieTexture_FFMpeg(%s)", ID.filename.c_str() );
 
 	FixLilEndian();
-
-	decoder = new FFMpeg_Helper;
 
 	m_uTexHandle = 0;
 	m_bLoop = true;
@@ -470,6 +50,7 @@ MovieTexture_FFMpeg::MovieTexture_FFMpeg( RageTextureID ID ):
 	m_Clock = 0;
 	m_FrameSkipMode = false;
 	m_bThreaded = PREFSMAN->m_bThreadedMovieDecode.Get();
+	decoder = NULL;
 }
 
 CString MovieTexture_FFMpeg::Init()
@@ -477,14 +58,6 @@ CString MovieTexture_FFMpeg::Init()
 	CString sError = CreateDecoder();
 	if( sError != "" )
 		return sError;
-
-#if (LIBAVCODEC_BUILD >= 4754)
-	LOG->Trace("Bitrate: %i", decoder->m_stream->codec->bit_rate );
-	LOG->Trace("Codec pixel format: %s", avcodec::avcodec_get_pix_fmt_name(decoder->m_stream->codec->pix_fmt) );
-#else
-	LOG->Trace("Bitrate: %i", decoder->m_stream->codec.bit_rate );
-	LOG->Trace("Codec pixel format: %s", avcodec::avcodec_get_pix_fmt_name(decoder->m_stream->codec.pix_fmt) );
-#endif
 
 	/* Decode one frame, to guarantee that the texture is drawn when this function returns. */
 	int ret = decoder->GetFrame();
@@ -521,181 +94,22 @@ MovieTexture_FFMpeg::~MovieTexture_FFMpeg()
 	StopThread();
 	DestroyDecoder();
 	DestroyTexture();
-
-	delete decoder;
-}
-
-
-static CString averr_ssprintf( int err, const char *fmt, ... )
-{
-	ASSERT( err < 0 );
-
-	va_list     va;
-	va_start(va, fmt);
-	CString s = vssprintf( fmt, va );
-	va_end(va); 
-
-	CString Error;
-	switch( err )
-	{
-	case AVERROR_IO:			Error = "I/O error"; break;
-	case AVERROR_NUMEXPECTED:	Error = "number syntax expected in filename"; break;
-	case AVERROR_INVALIDDATA:	Error = "invalid data found"; break;
-	case AVERROR_NOMEM:			Error = "not enough memory"; break;
-	case AVERROR_NOFMT:			Error = "unknown format"; break;
-	default: Error = ssprintf( "unknown error %i", err ); break;
-	}
-
-	return s + " (" + Error + ")";
-}
-
-int URLRageFile_open( avcodec::URLContext *h, const char *filename, int flags )
-{
-	if( strncmp( filename, "rage://", 7 ) )
-	{
-		LOG->Warn("URLRageFile_open: Unexpected path \"%s\"", filename );
-	    return -EIO;
-	}
-	filename += 7;
-
-	int mode = 0;
-	switch( flags )
-	{
-	case URL_RDONLY: mode = RageFile::READ; break;
-	case URL_WRONLY: mode = RageFile::WRITE | RageFile::STREAMED; break;
-	case URL_RDWR: FAIL_M( "O_RDWR unsupported" );
-	}
-
-	RageFile *f = new RageFile;
-	if( !f->Open(filename, mode) )
-	{
-		LOG->Trace("Error opening \"%s\": %s", filename, f->GetError().c_str() );
-		delete f;
-	    return -EIO;
-	}
-
-	h->is_streamed = false;
-	h->priv_data = f;
-	return 0;
-}
-
-int URLRageFile_read( avcodec::URLContext *h, unsigned char *buf, int size )
-{
-	RageFile *f = (RageFile *) h->priv_data;
-	return f->Read( buf, size );
-}
-
-#if LIBAVFORMAT_BUILD > AV_VERSION_INT(52, 67, 0)
-int URLRageFile_write( avcodec::URLContext *h, const unsigned char *buf, int size )
-#else
-int URLRageFile_write( avcodec::URLContext *h, unsigned char *buf, int size )
-#endif
-{
-	RageFile *f = (RageFile *) h->priv_data;
-	return f->Write( buf, size );
-}
-
-int64_t URLRageFile_seek( avcodec::URLContext *h, int64_t pos, int whence )
-{
-	RageFile *f = (RageFile *) h->priv_data;
-	return f->Seek( (int) pos, whence );
-}
-
-int URLRageFile_close( avcodec::URLContext *h )
-{
-	RageFile *f = (RageFile *) h->priv_data;
-	delete f;
-	return 0;
-}
-
-static avcodec::URLProtocol RageProtocol =
-{
-	"rage",
-	URLRageFile_open,
-	URLRageFile_read,
-	URLRageFile_write,
-	URLRageFile_seek,
-	URLRageFile_close,
-	NULL
-};
-
-void MovieTexture_FFMpeg::RegisterProtocols()
-{
-	static bool Done = false;
-	if( Done )
-		return;
-	Done = true;
-
-	avcodec::av_register_all();
-	avcodec::register_protocol( &RageProtocol );
 }
 
 CString MovieTexture_FFMpeg::CreateDecoder()
 {
-	RegisterProtocols();
-
-	int ret = avcodec::av_open_input_file( &decoder->m_fctx, "rage://" + GetID().filename, NULL, 0, NULL );
-	if( ret < 0 )
-		return ssprintf( averr_ssprintf(ret, "AVCodec: Couldn't open \"%s\"", GetID().filename.c_str()) );
-
-	ret = avcodec::av_find_stream_info( decoder->m_fctx );
-	if ( ret < 0 )
-		return ssprintf( averr_ssprintf(ret, "AVCodec (%s): Couldn't find codec parameters", GetID().filename.c_str()) );
-
-	avcodec::AVStream *stream = FindVideoStream( decoder->m_fctx );
-	if ( stream == NULL )
-		return ssprintf( "AVCodec (%s): Couldn't find any video streams", GetID().filename.c_str() );
-
-#if (LIBAVCODEC_BUILD >= 4754)
-	if( stream->codec->codec_id == avcodec::CODEC_ID_NONE )
-		return ssprintf( "AVCodec (%s): Unsupported codec %08x", GetID().filename.c_str(), stream->codec->codec_tag );
-
-	avcodec::AVCodec *codec = avcodec::avcodec_find_decoder( stream->codec->codec_id );
-	if( codec == NULL )
-		return ssprintf( "AVCodec (%s): Couldn't find decoder %i", GetID().filename.c_str(), stream->codec->codec_id );
-
-	LOG->Trace("Opening codec %s", codec->name );
-	ret = avcodec::avcodec_open( stream->codec, codec );
-#else
-	if( stream->codec.codec_id == avcodec::CODEC_ID_NONE )
-		return ssprintf( "AVCodec (%s): Unsupported codec %08x", GetID().filename.c_str(), stream->codec.codec_tag );
-
-	avcodec::AVCodec *codec = avcodec::avcodec_find_decoder( stream->codec.codec_id );
-	if( codec == NULL )
-		return ssprintf( "AVCodec (%s): Couldn't find decoder %i", GetID().filename.c_str(), stream->codec.codec_id );
-
-	LOG->Trace("Opening codec %s", codec->name );
-	ret = avcodec::avcodec_open( &stream->codec, codec );
-#endif
-	if ( ret < 0 )
-		return ssprintf( averr_ssprintf(ret, "AVCodec (%s): Couldn't open codec \"%s\"", GetID().filename.c_str(), codec->name) );
-
-	/* Don't set this until we successfully open stream->codec, so we don't try to close it
-	 * on an exception unless it was really opened. */
-	decoder->m_stream = stream;
-
-	return "";
+	ASSERT( decoder == NULL );
+	decoder = new FFMpeg_Helper;
+	decoder->RegisterProtocols();
+	return decoder->Open( GetID().filename );
 }
 
 
 /* Delete the decoder.  The decoding thread must be stopped. */
 void MovieTexture_FFMpeg::DestroyDecoder()
 {
-	if( decoder->m_stream )
-	{
-#if (LIBAVCODEC_BUILD >= 4754)
-		avcodec::avcodec_close( decoder->m_stream->codec );
-#else
- 		avcodec::avcodec_close( &decoder->m_stream->codec );
-#endif
-		decoder->m_stream = NULL;
-	}
-
-	if( decoder->m_fctx )
-	{
-		avcodec::av_close_input_file( decoder->m_fctx );
-		decoder->m_fctx = NULL;
-	}
+	decoder->Close();
+	SAFE_DELETE( decoder );
 }
 
 /* Delete the surface and texture.  The decoding thread must be stopped, and this
@@ -728,13 +142,8 @@ void MovieTexture_FFMpeg::CreateTexture()
 	/* Cap the max texture size to the hardware max. */
 	actualID.iMaxSize = min( actualID.iMaxSize, DISPLAY->GetMaxTextureSize() );
 
-#if (LIBAVCODEC_BUILD >= 4754)
-	m_iSourceWidth  = decoder->m_stream->codec->width;
-	m_iSourceHeight = decoder->m_stream->codec->height;
-#else
-	m_iSourceWidth  = decoder->m_stream->codec.width;
-	m_iSourceHeight = decoder->m_stream->codec.height;
-#endif
+    m_iSourceWidth = decoder->m_width;
+    m_iSourceHeight = decoder->m_height;
 
 	/* image size cannot exceed max size */
 	m_iImageWidth = min( m_iSourceWidth, actualID.iMaxSize );
@@ -842,7 +251,6 @@ bool MovieTexture_FFMpeg::DecodeFrame()
 		if( sError != "" )
 			RageException::Throw( "Error rewinding stream %s: %s", GetID().filename.c_str(), sError.c_str() );
 
-		decoder->Init();
 		m_Clock = -fDelay;
 		return false;
 	}
@@ -907,11 +315,7 @@ float MovieTexture_FFMpeg::CheckFrameTime()
 		m_FrameSkipMode = true;
 	}
 
-#if (LIBAVCODEC_BUILD >= 4754)
-	if( m_FrameSkipMode && decoder->m_stream->codec->frame_number % 2 )
-#else
-	if( m_FrameSkipMode && decoder->m_stream->codec.frame_number % 2 )
-#endif
+    if( m_FrameSkipMode && decoder->GetRawFrameNumber() % 2 )
 		return -1; /* skip */
 	
 	return 0;

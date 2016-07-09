@@ -80,20 +80,6 @@ function CustomMaxSecondsRow()
 	return CreatePrefsRow( Params, Names, Values, "CustomMaxSeconds" )
 end
 
-function CustomsLoadMaxRow()
-	-- start with 10, go to 100
-	local Values = {}
-	for i = 1,10 do Values[i] = 10*i end
-	Values[11] = 0
-
-	local Names = {}
-	for i = 1,10 do Names[i] = Values[i] end
-	Names[11] = "UNLIMITED"
-
-	local Params = { Name = "CustomsLoadMax" }
-	return CreatePrefsRow( Params, Names, Values, "CustomsLoadMax" )
-end
-
 function CustomsLoadTimeoutRow()
 	-- start with 1, go to 15
 	local Values = {}
@@ -106,29 +92,6 @@ function CustomsLoadTimeoutRow()
 
 	local Params = { Name = "CustomsLoadTimeout" }
 	return CreatePrefsRow( Params, Names, Values, "CustomsLoadTimeout" )
-end
-
-function CustomMaxSizeRow()
-	local Values = { 3, 4, 5, 6, 7, 8, 9, 10, 0 }
-
-	local Names = {}
-	for i = 1,8 do Names[i] = Values[i] .. " MB" end
-	Names[9] = "UNLIMITED"
-
-	local Params = { Name = "CustomMaxSizeMB" }
-
-	return CreatePrefsRow( Params, Names, Values, "CustomMaxSizeMB" )
-end
-
-function CustomMaxStepSizeRow()
-	-- offset by 30 KB, increments of 15 KB up to 150 KB and unlimited
-	local Names = {}
-	for i=1,9 do Names[i] = (30+((i-1)*15)) .. "KB" end
-	Names[10] = "UNLIMITED"
-
-	local Params = { Name = "CustomMaxStepSizeKB" }
-
-	return CreatePrefsRowRange( Params, Names, "CustomMaxStepSizeKB", 30, 15 )
 end
 
 -- Base function for the below derivations
@@ -191,6 +154,27 @@ function GiveUpTimeRow()
 
 	local Params = { Name="GiveUpTime" }
 	return CreateOptionRow( Params, Names, Load, Save )
+end
+
+-- Deprecated functions
+function CustomsLoadMaxRow()
+	return DeprecatedRow( "CustomsLoadMax" )
+end
+
+function CustomMaxSizeRow()
+	return DeprecatedRow( "CustomMaxSizeMB" )
+end
+
+function CustomMaxStepSizeRow()
+	return DeprecatedRow( "CustomMaxStepSizeKB" )
+end
+
+function DeprecatedRow( name )
+	Debug( name .. " is deprecated." )
+	local Names = { name .. " is deprecated" }
+	local Values = { 1 }
+	local Params = { Name = "DeprecatedOption" }
+	return CreatePrefsRow( Params, Names, Values, "DeprecatedOption" )
 end
 
 local function deprecated( name )

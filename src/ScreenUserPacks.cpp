@@ -336,9 +336,7 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 		m_PlayerSongLoadThread.Wait();
 
 		MountMutex.Lock();
-#if defined(LINUX) && defined(ITG_ARCADE)
-		system( "mount -o remount,rw /itgdata" );
-#endif
+
 		MEMCARDMAN->LockCards();
 		MEMCARDMAN->MountCard(m_CurPlayer, 99999);
 		CString sSelection = m_USBZips.GetCurrentSelection();
@@ -377,7 +375,6 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 		}
 #if defined(LINUX) && defined(ITG_ARCADE)
 		sync();
-		system( "mount -o remount,ro /itgdata" );
 #endif
 		SCREENMAN->HideOverlayMessage();
 		SCREENMAN->ZeroNextUpdate();

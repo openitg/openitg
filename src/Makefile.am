@@ -1,3 +1,4 @@
+AUTOMAKE_OPTIONS = subdir-objects
 bin_PROGRAMS = openitg
 TESTS = 
 tests: $(TESTS)
@@ -5,9 +6,9 @@ if BUILD_TESTS
 noinst_PROGRAMS = $(TESTS)
 endif
 
-AM_LDFLAGS =
-AM_CXXFLAGS = 
-AM_CFLAGS = 
+AM_LDFLAGS = $(LDFLAGS)
+AM_CXXFLAGS = $(CXXFLAGS) -O0 -g3
+AM_CFLAGS = $(CFLAGS)
 
 # Relax inlining; the default of 600 takes way too long to compile and
 # generates enormous output.
@@ -16,7 +17,7 @@ AM_CXXFLAGS += -finline-limit=300
 AM_CXXFLAGS += $(XCFLAGS) -I$(srcdir)/libtomcrypt/src/headers -I$(srcdir)/libtommath
 
 if !ITG_ARCADE
-LIBS += -lpthread -Wl,-Bstatic $(LUA_LIBS) -Wl,-Bdynamic 
+LIBS += -lpthread $(LUA_LIBS)
 else
 LIBS += -nodefaultlibs -Wl,-Bstatic -lstdc++ $(LUA_LIBS) -lXrandr -lXrender -lmad -lgcc -lgcc_eh -Wl,-Bdynamic -lpthread -lusb -lc
 endif
@@ -198,11 +199,19 @@ InputHandler += arch/InputHandler/InputHandler_PIUIO.h \
 		arch/InputHandler/InputHandler_MK3.cpp \
 		arch/InputHandler/InputHandler_MK3Helper.h
 
-
-
 MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture.h \
-		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h \
-		arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h 
+		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h
+
+if HAVE_FFMPEG
+MovieTexture += arch/MovieTexture/MovieTexture_FFMpeg.cpp arch/MovieTexture/MovieTexture_FFMpeg.h \
+		arch/MovieTexture/FFMpeg_Helper_Common.h
+
+if HAVE_LEGACY_FFMPEG
+MovieTexture += arch/MovieTexture/FFMpeg_Helper_Legacy.cpp arch/MovieTexture/FFMpeg_Helper_Legacy.h
+else
+MovieTexture += arch/MovieTexture/FFMpeg_Helper.cpp arch/MovieTexture/FFMpeg_Helper.h
+endif
+endif
 
 ####		arch/MovieTexture/MovieTexture_Generic.cpp arch/MovieTexture/MovieTexture_Generic.h
 
@@ -452,12 +461,7 @@ if !HAVE_LIBRESAMPLE
 main_LDADD += $(srcdir)/libresample/libresample.a
 endif
 
-if !HAVE_FFMPEG
-openitg_LDADD = $(main_LDADD) \
-	$(srcdir)/ffmpeg/lib/libavformat.a $(srcdir)/ffmpeg/lib/libavcodec.a
-else
 openitg_LDADD = $(main_LDADD)
-endif
 
 if HAVE_GTK
 bin_PROGRAMS += GtkModule.so
@@ -548,5 +552,5 @@ test_threads_SOURCES = \
 		$(all_test_SOURCES) \
 		tests/test_threads.cpp
 
-INCLUDES = $(LUA_CFLAGS) $(SDL_CFLAGS)
+AM_CPPFLAGS = $(LUA_CFLAGS) $(SDL_CFLAGS)
 

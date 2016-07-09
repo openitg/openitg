@@ -193,7 +193,7 @@ void ScoreKeeperMAX2::OnNextSong( int iSongInCourseIndex, const Steps* pSteps, c
 	m_iTapNotesHit = 0;
 }
 
-static int GetScore(int p, int B, int S, int n)
+static int GetScore(int p, int B, int64_t S, int n)
 {
 	/* There's a problem with the scoring system described below.  B/S is truncated
 	 * to an int.  However, in some cases we can end up with very small base scores.
@@ -275,8 +275,8 @@ void ScoreKeeperMAX2::AddScore( TapNoteScore score )
 
 	m_iTapNotesHit++;
 
-	const int N = m_iNumTapsAndHolds;
-	const int sum = (N * (N + 1)) / 2;
+	const int64_t N = m_iNumTapsAndHolds;
+	const int64_t sum = (N * (N + 1)) / 2;
 	const int B = m_iMaxPossiblePoints/10;
 
 	// Don't use a multiplier if the player has failed
@@ -347,12 +347,11 @@ void ScoreKeeperMAX2::HandleTapRowScore( TapNoteScore scoreOfLastTap, int iNumTa
 	// Update dance points.
 	if( !m_pPlayerStageStats->bFailed )
 		m_pPlayerStageStats->iActualDancePoints += TapNoteScoreToDancePoints( scoreOfLastTap );
-	m_pPlayerStageStats->iCurPossibleDancePoints += TapNoteScoreToDancePoints( TNS_MARVELOUS );
+
 	// update judged row totals
 	m_pPlayerStageStats->iTapNoteScores[scoreOfLastTap] += 1;
 
 	// increment the current total possible dance score
-
 	m_pPlayerStageStats->iCurPossibleDancePoints += TapNoteScoreToDancePoints( TNS_MARVELOUS );
 
 	//
@@ -417,11 +416,10 @@ void ScoreKeeperMAX2::HandleHoldScore( HoldNoteScore holdScore, TapNoteScore tap
 	// update dance points totals
 	if( !m_pPlayerStageStats->bFailed )
 		m_pPlayerStageStats->iActualDancePoints += HoldNoteScoreToDancePoints( holdScore );
-	m_pPlayerStageStats->iCurPossibleDancePoints += HoldNoteScoreToDancePoints( HNS_OK );
+
 	m_pPlayerStageStats->iHoldNoteScores[holdScore] ++;
 
 	// increment the current total possible dance score
-
 	m_pPlayerStageStats->iCurPossibleDancePoints += HoldNoteScoreToDancePoints( HNS_OK );
 
 	if( holdScore == HNS_OK )

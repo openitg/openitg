@@ -59,6 +59,7 @@ void ScreenDemonstration::Init()
 
 	if( GAMESTATE->m_pCurSong == NULL )	// we didn't find a song.
 	{
+		LOG->Info("ScreenDemonstration: Couldn't find a song. Aborting demonstration.");
 		HandleScreenMessage( SM_GoToNextScreen );	// Abort demonstration.
 		return;
 	}

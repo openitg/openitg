@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker run -v `pwd`:/root/oitg -t $USER/oitg /bin/bash -c 'cd /root/oitg && ./build-arcade.sh'
+docker run -v `pwd`:/root/openitg -t openitg-arcade /bin/bash -c 'cd /root/openitg && ./build-arcade.sh'

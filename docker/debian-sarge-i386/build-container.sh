@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# this script must run as root
+if [ ! "x`whoami`" = "xroot" ]; then
+        echo "$0: you must be root to build the container image"
+        exit 1;
+fi
 
-export ROOT_FS=/var/tmp/rootfs
+export ROOT_FS=/tmp/rootfs
 
 rm -rf $ROOT_FS
 
@@ -19,5 +22,7 @@ echo "nameserver 8.8.4.4" >> $ROOT_FS/etc/resolv.conf
 # create root fs tarball
 tar --numeric-owner -caf rootfs.tar.xz -C $ROOT_FS --transform='s,^./,,' .
 
-docker build -t $USER/oitg .
+docker build -t debian-sarge-i386 .
 
+rm rootfs.tar.xz
+rm -rf $ROOT_FS

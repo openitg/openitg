@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OPENITG_ARCADE_DOCKER_IMAGE_NAME="openitg-arcade"
+OPENITG_DOCKER_IMAGE_NAME="openitg-arcade"
 PRIVATE_RSA="$1"
 
 # exit immediately on nonzero exit code
@@ -27,8 +27,8 @@ has_command docker
 # ensure docker image is built
 DOCKER_IMAGES="`docker images`"
 
-if [[ $DOCKER_IMAGES != *"$OPENITG_ARCADE_DOCKER_IMAGE_NAME"* ]]; then
-    cd docker/openitg-arcade/
+if [[ $DOCKER_IMAGES != *"$OPENITG_DOCKER_IMAGE_NAME"* ]]; then
+    cd docker-images/$OPENITG_DOCKER_IMAGE_NAME
     ./build-container.sh
     cd ../..
 fi
@@ -65,7 +65,16 @@ fi
 # 1. Builds an arcade binary in a copy of the repository (no files are changed on the host)
 # 2. Copies the openitg binary to the src/ directory on the host
 # 3. Throws away the container (--rm)
-docker run --rm -v `pwd`:/root/openitg -t openitg-arcade /bin/bash -c "cd /root/openitg/build/arcade-patch && ./inside-container-build.sh $MAKE_THREADS"
+
+OPENITG_SRC_DOCKER="/tmp/openitg-src-docker"
+mkdir -p $OPENITG_SRC_DOCKER
+cp -r ./* $OPENITG_SRC_DOCKER
+
+docker run --rm -v $OPENITG_SRC_DOCKER:/root/openitg -t $OPENITG_DOCKER_IMAGE_NAME /bin/bash -c "cd /root/openitg && ./build-arcade.sh $MAKE_THREADS"
+
+cp $OPENITG_SRC_DOCKER/src/openitg src/
+
+rm -rf $OPENITG_SRC_DOCKER
 
 # Verify the only output is where it's supposed to be.
 has_file "src/openitg" "%s doesn't exist! Did the build fail?"

@@ -65,3 +65,8 @@ function has_file
 	printf "${2-$FILE_ERROR}\n" $1
 	return 1
 }
+
+function abspath
+{
+	echo "$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
+}

@@ -23,7 +23,9 @@ cp -r assets/game-data/* $HOME_TMP_DIR
 cp -r assets/patch-data/* $HOME_TMP_DIR
 
 # Remove useless files
-rm -rf $HOME_TMP_DIR/Cache/*
+rm -f $HOME_TMP_DIR/zip.sh
+rm -rf $HOME_TMP_DIR/Cache
+rm -rf $HOME_TMP_DIR/Songs
 rm -rf $HOME_TMP_DIR/Themes/ps2onpc
 rm -rf $HOME_TMP_DIR/Themes/ps2
 rm -rf $HOME_TMP_DIR/Data/patch/patch/Cache

@@ -5,4 +5,4 @@ if [ ! "x`whoami`" = "xroot" ]; then
         exit 1;
 fi
 
-docker build -t openitg-arcade .
+docker build -t debian-sarge-i386-openitg .

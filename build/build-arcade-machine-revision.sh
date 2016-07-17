@@ -23,7 +23,7 @@ if ! [ -f "$PRIVATE_RSA" ]; then print_usage; fi
 
 PRIVATE_RSA=$(abspath $PRIVATE_RSA)
 
-# Calulate reasonable number of make jobs
+# Calculate reasonable number of make jobs
 HAS_NPROC=1
 command -v nproc >/dev/null 2>&1 || { HAS_NPROC=0; }
 
@@ -33,7 +33,7 @@ else
     MAKE_JOBS=1
 fi
 
-./docker-build.sh "openitg-arcade" "./build-arcade.sh $MAKE_JOBS" "src/openitg"
+./docker-build.sh "debian-sarge-i386-openitg" "./build-arcade.sh $MAKE_JOBS" "src/openitg"
 
 # Change directory to the root of the repository
 cd ..
@@ -47,9 +47,6 @@ if [ -f "src/GtkModule.so" ]; then
 fi
 
 mv build/artifacts/openitg src/
-
-# Verify the only output is where it's supposed to be.
-has_file "src/openitg" "%s doesn't exist! Did the build fail?"
 
 # Build the itg2-util
 cd assets/utilities/itg2-util

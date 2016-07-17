@@ -21,9 +21,8 @@ cd $DEB_DIR
 # https://ubuntuforums.org/showthread.php?t=910717
 
 PACKAGE_NAME=openitg
-#PACKAGE_VERSION=`git describe --abbrev=0`
 # deb package version numbers must start with a digit...
-PACKAGE_VERSION="1.0"
+PACKAGE_VERSION=`git describe --abbrev=0`
 PACKAGE_RELEASE="1"
 PACKAGE_DEB_VERSION="$PACKAGE_VERSION-$PACKAGE_RELEASE"
 PACKAGE_FULLNAME=${PACKAGE_NAME}_${PACKAGE_DEB_VERSION}
@@ -50,10 +49,10 @@ chmod 755 $PACKAGE_FULLNAME/usr/bin/$PACKAGE_NAME
 cat <<EOF > $PACKAGE_FULLNAME/DEBIAN/control
 Package: $PACKAGE_NAME
 Version: $PACKAGE_DEB_VERSION
-Section: base
+Section: games
 Priority: optional
 Architecture: amd64
-Depends: libpng (>= 1.2), libmad, libogg, libvorbis
+Depends: libpng12-0, libmad, libogg, libvorbis
 Maintainer: August Gustavsson
 Description: An open-source rhythm dancing game which is a fork of StepMania 3.95
  with the goal of adding arcade-like ITG-style behavior and serving as a drop-in

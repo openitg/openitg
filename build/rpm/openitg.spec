@@ -9,8 +9,11 @@ URL: https://github.com/openitg/openitg
 Distribution: SUSE Linux
 Vendor: -
 Packager: August Gustavsson
-BuildRequires: zip unzip git gcc-c++ automake Mesa-devel alsa-devel libpng12-compat-devel glu-devel libjpeg-devel
-BuildRequires: libXrandr-devel libusb-compat-devel ffmpeg-devel libvorbis-devel libogg-devel gtk2-devel lua51-devel
+BuildRequires: zip unzip git gcc-c++ automake autoconf make
+BuildRequires: Mesa-devel alsa-devel libpng12-compat-devel glu-devel libjpeg-devel
+BuildRequires: libXrandr-devel libusb-compat-devel libvorbis-devel libogg-devel gtk2-devel lua51-devel
+BuildRequires: libavcodec-devel libavformat-devel libavutil-devel libswscale-devel
+Requires: libpng12-0
 
 %description
 An open-source rhythm dancing game which is a fork of StepMania 3.95

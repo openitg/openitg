@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Copies the openitg repository to a docker container and runs a specified build script.
+#
+# Only the artifacts are copied back to the original repository.
+# Operation:
+# 1. Makes sure the desired docker image is built. The image name corresponds to a 
+#    directory in the docker-images directory.
+# 2. Copy the entire openitg repository to a location in /tmp
+# 3. Start a docker container and mount the repo copy at /root/openitg in the container
+# 4. cd to the root of the repository inside the container
+# 5. Run the specified "build-command"
+# 6. Throw away the container
+# 7. Copy the specified artifacts to build/artifacts in the original repo
+# 8. Delete the repository copy under /tmp 
+
 # exit immediately on nonzero exit code
 set -e
 set -u

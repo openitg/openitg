@@ -117,7 +117,7 @@ fi
 have_libpng=yes
 PNG_LIBS=
 PNG_CFLAGS=
-AC_CHECK_LIB(png12, png_create_read_struct, [x=y], have_libpng=no, 
+AC_CHECK_LIB(png12, png_create_read_struct, have_libpng=yes, have_libpng=no, 
              [-lz -lm])
 if test "$have_libpng" = "yes"; then
     png_header_found=yes
@@ -129,7 +129,7 @@ if test "$have_libpng" = "yes"; then
     fi
     LIBS="$LIBS -lpng12 -lz -lm"
 else
-    AC_CHECK_LIB(png, png_create_read_struct, [x=y], have_libpng=no, [-lz -lm]) # x=y to stop autoconf from messing with LIBS
+    AC_CHECK_LIB(png, png_create_read_struct, have_libpng=yes, have_libpng=no, [-lz -lm]) # x=y to stop autoconf from messing with LIBS
     AC_CHECK_HEADER(png.h, , have_libpng=no)
     LIBS="$LIBS -lpng -lz -lm"
 fi

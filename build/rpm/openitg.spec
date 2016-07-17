@@ -36,6 +36,7 @@ mkdir -p %{buildroot}/opt/%{name}
 #install -D -m 0755 src/GtkModule.so %{buildroot}/opt/%{name}/GtkModule.so
 unzip home-tmp.zip -d %{buildroot}/opt/%{name}/
 rm home-tmp.zip
+chmod -R 664 %{buildroot}/opt/%{name}/*
 chmod 755 %{buildroot}/opt/%{name}/%{name}
 chmod 755 %{buildroot}/opt/%{name}/GtkModule.so
 

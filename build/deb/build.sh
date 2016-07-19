@@ -52,7 +52,7 @@ Version: $PACKAGE_DEB_VERSION
 Section: games
 Priority: optional
 Architecture: amd64
-Depends: libpng12-0, libmad, libogg, libvorbis
+Depends: libpng12-0, libmad0, libogg0, libvorbis0a, ffmpeg (>= 7:2.7), liblua50, liblualib50
 Maintainer: August Gustavsson
 Description: An open-source rhythm dancing game which is a fork of StepMania 3.95
  with the goal of adding arcade-like ITG-style behavior and serving as a drop-in

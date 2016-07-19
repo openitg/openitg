@@ -36,4 +36,6 @@ exec /opt/$_shortname/$_shortname
 EOF
 
   chmod 755 $pkgdir/usr/bin/$_shortname
+
+	install -D -m644 Licenses.txt "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }

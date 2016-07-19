@@ -26,6 +26,7 @@ replacement for the ITG binary on arcade cabinents.
 %build
 ./autogen.sh
 %configure --with-sse2 --with-x --with-gnu-ld --without-mp3
+make clean
 make -j4
 strip --strip-unneeded src/openitg
 

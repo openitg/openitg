@@ -17,7 +17,7 @@ Running build-all.sh currently produces:
 * A source package
 * An ITG2 arcade compatible machine revision (x86)
 * An opensuse rpm package (x86_64)
-* An ubuntu compatible debian package (x86_64)
+* Ubuntu compatible debian packages (x86_64)
 
 Instructions:
 1. Make sure your OS architecture is x86_64.
@@ -28,4 +28,5 @@ Instructions:
    * Must NOT contain the following characters -
 4. Have a private rsa key available for signing the machine revision. The openitg wiki contains intructions on how to make one.
 5. As root, run:
-   # ./build-all.sh private.rsa
+    # cd build/
+    # ./build-all.sh private.rsa

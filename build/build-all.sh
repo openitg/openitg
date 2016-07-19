@@ -21,4 +21,4 @@ fi
 ./build-source-package.sh ./artifacts
 ./build-arcade-machine-revision.sh $PRIVATE_RSA
 ./build-opensuse-package.sh
-./build-ubuntu-package.sh
+./build-ubuntu-packages.sh

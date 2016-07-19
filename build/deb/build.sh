@@ -24,8 +24,9 @@ PACKAGE_NAME=openitg
 # deb package version numbers must start with a digit...
 PACKAGE_VERSION=`git describe --abbrev=0`
 PACKAGE_RELEASE="1"
+PACKAGE_ARCH="amd64"
 PACKAGE_DEB_VERSION="$PACKAGE_VERSION-$PACKAGE_RELEASE"
-PACKAGE_FULLNAME=${PACKAGE_NAME}_${PACKAGE_DEB_VERSION}
+PACKAGE_FULLNAME=${PACKAGE_NAME}_${PACKAGE_DEB_VERSION}_${PACKAGE_ARCH}
 
 rm -rf $PACKAGE_FULLNAME
 mkdir $PACKAGE_FULLNAME
@@ -51,8 +52,8 @@ Package: $PACKAGE_NAME
 Version: $PACKAGE_DEB_VERSION
 Section: games
 Priority: optional
-Architecture: amd64
-Depends: libpng12-0, libmad0, libogg0, libvorbis0a, ffmpeg (>= 7:2.7), liblua50, liblualib50
+Architecture: $PACKAGE_ARCH
+Depends: libglu1, libpng12-0, libmad0, libogg0, libvorbis0a, ffmpeg (>= 7:2.7), liblua50, liblualib50, libxrandr2, libxt6
 Maintainer: August Gustavsson
 Description: An open-source rhythm dancing game which is a fork of StepMania 3.95
  with the goal of adding arcade-like ITG-style behavior and serving as a drop-in

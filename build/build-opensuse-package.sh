@@ -9,4 +9,6 @@ if [ ! "x`whoami`" = "xroot" ]; then
         exit 1;
 fi
 
-./docker-build.sh "opensuse-openitg" "cd build/rpm && ./build.sh" "build/rpm/*.rpm"
+./docker-build.sh "opensuse-42.1-openitg" "cd build/rpm && ./build.sh" "build/rpm/*.rpm"
+mkdir artifacts/opensuse-42.1
+mv artifacts/openitg*.rpm artifacts/opensuse-42.1/

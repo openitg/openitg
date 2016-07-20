@@ -1,7 +1,22 @@
+# Simple guide
+# https://fedoraproject.org/wiki/How_to_create_an_RPM_package
+# Reference
+# https://docs.fedoraproject.org/en-US/Fedora_Draft_Documentation/0.1/html/RPM_Guide/index.html
+
+# Naming av versioning
+# https://en.opensuse.org/openSUSE:Package_naming_guidelines
+
+%if %{undefined dist}
+    %if 0%{?suse_version} == 1315
+        %define mydist .suse42.1
+    %endif
+%endif
+
 Summary: An open-source rhythm dancing game based on StepMania 3.95
 Name: openitg
 Version: %(git describe --abbrev=0)
-Release: 1
+# https://fedoraproject.org/wiki/Packaging:DistTag?rd=Packaging/DistTag
+Release: 1%{?dist}%{?mydist}
 License: MIT
 Group: Games
 Source0: openitg-%{version}.tar.gz
@@ -9,11 +24,21 @@ URL: https://github.com/openitg/openitg
 Distribution: SUSE Linux
 Vendor: -
 Packager: August Gustavsson
+
+# https://en.opensuse.org/openSUSE:Build_Service_cross_distribution_howto#Detect_a_distribution_flavor_for_special_code
+%if 0%{?suse_version}
 BuildRequires: zip unzip git gcc-c++ automake autoconf make
 BuildRequires: Mesa-devel alsa-devel libpng12-compat-devel glu-devel libjpeg-devel
 BuildRequires: libXrandr-devel libusb-compat-devel libvorbis-devel libogg-devel gtk2-devel lua51-devel
 BuildRequires: libavcodec-devel libavformat-devel libavutil-devel libswscale-devel
 Requires: libpng12-0
+%endif
+
+%if 0%{?fedora}
+BuildRequires: zip unzip git gcc automake autoconf make
+BuildRequires: mesa-libGLU-devel alsa-lib-devel libpng12-devel libjpeg-turbo-devel gettext-devel
+BuildRequires: libXrandr-devel libusb-devel libvorbis-devel libogg-devel gtk2-devel lua-devel
+%endif
 
 %description
 An open-source rhythm dancing game which is a fork of StepMania 3.95
@@ -27,7 +52,7 @@ replacement for the ITG binary on arcade cabinents.
 ./autogen.sh
 %configure --with-sse2 --with-x --with-gnu-ld --without-mp3
 make clean
-make -j4
+make %{?_smp_mflags}
 strip --strip-unneeded src/openitg
 
 # Creates home-tmp.zip

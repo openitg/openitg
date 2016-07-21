@@ -128,6 +128,14 @@ struct stat st;
 	/* OpenITG-specific paths */
 	FILEMAN->Mount( "oitg", Root + "/CryptPackages", "/Packages" );
 
+	/*
+	* Mount an OpenITG root in the home directory.
+	* This is where custom data (songs, themes, etc) should go. 
+	* Any files OpenITG tries to modify will be written here.
+	*/
+	CString home = CString( getenv( "HOME" ) ) + "/";
+	FILEMAN->Mount( "dir", home + ".openitg", "/" );
+
 	/* This mounts everything else, including Cache, Data, UserPacks, etc. */
 	FILEMAN->Mount( "dir", Root, "/" );
 #endif // ITG_ARCADE

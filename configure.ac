@@ -1,3 +1,4 @@
+# vim: set noet:
 # only tested with autoconf 2.57
 AC_PREREQ(2.53)
 
@@ -189,15 +190,15 @@ AC_CHECK_HEADER([sys/inotify.h],
 	AC_DEFINE(HAVE_INOTIFY, 1, [inotify support in kernel])
 ,)
 
-have_libresample=static
-
 # search for system libs if not building for arcade
 if test "$itg_arcade" = "no"; then
-	have_libresample=yes
-	AC_CHECK_LIB(resample, resample_open, [x=y], have_libresample=static, [-lm])
+	AC_CHECK_LIB(resample, resample_open, [have_libresample=yes], [have_libresample=static], [-lm])
 	if test "$have_libresample" = "yes"; then
 		LIBS="$LIBS -lresample"
 	fi
+else
+	echo "Skipping libresample check due to arcade build"
+	have_libresample=static
 fi
 
 AM_CONDITIONAL(HAVE_LIBRESAMPLE, test "$have_libresample" = "yes")
@@ -280,7 +281,7 @@ AM_CONDITIONAL(BUILD_TESTS, test "$enable_tests" = "yes" )
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(src/Makefile)
 
-if test "$have_libresample" = "no"; then
+if test "$have_libresample" != "yes"; then
 	# use our own libresample in vain
 	cd src/libresample && autoconf && ./configure && cd ../..
 fi

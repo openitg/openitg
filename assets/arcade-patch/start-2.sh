@@ -5,6 +5,7 @@ export TOP=/stats/patch
 # Load changed modules.
 umount /proc/bus/usb
 rmmod ub
+rmmod ehci_hcd
 rmmod uhci_hcd
 rmmod ohci_hcd
 rmmod usbcore
@@ -12,6 +13,7 @@ rmmod usbcore
 insmod $TOP/modules/usbcore.ko
 modprobe uhci_hcd
 modprobe ohci_hcd
+insmod $TOP/modules/ehci-hcd.ko
 insmod $TOP/modules/ub.ko
 mount /proc/bus/usb
 

@@ -14,12 +14,12 @@
 
 Summary: An open-source rhythm dancing game based on StepMania 3.95
 Name: openitg
-Version: %(git describe --abbrev=0)
+Version: %(git describe | sed -r 's/-/+/g')
 # https://fedoraproject.org/wiki/Packaging:DistTag?rd=Packaging/DistTag
 Release: 1%{?dist}%{?mydist}
 License: MIT
 Group: Games
-Source0: openitg-%{version}.tar.gz
+Source0: openitg-%{version}.tar.xz
 URL: https://github.com/openitg/openitg
 Distribution: SUSE Linux
 Vendor: -

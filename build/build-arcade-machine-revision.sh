@@ -48,12 +48,12 @@ fi
 
 mv build/artifacts/openitg src/
 
-# Build the itg2-util
-cd assets/utilities/itg2-util
+# Build itg2-util
+pushd assets/utilities/itg2-util
 ./autogen.sh
 ./configure
 make
-cd ../../..
+popd
 
 # Generate a machine revision package
 ./gen-arcade-patch.sh $PRIVATE_RSA

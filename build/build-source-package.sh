@@ -14,9 +14,9 @@ function print_usage
 
 if ! [ -d "$OUTPUT_DIR" ]; then print_usage; fi
 
-START_DIR=`pwd`
+pushd .
 
-OPENITG_VERSION="`git describe --abbrev=0`"
+OPENITG_VERSION="`git describe | sed -r 's/-/+/g'`"
 
 TEMP_WORK_DIR="/tmp/openitg-work-tmp"
 
@@ -24,18 +24,26 @@ if [ -d $TEMP_WORK_DIR ]; then
     rm -rf $TEMP_WORK_DIR
 fi
 
-mkdir -p $TEMP_WORK_DIR/openitg-$OPENITG_VERSION
-cp -r ../* $TEMP_WORK_DIR/openitg-$OPENITG_VERSION
+mkdir -p $TEMP_WORK_DIR
+cp -r .. $TEMP_WORK_DIR/openitg-$OPENITG_VERSION
+
+# Enter repository
 cd $TEMP_WORK_DIR/openitg-$OPENITG_VERSION
 
-# When downloading a source package it should be prepared to run configure
+# Clean all changes, added files, and files hidden by .gitignore
+#git clean -dfx
+
+# Remove git files
+#rm -rf .git .gitignore
+
+# When a user downloads a source package it should be prepared for running ./configure
 ./autogen.sh
 
 cd ..
 
-tar -zcf $TEMP_WORK_DIR/openitg-$OPENITG_VERSION.tar.gz openitg-$OPENITG_VERSION
+tar -Jcf $TEMP_WORK_DIR/openitg-$OPENITG_VERSION.tar.xz openitg-$OPENITG_VERSION
 
-cd $START_DIR
-mv $TEMP_WORK_DIR/openitg-$OPENITG_VERSION.tar.gz $OUTPUT_DIR/
+popd
+mv $TEMP_WORK_DIR/openitg-$OPENITG_VERSION.tar.xz $OUTPUT_DIR/
 
 rm -rf $TEMP_WORK_DIR

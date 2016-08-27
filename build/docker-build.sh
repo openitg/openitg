@@ -57,6 +57,7 @@ cd ..
 OPENITG_SRC_DOCKER="/tmp/openitg-src-docker"
 rm -rf $OPENITG_SRC_DOCKER
 cp -r . $OPENITG_SRC_DOCKER
+rm -rf $OPENITG_SRC_DOCKER/run
 
 docker run --rm -v $OPENITG_SRC_DOCKER:/root/openitg -it $DOCKER_IMAGE_NAME /bin/bash -c "cd /root/openitg && $BUILD_COMMAND"
 

@@ -22,7 +22,7 @@ cd $DEB_DIR
 
 PACKAGE_NAME=openitg
 # deb package version numbers must start with a digit...
-PACKAGE_VERSION=`git describe --abbrev=0`
+PACKAGE_VERSION=`git describe | sed -r 's/-/+/g'`
 PACKAGE_RELEASE="1"
 PACKAGE_ARCH="amd64"
 PACKAGE_DEB_VERSION="$PACKAGE_VERSION-$PACKAGE_RELEASE"

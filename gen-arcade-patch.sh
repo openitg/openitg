@@ -74,7 +74,7 @@ fi
 #
 
 OITG_DATE="`date +%m-%d-%Y`"
-OITG_VERSION="`git describe`"
+OITG_VERSION="`git describe | sed -r 's/-/+/g'`"
 
 if [ $? -ne 0 ]; then
 	echo "'git describe' failed! Are you working in a Git repo?"

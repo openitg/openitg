@@ -15,7 +15,6 @@ PATCH_DATA_DIR="assets/arcade-patch"
 
 # values that aren't really magical, just used in a few places
 OITG_BINARY="src/openitg"
-CONFIG_HEADER="src/config.h"
 
 # default to private.rsa in CWD (for the sake of a default value)
 PRIVATE_RSA=${1-private.rsa}
@@ -51,7 +50,6 @@ has_command javac
 has_command java
 
 has_file "$OITG_BINARY" "%s doesn't exist! Please build it."
-has_file "$CONFIG_HEADER" "Why do you have a binary, but not config.h?"
 has_file "$VERIFY_SIG_PATH" "%s is missing; try checking out the repo again?"
 has_file "$PRIVATE_RSA" "RSA key \"%s\" not found! (failed sanity check)"
 
@@ -76,24 +74,12 @@ fi
 #
 
 OITG_DATE="`date +%m-%d-%Y`"
-OITG_VERSION="`git describe`"
+OITG_VERSION="`git describe | sed -r 's/-/+/g'`"
 
 if [ $? -ne 0 ]; then
 	echo "'git describe' failed! Are you working in a Git repo?"
 	exit 1
 fi
-
-# sanity check - make sure this build is actually for arcades
-set +e
-
-grep "#define ITG_ARCADE 1" "$CONFIG_HEADER" &> /dev/null
-
-if [ $? -ne 0 ]; then
-	echo "Your config.h says this isn't an arcade build. Aborting."
-	exit 1
-fi
-
-set -e
 
 mkdir -p "$TMP_DIR"
 

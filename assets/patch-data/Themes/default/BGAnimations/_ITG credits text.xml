@@ -1,4 +1,4 @@
-<BGAnimation 
+ï»¿<BGAnimation 
 	UseScroller="1"
 	SecondsPerItem="0.28" 
 	NumItemsToDraw="21"
@@ -12,14 +12,14 @@
 		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="PROGRAMMING" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
-		<Layer Type="BitmapText" Text="Mark “vyhd” Cannon" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Pat “infamouspat” Mac" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Matt “1360” Vandermeulen" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Carl “terabyte” Myers" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Mark â€œvyhdâ€ Cannon" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Pat â€œinfamouspatâ€ Mac" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Matt â€œ1360â€ Vandermeulen" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Carl â€œterabyteâ€ Myers" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="THEME WORK" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
-		<Layer Type="BitmapText" Text="Stephen “xjen0vax” Marshall" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Jason “Lightning” Bolt" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Stephen â€œxjen0vaxâ€ Marshall" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Jason â€œLightningâ€ Bolt" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="SPECIAL THANKS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
 		<Layer Type="BitmapText" Text="BoXoRRoXoRs crew" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
@@ -94,7 +94,7 @@
 		<Layer Type="BitmapText" Text="Rhea Dysangco" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Cinnamon Cooney" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Lee Search" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Gina “Lou” Hall" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Gina â€œLouâ€ Hall" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Aaron Shafer" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Kristy Bowden" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Koley Porter" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
@@ -111,28 +111,28 @@
 		<Layer Type="BitmapText" Text="" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="STEPMANIA PROGRAMMERS" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#76B1D5;ztest,1" />
 		<Layer Type="BitmapText" Text="Frieza" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Peter “Dro Kulix” May" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Jared “nmspaz” Roberts" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Brendan “binarys” Walker" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Lance “Neovanglist” Gilbert" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Peter â€œDro Kulixâ€ May" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Jared â€œnmspazâ€ Roberts" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Brendan â€œbinarysâ€ Walker" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Lance â€œNeovanglistâ€ Gilbert" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Michel Donais" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Ben “Mantis” Nordstrom" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Chris “Parasyte” Gomez" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Michael “dirkthedaring” Patterson" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Sauleil “angedelamort” Lamarre" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Ben â€œMantisâ€ Nordstrom" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Chris â€œParasyteâ€ Gomez" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Michael â€œdirkthedaringâ€ Patterson" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Sauleil â€œangedelamortâ€ Lamarre" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Edwin Evans" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Brian “Bork” Bugh" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Joel “Elvis314” Maher" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Garth “Kefabi” Smith" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Brian â€œBorkâ€ Bugh" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Joel â€œElvis314â€ Maher" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Garth â€œKefabiâ€ Smith" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Pkillah" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Robert Kemmetmueller" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Ben “Shabach” Andersen" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Will “SlinkyWizard” Valladao" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Ben â€œShabachâ€ Andersen" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Will â€œSlinkyWizardâ€ Valladao" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="TheChip" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="David “WarriorBob” H" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="David â€œWarriorBobâ€ H" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Mike Waltson" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Kevin “Miryokuteki” Slaughter" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
-		<Layer Type="BitmapText" Text="Thad “Coderjoe” Ward" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Kevin â€œMiryokutekiâ€ Slaughter" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
+		<Layer Type="BitmapText" Text="Thad â€œCoderjoeâ€ Ward" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Steve Checkoway" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="Sean Burke" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />
 		<Layer Type="BitmapText" Text="XPort" File="_eurostile normal" OnCommand="zoom,0.7;diffuse,#FFFFFF;ztest,1" />

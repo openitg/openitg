@@ -1,6 +1,36 @@
-OpenITG, beta 4 (April ??, 2011)
+OpenITG, 0.9 (in development)
+-------------------------------------
 
-It's been a long time in coming, but OpenITG beta 3 is here!
+-Simply love compatibility improved.
+-Tons of crashes eliminated.
+-Multiple bugs fixed.
+-Rate mods are no longer reset between songs.
+    Main motivation for this is ITG2 and SM 3.95 compatibility (they don’t reset). PR #53.
+-Linux home releases now write user data to "~/.openitg".
+-For arcade builds /itgdata is now only remounted once during startup.
+    /itgdata has to be remounted by openitg to make sure the partition is writeable.
+    Previously it was temporarily remounted as writeable during write operations
+    which caused problems in some situations.
+-Unmount logic for memory cards have been improved to prevent device name leaks. PR #71.
+-It’s now possible to switch themes in the options menu without a crash. PR #50.
+-Subtractive scoring calculations are now correct.
+-The reload songs option no longer crashes the game. PR #57.
+-The green 1 excellent flag at evaluation has been replaced with the intended orange flag.
+    This was an ancient ITG2 bug.
+-Build chain improvements
+    It should now be a little easier to build and contribute to the project.
+    Binary packages are now built automatically using docker.
+
+Changes in this release were contributed by augustg and infamouspat.
+
+Note that official releases will be signed by our private key but anyone could
+generate their own key and make their own releases if they wanted to.
+
+For detailed instructions on checking out the code, contributing, or making
+release, see: README or https://github.com/openitg/openitg/wiki
+
+OpenITG, beta 3 (February 7th, 2013 - never officially released)
+-------------------------------------
 
 -Accepted patches to improve building on 64-bit and more modern Linux (thanks, hifi!)
 -Fixed problem where USB cards sounds don't occur if attract sound is set to none.
@@ -27,12 +57,6 @@ generate their own key and make their own releases if they wanted to.
 
 For detailed instructions on checking out the code, contributing, or making
 release, see: README or https://github.com/openitg/openitg/wiki
-
-OpenITG, beta 3 (January-ish, 2011)
--------------------------------------
-
-Unofficial release candidate, nothing public.  See beta 4 for complete list of
-changes since beta 2.
 
 OpenITG, beta 2 (August 9th, 2009)
 ----------------------------------

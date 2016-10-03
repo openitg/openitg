@@ -138,10 +138,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" </AdditionalOptions>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swscale.lib;shell32.lib;gdi32.lib;user32.lib;ole32.lib;advapi32.lib;libusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng.lib;avcodec.lib;avformat.lib;avutil.lib;swscale.lib;shell32.lib;gdi32.lib;user32.lib;ole32.lib;advapi32.lib;libusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)/$(TargetFileName)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\ffmpeg-build\bin;libusb\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\ffmpeg-build\bin;$(ProjectDir)..\lpng1256;libusb\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>wininet.lib;msimg32.lib;libci.lib;libcmtd.lib;libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>
@@ -214,10 +214,10 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)/verstub.obj"</Command>
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 "$(IntDir)verstub.obj" </AdditionalOptions>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swscale.lib;shell32.lib;gdi32.lib;user32.lib;ole32.lib;advapi32.lib;libusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libpng.lib;avcodec.lib;avformat.lib;avutil.lib;swscale.lib;shell32.lib;gdi32.lib;user32.lib;ole32.lib;advapi32.lib;libusb.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)/$(TargetFileName)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\ffmpeg-build\bin;libusb\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\ffmpeg-build\bin;$(ProjectDir)..\lpng1256;libusb\lib\msvc;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>wininet.lib;msimg32.lib;libci.lib;libcmtd.lib;libcmt.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ProgramDatabaseFile>../Release/OpenITG-PC.pdb</ProgramDatabaseFile>
       <GenerateMapFile>true</GenerateMapFile>

@@ -11,9 +11,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenITG", "OpenITG-vs2015.v
 		{42109FEE-B0B9-4FCD-9E56-2863BF8C55D2} = {42109FEE-B0B9-4FCD-9E56-2863BF8C55D2}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtomcrypt", "libtomcrypt\libtomcrypt_VS2010.vcxproj", "{E3802982-DCB6-4D85-A2BD-6B08F0657E79}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtomcrypt", "libtomcrypt\libtomcrypt_VS2015.vcxproj", "{E3802982-DCB6-4D85-A2BD-6B08F0657E79}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtommath", "libtommath\libtommath_VS2010.vcxproj", "{42109FEE-B0B9-4FCD-9E56-2863BF8C55D2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libtommath", "libtommath\libtommath_VS2015.vcxproj", "{42109FEE-B0B9-4FCD-9E56-2863BF8C55D2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibLua", "lua-5.0\src\LibLua.vcxproj", "{0AFEC580-996F-4037-9497-B6EB98D1DC80}"
 EndProject

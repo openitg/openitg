@@ -37,6 +37,11 @@
 	#pragma comment(lib, "d3dx9.lib")
 	#pragma comment(lib, "DxErr.lib")
 #endif
+#if !defined(_DEBUG)
+// TODO: investigate why DxErr.lib exports this for a debug build but not release
+int (WINAPIV * __vsnprintf)(char *, size_t, const char*, va_list) = _vsnprintf;
+#endif
+
 
 #include <math.h>
 #include <list>

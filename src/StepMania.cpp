@@ -81,9 +81,12 @@
  * to the same directory in the VFS. I just don't want to break patch data
  * for arcade cabinets without testing it first... -- vyhd */
 
+
 #if defined(ITG_ARCADE) && defined(LINUX)
+#define PATCH_DIR	"/stats/patch"
 #define PATCH_FILE	"/rootfs/stats/patch/patch.zip"
 #else
+#define PATCH_DIR	"Data/patch"
 #define PATCH_FILE	"Data/patch/patch.zip"
 #endif
 
@@ -1048,6 +1051,8 @@ int main(int argc, char* argv[])
 		// IsADirectory checks against the VFS, but we need to mount against a physical path
 		CString physicalPath = FILEMAN->ResolvePath( PATCH_DATA_DIR );
 		FILEMAN->Mount( "dirro", physicalPath, "/", false );
+		FILEMAN->Mount( "dirro", PATCH_DATA_DIR, "/", false );
+
 	}
 	else if( IsAFile(PATCH_FILE) )
 	{
@@ -1056,7 +1061,10 @@ int main(int argc, char* argv[])
 		CString patchFileVirtualDir = Dirname(PATCH_FILE);
 		CString patchDirPhysicalPath = FILEMAN->ResolvePath( patchFileVirtualDir );
 
-		FILEMAN->Mount( "patch", patchDirPhysicalPath, "/Patch" );
+		if (!FILEMAN->Mount( "patch", patchDirPhysicalPath, "/Patch" ))
+		{
+			FILEMAN->Mount( "patch", PATCH_DIR, "/Patch" );
+		}
 		FILEMAN->Mount( "zip", "/Patch/patch.zip", "/", false );
 	}
 	else
@@ -1151,11 +1159,15 @@ int main(int argc, char* argv[])
 	SONGMAN		= new SongManager();
 
 	SONGMAN->InitAll( loading_window );		// this takes a long time
-
+	LOG->Debug("$$cryptman");
 	CRYPTMAN	= new CryptManager;	// need to do this before ProfileMan
+	LOG->Debug("$$memory man");
 	MEMCARDMAN	= new MemoryCardManager;
+	LOG->Debug("$$profile man");
 	PROFILEMAN	= new ProfileManager;
+	LOG->Debug("$$profile init");
 	PROFILEMAN->Init();				// must load after SONGMAN
+	LOG->Debug("$$unlock man");
 	UNLOCKMAN	= new UnlockManager;
 
 
@@ -1163,18 +1175,21 @@ int main(int argc, char* argv[])
 		/* Now that THEME is loaded, load the icon for the current theme into the
 		 * loading window. */
 		CString sError;
+		LOG->Debug("$$ load icon");
 		RageSurface *pIcon = RageSurfaceUtils::LoadFile( THEME->GetPathG( "Common", "window icon" ), sError );
 		if( pIcon )
 			loading_window->SetIcon( pIcon );
 		delete pIcon;
 	}
-
+	LOG->Debug("$$  save catalog");
 	/* This shouldn't need to be here; if it's taking long enough that this is
 	 * even visible, we should be fixing it, not showing a progress display. */
 	SaveCatalogXml( loading_window );
-	
+	LOG->Debug("$$  network man");
 	NSMAN 		= new NetworkSyncManager( loading_window ); 
+	LOG->Debug("$$ message man");
 	MESSAGEMAN	= new MessageManager;
+	LOG->Debug("$$ stats man");
 	STATSMAN	= new StatsManager;
 
 	SAFE_DELETE( loading_window );		// destroy this before init'ing Display

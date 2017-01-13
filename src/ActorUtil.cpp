@@ -444,6 +444,8 @@ FileType ActorUtil::GetFileType( const CString &sPath )
 		sExt=="bmp" )		return FT_Bitmap;
 	else if( 
 		sExt=="avi" || 
+		sExt=="mkv" ||
+		sExt=="mp4" ||
 		sExt=="mpeg" || 
 		sExt=="mpg" )		return FT_Movie;
 	else if( 

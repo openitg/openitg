@@ -139,9 +139,6 @@ void ScreenSelectMusic::Init()
 	/* Load low-res banners, if needed. */
 	BANNERCACHE->Demand();
 
-	// About 3/4 of the time, the user forgets this was set.  Let's cut him/her some slack.
-	GAMESTATE->m_SongOptions.m_fMusicRate = 1.0f;
-
 	m_MusicWheel.Load( MUSIC_WHEEL_TYPE );
 
 	// pop'n music has this under the songwheel...

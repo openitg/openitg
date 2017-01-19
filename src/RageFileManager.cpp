@@ -318,6 +318,7 @@ CString LoadedDriver::GetPath( const CString &sPath ) const
 	return sRet;
 }
 
+/* Normalize a virtual path */
 static void NormalizePath( CString &sPath )
 {
 	FixSlashesInPlace( sPath );
@@ -734,8 +735,6 @@ CString RageFileManager::ResolvePath( const CString &sPath_ )
 	}
 
 	UnreferenceAllDrivers( apDriverList );
-
-	NormalizePath( sResolvedPath );
 
 	return sResolvedPath;
 }

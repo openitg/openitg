@@ -376,18 +376,52 @@ void MemoryCardDriverThreaded_Linux::Unmount( UsbStorageDevice* pDevice )
 {
 	if( pDevice->sDevice.empty() )
 		return;
-	
-	/* Use umount -l, so we unmount the device even if it's in use.  Open
-	 * files remain usable, and the device (eg. /dev/sda) won't be reused
-	 * by new devices until those are closed.  Without this, if something
-	 * causes the device to not unmount here, we'll never unmount it; that
-	 * causes a device name leak, eventually running us out of mountpoints. */
+
+	bool unmountSuccess = RetryUnmount( pDevice, 5 );
+
+	if( !unmountSuccess )
+	{
+		// Lazy unmount is dangerous. Only use it as a last resort.
+		TryUnmount( pDevice, true );
+	}
+}
+
+bool MemoryCardDriverThreaded_Linux::RetryUnmount( UsbStorageDevice* pDevice, int tries )
+{
+	int triesRemaining = tries;
+	while( !TryUnmount( pDevice, false ) )
+	{
+		if( triesRemaining == 0 )
+			return false;
+		triesRemaining--;
+
+		LOG->Trace( "Failed to unmount device, trying again..." );
+		sleep(1); // seconds
+	}
+	return true;
+}
+
+/* When lazy is true, use umount -l, so we unmount the device even if
+ * it's in use. Open files remain usable, and the device (eg. /dev/sda) 
+ * won't be reused by new devices until those are closed.  Without this, 
+ * if something causes the device to not unmount here, we'll never unmount 
+ * it; that causes a device name leak, eventually running us out of mountpoints. */
+bool MemoryCardDriverThreaded_Linux::TryUnmount( UsbStorageDevice* pDevice, bool lazy )
+{
 	CString sCommand = "sync; ";
+	
 	if( pDevice->bUsePmount )
-		sCommand += "pumount \"" + pDevice->sDevice + "\"";
+	{
+		CString lazyParam = lazy ? "--yes-I-really-want-lazy-unmount " : "";
+		sCommand += "pumount " + lazyParam + "\"" + pDevice->sDevice + "\"";
+	}
 	else
-		sCommand += "umount -l \"" + pDevice->sDevice + "\"";
-	ExecuteCommand( sCommand );
+	{
+		CString lazyParam = lazy ? "-l " : "";
+		sCommand += "umount " + lazyParam + "\"" + pDevice->sDevice + "\"";
+	}
+
+	return ExecuteCommand( sCommand );
 }
 
 /*

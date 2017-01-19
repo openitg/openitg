@@ -1,11 +1,14 @@
+# vim: set noet:
 # only tested with autoconf 2.57
 AC_PREREQ(2.53)
-AC_INIT(src/StepMania.cpp)
+
+AC_INIT([OpenITG], [1.0])
+AC_CONFIG_SRCDIR([src/StepMania.cpp])
+
 AC_CONFIG_AUX_DIR(autoconf)
 AC_CANONICAL_TARGET
-
-AM_INIT_AUTOMAKE(OpenITG, 1.01)
-AM_CONFIG_HEADER(src/config.h)
+AM_INIT_AUTOMAKE([subdir-objects])
+AM_CONFIG_HEADER([src/config.h])
 AM_MAINTAINER_MODE
 
 # We don't want PROG_CC/CXX default settings, but don't ignore explicit settings.
@@ -37,8 +40,8 @@ case $compile in
 	test "$DEFAULT_CXXFLAGS" = "yes" && CXXFLAGS="$CXXFLAGS -O3"
 	;;
 	debug)
-	test "$DEFAULT_CFLAGS" = "yes" && CFLAGS="$CFLAGS -g"
-	test "$DEFAULT_CXXFLAGS" = "yes" && CXXFLAGS="$CXXFLAGS -g"
+	test "$DEFAULT_CFLAGS" = "yes" && CFLAGS="$CFLAGS -O0 -g3"
+	test "$DEFAULT_CXXFLAGS" = "yes" && CXXFLAGS="$CXXFLAGS -O0 -g3"
 	;;
 	fast)
 	test "$DEFAULT_CFLAGS" = "yes" && CFLAGS="$CFLAGS -O2 -fno-inline"
@@ -113,15 +116,30 @@ fi
 # SDL_LIBS="`echo $SDL_LIBS | sed 's_-L/usr/lib/\?[[ $]]__'`"
 
 have_libpng=yes
-AC_CHECK_LIB(png, png_create_read_struct, [x=y], have_libpng=no, [-lz -lm]) # x=y to stop autoconf from messing with LIBS
-AC_CHECK_HEADER(png.h, , have_libpng=no)
+PNG_LIBS=
+PNG_CFLAGS=
+AC_CHECK_LIB(png12, png_create_read_struct, have_libpng=yes, have_libpng=no, 
+             [-lz -lm])
+if test "$have_libpng" = "yes"; then
+    png_header_found=yes
+    AC_CHECK_HEADER(/usr/include/libpng12/png.h, , png_header_found=no)
+    if test "$png_header_found" = "yes"; then
+        CXXFLAGS="$CXXFLAGS -I/usr/include/libpng12"
+    else
+        AC_CHECK_HEADER(png.h, , have_libpng=no)
+    fi
+    LIBS="$LIBS -lpng12 -lz -lm"
+else
+    AC_CHECK_LIB(png, png_create_read_struct, have_libpng=yes, have_libpng=no, [-lz -lm]) # x=y to stop autoconf from messing with LIBS
+    AC_CHECK_HEADER(png.h, , have_libpng=no)
+    LIBS="$LIBS -lpng -lz -lm"
+fi
 if test "$have_libpng" = "no"; then
   echo
   echo "*** libpng is required to build StepMania; please make sure that"
   echo "*** it is installed to continue the build process."
   exit 1
 fi
-LIBS="$LIBS -lpng -lz -lm"
 
 AC_ARG_WITH(jpeg, AC_HELP_STRING([--without-jpeg], [Disable JPEG support]), with_jpeg=$withval, with_jpeg=yes)
 
@@ -163,6 +181,7 @@ SM_ZLIB
 SM_AUDIO
 SM_TLS
 SM_LIBUSB
+SM_FFMPEG
 
 # for linux joystick hotplug
 have_inotify=no
@@ -171,69 +190,22 @@ AC_CHECK_HEADER([sys/inotify.h],
 	AC_DEFINE(HAVE_INOTIFY, 1, [inotify support in kernel])
 ,)
 
-have_ffmpeg=static
-have_libresample=static
-have_sse2=no
-
 # search for system libs if not building for arcade
 if test "$itg_arcade" = "no"; then
-	AC_SEARCH_LIBS(avcodec_init, [avcodec], have_libavcodec=yes,  have_libavcodec=no)
-	AC_SEARCH_LIBS(guess_format, [avformat], have_libavformat=yes,  have_libavformat=no)
-	AC_SEARCH_LIBS(swscale_version, [swscale], have_libswscale=yes,  have_libswscale=no)
-
-	have_libresample=yes
-	AC_CHECK_LIB(resample, resample_open, [x=y], have_libresample=static, [-lm])
+	AC_CHECK_LIB(resample, resample_open, [have_libresample=yes], [have_libresample=static], [-lm])
 	if test "$have_libresample" = "yes"; then
 		LIBS="$LIBS -lresample"
 	fi
-
-	if test "$have_libavcodec" = "yes"; then
-	  AC_MSG_CHECKING([for libavcodec >= 0.5.2])
-	  AC_TRY_RUN([
-	      #include <libavcodec/avcodec.h>
-	      int main()
-	      {
-		      return ( LIBAVCODEC_VERSION_INT < 0x341401 )? 1:0;
-	      }
-	      ],,have_libavcodec=no,)
-	  AC_MSG_RESULT($have_libavcodec)
-	fi
-
-	if test "$have_libavformat" = "yes"; then
-	  AC_MSG_CHECKING([for libavformat >= 0.5.2])
-	  AC_TRY_RUN([
-	      #include <libavformat/avformat.h>
-	      int main()
-	      {
-		      return ( LIBAVFORMAT_VERSION_INT < 0x341F00 )? 1:0;
-	      }
-	      ],,have_libavformat=no,)
-	  AC_MSG_RESULT($have_libavformat)
-	fi
-
-	if test "$have_libswscale" = "yes"; then
-	  AC_MSG_CHECKING([for libswscale >= 0.5.2])
-	  AC_TRY_RUN([
-	      #include <libswscale/swscale.h>
-	      int main()
-	      {
-		      return ( LIBSWSCALE_VERSION_INT < 0x000701 )? 1:0;
-	      }
-	      ],,have_libswscale=no,)
-	  AC_MSG_RESULT($have_libswscale)
-	fi
-
-	if test "$have_libavformat" = "yes" -a "$have_libavcodec" = "yes" -a "$have_libswscale" = "yes"; then
-		have_ffmpeg=yes
-		AC_DEFINE(HAVE_FFMPEG, 1, [FFMPEG support available])
-	fi
-
-	# test if processor supports SSE2
-	AC_TRY_RUN([int main() { int a,d; asm ("cpuid":"=a"(a),"=d"(d):"0"(1)); return d & (1 << 26) ? 0 : 1; }], have_sse2=yes, have_sse2=no)
+else
+	echo "Skipping libresample check due to arcade build"
+	have_libresample=static
 fi
 
-AM_CONDITIONAL(HAVE_FFMPEG, test "$have_ffmpeg" = "yes")
 AM_CONDITIONAL(HAVE_LIBRESAMPLE, test "$have_libresample" = "yes")
+
+# test if processor supports SSE2
+have_sse2=no
+AC_TRY_RUN([int main() { int a,d; asm ("cpuid":"=a"(a),"=d"(d):"0"(1)); return d & (1 << 26) ? 0 : 1; }], have_sse2=yes, have_sse2=no)
 
 # Don't use SSE2 by default; some GCC versions misoptimise the code, which
 # causes Heisenbugs, and we don't want to inflict that pain unnecessarily.
@@ -309,7 +281,7 @@ AM_CONDITIONAL(BUILD_TESTS, test "$enable_tests" = "yes" )
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(src/Makefile)
 
-if test "$have_libresample" = "no"; then
+if test "$have_libresample" != "yes"; then
 	# use our own libresample in vain
 	cd src/libresample && autoconf && ./configure && cd ../..
 fi
@@ -328,7 +300,7 @@ else
 fi
 
 if test "$have_git_repo" = "yes"; then
-	build_version=`git tag`
+	build_version=`git describe --abbrev=0`
 	build_rev_date=`git log -1 --pretty="format:%ad" --date="short"`
 	build_rev_tag=`git describe`
 
@@ -358,6 +330,10 @@ AC_DEFINE_UNQUOTED(BUILD_VERSION, "$build_version", [Version tag])
 AC_DEFINE_UNQUOTED(BUILD_DATE, "$build_rev_date", [Date of source revision])
 AC_DEFINE_UNQUOTED(BUILD_REVISION_TAG, "$build_rev_tag", [ID of source revision])
 
+AC_SUBST(CFLAGS)
+AC_SUBST(CXXFLAGS)
+AC_SUBST(LDFLAGS)
+
 AC_OUTPUT
 
 echo
@@ -370,7 +346,7 @@ echo
 echo "Arcade build		$itg_arcade"
 echo "SSE2 optimizations	$with_sse2 (supported: $have_sse2)"
 echo "SDL			$enable_sdl"
-echo "FFMPEG			$have_ffmpeg"
+echo "FFMPEG			$have_ffmpeg ($ffmpeg_option)"
 echo "libresample		$have_libresample"
 echo "GTK2			$enable_gtk2"
 echo "ALSA			$alsa"

@@ -1,21 +1,40 @@
-#!/bin/sh
+#!/bin/bash
+
+source common.sh
+
+has_command "zip" "zip command not found"
+has_file "src/openitg" "where's the openitg binary?"
 
 rm -f home-tmp.zip
-if [ "`which zip`x" = "x" ]; then
-	echo "$0: zip command not found"
-	exit
-fi
-if [ ! -f src/openitg ]; then
-	echo "$0: where's the openitg binary?"
-fi
-(cd assets/d4 && zip -u -r ../../home-tmp.zip *)
 
-# remove useless files
-zip -d home-tmp.zip 'Themes/ps2onpc/*'
-zip -d home-tmp.zip 'Themes/ps2/*'
+HOME_TMP_DIR=/tmp/openitg-home-tmp
 
-(cd assets/game-data && zip -r ../../home-tmp.zip *)
-(cd assets/patch-data/patch-dec && zip -r ../../../home-tmp.zip *)
-zip -d home-tmp.zip 'Cache/*'
-zip home-tmp.zip FAQ.txt ReleaseNotes.txt WhoToSue.txt
-(cd src && zip ../home-tmp.zip openitg GtkModule.so)
+mkdir -p $HOME_TMP_DIR
+
+# Copy game content
+cp -r assets/d4/* $HOME_TMP_DIR
+cp -r assets/game-data/* $HOME_TMP_DIR
+
+# Copy patch content
+# mkdir -p $HOME_TMP_DIR/Data/patch/patch
+# cp -r assets/patch-data/* $HOME_TMP_DIR/Data/patch/patch
+# This overwrites files from d4 and game-data where patch-data have newer files.
+# Having a patch.zip in the home release has no benefits and only complicates things.
+cp -r assets/patch-data/* $HOME_TMP_DIR
+
+# Remove useless files
+rm -f $HOME_TMP_DIR/zip.sh
+rm -rf $HOME_TMP_DIR/Cache
+rm -rf $HOME_TMP_DIR/Songs
+rm -rf $HOME_TMP_DIR/Themes/ps2onpc
+rm -rf $HOME_TMP_DIR/Themes/ps2
+rm -rf $HOME_TMP_DIR/Data/patch/patch/Cache
+rm -rf $HOME_TMP_DIR/Data/patch/patch/Songs
+
+cp {ReleaseNotes.txt,WhoToSue.txt} $HOME_TMP_DIR/
+cp src/{openitg,GtkModule.so} $HOME_TMP_DIR/
+
+CWD=`pwd`
+(cd $HOME_TMP_DIR && zip -u -r $CWD/home-tmp.zip *)
+
+rm -rf $HOME_TMP_DIR

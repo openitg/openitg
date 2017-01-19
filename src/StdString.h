@@ -81,6 +81,10 @@
 	#pragma warning (disable : 4127) // Conditional expression is constant
 	#pragma warning (disable : 4097) // typedef name used as synonym for class name
 	#pragma warning (disable : 4512) // assignment operator could not be generated
+
+	// inline specifier cannot be used when a friend 
+	// declaration refers to a specialization of a function template
+	#pragma warning (disable : 4396)
 #endif
 
 #ifndef STDSTRING_H

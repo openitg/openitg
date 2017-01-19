@@ -6,6 +6,18 @@ function SelectButtonAvailable()
 	return true
 end
 
+function GetUserPacksCancelText()
+	local screen = "ScreenUserPacks"
+
+	if SelectButtonAvailable() then
+		ret = THEME:GetMetric( screen, "CancelTextSelect" )
+	else
+		ret = THEME:GetMetric( screen, "CancelTextNoSelect" )
+	end
+
+	return ret
+end
+
 function GetWorkoutMenuCommand()
 	GAMESTATE:SetTemporaryEventMode(true)
 	return "difficulty," .. GetInitialDifficulty() .. ";screen,ScreenWorkoutMenu;PlayMode,regular;SetEnv,Workout,1"

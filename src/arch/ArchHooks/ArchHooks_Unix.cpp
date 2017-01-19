@@ -18,6 +18,7 @@
 #include <sys/io.h>
 #include <unistd.h>
 #include <cerrno>
+#include <mntent.h>
 
 extern "C"
 {
@@ -52,6 +53,37 @@ static bool IsFatalSignal( int signal )
 	}
 }
 
+static bool IsReadOnlyMountPoint( const CString &mountPoint )
+{
+	CHECKPOINT;
+	struct mntent *ent;
+	bool found = false;
+	bool isReadOnly = false;
+	
+	FILE *aFile;
+	aFile = setmntent( "/proc/mounts", "r" );
+	if( aFile == NULL )
+	{
+		LOG->Warn( "Can't open /proc/mounts to determine if " + mountPoint + " is a readonly filesystem mountpoint" );
+		return false;
+	}
+	
+	while( (ent = getmntent( aFile )) != NULL )
+	{
+		CString mountDir = ent->mnt_dir;
+		
+		if( mountDir == mountPoint )
+		{
+			found = true;
+			isReadOnly = hasmntopt( ent, "ro" ) != NULL;
+			break;
+		}
+	}
+	
+	endmntent( aFile );
+	return found && isReadOnly;
+}
+
 void ArchHooks_Unix::MountInitialFilesystems( const CString &sDirOfExecutable )
 {
 	/* Mount the root filesystem, so we can read files in /proc, /etc, and so on.
@@ -76,6 +108,15 @@ struct stat st;
 */
 
 #ifdef ITG_ARCADE
+	/* Stock ITG2 filesystem configuration has /stats and /itgdata as their own xfs partitions.
+	 * /stats is writable and /itgdata is readonly.
+	 * Because disk space is sparse in /stats, OpenITG depends on /itgdata to be writable aswell.
+	 * Primarily userpacks and cache is stored by OpenITG in /itgdata.
+	 * Some users may not have configured /itgdata as its own partition, but rather just a directory.
+	 * For them, assume its writable. */
+	if( IsReadOnlyMountPoint( "/itgdata" ) )
+		system( "mount -o remount,rw /itgdata" );
+
 	/* ITG-specific arcade paths */
 	FILEMAN->Mount( "prb", "/itgdata", "/Packages" );
 	FILEMAN->Mount( "dir", "/stats", "/Data" );
@@ -86,6 +127,14 @@ struct stat st;
 #else
 	/* OpenITG-specific paths */
 	FILEMAN->Mount( "oitg", Root + "/CryptPackages", "/Packages" );
+
+	/*
+	* Mount an OpenITG root in the home directory.
+	* This is where custom data (songs, themes, etc) should go. 
+	* Any files OpenITG tries to modify will be written here.
+	*/
+	CString home = CString( getenv( "HOME" ) ) + "/";
+	FILEMAN->Mount( "dir", home + ".openitg", "/" );
 
 	/* This mounts everything else, including Cache, Data, UserPacks, etc. */
 	FILEMAN->Mount( "dir", Root, "/" );

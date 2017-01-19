@@ -1,3 +1,4 @@
+/* vim: set noet sw=4 ts=4: */
 #include "global.h"
 #include "ScreenTextEntry.h"
 #include "PrefsManager.h"
@@ -13,9 +14,9 @@ static const char* g_szKeys[NUM_KEYBOARD_ROWS][KEYS_PER_ROW] =
 	{"N","O","P","Q","R","S","T","U","V","W","X","Y","Z"},
 	{"a","b","c","d","e","f","g","h","i","j","k","l","m"},
 	{"n","o","p","q","r","s","t","u","v","w","x","y","z"},
-	{"0","1","2","3","4","5","6","7","8","9"},
+	{"0","1","2","3","4","5","6","7","8","9","","",""},
 	{"!","@","#","$","%","^","&","(",")","[","]","{","}"},
-	{"+","-","=","_",",",".","'","\"",":"},
+	{"+","-","=","_",",",".","'","\"",":","","","",""},
 	{"","","Space","","","Backsp","","","Cancel","","","Done",""},
 };
 
@@ -148,6 +149,7 @@ void ScreenTextEntry::UpdateKeyboardText()
 		{
 			const char *s = g_szKeys[r][x];
 			BitmapText &bt = m_textKeyboardChars[r][x];
+			ASSERT( s );
 			bt.SetText( s );
 		}
 	}

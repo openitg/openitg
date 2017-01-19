@@ -1,0 +1,41 @@
+# Maintainer:  August Gustavsson <augustg.dev gmail>
+
+pkgname=openitg-git
+_shortname=openitg
+pkgver=1.0
+pkgrel=1
+pkgdesc='An open-source rhythm dancing game based on StepMania 3.95'
+url='https://github.com/openitg/openitg/'
+license=('MIT')
+arch=('i686' 'x86_64')
+depends=('gtk2' 'libmad' 'mesa' 'glew' 'libpng' 'libvorbis' 'libogg' 'lua51' 'libusb-compat' 'ffmpeg' 'alsa-lib')
+makedepends=('pkgconfig' 'gcc' 'make' 'zip' 'unzip' 'git' 'binutils' 'autoconf' 'automake')
+source=("git+https://github.com/$_shortname/$_shortname.git")
+sha512sums=('SKIP')
+
+build() {
+  cd "$srcdir/$_shortname"
+
+  ./build-home.sh 8
+  ./generate-home-release.sh
+}
+
+package() {
+  cd "$srcdir/$_shortname"
+
+  unzip home-tmp.zip -d "$pkgdir/opt/$_shortname/"
+  rm home-tmp.zip
+  
+  chmod -R 664 "$pkgdir/opt/$_shortname/*"
+  chmod 755 $pkgdir/opt/$_shortname/$_shortname
+  chmod 755 $pkgdir/opt/$_shortname/GtkModule.so
+
+  cat <<EOF > $pkgdir/usr/bin/$_shortname
+#!/bin/sh
+exec /opt/$_shortname/$_shortname
+EOF
+
+  chmod 755 $pkgdir/usr/bin/$_shortname
+
+	install -D -m644 Licenses.txt "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

@@ -1,3 +1,4 @@
+/* vim: set noet */
 #include "global.h"
 #include "ScreenUserPacks.h"
 #include "ScreenPrompt.h"
@@ -12,8 +13,8 @@
 #define NEXT_SCREEN					THEME->GetMetric (m_sName,"NextScreen")
 #define PREV_SCREEN					THEME->GetMetric (m_sName,"PrevScreen")
 
-ThemeMetric<CString> USER_PACK_WAIT_TEXT( "ScreenUserPacks", "TransferWaitText" );
-ThemeMetric<CString> USER_PACK_CANCEL_TEXT( "ScreenUserPacks", "TransferCancelText" );
+#define USER_PACK_WAIT_TEXT			THEME->GetMetric ("ScreenUserPacks","TransferWaitText")
+#define USER_PACK_CANCEL_TEXT		THEME->GetMetric ("ScreenUserPacks","TransferCancelText")
 
 static RageMutex MountMutex("ITGDataMount");
 
@@ -70,15 +71,6 @@ int InitSASSongThread( void *pSAS )
 void ScreenUserPacks::Init()
 {
 	ScreenWithMenuElements::Init();
-
-	if ( USER_PACK_WAIT_TEXT.GetValue().empty() )
-		USER_PACK_WAIT_TEXT.SetValue("Please Wait...");
-
-	if ( USER_PACK_CANCEL_TEXT.GetValue().empty() )
-	{
-		USER_PACK_CANCEL_TEXT.SetValue(ssprintf( "Pressing %s will cancel this selection.",
-			DiagnosticsUtil::GetInputType() == "ITGIO" ? "&MENULEFT;+&MENURIGHT;" : "&SELECT;" ));
-	}
 
 	m_SoundDelete.Load( THEME->GetPathS( m_sName, "delete" ) );
 	m_SoundTransferDone.Load( THEME->GetPathS( m_sName, "transfer done" ) );
@@ -260,10 +252,10 @@ bool UpdateXferProgress( uint64_t iBytesCurrent, uint64_t iBytesTotal )
 	const CString sRate = FormatByteValue( iTransferRate ) + "/sec";
 
 	CString sMessage = ssprintf( "\n\n%s\n%.2f%% %s\n\n%s",
-		USER_PACK_WAIT_TEXT.GetValue().c_str(),
+		USER_PACK_WAIT_TEXT.c_str(),
 		fPercent,
 		sRate.c_str(),
-		USER_PACK_CANCEL_TEXT.GetValue().c_str()
+		USER_PACK_CANCEL_TEXT.c_str()
 	);
 	SCREENMAN->OverlayMessage( sMessage );
 
@@ -336,9 +328,7 @@ void ScreenUserPacks::HandleScreenMessage( const ScreenMessage SM )
 		m_PlayerSongLoadThread.Wait();
 
 		MountMutex.Lock();
-#if defined(LINUX) && defined(ITG_ARCADE)
-		system( "mount -o remount,rw /itgdata" );
-#endif
+
 		MEMCARDMAN->LockCards();
 		MEMCARDMAN->MountCard(m_CurPlayer, 99999);
 		CString sSelection = m_USBZips.GetCurrentSelection();
@@ -377,7 +367,6 @@ m_PlayerSongLoadThread.Create( InitSASSongThread, this )
 		}
 #if defined(LINUX) && defined(ITG_ARCADE)
 		sync();
-		system( "mount -o remount,ro /itgdata" );
 #endif
 		SCREENMAN->HideOverlayMessage();
 		SCREENMAN->ZeroNextUpdate();

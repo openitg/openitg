@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ./autogen.sh
-#./configure --with-x --with-gnu-ld --target=i386-pc-linux-gnu --host=i386-pc-linux-gnu
 ./configure --with-x --with-gnu-ld
+make clean
 if [ "x$1" = "x" ];
 then
     echo "Running make"
@@ -12,4 +12,4 @@ else
     make -j$1
 fi
 
-
+strip --strip-unneeded src/openitg

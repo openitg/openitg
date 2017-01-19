@@ -63,9 +63,11 @@ void LuaReference::SetFromStack( Lua *L )
 	m_iReference = luaL_ref( L, LUA_REGISTRYINDEX );
 }
 
-void LuaReference::SetFromNil()
+void LuaReference::SetFromNil( Lua *L )
 {
 	Unregister();
+	
+	lua_pop( L, 1 );
 	m_iReference = LUA_REFNIL;
 }
 
@@ -145,7 +147,7 @@ void LuaExpression::Register()
 
 	if( !LuaHelpers::RunScript(L, m_sExpression, "expression", 1, m_bSandboxed) )
 	{
-		this->SetFromNil();
+		this->SetFromNil( L );
 		LUA->Release( L );
 		return;
 	}

@@ -52,7 +52,7 @@ public:
 		unsigned int masks[4];
 	};
 
-	enum PixelFormat {
+	enum RagePixelFormat {
 		FMT_RGBA8,
 		FMT_RGBA4,
 		FMT_RGB5A1,
@@ -67,8 +67,8 @@ public:
 		NUM_PIX_FORMATS
 	};
 
-	static CString PixelFormatToString( PixelFormat pixfmt );
-	virtual const PixelFormatDesc *GetPixelFormatDesc(PixelFormat pf) const = 0;
+	static CString PixelFormatToString( RagePixelFormat pixfmt );
+	virtual const PixelFormatDesc *GetPixelFormatDesc(RagePixelFormat pf) const = 0;
 
 	struct VideoModeParams
 	{
@@ -145,12 +145,12 @@ public:
 	
 	virtual void SetBlendMode( BlendMode mode ) = 0;
 
-	virtual bool SupportsTextureFormat( PixelFormat pixfmt, bool realtime=false ) = 0;
+	virtual bool SupportsTextureFormat( RagePixelFormat pixfmt, bool realtime=false ) = 0;
 
 	/* return 0 if failed or internal texture resource handle 
 	 * (unsigned in OpenGL, texture pointer in D3D) */
 	virtual unsigned CreateTexture( 
-		PixelFormat pixfmt,			// format of img and of texture in video mem
+		RagePixelFormat pixfmt,			// format of img and of texture in video mem
 		RageSurface* img, 		// must be in pixfmt
 		bool bGenerateMipMaps
 		) = 0;
@@ -291,8 +291,8 @@ public:
 	/* Centering matrix */
 	void ChangeCentering( int trans_x, int trans_y, int add_width, int add_height );
 
-	RageSurface *CreateSurfaceFromPixfmt( PixelFormat pixfmt, void *pixels, int width, int height, int pitch );
-	PixelFormat FindPixelFormat( int bpp, unsigned Rmask, unsigned Gmask, unsigned Bmask, unsigned Amask, bool realtime=false );
+	RageSurface *CreateSurfaceFromPixfmt( RagePixelFormat pixfmt, void *pixels, int width, int height, int pitch );
+	RagePixelFormat FindPixelFormat( int bpp, unsigned Rmask, unsigned Gmask, unsigned Bmask, unsigned Amask, bool realtime=false );
 
 protected:
 	RageMatrix GetPerspectiveMatrix(float fovy, float aspect, float zNear, float zFar);

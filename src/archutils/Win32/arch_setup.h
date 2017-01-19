@@ -109,6 +109,11 @@ static inline int64_t llabs( int64_t i ) { return i >= 0? i: -i; }
 //our cross-platform stdint covers us here
 //#define MISSING_STDINT_H
 
+// MinGW provides us with this function already
+#if !defined(__MINGW32__) \
+		/* VC++ 2013 added support for lrintf	*/\
+		&& (!defined(_MSC_VER) || _MSC_VER < 1800)
+
 inline int lrintf( float f )
 {
 	int retval;
@@ -118,6 +123,8 @@ inline int lrintf( float f )
 
 	return retval;
 }
+#endif
+
 
 /* For RageLog. */
 #define HAVE_VERSION_INFO

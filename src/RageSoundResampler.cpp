@@ -112,16 +112,16 @@ void RageSoundResampler::eof()
 }
 
 
-int RageSoundResampler::read(void *data, unsigned bytes)
+int RageSoundResampler::read(void *data, size_t bytes)
 {
-	/* Don't be silly. */
+	// Don't be silly.
 	ASSERT( (bytes % sizeof(int16_t)) == 0);
 
-	/* If no data is available, and we're at_eof, return -1. */
+	// If no data is available, and we're at_eof, return -1.
 	if(outbuf.size() == 0 && at_eof)
 		return -1;
 
-	/* Fill as much as we have. */
+	// Fill as much as we have. 
 	int Avail = min(outbuf.size()*sizeof(int16_t), bytes);
 	memcpy(data, &outbuf[0], Avail);
 	outbuf.erase(outbuf.begin(), outbuf.begin() + Avail/sizeof(int16_t));

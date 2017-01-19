@@ -15,6 +15,10 @@ protected:
 	bool TestWrite( UsbStorageDevice* pDevice );
 
 	CString m_sLastDevices;
+
+private:
+	bool RetryUnmount( UsbStorageDevice* pDevice, int tries );
+	bool TryUnmount( UsbStorageDevice* pDevice, bool lazy );
 };
 
 #ifdef ARCH_MEMORY_CARD_DRIVER

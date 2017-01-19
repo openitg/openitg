@@ -1,0 +1,32 @@
+Directory layout
+----------------
+
+artifacts: Will contain artifacts from successful builds.
+
+deb: Contains files necessary to build a .deb-package.
+
+docker-images: Contains build scripts for all docker images used to build packages for different distributions.
+
+rpm: Contains files necessary to build an .rpm-package.
+
+All scripts in this directory except "docker-build.sh" should automatically produce an artifact with little to no input.
+
+Building all artifacts
+----------------------
+Running build-all.sh currently produces:
+* A source package
+* An ITG2 arcade compatible machine revision (x86)
+* An opensuse rpm package (x86_64)
+* Ubuntu compatible debian packages (x86_64)
+
+Instructions:
+1. Make sure your OS architecture is x86_64.
+2. Install docker.
+3. Make sure the latest git tag is the release version.
+   Requirements:
+   * Must start with a digit
+   * Must NOT contain the following characters -
+4. Have a private rsa key available for signing the machine revision. The openitg wiki contains intructions on how to make one.
+5. As root, run:
+    # cd build/
+    # ./build-all.sh private.rsa

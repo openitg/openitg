@@ -54,14 +54,16 @@ function has_file
 		return 1
 	fi
 
-	set +e
-	file "$1" &> /dev/null
-	RET=$?
-	set -e
+	if [ -f $1 ]; then
+		return 0;
+	else
+		# use the custom error message if we have it
+		printf "${2-$FILE_ERROR}\n" $1
+		return 1
+	fi
+}
 
-	if [ $RET -eq 0 ]; then return 0; fi
-
-	# use the custom error message if we have it
-	printf "${2-$FILE_ERROR}\n" $1
-	return 1
+function abspath
+{
+	echo "$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
 }

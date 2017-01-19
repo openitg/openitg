@@ -12,10 +12,8 @@ Project source code: https://github.com/openitg/openitg
 
 Short-term
 1. Getting Started Guide - build and development
-2. streamline build and release process - works out of box for arcade and home
-3. test / bugfix beta-3 (currently master branch)
-4. self-contained cache-rebuilding solution
-5. OpenGL Driver uses fix function pipeline rather than shader
+2. self-contained cache-rebuilding solution
+3. OpenGL Driver uses fix function pipeline rather than shader
 
 Long-term
 1. Kernel source with ITG patches to rebuild kernels (talk to us, should live in a separate repo)

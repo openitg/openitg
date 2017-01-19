@@ -266,6 +266,8 @@ void ThemeManager::SwitchThemeAndLanguage( const CString &sThemeName, const CStr
 	m_sCurThemeName = sTheme;
 	m_sCurLanguage = sLang;
 
+	PREFSMAN->m_sTheme.Set( sTheme );
+
 	// clear theme path cache
 	for( int i = 0; i < NUM_ElementCategory; ++i )
 		g_ThemePathCache[i].clear();

@@ -21,7 +21,10 @@ static const uint64_t CABINET_LIGHTS = (1 * 8);
 static const uint64_t PAD_LIGHTS     = (2 * 8);
 static const uint64_t BASS_LIGHTS    = (4 * 8);
 
-static const uint64_t ALL_ON = 0x10F0FFC00;
+// This constant isn't used in code but it's being
+// left in as comment, a potentially useful hint to
+// future maintainers
+/* static const uint64_t ALL_ON = 0x10F0FFC00ULL; */
 
 REGISTER_INPUT_HANDLER( MiniMaid );
 

@@ -6,6 +6,7 @@
 /* For "DeviceMatches" */
 #include "PIUIO.h"
 #include "ITGIO.h"
+#include "MiniMaid.h"
 
 #include <usb.h>
 
@@ -39,6 +40,7 @@ public:
 	bool IsHub();
 	bool IsITGIO();
 	bool IsPIUIO();
+	bool IsMiniMaid();
 
 private:
 	int m_iIdVendor;

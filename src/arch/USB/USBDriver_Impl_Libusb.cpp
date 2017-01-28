@@ -28,6 +28,7 @@ static struct usb_device *FindDevice( int iVendorID, int iProductID )
 
 bool USBDriver_Impl_Libusb::DeviceExists( uint16_t iVendorID, uint16_t iProductID )
 {
+	usb_find_busses(); usb_find_devices();
 	return FindDevice(iVendorID, iProductID) != NULL;
 }
 
@@ -80,8 +81,8 @@ bool USBDriver_Impl_Libusb::Open( int iVendorID, int iProductID )
 	{
 		int iResult = usb_detach_kernel_driver_np( m_pHandle, iface );
 
-		// no attached driver, no error -- ignore these
-		if( iResult == -ENODATA || iResult == 0 )
+		// device doesn't understand message, no attached driver, no error -- ignore these
+		if( iResult == -EINVAL || iResult == -ENODATA || iResult == 0 )
 			continue;
 
 		/* we have an error we can't handle; try and get more info. */

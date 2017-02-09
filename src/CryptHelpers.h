@@ -1,6 +1,11 @@
 #ifndef CryptHelpers_H
 #define CryptHelpers_H
 
+//Workaround for new libtomcrypt variable names changing
+//this overrides the enum sadly, but I can't check for the enum in the preprocessor -- this is HIGHLY unlikely to ever change
+#define LTC_LTC_PKCS_1_V1_5 1
+//end workaround
+
 class RageFileBasic;
 
 namespace CryptHelpers

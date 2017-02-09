@@ -6,9 +6,100 @@
 #include <cstdlib>
 #include <map>
 #include <usb.h>
+#include "ProductInfo.h" // Used to look for PRODUCT_ID_BARE which means STEPMANIA 5, NOT OITG
 
 
-static CString sClassDescriptions[] =
+#define FMT_BLOCK_SIZE		2048 // # of bytes to increment per try
+
+#ifdef PRODUCT_ID_BARE
+#define PSTRING std::string
+std::string usbvssprintf(const char *szFormat, va_list argList)
+{
+	std::string sStr;
+
+#if defined(WIN32) && !defined(__MINGW32__)
+	char *pBuf = NULL;
+	int iChars = 1;
+	int iUsed = 0;
+	int iTry = 0;
+
+	do
+	{
+		// Grow more than linearly (e.g. 512, 1536, 3072, etc)
+		iChars += iTry * FMT_BLOCK_SIZE;
+		pBuf = (char*)_alloca(sizeof(char)*iChars);
+		iUsed = vsnprintf(pBuf, iChars - 1, szFormat, argList);
+		++iTry;
+	} while (iUsed < 0);
+
+	// assign whatever we managed to format
+	sStr.assign(pBuf, iUsed);
+#else
+	static bool bExactSizeSupported;
+	static bool bInitialized = false;
+	if (!bInitialized)
+	{
+		/* Some systems return the actual size required when snprintf
+		* doesn't have enough space.  This lets us avoid wasting time
+		* iterating, and wasting memory. */
+		char ignore;
+		bExactSizeSupported = (snprintf(&ignore, 0, "Hello World") == 11);
+		bInitialized = true;
+	}
+
+	if (bExactSizeSupported)
+	{
+		va_list tmp;
+		va_copy(tmp, argList);
+		char ignore;
+		int iNeeded = vsnprintf(&ignore, 0, szFormat, tmp);
+		va_end(tmp);
+
+		char *buf = sStr.GetBuffer(iNeeded + 1);
+		vsnprintf(buf, iNeeded + 1, szFormat, argList);
+		sStr.ReleaseBuffer(iNeeded);
+		return sStr;
+	}
+
+	int iChars = FMT_BLOCK_SIZE;
+	int iTry = 1;
+	while (1)
+	{
+		// Grow more than linearly (e.g. 512, 1536, 3072, etc)
+		char *buf = sStr.GetBuffer(iChars);
+		int iUsed = vsnprintf(buf, iChars - 1, szFormat, argList);
+
+		if (iUsed == -1)
+		{
+			iChars += ((iTry + 1) * FMT_BLOCK_SIZE);
+			sStr.ReleaseBuffer();
+			++iTry;
+			continue;
+		}
+
+		/* OK */
+		sStr.ReleaseBuffer(iUsed);
+		break;
+}
+#endif
+	return sStr;
+}
+
+std::string usbssprintf(const char *fmt, ...)
+{
+	va_list	va;
+	va_start(va, fmt);
+	return usbvssprintf(fmt, va);
+}
+#else
+#define PSTRING CString
+#define usbssprintf ssprintf
+#define usbvssprintf vssprintf
+#endif
+
+
+
+static std::string sClassDescriptions[] =
 {
 	"Unknown", // 0
 	"Audio", // 1
@@ -37,14 +128,14 @@ static CString sClassDescriptions[] =
  * 
  * XXX: I think "devnum" might be Linux-only. We need to check that out.
  */
-CString USBDevice::GetDeviceDir()
+PSTRING USBDevice::GetDeviceDir()
 {
 	LOG->Warn( "Bus: %i, Device: %i", atoi(m_Device->bus->dirname), m_Device->devnum );
 
-	return ssprintf( "%i-%i", atoi(m_Device->bus->dirname), m_Device->devnum );
+	return usbssprintf( "%i-%i", atoi(m_Device->bus->dirname), m_Device->devnum );
 }
 
-CString USBDevice::GetClassDescription( unsigned iClass )
+PSTRING USBDevice::GetClassDescription(unsigned iClass)
 {
 	if ( iClass == 255 )
 		return "Vendor";
@@ -54,30 +145,30 @@ CString USBDevice::GetClassDescription( unsigned iClass )
 	return sClassDescriptions[iClass];
 }
 
-CString USBDevice::GetDescription()
+PSTRING USBDevice::GetDescription()
 {
 	if( IsITGIO() || IsPIUIO() || IsMiniMaid() )
 		return "Input/lights controller";
 	
-	vector<CString> sInterfaceDescriptions;
+	std::vector<std::string> sInterfaceDescriptions;
 
 	for (unsigned i = 0; i < m_iInterfaceClasses.size(); i++)
 		sInterfaceDescriptions.push_back( GetClassDescription(m_iInterfaceClasses[i]) );
-
-	return join( ", ", sInterfaceDescriptions );
+	return "";
+	//return join( ", ", sInterfaceDescriptions );
 }
 
 /* Ugly... */
-bool USBDevice::GetDeviceProperty( const CString &sProperty, CString &sOut )
+bool USBDevice::GetDeviceProperty(const PSTRING &sProperty, PSTRING &sOut)
 {
 	//LOG->Trace("USBDevice::GetDeviceProperty(): %s", sProperty.c_str());
 	if( sProperty == "idVendor" )
-		sOut = ssprintf( "%x", m_Device->descriptor.idVendor );
+		sOut = usbssprintf("%x", m_Device->descriptor.idVendor);
 	else if( sProperty == "idProduct" )
-		sOut = ssprintf( "%x", m_Device->descriptor.idProduct );
+		sOut = usbssprintf("%x", m_Device->descriptor.idProduct);
 	else if( sProperty == "bMaxPower" )
 	/* HACK: for some reason, MaxPower is returning half the actual value... */
-		sOut = ssprintf( "%i", m_Device->config->MaxPower*2 );
+		sOut = usbssprintf("%i", m_Device->config->MaxPower * 2);
 //	else if( sProperty == "bDeviceClass" )
 //		sOut = m_Device->descriptor.bDeviceClass;
 	else
@@ -87,7 +178,7 @@ bool USBDevice::GetDeviceProperty( const CString &sProperty, CString &sOut )
 }
 
 /* XXX: doesn't get multiple interfaces like the Linux code does. */
-bool USBDevice::GetInterfaceProperty( const CString &sProperty, const unsigned iInterface, CString &sOut )
+bool USBDevice::GetInterfaceProperty(const PSTRING &sProperty, const unsigned iInterface, PSTRING &sOut)
 {
 	if( (signed)iInterface > m_Device->config->bNumInterfaces )
 	{
@@ -97,7 +188,7 @@ bool USBDevice::GetInterfaceProperty( const CString &sProperty, const unsigned i
 	}
 
 	if( sProperty == "bInterfaceClass" )
-		sOut = ssprintf( "%i", m_Device->config->interface->altsetting[iInterface].bInterfaceClass );
+		sOut = usbssprintf("%i", m_Device->config->interface->altsetting[iInterface].bInterfaceClass);
 	else
 		return false;
 
@@ -106,9 +197,9 @@ bool USBDevice::GetInterfaceProperty( const CString &sProperty, const unsigned i
 
 bool USBDevice::IsHub()
 {
-	CString sClass;
+	PSTRING sClass;
 
-	if( GetDeviceProperty( "bDeviceClass", sClass ) && atoi(sClass) == 9 )
+	if( GetDeviceProperty( "bDeviceClass", sClass ) && atoi(sClass.c_str()) == 9 )
 		return true;
 
 	for (unsigned i = 0; i < m_iInterfaceClasses.size(); i++)
@@ -143,21 +234,21 @@ bool USBDevice::Load( struct usb_device *dev )
 		return false;
 	}
 	
-	CString buf;
+	PSTRING buf;
 
 	if( GetDeviceProperty("idVendor", buf) )
-		sscanf(buf, "%x", &m_iIdVendor);
+		sscanf(buf.c_str(), "%x", &m_iIdVendor);
 	else
 		m_iIdVendor = -1;
 
 	if( GetDeviceProperty("idProduct", buf) )
 
-		sscanf(buf, "%x", &m_iIdProduct);
+		sscanf(buf.c_str(), "%x", &m_iIdProduct);
 	else
 		m_iIdProduct = -1;
 
 	if( GetDeviceProperty("bMaxPower", buf) )
-		sscanf(buf, "%imA", &m_iMaxPower);
+		sscanf(buf.c_str(), "%imA", &m_iMaxPower);
 	else
 		m_iMaxPower = -1;
 
@@ -172,7 +263,7 @@ bool USBDevice::Load( struct usb_device *dev )
 	{
 		int iClass;
 		if ( GetInterfaceProperty( "bInterfaceClass", i, buf ) )
-			sscanf( buf, "%i", &iClass );
+			sscanf( buf.c_str(), "%i", &iClass );
 		else
 		{
 			LOG->Warn("Could not read interface %i.", i );
@@ -186,14 +277,14 @@ bool USBDevice::Load( struct usb_device *dev )
 }
 
 // this is the diary of a mad man
-bool GetUSBDeviceList(vector<USBDevice> &pDevList)
+bool GetUSBDeviceList(std::vector<USBDevice> &pDevList)
 {
 	usb_init();
 	usb_find_busses();
 	usb_find_devices();
 	
-	vector<struct usb_device> vDevices;
-	vector<CString>	vDeviceDirs;
+	std::vector<struct usb_device> vDevices;
+	std::vector<std::string>	vDeviceDirs;
 
 	/* get all devices on the system */
 	for( struct usb_bus *bus = usb_get_busses(); bus; bus = bus->next )
@@ -227,6 +318,14 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 
 	return true;
 }
+
+
+
+
+
+
+
+
 
 /*
  * Copyright (c) 2008 BoXoRRoXoRs

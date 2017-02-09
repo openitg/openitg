@@ -17,7 +17,7 @@ public:
 	// pass a const reference to the lights state
 	static const LightsState *Get()
 	{
-		LOG->Trace( "LightsDriver_External::Get()" );
+		//LOG->Trace( "LightsDriver_External::Get()" );
 		return &m_LightsState;
 	}
 private:

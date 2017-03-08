@@ -62,3 +62,8 @@ function has_file
 		return 1
 	fi
 }
+
+function abspath
+{
+	echo "$(cd "$(dirname "$1")"; pwd)/$(basename "$1")"
+}

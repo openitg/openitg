@@ -7,9 +7,23 @@
 
 namespace avcodec
 {
-	#if defined(_WIN32)
-		#include "ffmpeg/include/ffmpeg/avformat.h"
-	#else
+#if defined(_WIN32)
+	extern "C"
+	{
+#include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
+#include <libavutil/avutil.h>
+#include <libavutil/pixdesc.h>
+	}
+
+#if defined(_MSC_VER)
+#pragma comment(lib, "avcodec.lib")
+#pragma comment(lib, "avformat.lib")
+#pragma comment(lib, "avutil.lib")
+#pragma comment(lib, "swscale.lib")
+#endif
+
+#else
 	extern "C"
 	{
 		#if defined(HAVE_LEGACY_FFMPEG)
@@ -28,10 +42,6 @@ namespace avcodec
 	#endif
 };
 
-#if defined(_MSC_VER)
-	#pragma comment(lib, "ffmpeg/lib/avcodec.lib")
-	#pragma comment(lib, "ffmpeg/lib/avformat.lib")
-#endif
 
 struct AVPixelFormat_t
 {

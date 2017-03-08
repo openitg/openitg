@@ -4,6 +4,9 @@ OpenITG, 0.9 (in development)
 -Simply love compatibility improved.
 -Tons of crashes eliminated.
 -Multiple bugs fixed.
+-Arcade: Added USB 2.0 support.
+    Improves polling rate which means more accurate fantastics.
+    Transfer rate from USB memory cards is ~5x faster.
 -Rate mods are no longer reset between songs.
     Main motivation for this is ITG2 and SM 3.95 compatibility (they don’t reset). PR #53.
 -Linux home releases now write user data to "~/.openitg".

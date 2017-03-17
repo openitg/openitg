@@ -1,6 +1,7 @@
 #!/bin/bash
 
 PRIVATE_RSA="$1"
+PATCH_RSA="$2"
 
 # exit immediately on nonzero exit code
 set -e
@@ -15,13 +16,14 @@ fi
 
 function print_usage
 {
-	echo "Usage: $0 [private RSA key]"
+	echo "Usage: $0 [private RSA key] [public RSA key]"
 	exit 0
 }
 
-if ! [ -f "$PRIVATE_RSA" ]; then print_usage; fi
+if ! [ -f "$PRIVATE_RSA" ] || ! [ -f "$PATCH_RSA" ]; then print_usage; fi
 
 PRIVATE_RSA=$(abspath $PRIVATE_RSA)
+PATCH_RSA=$(abspath $PATCH_RSA)
 
 # Calculate reasonable number of make jobs
 HAS_NPROC=1
@@ -56,7 +58,7 @@ make
 popd
 
 # Generate a machine revision package
-./gen-arcade-patch.sh $PRIVATE_RSA
+./gen-arcade-patch.sh $PRIVATE_RSA $PATCH_RSA
 
 mv ITG*.itg build/artifacts/
 cd build

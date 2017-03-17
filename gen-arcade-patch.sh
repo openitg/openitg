@@ -1,26 +1,30 @@
 #!/bin/bash
 
-# Usage: ./gen-arcade-patch [private RSA]
+# Usage: ./gen-arcade-patch [private RSA] [public RSA]
 # 
 # Generates a full arcade patch from the assets data, then signs the patch
 # with the Private.rsa file given on the command line.
 
 # written by vyhd/pat
 
+# default to private.rsa in CWD (for the sake of a default value)
+PRIVATE_RSA=${1-private.rsa}
+PATCH_RSA=${2-Patch.rsa}
+
+# include the simple helper routines
+source common.sh
+
 # work directory - this forms the root dir of the final patch
 TMP_DIR="/tmp/.tmp-patch"
 
 # arcade patch data that we copy wholesale to the temp dir
-PATCH_DATA_DIR="assets/arcade-patch"
+PATCH_DATA_DIR="$ASSETS_DIR/arcade-patch"
+
+# the path containing the game data to be used for the patch
+PATCH_DIR="$ASSETS_DIR/patch-data"
 
 # values that aren't really magical, just used in a few places
 OITG_BINARY="src/openitg"
-
-# default to private.rsa in CWD (for the sake of a default value)
-PRIVATE_RSA=${1-private.rsa}
-
-# include the simple helper routines
-source common.sh
 
 # exit immediately on nonzero exit code
 set -e
@@ -30,11 +34,11 @@ set -u
 
 function print_usage
 {
-	echo "Usage: $0 [private RSA key]"
+	echo "Usage: $0 [private RSA key] [public RSA key]"
 	exit 0
 }
 
-if ! [ -f "$PRIVATE_RSA" ]; then print_usage; fi
+if ! [ -f "$PRIVATE_RSA" ] || ! [ -f "$PATCH_RSA" ]; then print_usage; fi
 
 # clean up after ourselves on exit
 trap "rm -rf $TMP_DIR" EXIT
@@ -85,6 +89,9 @@ mkdir -p "$TMP_DIR"
 
 echo "Copying base patch data..."
 cp -a $PATCH_DATA_DIR/* "$TMP_DIR"
+
+# Replace Patch-OpenITG.rsa with the one actually used to sign the machine revision
+cp $PATCH_RSA "$PATCH_DIR/Data/Patch-OpenITG.rsa"
 
 echo "Generating patch.zip..."
 ./gen-patch-zip.sh "$TMP_DIR/patch.zip" &> /dev/null

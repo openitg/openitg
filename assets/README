@@ -3,7 +3,12 @@ Directory layout
 
 arcade-patch: contains startup scripts, X configuration, and kernel modules
 	for arcade patches. The patch.xml is a template; we perform some sed
-	voodoo to insert proper values in gen-arcade-patch.sh.
+	voodoo to insert proper values in gen-arcade-patch.sh. 
+	The ehci-hcd.ko kernel module adds USB 2.0 support and provides faster
+	polling rate for the PIUIO and faster access to USB thumbdrives. It is
+	built from the same source the original roxor-modified kernel modules
+	are built from. The source can be found here:
+	https://github.com/augustg/linux/tree/itg2
 
 d4: contains the game data from the ITG drive. This should *not* be modified:
 	all changes should go under patch-data, which is overlaid on this data

@@ -16,9 +16,8 @@ Short-term
 3. OpenGL Driver uses fix function pipeline rather than shader
 
 Long-term
-1. Kernel source with ITG patches to rebuild kernels (talk to us, should live in a separate repo)
-2. StepMania 4.0 LUA Bindings
-3. StepMania 4.0 Theme metrics
+1. StepMania 4.0 LUA Bindings
+2. StepMania 4.0 Theme metrics
 
 
 * How to check-out the source

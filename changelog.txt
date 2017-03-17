@@ -8,6 +8,9 @@ OpenITG, 0.9 (in development)
     DirectX 8 support has been replaced by DirectX 9.
     Binary packages are now built automatically using docker.
     FFmpeg has been updated for home releases.
+    Arcade: Added USB 2.0 support.
+        Improves polling rate which means more accurate fantastics.
+        Transfer rate from USB memory cards is ~5x faster.
 -Fixed bugs:
     Subtractive scoring calculations are now correct.
     Fixed a lua error in ScreenDemonstration when no demo friendly song are found.

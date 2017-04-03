@@ -417,67 +417,82 @@ void InputHandler_P3IO::UpdateLightsUSBHD()
 	if (lr_right)
 	{
 		usb_light_message[0] |= USB_OUT_P1_PANEL_LR; //in hd mode this is different -- see above for why I do this
-		red_bottom_count+=2;
+		red_bottom_count+=1;
 	}
 	else
 	{
-		red_bottom_count=0;
+		if (red_bottom_count>1)
+			red_bottom_count-=2;
+		else
+			red_bottom_count=0;
 	}
 
 	//blue bottom lights
 	if (up_right)
 	{
 		usb_light_message[0] |= USB_OUT_P2_PANEL_LR; //in hd mode this is different
-		blue_bottom_count+=2;
+		blue_bottom_count+=1;
 	}
 	else
 	{
-		blue_bottom_count=0;
+		if (blue_bottom_count>1)
+			blue_bottom_count-=2;
+		else
+			blue_bottom_count=0;
 	}
 
 	//red top lights
 	if (lr_left)
 	{
 			usb_light_message[0] |= USB_OUT_P1_PANEL_UD; //in hd mode this is different
-			red_top_count+=2;
+			red_top_count+=1;
 	}
 	else
 	{
-		red_top_count=0;
+		if (red_top_count>1)
+			red_top_count-=2;
+		else
+			red_top_count=0;
 	}
 
 	//blue top lights
 	if (up_left)
 	{
 		usb_light_message[0] |= USB_OUT_P2_PANEL_UD; //in hd mode this is differnt
-		blue_top_count+=2;
+		blue_top_count+=1;
 	}
 	else
 	{
-		blue_top_count=0;
+		if (blue_top_count>1)
+			blue_top_count-=2;
+		else
+			blue_top_count=0;
 	}
 
 	//neon channel which I use to generate greens
 	if (neons)
 	{
-		neon_count+=8;
+		neon_count+=4;
 	}
 	else
 	{
-		neon_count=0;
+		if (neon_count>3)
+			neon_count-=4;
+		else
+			neon_count=0;
 	}
 
 	//light up the buttons on the panel
 	if (buttons_left){
 		hdxb[1] |= 0x80;
-		hdxb[1] |= 0xFF; //magic wand, make my speaker RED!
+		hdxb[1] |= 0x80; //magic wand, make my speaker RED!
 		hdxb[2] |= 0x80;
 		hdxb[3] |= 0x80;
 	}
 
 	if (buttons_right){
 		hdxb[4] |= 0x80;
-		hdxb[4] |= 0xFF; //magic wand, make my speaker RED!
+		hdxb[4] |= 0x80; //magic wand, make my speaker RED!
 		hdxb[5] |= 0x80;
 		hdxb[6] |= 0x80;
 	}
@@ -490,8 +505,9 @@ void InputHandler_P3IO::UpdateLightsUSBHD()
 
 
 	//yeah.. not gonna do this yet...
-	/*
+	
 	//order of speaker lights is GRB:: P1 Upper, p1 lower, P2 upper, P2 lower
+	//actually may be rgb....
 
 	//what is the mysterious byte 0? el byto mysteriouso~~
 	hdxb[0]=0;//?
@@ -499,19 +515,19 @@ void InputHandler_P3IO::UpdateLightsUSBHD()
 	hdxb[1]|=neon_count;//G
 	hdxb[2]|=red_top_count;//R
 	hdxb[3]|=blue_top_count;//B
-	//p1 down
-	hdxb[4]|=neon_count;//G
-	hdxb[5]|=red_bottom_count;//R
-	hdxb[6]|=blue_bottom_count;//B
 	//p2 up:
+	hdxb[4]|=neon_count;//G
+	hdxb[5]|=red_top_count;//R
+	hdxb[6]|=blue_top_count;//B
+	//p1 down
 	hdxb[7]|=neon_count;//G
-	hdxb[8]|=red_top_count;//R
-	hdxb[9]|=blue_top_count;//B
+	hdxb[8]|=red_bottom_count;//R
+	hdxb[9]|=blue_bottom_count;//B
 	//p2 down
 	hdxb[10]|=neon_count;//G
 	hdxb[11]|=red_bottom_count;//R
 	hdxb[12]|=blue_bottom_count;//B
-	*/
+	
 
 	usleep(16666); //hack until I thread this better? trying to limit hd lights to 30fps
 

@@ -1,5 +1,46 @@
 #include "ACIO.h"
 
+
+//GIANT HACKKKKKKKKK figuring this out still but it works well enough. Just spam the hell out of this
+bool ACIO::baudCheckWrapper(serial::Serial &acio_bus)
+{
+	baudCheck(acio_bus);
+	baudCheck(acio_bus);
+	baudCheck(acio_bus);
+	baudCheck(acio_bus);
+	return baudCheck(acio_bus);
+}
+
+bool ACIO::baudCheck(serial::Serial &acio_bus)
+{
+	int baudHits=0;
+	int tries=0;
+	uint8_t baud_check[]={0xaa};
+	uint8_t baud_packet[]={0xaa};
+	while(tries<500)
+	{
+		//LOG->Info("Baud rate try %d...\r",tries);
+		if(baudHits>150)
+		{
+			return true;
+		}
+		acio_bus.available();//clear comm error
+		acio_bus.write(baud_check,1);
+		int r= acio_bus.read(baud_packet,1);
+		if (r>0)
+		{
+			//LOG->Info("ACIO: Got %d bytes - %02X",r,baud_packet[0]);
+			baudHits++;
+		}
+		else
+		{
+			//LOG->Info("ACIO: Nothing on the baud check!",r,baud_packet[0]);
+		}
+		tries++;
+	}
+	return false;
+}
+
 //Adds the leading AA packet start, escapes your data, calculates the checksum
 //highly recommended to pass in a buffer of 256 unless you know what your doing
 //expects checksum byte included in length BUT will fill it in for you

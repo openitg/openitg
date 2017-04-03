@@ -33,10 +33,10 @@ _prefix_port_if_needed(const wstring &input)
 Serial::SerialImpl::SerialImpl (const string &port, unsigned long baudrate,
                                 bytesize_t bytesize,
                                 parity_t parity, stopbits_t stopbits,
-                                flowcontrol_t flowcontrol)
+                                flowcontrol_t flowcontrol, bool dtr)
   : port_ (port.begin(), port.end()), fd_ (INVALID_HANDLE_VALUE), is_open_ (false),
     baudrate_ (baudrate), parity_ (parity),
-    bytesize_ (bytesize), stopbits_ (stopbits), flowcontrol_ (flowcontrol)
+    bytesize_ (bytesize), stopbits_ (stopbits), flowcontrol_ (flowcontrol), dtr_ (dtr)
 {
   read_mutex = CreateMutex(NULL, false, NULL);
   write_mutex = CreateMutex(NULL, false, NULL);
@@ -49,6 +49,139 @@ Serial::SerialImpl::~SerialImpl ()
   this->close();
   CloseHandle(read_mutex);
   CloseHandle(write_mutex);
+}
+
+bool Serial::SerialImpl::ACIOopen()
+{
+	if (port_.empty ()) {
+    throw invalid_argument ("Empty port is invalid.");
+  }
+  if (is_open_ == true) {
+    throw SerialException ("Serial port already open.");
+  }
+
+  // See: https://github.com/wjwwood/serial/issues/84
+  wstring port_with_prefix = _prefix_port_if_needed(port_);
+  LPCWSTR lp_port = port_with_prefix.c_str();
+  fd_ = CreateFileW(lp_port, GENERIC_READ | GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH | FILE_ATTRIBUTE_NORMAL, 0); // FILE_FLAG_OVERLAPPED for overlapped IO is also present
+
+
+  if (fd_ == INVALID_HANDLE_VALUE) {
+    DWORD errno_ = GetLastError();
+	stringstream ss;
+    switch (errno_) {
+    case ERROR_FILE_NOT_FOUND:
+      // Use this->getPort to convert to a std::string
+      ss << "Specified port, " << this->getPort() << ", does not exist.";
+    default:
+      ss << "Unknown error opening the serial port: " << errno;
+    }
+	THROW (IOException, ss.str().c_str());
+  }
+  else
+  {
+	  is_open_ = true;
+  }
+  int result=0;
+  if (!is_open_) return false;
+
+  //BEGIN UGLY HORRIBLE TERRIBLE HACK -- ACIO Y U NO TALKY TO ME!?!?!!?! -- NOT PLATFORM AGNOSTIC!!! WINDOWS ONLY!
+	if (SetCommMask(fd_, EV_RXCHAR) && SetupComm(fd_, 0x4000u, 0x4000u))
+	{
+		if (PurgeComm(fd_, PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR))
+		{
+		COMMTIMEOUTS CommTimeouts;
+		CommTimeouts.ReadTotalTimeoutConstant = 0;
+		CommTimeouts.WriteTotalTimeoutConstant = 0;
+		CommTimeouts.ReadIntervalTimeout = -1;
+		CommTimeouts.ReadTotalTimeoutMultiplier = 10;
+		CommTimeouts.WriteTotalTimeoutMultiplier = 100;
+		if (SetCommTimeouts(fd_, & CommTimeouts))
+		{
+			DCB dcb;
+			dcb.DCBlength = sizeof(dcb);
+			if (GetCommState(fd_, & dcb))
+			{
+			dcb.BaudRate = 38400; //
+			dcb.fBinary = TRUE; //
+			dcb.fParity = FALSE; //
+			dcb.fDtrControl = DTR_CONTROL_ENABLE; //
+			dcb.fDsrSensitivity = FALSE; //
+			dcb.fOutX = FALSE; //
+			dcb.fInX = FALSE; //
+			dcb.fErrorChar = FALSE; //
+			dcb.fNull = FALSE; //
+			dcb.fRtsControl = RTS_CONTROL_ENABLE; //
+			dcb.fAbortOnError = FALSE; //
+			dcb.ByteSize = 8; //
+			dcb.Parity = NOPARITY; //
+			dcb.StopBits = ONESTOPBIT; //
+			dcb.XonChar = 17; //
+			dcb.XoffChar = 19;
+			dcb.XonLim = 100;
+			dcb.XoffLim = 100;
+			if (SetCommState(fd_, & dcb))
+			{
+				if (EscapeCommFunction(fd_, SETDTR))
+				{
+				result = 1;
+				}
+				else
+				{
+				//printf(" SetDTR Failed.n");
+				result = -7;
+				}
+			}
+			else
+			{
+				//printf(" SetCommState Failed.\n");
+				result = -6;
+			}
+			}
+			else
+			{
+			//printf(" GetCommState Failed.\n");
+			result = -5;
+			}
+		}
+		else
+		{
+			//printf(" SetCommTimeouts Failed.\n");
+			result = -4;
+		}
+		}
+		else
+		{
+		//printf(" PurgeComm Failed.\n");
+		result = -3;
+		}
+	}
+	else
+	{
+		//printf(" SetCommMask Failed.\n");
+		result = -2;
+	}
+
+	if (result < 1) {
+		stringstream ss;
+		ss << "Error setting up ACIO port. Error num: " << result << "\n";
+		THROW(IOException, ss.str().c_str());
+	} else {
+		is_open_ = true;
+	}
+	//END SUPER UGLY TERRIBLE DISGUSTING HACK
+
+	//Do the shit we normally do even if its redundant. This thing is jenga. It worked when I forgot to comment it out and I'm not touching this.
+	setMask (EV_RXCHAR);
+
+	SetupComm(fd_, 0x4000u, 0x4000u);
+
+	purgeComm (PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR);
+
+	reconfigurePort();
+
+	setDTR (dtr_);
+	return is_open_;
 }
 
 void
@@ -69,7 +202,7 @@ Serial::SerialImpl::open ()
                     0,
                     0,
                     OPEN_EXISTING,
-                    FILE_ATTRIBUTE_NORMAL,
+                    FILE_FLAG_WRITE_THROUGH | FILE_ATTRIBUTE_NORMAL,
                     0);
 
   if (fd_ == INVALID_HANDLE_VALUE) {
@@ -79,15 +212,28 @@ Serial::SerialImpl::open ()
     case ERROR_FILE_NOT_FOUND:
       // Use this->getPort to convert to a std::string
       ss << "Specified port, " << this->getPort() << ", does not exist.";
-      THROW (IOException, ss.str().c_str());
     default:
       ss << "Unknown error opening the serial port: " << errno;
-      THROW (IOException, ss.str().c_str());
     }
+	THROW (IOException, ss.str().c_str());
   }
+  else
+  {
+	  is_open_ = true;
+  }
+  if (!is_open_) return;
+
+      
+  setMask (EV_RXCHAR);
+
+  SetupComm(fd_, 0x4000u, 0x4000u);
+
+  purgeComm (PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR);
 
   reconfigurePort();
-  is_open_ = true;
+
+  setDTR (dtr_);
+  
 }
 
 void
@@ -98,6 +244,21 @@ Serial::SerialImpl::reconfigurePort ()
     THROW (IOException, "Invalid file descriptor, is the serial port open?");
   }
 
+
+   // Setup timeouts
+  COMMTIMEOUTS timeouts = {0};
+
+  timeouts.ReadIntervalTimeout = timeout_.inter_byte_timeout;
+  timeouts.ReadTotalTimeoutConstant = timeout_.read_timeout_constant;
+  timeouts.ReadTotalTimeoutMultiplier = timeout_.read_timeout_multiplier;
+  timeouts.WriteTotalTimeoutConstant = timeout_.write_timeout_constant;
+  timeouts.WriteTotalTimeoutMultiplier = timeout_.write_timeout_multiplier;
+  if (!SetCommTimeouts(fd_, &timeouts)) {
+    THROW (IOException, "Error setting timeouts.");
+  }
+
+
+  //dcb stuff
   DCB dcbSerialParams = {0};
 
   dcbSerialParams.DCBlength=sizeof(dcbSerialParams);
@@ -106,6 +267,7 @@ Serial::SerialImpl::reconfigurePort ()
     //error getting state
     THROW (IOException, "Error getting the serial port state.");
   }
+
 
   // setup baud rate
   switch (baudrate_) {
@@ -256,9 +418,20 @@ Serial::SerialImpl::reconfigurePort ()
   }
   if (flowcontrol_ == flowcontrol_ddr) {
     dcbSerialParams.fOutxCtsFlow = false;
-    dcbSerialParams.fRtsControl = 0x01;
+	dcbSerialParams.fDtrControl = DTR_CONTROL_ENABLE;
+    dcbSerialParams.fRtsControl = RTS_CONTROL_ENABLE;
     dcbSerialParams.fOutX = false;
     dcbSerialParams.fInX = false;
+	dcbSerialParams.fDsrSensitivity=false;
+	dcbSerialParams.fBinary=true;
+	dcbSerialParams.fParity=false;
+	dcbSerialParams.fErrorChar=false;
+	dcbSerialParams.fNull=false;
+	dcbSerialParams.fAbortOnError=false;
+	dcbSerialParams.XonChar=17;
+	dcbSerialParams.XoffChar=19;
+	dcbSerialParams.XonLim=100;
+	dcbSerialParams.XoffLim=100;
   }
 
   // activate settings
@@ -267,16 +440,7 @@ Serial::SerialImpl::reconfigurePort ()
     THROW (IOException, "Error setting serial port settings.");
   }
 
-  // Setup timeouts
-  COMMTIMEOUTS timeouts = {0};
-  timeouts.ReadIntervalTimeout = timeout_.inter_byte_timeout;
-  timeouts.ReadTotalTimeoutConstant = timeout_.read_timeout_constant;
-  timeouts.ReadTotalTimeoutMultiplier = timeout_.read_timeout_multiplier;
-  timeouts.WriteTotalTimeoutConstant = timeout_.write_timeout_constant;
-  timeouts.WriteTotalTimeoutMultiplier = timeout_.write_timeout_multiplier;
-  if (!SetCommTimeouts(fd_, &timeouts)) {
-    THROW (IOException, "Error setting timeouts.");
-  }
+
 }
 
 void
@@ -536,7 +700,7 @@ Serial::SerialImpl::purgeComm (uint16_t dwFlags)
   if (is_open_ == false) {
     throw PortNotOpenedException ("Serial::purgeComm");
   }
-	if (!SetCommMask(fd_, dwFlags)) {
+	if (!PurgeComm(fd_, dwFlags)) {
 	// Error setting communications mask
 	THROW (IOException, "Error purging comms!!");
 	return false;

@@ -15,6 +15,8 @@ This is an ACIO helper class, just some static functions a few pieces of these d
 class ACIO
 {
 public:
+	static bool baudCheckWrapper(serial::Serial &acio_bus);
+	static bool baudCheck(serial::Serial &acio_bus);
 	static int prep_acio_packet_for_transmission(uint8_t* acio_request, int r_length, int init_escape_offset=1);
 	static int unescape_acio_packet(uint8_t* acio_response2, int len, int data_start=-1);
 	static int read_acio_packet(serial::Serial &acio_bus, uint8_t* acio_response);

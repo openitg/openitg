@@ -59,9 +59,13 @@ public:
               bytesize_t bytesize,
               parity_t parity,
               stopbits_t stopbits,
-              flowcontrol_t flowcontrol);
+              flowcontrol_t flowcontrol,
+			  bool dtr);
 
   virtual ~SerialImpl ();
+
+  bool
+  ACIOopen ();
 
   void
   open ();
@@ -202,6 +206,7 @@ private:
   bytesize_t bytesize_;       // Size of the bytes
   stopbits_t stopbits_;       // Stop Bits
   flowcontrol_t flowcontrol_; // Flow Control
+  bool dtr_;				  // dtr setting
 
   // Mutex used to lock the read functions
   HANDLE read_mutex;

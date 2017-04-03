@@ -108,10 +108,10 @@ timespec_from_ms (const uint32_t millis)
 Serial::SerialImpl::SerialImpl (const string &port, unsigned long baudrate,
                                 bytesize_t bytesize,
                                 parity_t parity, stopbits_t stopbits,
-                                flowcontrol_t flowcontrol)
+                                flowcontrol_t flowcontrol, bool dtr)
   : port_ (port), fd_ (-1), is_open_ (false), xonxoff_ (false), rtscts_ (false),
     baudrate_ (baudrate), parity_ (parity),
-    bytesize_ (bytesize), stopbits_ (stopbits), flowcontrol_ (flowcontrol)
+    bytesize_ (bytesize), stopbits_ (stopbits), flowcontrol_ (flowcontrol), dtr_ (dtr)
 {
   pthread_mutex_init(&this->read_mutex, NULL);
   pthread_mutex_init(&this->write_mutex, NULL);
@@ -124,6 +124,15 @@ Serial::SerialImpl::~SerialImpl ()
   close();
   pthread_mutex_destroy(&this->read_mutex);
   pthread_mutex_destroy(&this->write_mutex);
+}
+
+bool
+Serial::SerialImpl::ACIOopen ()
+{
+	//congratulations, you won 3 free ipod nanos and you don't get a hack because I have no idea how to write one for you
+	//Use some program before this one to open the line then close it. Things seem to work then on windows anyway.
+	open();
+	return is_open_;
 }
 
 void
@@ -151,9 +160,16 @@ Serial::SerialImpl::open ()
       THROW (IOException, errno);
     }
   }
-
+  else
+  {
+	  is_open_ = true;
+  }
+  purgeComm (0xFu);
+  static serial::Timeout serial_timeout_baud(4294967295,0,10,0,100);
+  setTimeout(serial_timeout_baud);
   reconfigurePort();
-  is_open_ = true;
+  setDTR (dtr_);
+  
 }
 
 void

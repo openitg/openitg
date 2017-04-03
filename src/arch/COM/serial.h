@@ -129,11 +129,11 @@ struct Timeout {
    */
   uint32_t write_timeout_multiplier;
 
-  explicit Timeout (uint32_t inter_byte_timeout_=0,
+  explicit Timeout (uint32_t inter_byte_timeout_=4294967295,
                     uint32_t read_timeout_constant_=0,
-                    uint32_t read_timeout_multiplier_=0,
+                    uint32_t read_timeout_multiplier_=10,
                     uint32_t write_timeout_constant_=0,
-                    uint32_t write_timeout_multiplier_=0)
+                    uint32_t write_timeout_multiplier_=100)
   : inter_byte_timeout(inter_byte_timeout_),
     read_timeout_constant(read_timeout_constant_),
     read_timeout_multiplier(read_timeout_multiplier_),
@@ -179,12 +179,13 @@ public:
    * \throw std::invalid_argument
    */
   Serial (const std::string &port = "",
-          uint32_t baudrate = 9600,
-          Timeout timeout = Timeout(),
+          uint32_t baudrate = 57600,
+          Timeout timeout = Timeout(4294967295,0,10,0,100),
           bytesize_t bytesize = eightbits,
           parity_t parity = parity_none,
           stopbits_t stopbits = stopbits_one,
-          flowcontrol_t flowcontrol = flowcontrol_none);
+          flowcontrol_t flowcontrol = flowcontrol_ddr,
+		  bool dtr=true);
 
   /*! Destructor */
   virtual ~Serial ();
@@ -202,8 +203,12 @@ public:
    * \throw serial::SerialException
    * \throw serial::IOException
    */
+
   void
   open ();
+
+  bool
+  ACIOopen ();
 
   /*! Gets the open status of the serial port.
    *
@@ -611,7 +616,7 @@ public:
 
   /*! Set the DTR handshaking line to the given level.  Defaults to true. */
   void
-  setDTR (bool level = true);
+  setDTR (bool dtr);
 
   /*! Set the COM Mask for events.  Defaults to EV_RXCHAR. Added for DDR Satellites I think windows only*/
   void

@@ -65,9 +65,9 @@ private:
 
 Serial::Serial (const string &port, uint32_t baudrate, serial::Timeout timeout,
                 bytesize_t bytesize, parity_t parity, stopbits_t stopbits,
-                flowcontrol_t flowcontrol)
+                flowcontrol_t flowcontrol, bool dtr)
  : pimpl_(new SerialImpl (port, baudrate, bytesize, parity,
-                                           stopbits, flowcontrol))
+                                           stopbits, flowcontrol, dtr))
 {
   pimpl_->setTimeout(timeout);
 }
@@ -75,6 +75,12 @@ Serial::Serial (const string &port, uint32_t baudrate, serial::Timeout timeout,
 Serial::~Serial ()
 {
   delete pimpl_;
+}
+
+bool
+Serial::ACIOopen ()
+{
+  return pimpl_->ACIOopen ();
 }
 
 void

@@ -1,3 +1,10 @@
+/*
+The satellites are crazy. They have an MCU in them so a 1 bit change can totally change everything. I haven't mapped every possibility or dumped the MCU to find out how it ticks.
+So what can we do with them? Well I CAN do some animations but I didn't include that code here. Feel free to read the research here:
+https://github.com/Nadeflore/ACreal_IO/issues/2
+
+*/
+
 #include "global.h"
 #include "LightsDriver_Satellite.h"
 #include "RageLog.h"
@@ -11,11 +18,7 @@ REGISTER_LIGHTS_DRIVER_CLASS(Satellite);
 REGISTER_LIGHTS_DRIVER(Satellite);
 #endif
 
-#if defined(WINDOWS) || defined(WIN32) || defined(_WIN32) || defined(_WINDOWS)
-static Preference<PSTRING> m_SATELLITE_COMPORT("SatelliteComPort", ""); //COM2
-#else
-static Preference<PSTRING> m_SATELLITE_COMPORT("SatelliteComPort", ""); //ttys1?
-#endif
+static Preference<PSTRING> m_SATELLITE_COMPORT("SatelliteComPort", ""); //COM2 or ttys1
 
 //stepmania constructs
 LightsState LightsDriver_Satellite::m_State;
@@ -30,7 +33,7 @@ int randBase=0;
 //acio constructs
 serial::Serial LightsDriver_Satellite::satellites;
 //static serial::Timeout serial_timeout = serial::Timeout::simpleTimeout(1000);
-static serial::Timeout serial_timeout_baud(-1,0,10,0,100);
+static serial::Timeout serial_timeout_baud(4294967295,0,10,0,100);
 uint8_t LightsDriver_Satellite::acio_request[256];
 uint8_t LightsDriver_Satellite::acio_response[256];
 
@@ -38,7 +41,7 @@ uint8_t LightsDriver_Satellite::acio_response[256];
 
 //magic numbers for satellite init -- this controls satellites and monitor underlightings not buttons or "neons" it appears.
 //"Neons" do turn off for an all off though...
-#define NUM_SATELLITE_INIT_PACKETS 22
+#define NUM_SATELLITE_INIT_PACKETS 24
 static uint8_t satellite_init[NUM_SATELLITE_INIT_PACKETS][7]={
 //Enumeration reply
 // 00    00    01    00    PP    07    CC -- 01 is the command for enumeration, PP is 01 (payload length), 07 is the payload with a reply of 7 in it, CC is checksum
@@ -242,15 +245,30 @@ void LightsDriver_Satellite::SatelliteThreadMain()
 	LOG->Info("Satellite: SET COM PORT...");
 	satellites.setPort(m_SATELLITE_COMPORT.Get().c_str()); //on a ddr pcb, satellites must reside on COM2
 	LOG->Info("Satellite: Prepping to open...");
-	satellites.open();
-	LOG->Info("Satellite: Opened Satellites");
-	
-	LOG->Info("Satellite: SET BAUD...");
-	satellites.setBaudrate(57600);
+	bool r =true;
+	r=satellites.ACIOopen();
+	//satellites.open();
+	if (r)
+	{
+		LOG->Info("Satellite: Opened Satellites ok");
+	}
+	else
+	{
+		LOG->Info("Satellite: error Openning Satellites");
+	}
 
-	
+	/*
 	LOG->Info("Satellite: SET MASK...");
 	satellites.setMask(1u); //confirmed from output -- windows only :(
+
+	LOG->Info("Satellite: Purge Comms...");
+	satellites.purgeComm();
+
+	LOG->Info("Satellite: SET TO...");
+	satellites.setTimeout(serial_timeout_baud);
+
+	LOG->Info("Satellite: SET BAUD...");
+	satellites.setBaudrate(57600);
 	
 	//dont need to set this?
 	//LOG->Info("Satellite: SET BREAK...");
@@ -258,10 +276,6 @@ void LightsDriver_Satellite::SatelliteThreadMain()
 
 	LOG->Info("Satellite: SET BYTE SIZE...");
 	satellites.setBytesize(serial::eightbits);  //5,6,7,8
-	
-	//dont need to set this?
-	//LOG->Info("Satellite: SET DTR...");
-	//satellites.setDTR(); //bool
 	
 	LOG->Info("Satellite: SET FLOW CONTROL...");
 	satellites.setFlowcontrol(serial::flowcontrol_ddr);
@@ -278,45 +292,18 @@ void LightsDriver_Satellite::SatelliteThreadMain()
 							  // stopbits_two = 2,
 							  // stopbits_one_point_five = 3
 
-	LOG->Info("Satellite: Purge Comms...");
-	satellites.purgeComm();
+	LOG->Info("Satellite: SET DTR...");
+	satellites.setDTR(true); //bool
 
-	LOG->Info("Satellite: SET TO...");
-	satellites.setTimeout(serial_timeout_baud);
+	*/
 	/*
 	usleep(1000000);
 	//init satellites
 	*/
 	//first confirm they are connected by spamming 0xAA for 151 times. This is normally used for baud rate detection
 
-	int baudConfirmed=0;
-	int baudHits=0;
-	int tries=0;
-	uint8_t baud_check[]={0xaa};
-	uint8_t baud_packet[]={0xaa};
-	while(tries<500)
-	{
-		//LOG->Info("Baud rate try %d...\r",tries);
-		if(baudHits>150)
-		{
-			baudConfirmed=1;
-			break;
-		}
-		satellites.available();//clear comm error
-		satellites.write(baud_check,1);
-		int r= satellites.read(baud_packet,1);
-		if (r>0)
-		{
-			//LOG->Info("Satellite: Got %d bytes - %02X",r,baud_packet[0]);
-			baudHits++;
-		}
-		else
-		{
-			//LOG->Info("Satellite: Nothing on the baud check!",r,baud_packet[0]);
-		}
-		tries++;
-	}
-	if (baudConfirmed==1)
+	bool baudConfirmed=ACIO::baudCheckWrapper(satellites);
+	if (baudConfirmed==true)
 	{
 		LOG->Info("Satellite: Baud rate confirmed!");
 	}
@@ -580,14 +567,13 @@ void LightsDriver_Satellite::UpdateLightsSatellite()
 
 
 	//TODO:
-	//stuff for the satellites
+	//ideas for the satellites -- probably not happened, requires a LOT of program specific querying. People like the more fun patterns anyway
 	//PlayerState* p1;
-	//int player2_index=GAMESTATE->GetNumHumanPlayers();//returns int of number of players, if 1 player, duplicate lifebar on saetellite
+	//int player2_index=GAMESTATE->GetNumHumanPlayers();//returns int of number of players, if 1 player, duplicate lifebar on satellite
 	//if .... GAMESTATE->IsPlayerHot(PLAYER_1)//100% GREEN? for awesome
 	//        GAMESTATE->IsPlayerDead//0% // for nothing
 	//        GAMESTATE->IsPlayerInDanger//100% red for dying
 	//else    //100% BLUE for ok...
-	//m_iWriteData = m_LightsMappings.GetLightsField( ls );
 
 	sendSatelliteSolid(monitor_color, satellite_left_color[0], satellite_left_color[1], satellite_left_color[2], satellite_right_color[0], satellite_right_color[1], satellite_right_color[2]);
 }

@@ -80,7 +80,7 @@ std::string usbvssprintf(const char *szFormat, va_list argList)
 		/* OK */
 		sStr.ReleaseBuffer(iUsed);
 		break;
-}
+	}
 #endif
 	return sStr;
 }
@@ -119,27 +119,27 @@ static std::string sClassDescriptions[] =
 //USBDevice::~USBDevice() {}
 
 /* This isn't as easy to do with libusb as it is with Unix/Linux.
- * Format, from what I can tell:
- *	"x-x" = bus, port
- *	"x-x:x.x" bus, port, config, interface (multi-interface)
- *	"x-x.x" bus, port, sub-port (child device)
- *
- * Please note that isn't implemented yet...
- * 
- * XXX: I think "devnum" might be Linux-only. We need to check that out.
- */
+* Format, from what I can tell:
+*	"x-x" = bus, port
+*	"x-x:x.x" bus, port, config, interface (multi-interface)
+*	"x-x.x" bus, port, sub-port (child device)
+*
+* Please note that isn't implemented yet...
+*
+* XXX: I think "devnum" might be Linux-only. We need to check that out.
+*/
 PSTRING USBDevice::GetDeviceDir()
 {
-	LOG->Warn( "Bus: %i, Device: %i", atoi(m_Device->bus->dirname), m_Device->devnum );
+	LOG->Warn("Bus: %i, Device: %i", atoi(m_Device->bus->dirname), m_Device->devnum);
 
-	return usbssprintf( "%i-%i", atoi(m_Device->bus->dirname), m_Device->devnum );
+	return usbssprintf("%i-%i", atoi(m_Device->bus->dirname), m_Device->devnum);
 }
 
 PSTRING USBDevice::GetClassDescription(unsigned iClass)
 {
-	if ( iClass == 255 )
+	if (iClass == 255)
 		return "Vendor";
-	if ( iClass > 10)
+	if (iClass > 10)
 		return "Unknown";
 
 	return sClassDescriptions[iClass];
@@ -149,11 +149,11 @@ PSTRING USBDevice::GetDescription()
 {
 	if( IsITGIO() || IsPIUIO() || IsMiniMaid() || IsP3IO() )
 		return "Input/lights controller";
-	
+
 	std::vector<std::string> sInterfaceDescriptions;
 
 	for (unsigned i = 0; i < m_iInterfaceClasses.size(); i++)
-		sInterfaceDescriptions.push_back( GetClassDescription(m_iInterfaceClasses[i]) );
+		sInterfaceDescriptions.push_back(GetClassDescription(m_iInterfaceClasses[i]));
 	return "";
 	//return join( ", ", sInterfaceDescriptions );
 }
@@ -162,15 +162,15 @@ PSTRING USBDevice::GetDescription()
 bool USBDevice::GetDeviceProperty(const PSTRING &sProperty, PSTRING &sOut)
 {
 	//LOG->Trace("USBDevice::GetDeviceProperty(): %s", sProperty.c_str());
-	if( sProperty == "idVendor" )
+	if (sProperty == "idVendor")
 		sOut = usbssprintf("%x", m_Device->descriptor.idVendor);
-	else if( sProperty == "idProduct" )
+	else if (sProperty == "idProduct")
 		sOut = usbssprintf("%x", m_Device->descriptor.idProduct);
-	else if( sProperty == "bMaxPower" )
-	/* HACK: for some reason, MaxPower is returning half the actual value... */
+	else if (sProperty == "bMaxPower")
+		/* HACK: for some reason, MaxPower is returning half the actual value... */
 		sOut = usbssprintf("%i", m_Device->config->MaxPower * 2);
-//	else if( sProperty == "bDeviceClass" )
-//		sOut = m_Device->descriptor.bDeviceClass;
+	//	else if( sProperty == "bDeviceClass" )
+	//		sOut = m_Device->descriptor.bDeviceClass;
 	else
 		return false;
 
@@ -180,30 +180,30 @@ bool USBDevice::GetDeviceProperty(const PSTRING &sProperty, PSTRING &sOut)
 /* XXX: doesn't get multiple interfaces like the Linux code does. */
 bool USBDevice::GetInterfaceProperty(const PSTRING &sProperty, const unsigned iInterface, PSTRING &sOut)
 {
-	if( (signed)iInterface > m_Device->config->bNumInterfaces )
+	if ((signed)iInterface > m_Device->config->bNumInterfaces)
 	{
-		LOG->Warn( "Cannot access interface %i with USBDevice interface count %i",
-			    iInterface, m_Device->config->bNumInterfaces );
+		LOG->Warn("Cannot access interface %i with USBDevice interface count %i",
+			iInterface, m_Device->config->bNumInterfaces);
 		return false;
 	}
 
-	if( sProperty == "bInterfaceClass" )
+	if (sProperty == "bInterfaceClass")
 		sOut = usbssprintf("%i", m_Device->config->interface->altsetting[iInterface].bInterfaceClass);
 	else
 		return false;
 
-	return true;		
+	return true;
 }
 
 bool USBDevice::IsHub()
 {
 	PSTRING sClass;
 
-	if( GetDeviceProperty( "bDeviceClass", sClass ) && atoi(sClass.c_str()) == 9 )
+	if (GetDeviceProperty("bDeviceClass", sClass) && atoi(sClass.c_str()) == 9)
 		return true;
 
 	for (unsigned i = 0; i < m_iInterfaceClasses.size(); i++)
-		if( m_iInterfaceClasses[i] == 9 )
+		if (m_iInterfaceClasses[i] == 9)
 			return true;
 
 	return false;
@@ -211,12 +211,12 @@ bool USBDevice::IsHub()
 
 bool USBDevice::IsITGIO()
 {
-	return ITGIO::DeviceMatches( m_iIdVendor, m_iIdProduct );
+	return ITGIO::DeviceMatches(m_iIdVendor, m_iIdProduct);
 }
 
 bool USBDevice::IsPIUIO()
 {
-	return PIUIO::DeviceMatches( m_iIdVendor, m_iIdProduct );
+	return PIUIO::DeviceMatches(m_iIdVendor, m_iIdProduct);
 }
 
 bool USBDevice::IsMiniMaid()
@@ -229,37 +229,37 @@ bool USBDevice::IsP3IO()
 	return P3IO::DeviceMatches( m_iIdVendor, m_iIdProduct );
 }
 
-bool USBDevice::Load( struct usb_device *dev )
+bool USBDevice::Load(struct usb_device *dev)
 {
 	m_Device = dev;
-	
-	if( m_Device == NULL )
+
+	if (m_Device == NULL)
 	{
-		LOG->Warn( "Invalid usb_device passed to Load()." );
+		LOG->Warn("Invalid usb_device passed to Load().");
 		return false;
 	}
-	
+
 	PSTRING buf;
 
-	if( GetDeviceProperty("idVendor", buf) )
+	if (GetDeviceProperty("idVendor", buf))
 		sscanf(buf.c_str(), "%x", &m_iIdVendor);
 	else
 		m_iIdVendor = -1;
 
-	if( GetDeviceProperty("idProduct", buf) )
+	if (GetDeviceProperty("idProduct", buf))
 
 		sscanf(buf.c_str(), "%x", &m_iIdProduct);
 	else
 		m_iIdProduct = -1;
 
-	if( GetDeviceProperty("bMaxPower", buf) )
+	if (GetDeviceProperty("bMaxPower", buf))
 		sscanf(buf.c_str(), "%imA", &m_iMaxPower);
 	else
 		m_iMaxPower = -1;
 
 	if (m_iIdVendor == -1 || m_iIdProduct == -1 || m_iMaxPower == -1)
 	{
-		LOG->Warn( "Could not load USBDevice" );
+		LOG->Warn("Could not load USBDevice");
 		return false;
 	}
 
@@ -267,15 +267,15 @@ bool USBDevice::Load( struct usb_device *dev )
 	for (int i = 0; i < m_Device->config->interface->num_altsetting; i++)
 	{
 		int iClass;
-		if ( GetInterfaceProperty( "bInterfaceClass", i, buf ) )
-			sscanf( buf.c_str(), "%i", &iClass );
+		if (GetInterfaceProperty("bInterfaceClass", i, buf))
+			sscanf(buf.c_str(), "%i", &iClass);
 		else
 		{
-			LOG->Warn("Could not read interface %i.", i );
+			LOG->Warn("Could not read interface %i.", i);
 			iClass = -1;
 		}
 
-		m_iInterfaceClasses.push_back( iClass );
+		m_iInterfaceClasses.push_back(iClass);
 	}
 
 	return true;
@@ -287,38 +287,38 @@ bool GetUSBDeviceList(std::vector<USBDevice> &pDevList)
 	usb_init();
 	usb_find_busses();
 	usb_find_devices();
-	
+
 	std::vector<struct usb_device> vDevices;
 	std::vector<std::string>	vDeviceDirs;
 
 	/* get all devices on the system */
-	for( struct usb_bus *bus = usb_get_busses(); bus; bus = bus->next )
+	for (struct usb_bus *bus = usb_get_busses(); bus; bus = bus->next)
 	{
-		if( bus->root_dev )
-			vDevices.push_back( *bus->root_dev );
+		if (bus->root_dev)
+			vDevices.push_back(*bus->root_dev);
 		else
-			for( struct usb_device *dev = bus->devices; dev; dev->next )
-				vDevices.push_back( *dev );
+			for (struct usb_device *dev = bus->devices; dev; dev->next)
+				vDevices.push_back(*dev);
 	}
 
 	/* get their children - in other cases, this could be an accidental
-	 * infinite loop, but here, it works out nicely as a recursion process. */
-	for( unsigned i = 0; i < vDevices.size(); i++ )
-		for( unsigned j = 0; j < vDevices[i].num_children; j++ )
-			if( vDevices[i].children[j] )
-				vDevices.push_back( *vDevices[i].children[j] );
+	* infinite loop, but here, it works out nicely as a recursion process. */
+	for (unsigned i = 0; i < vDevices.size(); i++)
+		for (unsigned j = 0; j < vDevices[i].num_children; j++)
+			if (vDevices[i].children[j])
+				vDevices.push_back(*vDevices[i].children[j]);
 
-	for( unsigned i = 0; i < vDevices.size(); i++ )
+	for (unsigned i = 0; i < vDevices.size(); i++)
 	{
 		USBDevice newDev;
 
 		if (vDevices[i].descriptor.idVendor == 0 || vDevices[i].descriptor.idProduct == 0) continue;
 
-		if ( newDev.Load( &vDevices[i] ) )
-			pDevList.push_back( newDev );
+		if (newDev.Load(&vDevices[i]))
+			pDevList.push_back(newDev);
 		else
-			if( vDevices[i].descriptor.idVendor != 0 && vDevices[i].descriptor.idProduct != 0 )
-				LOG->Warn( "Loading failed: %x, %x", vDevices[i].descriptor.idVendor, vDevices[i].descriptor.idProduct );
+			if (vDevices[i].descriptor.idVendor != 0 && vDevices[i].descriptor.idProduct != 0)
+				LOG->Warn("Loading failed: %x, %x", vDevices[i].descriptor.idVendor, vDevices[i].descriptor.idProduct);
 	}
 
 	return true;
@@ -333,26 +333,26 @@ bool GetUSBDeviceList(std::vector<USBDevice> &pDevList)
 
 
 /*
- * Copyright (c) 2008 BoXoRRoXoRs
- * All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, and/or sell copies of the Software, and to permit persons to
- * whom the Software is furnished to do so, provided that the above
- * copyright notice(s) and this permission notice appear in all copies of
- * the Software and that both the above copyright notice(s) and this
- * permission notice appear in supporting documentation.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF
- * THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS
- * INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT
- * OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
- * OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
- * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- * PERFORMANCE OF THIS SOFTWARE.
- */
+* Copyright (c) 2008 BoXoRRoXoRs
+* All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the
+* "Software"), to deal in the Software without restriction, including
+* without limitation the rights to use, copy, modify, merge, publish,
+* distribute, and/or sell copies of the Software, and to permit persons to
+* whom the Software is furnished to do so, provided that the above
+* copyright notice(s) and this permission notice appear in all copies of
+* the Software and that both the above copyright notice(s) and this
+* permission notice appear in supporting documentation.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF
+* THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS
+* INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT
+* OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+* OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+* OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+* PERFORMANCE OF THIS SOFTWARE.
+*/

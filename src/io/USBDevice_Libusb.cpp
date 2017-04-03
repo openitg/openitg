@@ -147,7 +147,7 @@ PSTRING USBDevice::GetClassDescription(unsigned iClass)
 
 PSTRING USBDevice::GetDescription()
 {
-	if( IsITGIO() || IsPIUIO() || IsMiniMaid() )
+	if( IsITGIO() || IsPIUIO() || IsMiniMaid() || IsP3IO() )
 		return "Input/lights controller";
 	
 	std::vector<std::string> sInterfaceDescriptions;
@@ -222,6 +222,11 @@ bool USBDevice::IsPIUIO()
 bool USBDevice::IsMiniMaid()
 {
 	return MiniMaid::DeviceMatches( m_iIdVendor, m_iIdProduct );
+}
+
+bool USBDevice::IsP3IO()
+{
+	return P3IO::DeviceMatches( m_iIdVendor, m_iIdProduct );
 }
 
 bool USBDevice::Load( struct usb_device *dev )

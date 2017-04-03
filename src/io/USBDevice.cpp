@@ -6,6 +6,7 @@
 #include "io/PIUIO.h"
 #include "io/ITGIO.h"
 #include "io/MiniMaid.h"
+#include "io/P3IO.h"
 
 #include <map>
 #include <usb.h>
@@ -37,7 +38,7 @@ CString USBDevice::GetClassDescription( unsigned iClass )
 
 CString USBDevice::GetDescription()
 {
-	if( IsITGIO() || IsPIUIO() || IsMiniMaid() )
+	if( IsITGIO() || IsPIUIO() || IsMiniMaid() || IsP3IO() )
 		return "Input/lights controller";
 	
 	vector<CString> sInterfaceDescriptions;
@@ -92,6 +93,11 @@ bool USBDevice::IsPIUIO()
 bool USBDevice::IsMiniMaid()
 {
 	return MiniMaid::DeviceMatches( m_iIdVendor, m_iIdProduct );
+}
+
+bool USBDevice::IsP3IO()
+{
+	return P3IO::DeviceMatches( m_iIdVendor, m_iIdProduct );
 }
 
 bool USBDevice::Load(const CString &nDeviceDir, const vector<CString> &interfaces)

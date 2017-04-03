@@ -7,6 +7,7 @@
 #include "PIUIO.h"
 #include "ITGIO.h"
 #include "MiniMaid.h"
+#include "P3IO.h"
 
 #include <usb.h>
 
@@ -41,6 +42,7 @@ public:
 	bool IsITGIO();
 	bool IsPIUIO();
 	bool IsMiniMaid();
+	bool IsP3IO();
 
 private:
 	int m_iIdVendor;

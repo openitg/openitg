@@ -21,7 +21,7 @@ public:
 	static int unescape_acio_packet(uint8_t* acio_response2, int len, int data_start=-1);
 	static int read_acio_packet(serial::Serial &acio_bus, uint8_t* acio_response);
 	static int write_acio_packet(serial::Serial &acio_bus, uint8_t* acio_request,int r_length);
-	static int ACIO::assemble_init_packet_to_write(uint8_t* acio_request, uint8_t* init_line);
+	static int assemble_init_packet_to_write(uint8_t* acio_request, uint8_t* init_line);
 
 private:
 

@@ -14,7 +14,7 @@ AM_CFLAGS = $(CFLAGS)
 # generates enormous output.
 AM_CXXFLAGS += -finline-limit=300
 
-AM_CXXFLAGS += $(XCFLAGS) -I$(srcdir)/libtomcrypt/src/headers -I$(srcdir)/libtommath
+AM_CXXFLAGS += $(XCFLAGS) -I$(srcdir)/libtomcrypt/src/headers -I$(srcdir)/libtommath -I$(srcdir)/arch/COM
 
 if !ITG_ARCADE
 LIBS += -lpthread $(LUA_LIBS)
@@ -146,7 +146,7 @@ LIBS += -lusb
 
 USBIO = io/USBDriver.cpp io/USBDriver.h io/PIUIO.cpp io/PIUIO.h io/ITGIO.cpp \
 	io/ITGIO.h io/PacDrive.cpp io/PacDrive.h io/G15.cpp io/G15.h \
-	io/USBDevice.h io/MiniMaid.cpp io/MiniMaid.h io/P3io.cpp io/P3IO.h
+	io/USBDevice.h io/MiniMaid.cpp io/MiniMaid.h io/P3IO.cpp io/P3IO.h
 
 DataStructures += $(USBIO)
 USBDriver += arch/USB/USBDriver_Impl_Libusb.cpp arch/USB/USBDriver_Impl_Libusb.h
@@ -288,7 +288,7 @@ endif
 Arch = $(LoadingWindow) $(Sound) $(ArchHooks) $(InputHandler) $(MovieTexture) \
 	   $(Lights) $(MemoryCard) $(LowLevelWindow) $(ArchUtils) $(Dialog) $(Threads) $(USBDriver) \
 	   arch/arch_default.h arch/arch_platform.h arch/RageDriver.cpp arch/RageDriver.h \
-	   arch/ACIO.h arch/ACIO.cpp arch/COM/serial.h arch/COM/serial.cc arch/COM/v8stdint.h
+	   arch/ACIO/ACIO.h arch/ACIO/ACIO.cpp arch/COM/serial.h arch/COM/serial.cc arch/COM/v8stdint.h
 
 if UNIX
 Arch += arch/COM/impl/unix.h arch/COM/impl/unix.cc arch/COM/impl/list_ports/list_ports_linux.cc

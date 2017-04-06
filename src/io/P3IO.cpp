@@ -1,5 +1,5 @@
 #include "global.h"
-#include "Stepmania.h" //to assist with debugging
+#include "StepMania.h" //to assist with debugging
 #include "RageLog.h"
 #include "RageUtil.h"	// for ssprintf, arraylen
 

@@ -14,7 +14,7 @@ AM_CFLAGS = $(CFLAGS)
 # generates enormous output.
 AM_CXXFLAGS += -finline-limit=300
 
-AM_CXXFLAGS += $(XCFLAGS) -I$(srcdir)/libtomcrypt/src/headers -I$(srcdir)/libtommath
+AM_CXXFLAGS += $(XCFLAGS) -I$(srcdir)/libtomcrypt/src/headers -I$(srcdir)/libtommath -I$(srcdir)/arch/COM
 
 if !ITG_ARCADE
 LIBS += -lpthread $(LUA_LIBS)
@@ -146,7 +146,7 @@ LIBS += -lusb
 
 USBIO = io/USBDriver.cpp io/USBDriver.h io/PIUIO.cpp io/PIUIO.h io/ITGIO.cpp \
 	io/ITGIO.h io/PacDrive.cpp io/PacDrive.h io/G15.cpp io/G15.h \
-	io/USBDevice.h io/MiniMaid.cpp io/MiniMaid.h
+	io/USBDevice.h io/MiniMaid.cpp io/MiniMaid.h io/P3IO.cpp io/P3IO.h
 
 DataStructures += $(USBIO)
 USBDriver += arch/USB/USBDriver_Impl_Libusb.cpp arch/USB/USBDriver_Impl_Libusb.h
@@ -199,7 +199,9 @@ InputHandler += arch/InputHandler/InputHandler_PIUIO.h \
 		arch/InputHandler/InputHandler_MK3.cpp \
 		arch/InputHandler/InputHandler_MK3Helper.h \
 		arch/InputHandler/InputHandler_MiniMaid.h \
-		arch/InputHandler/InputHandler_MiniMaid.cpp
+		arch/InputHandler/InputHandler_MiniMaid.cpp \
+		arch/InputHandler/InputHandler_P3IO.h \
+		arch/InputHandler/InputHandler_P3IO.cpp
 
 MovieTexture = arch/MovieTexture/MovieTexture.cpp arch/MovieTexture/MovieTexture.h \
 		arch/MovieTexture/MovieTexture_Null.cpp arch/MovieTexture/MovieTexture_Null.h
@@ -222,7 +224,9 @@ Lights = arch/Lights/LightsDriver.cpp arch/Lights/LightsDriver.h \
 		arch/Lights/LightsDriver_ActorMessage.cpp arch/Lights/LightsDriver_ActorMessage.h \
 		arch/Lights/LightsDriver_External.cpp arch/Lights/LightsDriver_External.h \
 		arch/Lights/LightsDriver_PacDrive.cpp arch/Lights/LightsDriver_PacDrive.h \
-		arch/Lights/LightsDriver_G15.cpp arch/Lights/LightsDriver_G15.h
+		arch/Lights/LightsDriver_G15.cpp arch/Lights/LightsDriver_G15.h \
+		arch/Lights/LightsDriver_EXTIO.cpp arch/Lights/LightsDriver_EXTIO.h \
+		arch/Lights/LightsDriver_Satellite.cpp arch/Lights/LightsDriver_Satellite.h
 
 MemoryCard = arch/MemoryCard/MemoryCardDriver.cpp arch/MemoryCard/MemoryCardDriver.h
 LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.cpp arch/LowLevelWindow/LowLevelWindow.h
@@ -283,7 +287,16 @@ endif
 
 Arch = $(LoadingWindow) $(Sound) $(ArchHooks) $(InputHandler) $(MovieTexture) \
 	   $(Lights) $(MemoryCard) $(LowLevelWindow) $(ArchUtils) $(Dialog) $(Threads) $(USBDriver) \
-	   arch/arch_default.h arch/arch_platform.h arch/RageDriver.cpp arch/RageDriver.h
+	   arch/arch_default.h arch/arch_platform.h arch/RageDriver.cpp arch/RageDriver.h \
+	   arch/ACIO/ACIO.h arch/ACIO/ACIO.cpp arch/COM/serial.h arch/COM/serial.cc arch/COM/v8stdint.h
+
+if UNIX
+Arch += arch/COM/impl/unix.h arch/COM/impl/unix.cc arch/COM/impl/list_ports/list_ports_linux.cc
+else
+Arch += arch/COM/impl/win.h arch/COM/impl/win.cc arch/COM/impl/list_ports/list_ports_win.cc
+endif
+
+	   	   
 
 RageSoundFileReaders = RageSoundReader_WAV.cpp RageSoundReader_WAV.h 
 

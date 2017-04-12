@@ -9,7 +9,7 @@
 	#include "MemoryCard/MemoryCardDriverThreaded_Windows.h"
 //	#include "USB/USBDriver_Impl_WinUSB.h"
 	#include "USB/USBDriver_Impl_Libusb.h"
-	#define DEFAULT_INPUT_DRIVER_LIST "DirectInput,Pump,Para"
+	#define DEFAULT_INPUT_DRIVER_LIST "DirectInput,Pump,Para,P3IO"
 	#define DEFAULT_MOVIE_DRIVER_LIST "FFMpeg,DShow,Null"
 	#define DEFAULT_SOUND_DRIVER_LIST "DirectSound-sw,WDMKS,WaveOut,Null"
 

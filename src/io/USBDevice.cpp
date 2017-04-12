@@ -6,11 +6,12 @@
 #include "io/PIUIO.h"
 #include "io/ITGIO.h"
 #include "io/MiniMaid.h"
+#include "io/P3IO.h"
 
 #include <map>
 #include <usb.h>
 
-static CString sClassDescriptions[] = {
+static PSTRING sClassDescriptions[] = {
 	"Unknown", // 0
 	"Audio", // 1
 	"Communications", // 2
@@ -27,7 +28,7 @@ static CString sClassDescriptions[] = {
 
 //USBDevice::~USBDevice() {}
 
-CString USBDevice::GetClassDescription( unsigned iClass )
+PSTRING USBDevice::GetClassDescription( unsigned iClass )
 {
 	if ( iClass == 255 ) return "Vendor";
 	if ( iClass > 10)
@@ -35,12 +36,12 @@ CString USBDevice::GetClassDescription( unsigned iClass )
 	return sClassDescriptions[iClass];
 }
 
-CString USBDevice::GetDescription()
+PSTRING USBDevice::GetDescription()
 {
-	if( IsITGIO() || IsPIUIO() || IsMiniMaid() )
+	if( IsITGIO() || IsPIUIO() || IsMiniMaid() || IsP3IO() )
 		return "Input/lights controller";
 	
-	vector<CString> sInterfaceDescriptions;
+	vector<PSTRING> sInterfaceDescriptions;
 
 	for (unsigned i = 0; i < m_iInterfaceClasses.size(); i++)
 		sInterfaceDescriptions.push_back( GetClassDescription(m_iInterfaceClasses[i]) );
@@ -48,24 +49,24 @@ CString USBDevice::GetDescription()
 	return join( ", ", sInterfaceDescriptions );
 }
 
-bool USBDevice::GetDeviceProperty( const CString &sProperty, CString &out )
+bool USBDevice::GetDeviceProperty( const PSTRING &sProperty, PSTRING &out )
 {
-	CString sTargetFile = "/rootfs/sys/bus/usb/devices/" + m_sDeviceDir + "/" + sProperty;
+	PSTRING sTargetFile = "/rootfs/sys/bus/usb/devices/" + m_sDeviceDir + "/" + sProperty;
 	return GetFileContents(sTargetFile, out, true);
 }
 
-bool USBDevice::GetInterfaceProperty( const CString &sProperty, const unsigned iInterface, CString &out)
+bool USBDevice::GetInterfaceProperty( const PSTRING &sProperty, const unsigned iInterface, PSTRING &out)
 {
 	if (iInterface > m_sInterfaceDeviceDirs.size() - 1)
 	{
 		LOG->Warn( "Cannot access interface %i with USBDevice interface count %i", iInterface, m_sInterfaceDeviceDirs.size() );
 		return false;
 	}
-	CString sTargetFile = "/rootfs/sys/bus/usb/devices/" + m_sDeviceDir + ":" + m_sInterfaceDeviceDirs[iInterface] + "/" + sProperty;
+	PSTRING sTargetFile = "/rootfs/sys/bus/usb/devices/" + m_sDeviceDir + ":" + m_sInterfaceDeviceDirs[iInterface] + "/" + sProperty;
 	return GetFileContents( sTargetFile, out, true );
 }
 
-CString USBDevice::GetDeviceDir()
+PSTRING USBDevice::GetDeviceDir()
 {
 	return m_sDeviceDir;
 }
@@ -94,11 +95,16 @@ bool USBDevice::IsMiniMaid()
 	return MiniMaid::DeviceMatches( m_iIdVendor, m_iIdProduct );
 }
 
-bool USBDevice::Load(const CString &nDeviceDir, const vector<CString> &interfaces)
+bool USBDevice::IsP3IO()
+{
+	return P3IO::DeviceMatches( m_iIdVendor, m_iIdProduct );
+}
+
+bool USBDevice::Load(const PSTRING &nDeviceDir, const vector<PSTRING> &interfaces)
 {
 	m_sDeviceDir = nDeviceDir;
 	m_sInterfaceDeviceDirs = interfaces;
-	CString buf;
+	PSTRING buf;
 
 	if (GetDeviceProperty("idVendor", buf))
 		sscanf(buf, "%x", &m_iIdVendor);
@@ -143,13 +149,13 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 {
 	FlushDirCache();
 
-	std::map< CString, vector<CString> > sDevInterfaceList;
-	vector<CString> sDirList;
+	std::map< PSTRING, vector<PSTRING> > sDevInterfaceList;
+	vector<PSTRING> sDirList;
 	GetDirListing( "/rootfs/sys/bus/usb/devices/", sDirList, true, false );
 	for (unsigned i = 0; i < sDirList.size(); i++)
 	{
-		CString sDirEntry = sDirList[i];
-		vector<CString> components;
+		PSTRING sDirEntry = sDirList[i];
+		vector<PSTRING> components;
 
 		if (sDirEntry.substr(0, 3) == "usb") continue;
 
@@ -163,13 +169,13 @@ bool GetUSBDeviceList(vector<USBDevice> &pDevList)
 
 	}
 
-	map< CString, vector<CString> >::iterator iter;
+	map< PSTRING, vector<PSTRING> >::iterator iter;
  
 	for(iter = sDevInterfaceList.begin(); iter != sDevInterfaceList.end(); iter++)
 	{
 		USBDevice newDev;
-		CString sDevName = iter->first;
-		vector<CString> sDevChildren = iter->second;
+		PSTRING sDevName = iter->first;
+		vector<PSTRING> sDevChildren = iter->second;
 		
 		if ( newDev.Load(sDevName, sDevChildren) )
 			pDevList.push_back(newDev);

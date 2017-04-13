@@ -1,6 +1,5 @@
-#include "MiniMaid.h"
-
 #include "global.h"
+#include "MiniMaid.h"
 #include "RageLog.h"
 #include "arch/USB/USBDriver_Impl.h"
 

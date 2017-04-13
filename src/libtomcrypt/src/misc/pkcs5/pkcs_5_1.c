@@ -6,21 +6,21 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include <tomcrypt.h>
 
 /** 
    @file pkcs_5_1.c
-   LTC_PKCS #5, Algorithm #1, Tom St Denis
+   PKCS #5, Algorithm #1, Tom St Denis
 */
-#ifdef LTC_PKCS_5
+#ifdef PKCS_5
 /**
-   Execute LTC_PKCS #5 v1
+   Execute PKCS #5 v1
    @param password         The password (or key)
    @param password_len     The length of the password (octet)
    @param salt             The salt (or nonce) which is 8 octets long
-   @param iteration_count  The LTC_PKCS #5 v1 iteration count
+   @param iteration_count  The PKCS #5 v1 iteration count
    @param hash_idx         The index of the hash desired
    @param out              [out] The destination for this algorithm
    @param outlen           [in/out] The max size and resulting size of the algorithm output

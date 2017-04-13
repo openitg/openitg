@@ -6,17 +6,17 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 
 /**
   @file safer_tab.c
-  Tables for LTC_SAFER block ciphers
+  Tables for SAFER block ciphers
 */ 
  
-
-#if defined(LTC_SAFERP) || defined(LTC_SAFER)
 #include "tomcrypt.h"
+
+#if defined(SAFERP) || defined(SAFER)
 
 /* This is the box defined by ebox[x] = 45^x mod 257.  
  * Its assumed that the value "256" corresponds to zero. */

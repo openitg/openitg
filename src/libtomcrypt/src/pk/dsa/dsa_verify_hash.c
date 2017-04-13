@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
@@ -16,7 +16,7 @@
 */
 
 
-#ifdef LTC_MDSA
+#ifdef MDSA
 
 /**
   Verify a DSA signature

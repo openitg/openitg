@@ -20,14 +20,34 @@
 #pragma comment(lib, "vorbis/xbox/vorbis_static.lib")
 #pragma comment(lib, "vorbis/xbox/vorbisfile_static.lib")
 #endif
-#elif defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER >= 1400 // Visual Studio 2005+
-#pragma comment(lib, "vorbis/win32/ogg_static.lib")
-#pragma comment(lib, "vorbis/win32/vorbis_static.lib")
-#pragma comment(lib, "vorbis/win32/vorbisfile_static.lib")
-#elif defined(_MSC_VER) && !defined(_XBOX) // Visual Studio 2003
-#pragma comment(lib, "vorbis/win32/vs2003/ogg_static.lib")
-#pragma comment(lib, "vorbis/win32/vs2003/vorbis_static.lib")
-#pragma comment(lib, "vorbis/win32/vs2003/vorbisfile_static.lib")
+#elif defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER == 1310 // Visual Studio 2003
+#pragma comment(lib, "../extern/vorbis/vs2003/ogg_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2003/vorbis_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2003/vorbisfile_static.lib")
+#elif defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER == 1400 // Visual Studio 2005
+#pragma comment(lib, "../extern/vorbis/vs2005/ogg_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2005/vorbis_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2005/vorbisfile_static.lib")
+#elif defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER == 1500 // Visual Studio 2008 -- MIA do not have
+#pragma comment(lib, "../extern/vorbis/vs2008/ogg_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2008/vorbis_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2008/vorbisfile_static.lib")
+#elif defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER == 1600 // Visual Studio 2010
+#pragma comment(lib, "../extern/vorbis/vs2010/ogg_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2010/vorbis_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2010/vorbisfile_static.lib")
+#elif defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER == 1700 // Visual Studio 2012 -- MIA do not have
+#pragma comment(lib, "../extern/vorbis/vs2012/ogg_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2012/vorbis_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2012/vorbisfile_static.lib")
+#elif defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER == 1800 // Visual Studio 2013
+#pragma comment(lib, "../extern/vorbis/vs2013/ogg_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2013/vorbis_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2013/vorbisfile_static.lib")
+#elif defined(_MSC_VER) && !defined(_XBOX) && _MSC_VER >= 1900 // Visual Studio 2015
+#pragma comment(lib, "../extern/vorbis/vs2015/ogg_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2015/vorbis_static.lib")
+#pragma comment(lib, "../extern/vorbis/vs2015/vorbisfile_static.lib")
 #endif
 
 #include <cstring>

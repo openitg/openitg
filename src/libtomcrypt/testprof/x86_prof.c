@@ -124,108 +124,105 @@ void init_timer(void)
 void reg_algs(void)
 {
   int err;
-#ifdef LTC_RIJNDAEL
+#ifdef RIJNDAEL
   register_cipher (&aes_desc);
 #endif
-#ifdef LTC_BLOWFISH
+#ifdef BLOWFISH
   register_cipher (&blowfish_desc);
 #endif
-#ifdef LTC_XTEA
+#ifdef XTEA
   register_cipher (&xtea_desc);
 #endif
-#ifdef LTC_RC5
+#ifdef RC5
   register_cipher (&rc5_desc);
 #endif
-#ifdef LTC_RC6
+#ifdef RC6
   register_cipher (&rc6_desc);
 #endif
-#ifdef LTC_SAFERP
+#ifdef SAFERP
   register_cipher (&saferp_desc);
 #endif
-#ifdef LTC_TWOFISH
+#ifdef TWOFISH
   register_cipher (&twofish_desc);
 #endif
-#ifdef LTC_SAFER
+#ifdef SAFER
   register_cipher (&safer_k64_desc);
   register_cipher (&safer_sk64_desc);
   register_cipher (&safer_k128_desc);
   register_cipher (&safer_sk128_desc);
 #endif
-#ifdef LTC_RC2
+#ifdef RC2
   register_cipher (&rc2_desc);
 #endif
-#ifdef LTC_DES
+#ifdef DES
   register_cipher (&des_desc);
   register_cipher (&des3_desc);
 #endif
-#ifdef LTC_CAST5
+#ifdef CAST5
   register_cipher (&cast5_desc);
 #endif
-#ifdef LTC_NOEKEON
+#ifdef NOEKEON
   register_cipher (&noekeon_desc);
 #endif
-#ifdef LTC_SKIPJACK
+#ifdef SKIPJACK
   register_cipher (&skipjack_desc);
 #endif
-#ifdef LTC_KHAZAD
+#ifdef KHAZAD
   register_cipher (&khazad_desc);
 #endif
-#ifdef LTC_ANUBIS
+#ifdef ANUBIS
   register_cipher (&anubis_desc);
 #endif
-#ifdef LTC_KSEED
+#ifdef KSEED
   register_cipher (&kseed_desc);
 #endif
 #ifdef LTC_KASUMI
   register_cipher (&kasumi_desc);
 #endif
-#ifdef LTC_MULTI2
-  register_cipher (&multi2_desc);
-#endif
 
-#ifdef LTC_TIGER
+#ifdef TIGER
   register_hash (&tiger_desc);
 #endif
-#ifdef LTC_MD2
+#ifdef MD2
   register_hash (&md2_desc);
 #endif
-#ifdef LTC_MD4
+#ifdef MD4
   register_hash (&md4_desc);
 #endif
-#ifdef LTC_MD5
+#ifdef MD5
   register_hash (&md5_desc);
 #endif
-#ifdef LTC_SHA1
+#ifdef SHA1
   register_hash (&sha1_desc);
 #endif
-#ifdef LTC_SHA224
+#ifdef SHA224
   register_hash (&sha224_desc);
 #endif
-#ifdef LTC_SHA256
+#ifdef SHA256
   register_hash (&sha256_desc);
 #endif
-#ifdef LTC_SHA384
+#ifdef SHA384
   register_hash (&sha384_desc);
 #endif
-#ifdef LTC_SHA512
+#ifdef SHA512
   register_hash (&sha512_desc);
 #endif
-#ifdef LTC_RIPEMD128
+#ifdef RIPEMD128
   register_hash (&rmd128_desc);
 #endif
-#ifdef LTC_RIPEMD160
+#ifdef RIPEMD160
   register_hash (&rmd160_desc);
 #endif
-#ifdef LTC_RIPEMD256
+#ifdef RIPEMD256
   register_hash (&rmd256_desc);
 #endif
-#ifdef LTC_RIPEMD320
+#ifdef RIPEMD320
   register_hash (&rmd320_desc);
 #endif
-#ifdef LTC_WHIRLPOOL
+#ifdef WHIRLPOOL
   register_hash (&whirlpool_desc);
 #endif
-#ifdef LTC_CHC_HASH
+#ifdef CHC_HASH
   register_hash(&chc_desc);
   if ((err = chc_register(register_cipher(&aes_desc))) != CRYPT_OK) {
      fprintf(stderr, "chc_register error: %s\n", error_to_string(err));
@@ -234,17 +231,17 @@ void reg_algs(void)
 #endif
 
 
-#ifndef LTC_YARROW 
+#ifndef YARROW 
    #error This demo requires Yarrow.
 #endif
 register_prng(&yarrow_desc);
-#ifdef LTC_FORTUNA
+#ifdef FORTUNA
 register_prng(&fortuna_desc);
 #endif
-#ifdef LTC_RC4
+#ifdef RC4
 register_prng(&rc4_desc);
 #endif
-#ifdef LTC_SOBER128
+#ifdef SOBER128
 register_prng(&sober128_desc);
 #endif
 
@@ -762,7 +759,7 @@ void time_prng(void)
    }
 }
 
-#ifdef LTC_MDSA
+#ifdef MDSA
 /* time various DSA operations */
 void time_dsa(void)
 {
@@ -807,7 +804,7 @@ static const struct {
 #endif
 
 
-#ifdef LTC_MRSA      
+#ifdef MRSA      
 /* time various RSA operations */
 void time_rsa(void)
 {
@@ -1001,7 +998,7 @@ void time_katja(void)
 void time_katja(void) { fprintf(stderr, "NO Katja\n"); }
 #endif
 
-#ifdef LTC_MECC
+#ifdef MECC
 /* time various ECC operations */
 void time_ecc(void)
 {
@@ -1169,7 +1166,7 @@ void time_macs_(unsigned long MAC_SIZE)
    hash_idx   = find_hash("sha1");
    
    if (cipher_idx == -1 || hash_idx == -1) {
-      fprintf(stderr, "Warning the MAC tests requires AES and LTC_SHA1 to operate... so sorry\n");
+      fprintf(stderr, "Warning the MAC tests requires AES and SHA1 to operate... so sorry\n");
       return;
    }
 
@@ -1189,7 +1186,7 @@ void time_macs_(unsigned long MAC_SIZE)
         t1 = t_read() - t1;
         if (t1 < t2) t2 = t1;
    }
-   fprintf(stderr, "LTC_OMAC-%s\t\t%9llu\n", cipher_descriptor[cipher_idx].name, t2/(ulong64)(MAC_SIZE*1024));
+   fprintf(stderr, "OMAC-%s\t\t%9llu\n", cipher_descriptor[cipher_idx].name, t2/(ulong64)(MAC_SIZE*1024));
 #endif
 
 #ifdef LTC_XCBC
@@ -1240,7 +1237,7 @@ void time_macs_(unsigned long MAC_SIZE)
    fprintf(stderr, "PMAC-AES\t\t%9llu\n", t2/(ulong64)(MAC_SIZE*1024));
 #endif
 
-#ifdef LTC_PELICAN
+#ifdef PELICAN
    t2 = -1;
    for (x = 0; x < 10000; x++) {
         t_start();
@@ -1253,7 +1250,7 @@ void time_macs_(unsigned long MAC_SIZE)
         t1 = t_read() - t1;
         if (t1 < t2) t2 = t1;
    }
-   fprintf(stderr, "LTC_PELICAN \t\t%9llu\n", t2/(ulong64)(MAC_SIZE*1024));
+   fprintf(stderr, "PELICAN \t\t%9llu\n", t2/(ulong64)(MAC_SIZE*1024));
 #endif
 
 #ifdef LTC_HMAC
@@ -1269,7 +1266,7 @@ void time_macs_(unsigned long MAC_SIZE)
         t1 = t_read() - t1;
         if (t1 < t2) t2 = t1;
    }
-   fprintf(stderr, "LTC_HMAC-%s\t\t%9llu\n", hash_descriptor[hash_idx].name, t2/(ulong64)(MAC_SIZE*1024));
+   fprintf(stderr, "HMAC-%s\t\t%9llu\n", hash_descriptor[hash_idx].name, t2/(ulong64)(MAC_SIZE*1024));
 #endif
 
    XFREE(buf);
@@ -1304,7 +1301,7 @@ void time_encmacs_(unsigned long MAC_SIZE)
    yarrow_read(key, 16, &yarrow_prng);
    yarrow_read(IV, 16, &yarrow_prng);
 
-#ifdef LTC_EAX_MODE
+#ifdef EAX_MODE
    t2 = -1;
    for (x = 0; x < 10000; x++) {
         t_start();
@@ -1320,7 +1317,7 @@ void time_encmacs_(unsigned long MAC_SIZE)
    fprintf(stderr, "EAX \t\t\t%9llu\n", t2/(ulong64)(MAC_SIZE*1024));
 #endif
 
-#ifdef LTC_OCB_MODE
+#ifdef OCB_MODE
    t2 = -1;
    for (x = 0; x < 10000; x++) {
         t_start();
@@ -1336,7 +1333,7 @@ void time_encmacs_(unsigned long MAC_SIZE)
    fprintf(stderr, "OCB \t\t\t%9llu\n", t2/(ulong64)(MAC_SIZE*1024));
 #endif
 
-#ifdef LTC_CCM_MODE
+#ifdef CCM_MODE
    t2 = -1;
    for (x = 0; x < 10000; x++) {
         t_start();
@@ -1368,7 +1365,7 @@ void time_encmacs_(unsigned long MAC_SIZE)
    cipher_descriptor[cipher_idx].done(&skey);   
 #endif
 
-#ifdef LTC_GCM_MODE
+#ifdef GCM_MODE
    t2 = -1;
    for (x = 0; x < 100; x++) {
         t_start();
@@ -1385,7 +1382,7 @@ void time_encmacs_(unsigned long MAC_SIZE)
 
    {
    gcm_state gcm
-#ifdef LTC_GCM_TABLES_SSE2
+#ifdef GCM_TABLES_SSE2
 __attribute__ ((aligned (16)))
 #endif
 ;

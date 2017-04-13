@@ -6,19 +6,19 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
 /** 
   @file pkcs_1_pss_encode.c
-  LTC_PKCS #1 PSS Signature Padding, Tom St Denis 
+  PKCS #1 PSS Signature Padding, Tom St Denis 
 */
 
-#ifdef LTC_PKCS_1
+#ifdef PKCS_1
 
 /**
-   LTC_PKCS #1 v2.00 Signature Encoding
+   PKCS #1 v2.00 Signature Encoding
    @param msghash          The hash to encode
    @param msghashlen       The length of the hash (octets)
    @param saltlen          The length of the salt desired (octets)
@@ -168,7 +168,7 @@ LBL_ERR:
    return err;
 }
 
-#endif /* LTC_PKCS_1 */
+#endif /* PKCS_1 */
 
 /* $Source$ */
 /* $Revision$ */

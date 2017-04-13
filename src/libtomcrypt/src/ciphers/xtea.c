@@ -6,16 +6,16 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 
 /**
   @file xtea.c
-  Implementation of LTC_XTEA, Tom St Denis
+  Implementation of XTEA, Tom St Denis
 */
 #include "tomcrypt.h"
 
-#ifdef LTC_XTEA
+#ifdef XTEA
 
 const struct ltc_cipher_descriptor xtea_desc =
 {
@@ -67,7 +67,7 @@ int xtea_setup(const unsigned char *key, int keylen, int num_rounds, symmetric_k
 }
 
 /**
-  Encrypts a block of text with LTC_XTEA
+  Encrypts a block of text with XTEA
   @param pt The input plaintext (8 bytes)
   @param ct The output ciphertext (8 bytes)
   @param skey The key as scheduled
@@ -103,7 +103,7 @@ int xtea_ecb_encrypt(const unsigned char *pt, unsigned char *ct, symmetric_key *
 }
 
 /**
-  Decrypts a block of text with LTC_XTEA
+  Decrypts a block of text with XTEA
   @param ct The input ciphertext (8 bytes)
   @param pt The output plaintext (8 bytes)
   @param skey The key as scheduled 
@@ -139,7 +139,7 @@ int xtea_ecb_decrypt(const unsigned char *ct, unsigned char *pt, symmetric_key *
 }
 
 /**
-  Performs a self-test of the LTC_XTEA block cipher
+  Performs a self-test of the XTEA block cipher
   @return CRYPT_OK if functional, CRYPT_NOP if self-test has been disabled
 */
 int xtea_test(void)

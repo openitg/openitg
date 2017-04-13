@@ -26,58 +26,58 @@ void register_algs(void)
 {
    int x;
    
-#ifdef LTC_RIJNDAEL
+#ifdef RIJNDAEL
   register_cipher (&aes_desc);
 #endif
-#ifdef LTC_BLOWFISH
+#ifdef BLOWFISH
   register_cipher (&blowfish_desc);
 #endif
-#ifdef LTC_XTEA
+#ifdef XTEA
   register_cipher (&xtea_desc);
 #endif
-#ifdef LTC_RC5
+#ifdef RC5
   register_cipher (&rc5_desc);
 #endif
-#ifdef LTC_RC6
+#ifdef RC6
   register_cipher (&rc6_desc);
 #endif
-#ifdef LTC_SAFERP
+#ifdef SAFERP
   register_cipher (&saferp_desc);
 #endif
-#ifdef LTC_TWOFISH
+#ifdef TWOFISH
   register_cipher (&twofish_desc);
 #endif
-#ifdef LTC_SAFER
+#ifdef SAFER
   register_cipher (&safer_k64_desc);
   register_cipher (&safer_sk64_desc);
   register_cipher (&safer_k128_desc);
   register_cipher (&safer_sk128_desc);
 #endif
-#ifdef LTC_RC2
+#ifdef RC2
   register_cipher (&rc2_desc);
 #endif
-#ifdef LTC_DES
+#ifdef DES
   register_cipher (&des_desc);
   register_cipher (&des3_desc);
 #endif
-#ifdef LTC_CAST5
+#ifdef CAST5
   register_cipher (&cast5_desc);
 #endif
-#ifdef LTC_NOEKEON
+#ifdef NOEKEON
   register_cipher (&noekeon_desc);
 #endif
-#ifdef LTC_SKIPJACK
+#ifdef SKIPJACK
   register_cipher (&skipjack_desc);
 #endif
-#ifdef LTC_KHAZAD
+#ifdef KHAZAD
   register_cipher (&khazad_desc);
 #endif
-#ifdef LTC_ANUBIS
+#ifdef ANUBIS
   register_cipher (&anubis_desc);
 #endif
 
    if (register_hash(&sha256_desc) == -1) {
-      printf("Error registering LTC_SHA256\n");
+      printf("Error registering SHA256\n");
       exit(-1);
    } 
 
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
    hash_idx = find_hash("sha256");
    if (hash_idx == -1) {
-      printf("LTC_SHA256 not found...?\n");
+      printf("SHA256 not found...?\n");
       exit(-1);
    }
 

@@ -1,9 +1,9 @@
+#include "global.h"
 #if defined(_WIN32)
 
 /* Copyright 2012 William Woodall and John Harrison */
 
 #include <sstream>
-
 #include "win.h"
 
 using std::string;

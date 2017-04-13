@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 
 #define DESC_DEF_ONLY
@@ -445,8 +445,8 @@ const ltc_math_descriptor ltm_desc = {
    &exptmod,
    &isprime,
 
-#ifdef LTC_MECC
-#ifdef LTC_MECC_FP
+#ifdef MECC
+#ifdef MECC_FP
    &ltc_ecc_fp_mulmod,
 #else   
    &ltc_ecc_mulmod,
@@ -455,19 +455,19 @@ const ltc_math_descriptor ltm_desc = {
    &ltc_ecc_projective_dbl_point,
    &ltc_ecc_map,
 #ifdef LTC_ECC_SHAMIR
-#ifdef LTC_MECC_FP
+#ifdef MECC_FP
    &ltc_ecc_fp_mul2add,
 #else
    &ltc_ecc_mul2add,
-#endif /* LTC_MECC_FP */
+#endif /* MECC_FP */
 #else
    NULL,
 #endif /* LTC_ECC_SHAMIR */
 #else
    NULL, NULL, NULL, NULL, NULL,
-#endif /* LTC_MECC */
+#endif /* MECC */
 
-#ifdef LTC_MRSA
+#ifdef MRSA
    &rsa_make_key,
    &rsa_exptmod,
 #else

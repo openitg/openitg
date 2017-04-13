@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
@@ -15,14 +15,14 @@
   Integer to Octet I2OSP, Tom St Denis 
 */
 
-#ifdef LTC_PKCS_1
+#ifdef PKCS_1
 
 /* always stores the same # of bytes, pads with leading zero bytes
    as required
  */
 
 /**
-   LTC_PKCS #1 Integer to binary
+   PKCS #1 Integer to binary
    @param n             The integer to store
    @param modulus_len   The length of the RSA modulus
    @param out           [out] The destination for the integer
@@ -43,7 +43,7 @@ int pkcs_1_i2osp(void *n, unsigned long modulus_len, unsigned char *out)
    return mp_to_unsigned_bin(n, out+(modulus_len-size));
 }
 
-#endif /* LTC_PKCS_1 */
+#endif /* PKCS_1 */
 
 
 /* $Source$ */

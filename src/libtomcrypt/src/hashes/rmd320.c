@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
@@ -15,13 +15,13 @@
    RMD320 hash function
 */
 
-#ifdef LTC_RIPEMD320
+#ifdef RIPEMD320
 
 const struct ltc_hash_descriptor rmd320_desc =
 {
     "rmd320",
     9,
-    40,
+    20,
     64,
 
     /* OID */

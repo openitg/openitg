@@ -43,6 +43,7 @@ Release-SSE2
 *.suo
 *.pdb
 *.vscode
+*.VC.db
 
 # Windows build artefacts
 src/verstub.cpp

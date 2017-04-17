@@ -46,6 +46,7 @@ Release-SSE2
 *.VC.db
 *.opensdf
 *.VC.VC.opendb
+*.vdi
 
 # Windows build artefacts
 src/verstub.cpp

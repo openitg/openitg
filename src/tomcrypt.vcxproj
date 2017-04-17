@@ -30,25 +30,25 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SSE2|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LibLuaLibSSE2|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v120_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -97,6 +97,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>
       </WholeProgramOptimization>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;LTC_SOURCE;LTM_DESC;DEVRANDOM;SHA1;MD5;YARROW;YARROW_AES=3;LTC_NO_PKCS;PKCS_1;LTC_DER;LTC_NO_MODES;LTC_ECB_MODE;LTC_CBC_MODE;LTC_CTR_MODE;LTC_NO_HASHES;LTC_NO_MACS;LTC_NO_PRNGS;TRY_URANDOM_FIRST;LTC_NO_PK;MRSA;LTC_NO_PROTOTYPES;LTC_NO_ASM;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -132,6 +134,8 @@
       </DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LTC_SOURCE;LTM_DESC;DEVRANDOM;SHA1;MD5;YARROW;YARROW_AES=3;LTC_NO_PKCS;PKCS_1;LTC_DER;LTC_NO_MODES;LTC_ECB_MODE;LTC_CBC_MODE;LTC_CTR_MODE;LTC_NO_HASHES;LTC_NO_MACS;LTC_NO_PRNGS;TRY_URANDOM_FIRST;LTC_NO_PK;MRSA;LTC_NO_PROTOTYPES;LTC_NO_ASM;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -167,9 +171,10 @@
       </DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Precise</FloatingPointModel>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LTC_SOURCE;LTM_DESC;DEVRANDOM;SHA1;MD5;YARROW;YARROW_AES=3;LTC_NO_PKCS;PKCS_1;LTC_DER;LTC_NO_MODES;LTC_ECB_MODE;LTC_CBC_MODE;LTC_CTR_MODE;LTC_NO_HASHES;LTC_NO_MACS;LTC_NO_PRNGS;TRY_URANDOM_FIRST;LTC_NO_PK;MRSA;LTC_NO_PROTOTYPES;LTC_NO_ASM;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -205,9 +210,10 @@
       </DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Precise</FloatingPointModel>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LTC_SOURCE;LTM_DESC;DEVRANDOM;SHA1;MD5;YARROW;YARROW_AES=3;LTC_NO_PKCS;PKCS_1;LTC_DER;LTC_NO_MODES;LTC_ECB_MODE;LTC_CBC_MODE;LTC_CTR_MODE;LTC_NO_HASHES;LTC_NO_MACS;LTC_NO_PRNGS;TRY_URANDOM_FIRST;LTC_NO_PK;MRSA;LTC_NO_PROTOTYPES;LTC_NO_ASM;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>

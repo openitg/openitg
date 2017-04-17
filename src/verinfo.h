@@ -2,4 +2,4 @@
 
 #define BUILD_VERSION	"stupid-placeholder-tag-goddammit-github DEV"
 #define BUILD_DATE		"2017-04-17"
-#define BUILD_REVISION_TAG	"beta3-380-gc1bbda1"
+#define BUILD_REVISION_TAG	"beta3-381-g2e7ade3"

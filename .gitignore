@@ -26,6 +26,7 @@ version.txt
 assets/utilities/itg2-util/src/.deps/
 assets/utilities/itg2-util/src/itg2ac-util
 src/libresample/src/config.h
+src/verinfo.h
 src/libresample/tests/testresample
 run
 build/artifacts/

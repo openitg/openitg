@@ -1,6 +1,81 @@
 #ifndef TOMCRYPT_CUSTOM_H_
 #define TOMCRYPT_CUSTOM_H_
 
+
+
+/*
+ * Begin StepMania modifications -- note msvc does this in the project defintion already but this is needed for *nix
+ */
+
+//reference, here are the MSVC defs: WITH_SSE2;WIN32;_WINDOWS;NDEBUG;LTC_SOURCE;LTM_DESC;DEVRANDOM;SHA1;MD5;YARROW;YARROW_AES=3;LTC_NO_PKCS;PKCS_1;LTC_DER;LTC_NO_MODES;LTC_ECB_MODE;LTC_CBC_MODE;LTC_CTR_MODE;LTC_NO_HASHES;LTC_NO_MACS;LTC_NO_PRNGS;TRY_URANDOM_FIRST;LTC_NO_PK;MRSA;LTC_NO_PROTOTYPES;LTC_NO_ASM;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR="Release";%(PreprocessorDefinitions)
+
+#define LTC_SOURCE
+
+/* Use libtommath: */
+#define LTM_DESC
+#define USE_LTM
+
+/* Remove everything by default... */
+// for some reason this was taking precedence over INCLUDING components, leave this out for new tomcrypt
+//#define LTC_NO_CIPHERS 
+//#define LTC_NO_ROLC
+//#define LTC_NO_CURVES
+#define LTC_NO_HASHES
+#define LTC_NO_MACS
+#define LTC_NO_PRNGS
+#define LTC_NO_MODES
+#define LTC_NO_PKCS
+
+
+/* ...and manually pull in the modules we want. */
+
+/* StepMania stuff */
+#define LTC_CTR_MODE /* needed for yarrow */
+#define CTR_MODE
+
+#define LTC_YARROW_AES 3 /* 3 = aes (full) */
+#define YARROW_AES 3
+
+#define LTC_YARROW
+#define YARROW
+
+#define LTC_SHA1
+#define SHA1
+
+/* ITG encryption */
+#define LTC_ECB_MODE
+#define ECB_MODE
+
+#define LTC_RIJNDAEL
+#define RIJNDAEL
+
+#define LTC_SHA512
+#define SHA512
+
+/* RSA key signing/verification */
+#define LTC_PKCS_1
+#define PKCS_1
+
+#define LTC_DER
+#define DER
+
+#define LTC_MRSA
+#define MRSA
+
+/* Defs put in msvc that may be needed for *nix? */
+#define DEVRANDOM
+#define MD5
+#define LTC_CBC_MODE
+#define CBC_MODE
+#define TRY_URANDOM_FIRST
+#define LTC_NO_PK
+#define LTC_NO_PROTOTYPES
+#define LTC_NO_ASM
+
+/*
+ * End StepMania modifications
+ */
+
 /* macros for various libc functions you can change for embedded targets */
 #ifndef XMALLOC
    #ifdef malloc 

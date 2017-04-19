@@ -30,13 +30,13 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='SSE2|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -48,7 +48,7 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120_xp</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -78,7 +78,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Debug/</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsC</CompileAs>
@@ -98,14 +98,13 @@
       <WholeProgramOptimization>
       </WholeProgramOptimization>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;LTC_SOURCE;LTM_DESC;DEVRANDOM;SHA1;MD5;YARROW;YARROW_AES=3;LTC_NO_PKCS;PKCS_1;LTC_DER;LTC_NO_MODES;LTC_ECB_MODE;LTC_CBC_MODE;LTC_CTR_MODE;LTC_NO_HASHES;LTC_NO_MACS;LTC_NO_PRNGS;TRY_URANDOM_FIRST;LTC_NO_PK;MRSA;LTC_NO_PROTOTYPES;LTC_NO_ASM;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -118,7 +117,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <ExceptionHandling>
@@ -135,14 +134,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LTC_SOURCE;LTM_DESC;DEVRANDOM;SHA1;MD5;YARROW;YARROW_AES=3;LTC_NO_PKCS;PKCS_1;LTC_DER;LTC_NO_MODES;LTC_ECB_MODE;LTC_CBC_MODE;LTC_CTR_MODE;LTC_NO_HASHES;LTC_NO_MACS;LTC_NO_PRNGS;TRY_URANDOM_FIRST;LTC_NO_PK;MRSA;LTC_NO_PROTOTYPES;LTC_NO_ASM;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -174,14 +172,13 @@
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Precise</FloatingPointModel>
-      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LTC_SOURCE;LTM_DESC;DEVRANDOM;SHA1;MD5;YARROW;YARROW_AES=3;LTC_NO_PKCS;PKCS_1;LTC_DER;LTC_NO_MODES;LTC_ECB_MODE;LTC_CBC_MODE;LTC_CTR_MODE;LTC_NO_HASHES;LTC_NO_MACS;LTC_NO_PRNGS;TRY_URANDOM_FIRST;LTC_NO_PK;MRSA;LTC_NO_PROTOTYPES;LTC_NO_ASM;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -194,7 +191,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LibLuaLibSSE2|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>Release/</AssemblerListingLocation>
       <CompileAs>CompileAsC</CompileAs>
       <ExceptionHandling>
@@ -213,14 +210,13 @@
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Precise</FloatingPointModel>
-      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;LTC_SOURCE;LTM_DESC;DEVRANDOM;SHA1;MD5;YARROW;YARROW_AES=3;LTC_NO_PKCS;PKCS_1;LTC_DER;LTC_NO_MODES;LTC_ECB_MODE;LTC_CBC_MODE;LTC_CTR_MODE;LTC_NO_HASHES;LTC_NO_MACS;LTC_NO_PRNGS;TRY_URANDOM_FIRST;LTC_NO_PK;MRSA;LTC_NO_PROTOTYPES;LTC_NO_ASM;_CRT_SECURE_NO_WARNINGS;CMAKE_INTDIR=\"Release\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>D:\oitg\openitg\src\libtomcrypt\src\headers;D:\oitg\openitg\src\libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)libtomcrypt\src\headers;$(ProjectDir)libtommath;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -232,161 +228,162 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_argchk.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_cfg.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_cipher.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_custom.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_hash.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_mac.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_macros.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_math.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_misc.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_pk.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_pkcs.h" />
-    <ClInclude Include="D:\oitg\openitg\src\libtomcrypt\src\headers\tomcrypt_prng.h" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\ciphers\aes\aes.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\hashes\md5.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\hashes\sha1.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\hashes\helper\hash_memory.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\burn_stack.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\error_to_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\zeromem.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\base64\base64_decode.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\base64\base64_encode.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_argchk.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_cipher_descriptor.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_cipher_is_valid.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_find_cipher.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_find_cipher_any.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_find_cipher_id.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_find_hash.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_find_hash_any.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_find_hash_id.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_find_hash_oid.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_find_prng.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_fsa.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_hash_descriptor.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_hash_is_valid.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_ltc_mp_descriptor.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_prng_descriptor.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_prng_is_valid.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_register_cipher.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_register_hash.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_register_prng.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_unregister_cipher.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_unregister_hash.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\crypt\crypt_unregister_prng.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\pkcs5\pkcs_5_1.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\misc\pkcs5\pkcs_5_2.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\math\ltm_desc.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\math\fp\ltc_ecc_fp_mulmod.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\math\multi.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\math\rand_prime.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cbc\cbc_decrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cbc\cbc_done.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cbc\cbc_encrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cbc\cbc_getiv.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cbc\cbc_setiv.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cbc\cbc_start.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cfb\cfb_decrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cfb\cfb_done.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cfb\cfb_encrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cfb\cfb_getiv.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cfb\cfb_setiv.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\cfb\cfb_start.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ctr\ctr_decrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ctr\ctr_done.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ctr\ctr_encrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ctr\ctr_getiv.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ctr\ctr_setiv.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ctr\ctr_start.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ctr\ctr_test.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ecb\ecb_decrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ecb\ecb_done.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ecb\ecb_encrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ecb\ecb_start.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ofb\ofb_decrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ofb\ofb_done.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ofb\ofb_encrypt.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ofb\ofb_getiv.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ofb\ofb_setiv.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\modes\ofb\ofb_start.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\prngs\fortuna.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\prngs\rc4.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\prngs\rng_get_bytes.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\prngs\rng_make_prng.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\prngs\sprng.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\prngs\yarrow.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\rsa\rsa_decrypt_key.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\rsa\rsa_encrypt_key.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\rsa\rsa_export.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\rsa\rsa_exptmod.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\rsa\rsa_free.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\rsa\rsa_import.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\rsa\rsa_make_key.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\rsa\rsa_sign_hash.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\rsa\rsa_verify_hash.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\pkcs1\pkcs_1_i2osp.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\pkcs1\pkcs_1_mgf1.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_decode.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_encode.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\pkcs1\pkcs_1_os2ip.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_decode.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\pkcs1\pkcs_1_pss_encode.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_decode.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_encode.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_decrypt_key.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_encrypt_key.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_export.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_free.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_import.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_make_key.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_shared_secret.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_sign_hash.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_verify_hash.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\dsa\dsa_verify_key.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\bit\der_decode_bit_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\bit\der_encode_bit_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\bit\der_length_bit_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\boolean\der_decode_boolean.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\boolean\der_encode_boolean.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\boolean\der_length_boolean.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\choice\der_decode_choice.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\ia5\der_decode_ia5_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\ia5\der_encode_ia5_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\ia5\der_length_ia5_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\integer\der_decode_integer.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\integer\der_encode_integer.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\integer\der_length_integer.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\object_identifier\der_decode_object_identifier.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\object_identifier\der_encode_object_identifier.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\object_identifier\der_length_object_identifier.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\octet\der_decode_octet_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\octet\der_encode_octet_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\octet\der_length_octet_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\printable_string\der_decode_printable_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\printable_string\der_encode_printable_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\printable_string\der_length_printable_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_ex.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_flexi.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_multi.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_ex.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_multi.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\sequence\der_length_sequence.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\sequence\der_sequence_free.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\set\der_encode_set.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\set\der_encode_setof.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\short_integer\der_decode_short_integer.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\short_integer\der_encode_short_integer.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\short_integer\der_length_short_integer.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\utctime\der_decode_utctime.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\utctime\der_encode_utctime.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\utctime\der_length_utctime.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\utf8\der_decode_utf8_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\utf8\der_encode_utf8_string.c" />
-    <ClCompile Include="D:\oitg\openitg\src\libtomcrypt\src\pk\asn1\der\utf8\der_length_utf8_string.c" />
+    <ClCompile Include="libtomcrypt\src\hashes\sha2\sha512.c" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_argchk.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_cfg.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_cipher.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_custom.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_hash.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_mac.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_macros.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_math.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_misc.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_pk.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_pkcs.h" />
+    <ClInclude Include="$(ProjectDir)libtomcrypt\src\headers\tomcrypt_prng.h" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\ciphers\aes\aes.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\hashes\md5.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\hashes\sha1.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\hashes\helper\hash_memory.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\burn_stack.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\error_to_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\zeromem.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\base64\base64_decode.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\base64\base64_encode.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_argchk.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_cipher_descriptor.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_cipher_is_valid.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_find_cipher.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_find_cipher_any.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_find_cipher_id.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_find_hash.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_find_hash_any.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_find_hash_id.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_find_hash_oid.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_find_prng.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_fsa.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_hash_descriptor.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_hash_is_valid.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_ltc_mp_descriptor.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_prng_descriptor.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_prng_is_valid.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_register_cipher.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_register_hash.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_register_prng.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_unregister_cipher.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_unregister_hash.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\crypt\crypt_unregister_prng.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\pkcs5\pkcs_5_1.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\misc\pkcs5\pkcs_5_2.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\math\ltm_desc.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\math\fp\ltc_ecc_fp_mulmod.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\math\multi.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\math\rand_prime.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cbc\cbc_decrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cbc\cbc_done.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cbc\cbc_encrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cbc\cbc_getiv.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cbc\cbc_setiv.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cbc\cbc_start.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cfb\cfb_decrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cfb\cfb_done.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cfb\cfb_encrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cfb\cfb_getiv.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cfb\cfb_setiv.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\cfb\cfb_start.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ctr\ctr_decrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ctr\ctr_done.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ctr\ctr_encrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ctr\ctr_getiv.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ctr\ctr_setiv.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ctr\ctr_start.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ctr\ctr_test.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ecb\ecb_decrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ecb\ecb_done.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ecb\ecb_encrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ecb\ecb_start.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ofb\ofb_decrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ofb\ofb_done.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ofb\ofb_encrypt.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ofb\ofb_getiv.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ofb\ofb_setiv.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\modes\ofb\ofb_start.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\prngs\fortuna.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\prngs\rc4.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\prngs\rng_get_bytes.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\prngs\rng_make_prng.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\prngs\sprng.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\prngs\yarrow.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\rsa\rsa_decrypt_key.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\rsa\rsa_encrypt_key.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\rsa\rsa_export.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\rsa\rsa_exptmod.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\rsa\rsa_free.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\rsa\rsa_import.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\rsa\rsa_make_key.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\rsa\rsa_sign_hash.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\rsa\rsa_verify_hash.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\pkcs1\pkcs_1_i2osp.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\pkcs1\pkcs_1_mgf1.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_decode.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\pkcs1\pkcs_1_oaep_encode.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\pkcs1\pkcs_1_os2ip.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\pkcs1\pkcs_1_pss_decode.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\pkcs1\pkcs_1_pss_encode.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_decode.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\pkcs1\pkcs_1_v1_5_encode.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_decrypt_key.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_encrypt_key.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_export.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_free.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_import.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_make_key.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_shared_secret.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_sign_hash.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_verify_hash.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\dsa\dsa_verify_key.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\bit\der_decode_bit_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\bit\der_encode_bit_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\bit\der_length_bit_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\boolean\der_decode_boolean.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\boolean\der_encode_boolean.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\boolean\der_length_boolean.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\choice\der_decode_choice.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\ia5\der_decode_ia5_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\ia5\der_encode_ia5_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\ia5\der_length_ia5_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\integer\der_decode_integer.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\integer\der_encode_integer.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\integer\der_length_integer.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\object_identifier\der_decode_object_identifier.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\object_identifier\der_encode_object_identifier.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\object_identifier\der_length_object_identifier.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\octet\der_decode_octet_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\octet\der_encode_octet_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\octet\der_length_octet_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\printable_string\der_decode_printable_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\printable_string\der_encode_printable_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\printable_string\der_length_printable_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_ex.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_flexi.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\sequence\der_decode_sequence_multi.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_ex.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\sequence\der_encode_sequence_multi.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\sequence\der_length_sequence.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\sequence\der_sequence_free.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\set\der_encode_set.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\set\der_encode_setof.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\short_integer\der_decode_short_integer.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\short_integer\der_encode_short_integer.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\short_integer\der_length_short_integer.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\utctime\der_decode_utctime.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\utctime\der_encode_utctime.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\utctime\der_length_utctime.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\utf8\der_decode_utf8_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\utf8\der_encode_utf8_string.c" />
+    <ClCompile Include="$(ProjectDir)libtomcrypt\src\pk\asn1\der\utf8\der_length_utf8_string.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

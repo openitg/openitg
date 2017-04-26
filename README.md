@@ -26,7 +26,7 @@ replacement for the ITG binary on arcade cabinents.
 ## How to check-out the source
 
 ```sh
-git clone git://github.com/openitg/openitg.git
+git clone https://github.com/openitg/openitg.git
 ```
 
 ## How to contribute
@@ -34,12 +34,12 @@ git clone git://github.com/openitg/openitg.git
 1. Create an account at github.com
 2. Goto https://github.com/openitg/openitg
 3. Click "fork"
-4. git clone git@github.com:<username>/openitg.git
+4. `git clone https://github.com/<username>/openitg.git`
 5. Edit files...
-6. git add <filename> for every file you add or edit
-7. git commit # now your change is committed locally
-8. git push # now your change is pushed to your github
-9. From github.org/<username>/openitg, click "pull request".  Base branch is the
+6. `git add <filename>` for every file you add or edit
+7. `git commit` # now your change is committed locally
+8. `git push` # now your change is pushed to your github
+9. From https://github.com/<username>/openitg, click "pull request".  Base branch is the
 branch you want to put your changes on, and head branch is the branch you made
 your changes to already.
 10. Write a short description of your change.  Be sure to include the goal, any

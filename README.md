@@ -1,30 +1,35 @@
+# OpenITG
 
-OpenITG - an open-source rhythm dancing game which is a fork of StepMania 3.95
+An open-source rhythm dancing game which is a fork of StepMania 3.95
 with the goal of adding arcade-like ITG-style behavior and serving as a drop-in
 replacement for the ITG binary on arcade cabinents.
 
-Project homepage: https://github.com/openitg/openitg/wiki
-Project bug tracker: https://github.com/openitg/openitg/issues
-Project IRC channel: #openitg on irc.badnik.com
-Project source code: https://github.com/openitg/openitg
+* Project homepage: https://github.com/openitg/openitg/wiki
+* Project bug tracker: https://github.com/openitg/openitg/issues
+* Project IRC channel: #openitg on irc.badnik.com
+* Project source code: https://github.com/openitg/openitg
 
-* TODOs
+## TODOs
 
-Short-term
+### Short-term
+
 1. Getting Started Guide - build and development
 2. self-contained cache-rebuilding solution
 3. OpenGL Driver uses fix function pipeline rather than shader
 
-Long-term
+### Long-term
+
 1. StepMania 4.0 LUA Bindings
 2. StepMania 4.0 Theme metrics
 
 
-* How to check-out the source
+## How to check-out the source
 
+```sh
 git clone git://github.com/openitg/openitg.git
+```
 
-* How to contribute
+## How to contribute
 
 1. Create an account at github.com
 2. Goto https://github.com/openitg/openitg
@@ -41,7 +46,7 @@ your changes to already.
 bugs fixed, features added, etc, and any credit you wish to have.  Click "send
 pull request".
 
-* How to build for arcade
+## How to build for arcade
 
 1. Choose a location for your chroot:  MY_CHROOT=/home/cmyers/chroot
 2. Install debootstrap and chroot (on debian/ubuntu, apt-get install chroot debootstrap)
@@ -54,15 +59,17 @@ machines).  This will take approximately 350MB.  A full clone of the repo is
 about 300MB after you build all artifacts, so expect to have at least 650MB of
 free space to work with.
 
-* How to build for home on 32-bit linux:
+## How to build for home on 32-bit linux:
 
 TODO: No chroot necessary, need script to install dependencies on various
 distributions...
 
-* How to build for home on 64-bit linux:
+## How to build for home on 64-bit linux:
+
 TODO: Similar process to arcade, but create 32-bit chroot of modern debian
 
-* How to build for home on windows:
+## How to build for home on windows:
+
 TODO: Need someone to describe how to build in Visual Studio and produce
 releases.
 

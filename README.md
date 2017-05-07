@@ -65,7 +65,8 @@ distributions...
 sudo apt install git build-essential autoconf automake \
 libgl1-mesa-dev libglu1-mesa-dev libpng12-dev \
 libjpeg62-dev liblua5.1-0-dev libvorbis-dev libmad0-dev \
-libusb-dev libxrandr-dev
+libusb-dev libxrandr-dev libavcodec-dev libswscale-dev \
+libavformat-dev libasound2-dev libavutil-dev
 
 # Clone the software
 git clone https://github.com/openitg/openitg.git

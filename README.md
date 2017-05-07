@@ -59,8 +59,24 @@ free space to work with.
 TODO: No chroot necessary, need script to install dependencies on various
 distributions...
 
-* How to build for home on 64-bit linux:
-TODO: Similar process to arcade, but create 32-bit chroot of modern debian
+* How to build for home on 64-bit Ubuntu:
+```shell
+# Install required dependencies
+sudo apt install git build-essential autoconf automake \
+libgl1-mesa-dev libglu1-mesa-dev libpng12-dev \
+libjpeg62-dev liblua5.1-0-dev libvorbis-dev libmad0-dev \
+libusb-dev libxrandr-dev
+
+# Clone the software
+git clone https://github.com/openitg/openitg.git
+
+# Change to the OpenITG directory
+cd openitg
+
+# Build OpenITG
+./build_home.sh
+```
+
 
 * How to build for home on windows:
 TODO: Need someone to describe how to build in Visual Studio and produce

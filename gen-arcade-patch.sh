@@ -116,9 +116,9 @@ TEMP_SIG_FILE="$TMP_DIR/.sig"
 rm -f "$PATCH_OUTPUT_FILE"
 
 CWD="`pwd`"
-cd "$TMP_DIR"
+pushd "$TMP_DIR"
 zip -r "$CWD/$PATCH_OUTPUT_FILE" * &> /dev/null
-cd - &> /dev/null
+popd
 
 echo "Signing and appending signature..."
 

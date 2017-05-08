@@ -41,7 +41,7 @@ cd $TEMP_WORK_DIR/openitg-$OPENITG_VERSION
 
 cd ..
 
-tar -Jcf $TEMP_WORK_DIR/openitg-$OPENITG_VERSION.tar.xz openitg-$OPENITG_VERSION
+tar --exclude='.git*' -Jcf $TEMP_WORK_DIR/openitg-$OPENITG_VERSION.tar.xz openitg-$OPENITG_VERSION
 
 popd
 mv $TEMP_WORK_DIR/openitg-$OPENITG_VERSION.tar.xz $OUTPUT_DIR/

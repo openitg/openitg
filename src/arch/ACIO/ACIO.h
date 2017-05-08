@@ -5,7 +5,6 @@ This is an ACIO helper class, just some static functions a few pieces of these d
 #ifndef ACIO_H
 #define ACIO_H
 
-#include "global.h"
 #include "RageLog.h"
 #include <string.h>
 #include <stdint.h>

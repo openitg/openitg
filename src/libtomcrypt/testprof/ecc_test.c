@@ -1,6 +1,6 @@
 #include <tomcrypt_test.h>
 
-#ifdef LTC_MECC
+#ifdef MECC
 
 static int sizes[] = {
 #ifdef ECC112

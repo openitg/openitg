@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 
 /** 
@@ -15,7 +15,7 @@
 */
 #include "tomcrypt.h"
 
-#ifdef LTC_EAX_MODE
+#ifdef EAX_MODE
 
 /** 
    Initialized an EAX state
@@ -66,7 +66,7 @@ int eax_init(eax_state *eax, int cipher,
       return CRYPT_MEM;
    }
 
-   /* N = LTC_OMAC_0K(nonce) */
+   /* N = OMAC_0K(nonce) */
    zeromem(buf, MAXBLOCKSIZE);
    if ((err = omac_init(omac, cipher, key, keylen)) != CRYPT_OK) {
       goto LBL_ERR; 
@@ -86,7 +86,7 @@ int eax_init(eax_state *eax, int cipher,
       goto LBL_ERR; 
    }
 
-   /* H = LTC_OMAC_1K(header) */
+   /* H = OMAC_1K(header) */
    zeromem(buf, MAXBLOCKSIZE);
    buf[blklen - 1] = 1;
 
@@ -112,7 +112,7 @@ int eax_init(eax_state *eax, int cipher,
       goto LBL_ERR; 
    }
 
-   /* setup the LTC_OMAC for the ciphertext */
+   /* setup the OMAC for the ciphertext */
    if ((err = omac_init(&eax->ctomac, cipher, key, keylen)) != CRYPT_OK) { 
       goto LBL_ERR; 
    }

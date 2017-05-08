@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
@@ -16,7 +16,7 @@
  Based on s128fast.c reference code supplied by Greg Rose of QUALCOMM.
 */
 
-#ifdef LTC_SOBER128
+#ifdef SOBER128
 
 #include "sober128tab.c"
 
@@ -481,7 +481,7 @@ int sober128_test(void)
        sober128_done(&prng);
        if (XMEMCMP(dst, tests[x].out, tests[x].len)) {
 #if 0
-          printf("\n\nLTC_SOBER128 failed, I got:\n"); 
+          printf("\n\nSOBER128 failed, I got:\n"); 
           for (y = 0; y < tests[x].len; y++) printf("%02x ", dst[y]);
           printf("\n");
 #endif

@@ -1,0 +1,14 @@
+prefix=../ffmpeg-build
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: libswscale
+Description: FFmpeg image rescaling library
+Version: 4.0.100
+Requires: 
+Requires.private: libavutil >= 55.17.103
+Conflicts:
+Libs: -L${libdir}  -lswscale 
+Libs.private: 
+Cflags: -I${includedir}

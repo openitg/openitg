@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 /* The precomputed tables for AES */
 /*
@@ -23,13 +23,10 @@ Td3[x] = Si[x].[09, 0d, 0b, 0e];
 Td4[x] = Si[x].[01, 01, 01, 01];
 */
 
-#ifdef LTC_RIJNDAEL
-#include "tomcrypt.h"
-
 /**
   @file aes_tab.c
   AES tables
-*/
+*/  
 static const ulong32 TE0[256] = {
     0xc66363a5UL, 0xf87c7c84UL, 0xee777799UL, 0xf67b7b8dUL,
     0xfff2f20dUL, 0xd66b6bbdUL, 0xde6f6fb1UL, 0x91c5c554UL,
@@ -1025,8 +1022,6 @@ static const ulong32 rcon[] = {
     0x10000000UL, 0x20000000UL, 0x40000000UL, 0x80000000UL,
     0x1B000000UL, 0x36000000UL, /* for 128-bit blocks, Rijndael never uses more than 10 rcon values */
 };
-
-#endif /* LTC_RIJNDAEL */
 
 /* $Source$ */
 /* $Revision$ */

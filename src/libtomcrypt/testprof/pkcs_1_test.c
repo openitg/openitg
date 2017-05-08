@@ -1,6 +1,6 @@
 #include <tomcrypt_test.h>
 
-#ifdef LTC_PKCS_1
+#ifdef PKCS_1
 
 int pkcs_1_test(void)
 {
@@ -33,7 +33,7 @@ int pkcs_1_test(void)
       /* pick a random saltlen 0..16 */
       saltlen   = abs(rand()) % 17;
 
-      /* LTC_PKCS #1 v2.0 supports modlens not multiple of 8 */
+      /* PKCS #1 v2.0 supports modlens not multiple of 8 */
       modlen = 800 + (abs(rand()) % 224);
 
       /* encode it */

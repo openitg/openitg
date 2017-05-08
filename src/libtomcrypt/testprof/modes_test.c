@@ -106,10 +106,6 @@ int modes_test(void)
 #ifdef LTC_CTR_MODE   
    DO(ctr_test());
 #endif
-
-#ifdef LTC_XTS_MODE
-   DO(xts_test());
-#endif
          
    return 0;
 }

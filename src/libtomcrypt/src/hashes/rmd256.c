@@ -6,22 +6,22 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
 /**
    @param rmd256.c
-   RLTC_MD256 Hash function
+   RMD256 Hash function
 */
 
-#ifdef LTC_RIPEMD256
+#ifdef RIPEMD256
 
 const struct ltc_hash_descriptor rmd256_desc =
 {
     "rmd256",
     8,
-    32,
+    16,
     64,
 
     /* OID */

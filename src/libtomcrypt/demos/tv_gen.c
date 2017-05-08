@@ -4,93 +4,93 @@ void reg_algs(void)
 {
   int err;
 
-#ifdef LTC_RIJNDAEL
+#ifdef RIJNDAEL
   register_cipher (&aes_desc);
 #endif
-#ifdef LTC_BLOWFISH
+#ifdef BLOWFISH
   register_cipher (&blowfish_desc);
 #endif
-#ifdef LTC_XTEA
+#ifdef XTEA
   register_cipher (&xtea_desc);
 #endif
-#ifdef LTC_RC5
+#ifdef RC5
   register_cipher (&rc5_desc);
 #endif
-#ifdef LTC_RC6
+#ifdef RC6
   register_cipher (&rc6_desc);
 #endif
-#ifdef LTC_SAFERP
+#ifdef SAFERP
   register_cipher (&saferp_desc);
 #endif
-#ifdef LTC_TWOFISH
+#ifdef TWOFISH
   register_cipher (&twofish_desc);
 #endif
-#ifdef LTC_SAFER
+#ifdef SAFER
   register_cipher (&safer_k64_desc);
   register_cipher (&safer_sk64_desc);
   register_cipher (&safer_k128_desc);
   register_cipher (&safer_sk128_desc);
 #endif
-#ifdef LTC_RC2
+#ifdef RC2
   register_cipher (&rc2_desc);
 #endif
-#ifdef LTC_DES
+#ifdef DES
   register_cipher (&des_desc);
   register_cipher (&des3_desc);
 #endif
-#ifdef LTC_CAST5
+#ifdef CAST5
   register_cipher (&cast5_desc);
 #endif
-#ifdef LTC_NOEKEON
+#ifdef NOEKEON
   register_cipher (&noekeon_desc);
 #endif
-#ifdef LTC_SKIPJACK
+#ifdef SKIPJACK
   register_cipher (&skipjack_desc);
 #endif
-#ifdef LTC_ANUBIS
+#ifdef ANUBIS
   register_cipher (&anubis_desc);
 #endif
-#ifdef LTC_KHAZAD
+#ifdef KHAZAD
   register_cipher (&khazad_desc);
 #endif
 
-#ifdef LTC_TIGER
+#ifdef TIGER
   register_hash (&tiger_desc);
 #endif
-#ifdef LTC_MD2
+#ifdef MD2
   register_hash (&md2_desc);
 #endif
-#ifdef LTC_MD4
+#ifdef MD4
   register_hash (&md4_desc);
 #endif
-#ifdef LTC_MD5
+#ifdef MD5
   register_hash (&md5_desc);
 #endif
-#ifdef LTC_SHA1
+#ifdef SHA1
   register_hash (&sha1_desc);
 #endif
-#ifdef LTC_SHA224
+#ifdef SHA224
   register_hash (&sha224_desc);
 #endif
-#ifdef LTC_SHA256
+#ifdef SHA256
   register_hash (&sha256_desc);
 #endif
-#ifdef LTC_SHA384
+#ifdef SHA384
   register_hash (&sha384_desc);
 #endif
-#ifdef LTC_SHA512
+#ifdef SHA512
   register_hash (&sha512_desc);
 #endif
-#ifdef LTC_RIPEMD128
+#ifdef RIPEMD128
   register_hash (&rmd128_desc);
 #endif
-#ifdef LTC_RIPEMD160
+#ifdef RIPEMD160
   register_hash (&rmd160_desc);
 #endif
-#ifdef LTC_WHIRLPOOL
+#ifdef WHIRLPOOL
   register_hash (&whirlpool_desc);
 #endif
-#ifdef LTC_CHC_HASH
+#ifdef CHC_HASH
   register_hash(&chc_desc);
   if ((err = chc_register(register_cipher(&aes_desc))) != CRYPT_OK) {
      printf("chc_register error: %s\n", error_to_string(err));
@@ -238,12 +238,12 @@ void hmac_gen(void)
    out = fopen("hmac_tv.txt", "w");
 
    fprintf(out, 
-"LTC_HMAC Tests.  In these tests messages of N bytes long (00,01,02,...,NN-1) are LTC_HMACed.  The initial key is\n"
-"of the same format (the same length as the HASH output size).  The LTC_HMAC key in step N+1 is the LTC_HMAC output of\n"
+"HMAC Tests.  In these tests messages of N bytes long (00,01,02,...,NN-1) are HMACed.  The initial key is\n"
+"of the same format (the same length as the HASH output size).  The HMAC key in step N+1 is the HMAC output of\n"
 "step N.\n\n");
 
    for (x = 0; hash_descriptor[x].name != NULL; x++) {
-      fprintf(out, "LTC_HMAC-%s\n", hash_descriptor[x].name);
+      fprintf(out, "HMAC-%s\n", hash_descriptor[x].name);
       
       /* initial key */
       for (y = 0; y < (int)hash_descriptor[x].hashsize; y++) {
@@ -290,8 +290,8 @@ void omac_gen(void)
    out = fopen("omac_tv.txt", "w");
 
    fprintf(out, 
-"LTC_OMAC Tests.  In these tests messages of N bytes long (00,01,02,...,NN-1) are LTC_OMAC'ed.  The initial key is\n"
-"of the same format (length specified per cipher).  The LTC_OMAC key in step N+1 is the LTC_OMAC output of\n"
+"OMAC Tests.  In these tests messages of N bytes long (00,01,02,...,NN-1) are OMAC'ed.  The initial key is\n"
+"of the same format (length specified per cipher).  The OMAC key in step N+1 is the OMAC output of\n"
 "step N (repeated as required to fill the array).\n\n");
 
    for (x = 0; cipher_descriptor[x].name != NULL; x++) {
@@ -303,7 +303,7 @@ void omac_gen(void)
       if (cipher_descriptor[x].keysize(&kl) != CRYPT_OK) {
          kl = cipher_descriptor[x].max_key_length;
       }
-      fprintf(out, "LTC_OMAC-%s (%d byte key)\n", cipher_descriptor[x].name, kl);
+      fprintf(out, "OMAC-%s (%d byte key)\n", cipher_descriptor[x].name, kl);
       
       /* initial key/block */
       for (y = 0; y < kl; y++) {
@@ -345,8 +345,8 @@ void pmac_gen(void)
    out = fopen("pmac_tv.txt", "w");
 
    fprintf(out, 
-"PMAC Tests.  In these tests messages of N bytes long (00,01,02,...,NN-1) are LTC_OMAC'ed.  The initial key is\n"
-"of the same format (length specified per cipher).  The LTC_OMAC key in step N+1 is the LTC_OMAC output of\n"
+"PMAC Tests.  In these tests messages of N bytes long (00,01,02,...,NN-1) are OMAC'ed.  The initial key is\n"
+"of the same format (length specified per cipher).  The OMAC key in step N+1 is the OMAC output of\n"
 "step N (repeated as required to fill the array).\n\n");
 
    for (x = 0; cipher_descriptor[x].name != NULL; x++) {
@@ -767,14 +767,14 @@ int main(void)
    reg_algs();
    printf("Generating hash   vectors..."); fflush(stdout); hash_gen();   printf("done\n");
    printf("Generating cipher vectors..."); fflush(stdout); cipher_gen(); printf("done\n");
-   printf("Generating LTC_HMAC   vectors..."); fflush(stdout); hmac_gen();   printf("done\n");
-   printf("Generating LTC_OMAC   vectors..."); fflush(stdout); omac_gen();   printf("done\n");
+   printf("Generating HMAC   vectors..."); fflush(stdout); hmac_gen();   printf("done\n");
+   printf("Generating OMAC   vectors..."); fflush(stdout); omac_gen();   printf("done\n");
    printf("Generating PMAC   vectors..."); fflush(stdout); pmac_gen();   printf("done\n");
    printf("Generating EAX    vectors..."); fflush(stdout); eax_gen();    printf("done\n");
    printf("Generating OCB    vectors..."); fflush(stdout); ocb_gen();    printf("done\n");
    printf("Generating CCM    vectors..."); fflush(stdout); ccm_gen();    printf("done\n");
    printf("Generating GCM    vectors..."); fflush(stdout); gcm_gen();    printf("done\n");
-   printf("Generating LTC_BASE64 vectors..."); fflush(stdout); base64_gen(); printf("done\n");
+   printf("Generating BASE64 vectors..."); fflush(stdout); base64_gen(); printf("done\n");
    printf("Generating MATH   vectors..."); fflush(stdout); math_gen();   printf("done\n");
    printf("Generating ECC    vectors..."); fflush(stdout); ecc_gen();    printf("done\n");
    printf("Generating LRW    vectors..."); fflush(stdout); lrw_gen();    printf("done\n");

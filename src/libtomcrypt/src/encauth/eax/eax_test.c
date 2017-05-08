@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 
 /** 
@@ -15,7 +15,7 @@
 */
 #include "tomcrypt.h"
 
-#ifdef LTC_EAX_MODE
+#ifdef EAX_MODE
 
 /**
    Test the EAX implementation
@@ -275,7 +275,7 @@ int eax_test(void)
 #endif /* LTC_TEST */
 }
 
-#endif /* LTC_EAX_MODE */
+#endif /* EAX_MODE */
 
 /* $Source$ */
 /* $Revision$ */

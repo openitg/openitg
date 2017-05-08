@@ -1,0 +1,52 @@
+﻿Build started 12/19/2016 1:34:00 PM.
+     1>Project "D:\oitg\openitg\src\lua-5.0\src\LibLua.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Touching "LibLuaSSE2\LibLua.unsuccessfulbuild".
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /nologo /W1 /WX- /O2 /Oy- /Gm- /EHsc /MD /GS /arch:SSE2 /fp:precise /Zc:wchar_t /Zc:forScope /Fo"LibLuaSSE2\\" /Fd"LibLuaSSE2\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt lapi.c lcode.c ldebug.c ldo.c ldump.c lfunc.c lgc.c llex.c lmem.c lobject.c lopcodes.c lparser.c lstate.c lstring.c ltable.c ltests.c ltm.c lundump.c lvm.c lzio.c
+         lapi.c
+     1>lapi.c(13): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lcode.c
+     1>lcode.c(12): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         ldebug.c
+     1>ldebug.c(13): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         ldo.c
+     1>ldo.c(14): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         ldump.c
+     1>ldump.c(11): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lfunc.c
+     1>lfunc.c(12): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lgc.c
+     1>lgc.c(11): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         llex.c
+     1>llex.c(13): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lmem.c
+     1>lmem.c(12): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lobject.c
+     1>lobject.c(14): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lopcodes.c
+     1>lopcodes.c(11): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lparser.c
+     1>lparser.c(12): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lstate.c
+     1>lstate.c(12): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lstring.c
+     1>lstring.c(12): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         ltable.c
+     1>ltable.c(28): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         ltests.c
+     1>ltests.c(16): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         ltm.c
+     1>ltm.c(12): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lundump.c
+     1>lundump.c(9): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lvm.c
+     1>lvm.c(17): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         lzio.c
+     1>lzio.c(12): fatal error C1083: Cannot open include file: 'lua.h': No such file or directory
+         Generating Code...
+     1>Done Building Project "D:\oitg\openitg\src\lua-5.0\src\LibLua.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.43

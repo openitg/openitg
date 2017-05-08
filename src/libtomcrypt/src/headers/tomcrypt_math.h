@@ -7,11 +7,11 @@
 #define LTC_MP_NO    0
 #define LTC_MP_YES   1
 
-#ifndef LTC_MECC
+#ifndef MECC
    typedef void ecc_point;
 #endif
 
-#ifndef LTC_MRSA
+#ifndef MRSA
    typedef void rsa_key;
 #endif
 
@@ -418,9 +418,9 @@ extern ltc_math_descriptor ltc_mp;
 int ltc_init_multi(void **a, ...);
 void ltc_deinit_multi(void *a, ...);
 
-#ifdef LTM_DESC
+
 extern const ltc_math_descriptor ltm_desc;
-#endif
+
 
 #ifdef TFM_DESC
 extern const ltc_math_descriptor tfm_desc;
@@ -494,6 +494,7 @@ extern const ltc_math_descriptor gmp_desc;
 #define mp_tohex(a, b)               mp_toradix(a, b, 16)
 
 #endif
+
 
 /* $Source$ */
 /* $Revision$ */

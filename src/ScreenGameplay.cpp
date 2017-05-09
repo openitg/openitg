@@ -855,7 +855,8 @@ void ScreenGameplay::LoadNextSong()
 	int iPlaySongIndex = GAMESTATE->GetCourseSongIndex();
 	iPlaySongIndex %= m_apSongsQueue.size();
 	GAMESTATE->m_pCurSong.Set( m_apSongsQueue[iPlaySongIndex] );
-	GAMESTATE->SetSongInProgress( GAMESTATE->m_pCurSong->GetSongDir() );
+	GAMESTATE->SetSongInProgress( GAMESTATE->m_pCurSong->GetSongDir() ); //song simfile dir
+	GAMESTATE->HTTPBroadcastSongInProgress(GAMESTATE->m_pCurSong->GetTranslitFullTitle().c_str()); //song title
 	STATSMAN->m_CurStageStats.vpPlayedSongs.push_back( GAMESTATE->m_pCurSong );
 
 	// No need to do this here.  We do it in SongFinished().

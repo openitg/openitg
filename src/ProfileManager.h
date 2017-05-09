@@ -7,6 +7,10 @@
 #include "GameConstantsAndTypes.h"
 #include "Profile.h"
 
+#if !defined(WITHOUT_NETWORKING)
+#include "HTTPHelper.h"
+#endif
+
 class Song;
 class Style;
 struct lua_State;
@@ -117,6 +121,12 @@ private:
 	Profile	m_Profile[NUM_PLAYERS];	
 
 	Profile m_MachineProfile;
+	
+	CString			m_sScoreBroadcastURL;
+	//network private vars
+	#if !defined(WITHOUT_NETWORKING)
+	HTTPHelper* m_ScoreBroadcastHTTP;
+	#endif
 
 };
 

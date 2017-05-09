@@ -16,6 +16,7 @@
 
 
 ProfileManager*	PROFILEMAN = NULL;	// global and accessable from anywhere in our program
+static Preference<CString> pScoreBroadcastURL("ScoreBroadcastURL", "");
 
 #define NEW_MEM_CARD_NAME		""
 #define USER_PROFILES_DIR		"Data/LocalProfiles/"
@@ -30,10 +31,23 @@ static Preference<CString> g_sMemoryCardProfileImportSubdirs( "MemoryCardProfile
 ProfileManager::ProfileManager()
 {
 	LOG->Trace( "ProfileManager::ProfileManager()" );
+	
+	//allocate networking variables
+	#if !defined(WITHOUT_NETWORKING)
+		m_ScoreBroadcastHTTP = new HTTPHelper();
+		//DUMB but if I don't do it this way, it crashes. Gotta have a private member instead of a preference	
+		m_sScoreBroadcastURL.assign(pScoreBroadcastURL.Get().c_str());
+	#endif
 }
 
 ProfileManager::~ProfileManager()
 {
+		//destroy network variables
+	#if !defined(WITHOUT_NETWORKING)
+
+		m_ScoreBroadcastHTTP->GetThreadedResult(); //waits for last call to finish or timeout before destroying object
+		SAFE_DELETE( m_ScoreBroadcastHTTP );
+	#endif
 }
 
 void ProfileManager::Init()
@@ -564,6 +578,70 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 	if( PROFILEMAN->IsPersistentProfile(pn) )
 		PROFILEMAN->GetProfile(pn)->AddStepsRecentScore( pSong, pSteps, hs );
 	PROFILEMAN->GetMachineProfile()->AddStepsRecentScore( pSong, pSteps, hs );
+	
+	//broadcast score to db if it's not an edit from the card or a custom song -- could put something inappropriate in there
+	//if we have networking
+	#if !defined(WITHOUT_NETWORKING)
+	if( !pSteps->IsAPlayerEdit() && !pSong->IsCustomSong() )
+	{
+		char temp[50];
+		
+		CString sHSName = HTTPHelper::URLEncode(hs.sName);
+		CString sTitle = HTTPHelper::URLEncode(pSong->GetTranslitFullTitle(),true);
+		CString sDir (HTTPHelper::URLEncode(pSong->GetSongDir()));
+		
+		sprintf(temp, "%d", pSteps->GetDifficulty());
+		CString sDifficulty=HTTPHelper::URLEncode(temp);
+		//LOG->Info("ProfileManager::AddStepsScore Check diff %s",sDifficulty.c_str());
+		
+		StepsType st = pSteps->m_StepsType;
+		CString sStepType="0";
+		switch (st)
+		{
+			case STEPS_TYPE_DANCE_DOUBLE:
+			case STEPS_TYPE_PUMP_HALFDOUBLE:
+			case STEPS_TYPE_PUMP_DOUBLE:
+			case STEPS_TYPE_EZ2_DOUBLE:
+			case STEPS_TYPE_BM_DOUBLE5:
+			case STEPS_TYPE_BM_DOUBLE7:
+			case STEPS_TYPE_MANIAX_DOUBLE:
+			case STEPS_TYPE_TECHNO_DOUBLE4:
+			case STEPS_TYPE_TECHNO_DOUBLE5:
+				sStepType="1";
+				break;
+			default:
+				break;
+		}
+		sStepType= HTTPHelper::URLEncode(sStepType);
+		
+		sprintf(temp, "%d", hs.grade);
+		CString sGrade=HTTPHelper::URLEncode(temp);
+
+		sprintf(temp, "%f", hs.fPercentDP);
+		CString sPercent=HTTPHelper::URLEncode(temp);
+		
+		sprintf(temp, "%d", hs.iScore);
+		CString sScore= HTTPHelper::URLEncode(temp);
+
+		
+
+		CString sDataToSend="key="+sDir+"&title="+sTitle+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
+//		LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());
+		
+		//and we have a broadcast URL...
+		if (m_sScoreBroadcastURL.length()>3)
+		{
+			m_ScoreBroadcastHTTP->Threaded_SubmitPostRequest(m_sScoreBroadcastURL, sDataToSend);
+			CString res = m_ScoreBroadcastHTTP->GetThreadedResult();
+		}
+		else
+		{
+			//LOG->Info("ProfileManager::AddStepsScore too short!!");
+		}
+		
+		
+	}
+	#endif
 }
 
 void ProfileManager::IncrementStepsPlayCount( const Song* pSong, const Steps* pSteps, PlayerNumber pn )

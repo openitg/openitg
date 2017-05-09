@@ -10,6 +10,11 @@
 #include "Difficulty.h"
 #include "MessageManager.h"
 #include "SongOptions.h"
+#include "Preference.h"
+
+#if !defined(WITHOUT_NETWORKING)
+#include "HTTPHelper.h"
+#endif
 
 #include <map>
 #include <deque>
@@ -35,16 +40,18 @@ public:
 	~GameState();
 	void Reset();
 	void ApplyCmdline(); // called by Reset
-	void ApplyGameCommand( const CString &sCommand, PlayerNumber pn=PLAYER_INVALID );
+	void ApplyGameCommand(const CString &sCommand, PlayerNumber pn = PLAYER_INVALID);
 	void BeginGame();	// called when first player joins
-	void JoinPlayer( PlayerNumber pn );
+	void JoinPlayer(PlayerNumber pn);
 	void PlayersFinalized();	// called after a style is chosen, which means the number of players is finalized
 	void EndGame();	// called on ScreenGameOver, ScreenMusicScroll, ScreenCredits
-	void SaveCurrentSettingsToProfile( PlayerNumber pn ); // called at the beginning of each stage
+	void SaveCurrentSettingsToProfile(PlayerNumber pn); // called at the beginning of each stage
 
-	void SetSongInProgress( const CString &sWriteOut );
+	void SetSongInProgress(const CString &sWriteOut);
+	void HTTPBroadcastSongInProgress(const CString &sWriteOut);
 
-	void Update( float fDelta );
+	void Update(float fDelta);
+
 
 	//
 	// Delayed command stuff
@@ -60,16 +67,16 @@ public:
 	PlayMode			m_PlayMode;			// many screens display different info depending on this value
 	int					m_iCoins;			// not "credits"
 	PlayerNumber		m_MasterPlayerNumber;	// used in Styles where one player controls both sides
-	BroadcastOnChange1D<CourseDifficulty,NUM_PLAYERS>	m_PreferredCourseDifficulty;// used in nonstop
+	BroadcastOnChange1D<CourseDifficulty, NUM_PLAYERS>	m_PreferredCourseDifficulty;// used in nonstop
 	bool DifficultiesLocked();
-	bool ChangePreferredDifficulty( PlayerNumber pn, Difficulty dc );
-	bool ChangePreferredDifficulty( PlayerNumber pn, int dir );
-	bool ChangePreferredCourseDifficulty( PlayerNumber pn, CourseDifficulty cd );
-	bool ChangePreferredCourseDifficulty( PlayerNumber pn, int dir );
-	bool IsCourseDifficultyShown( CourseDifficulty cd );
+	bool ChangePreferredDifficulty(PlayerNumber pn, Difficulty dc);
+	bool ChangePreferredDifficulty(PlayerNumber pn, int dir);
+	bool ChangePreferredCourseDifficulty(PlayerNumber pn, CourseDifficulty cd);
+	bool ChangePreferredCourseDifficulty(PlayerNumber pn, int dir);
+	bool IsCourseDifficultyShown(CourseDifficulty cd);
 	Difficulty GetEasiestStepsDifficulty() const;
 	RageTimer			m_timeGameStarted;	// from the moment the first player pressed Start
-	map<CString,CString> m_mapEnv;
+	map<CString, CString> m_mapEnv;
 	LuaTable			*m_Environment;
 
 	/* This is set to a random number per-game/round; it can be used for a random seed. */
@@ -83,19 +90,19 @@ public:
 	const Game*	GetCurrentGame();
 	const Style*	GetCurrentStyle() const;
 
-	void GetPlayerInfo( PlayerNumber pn, bool& bIsEnabledOut, bool& bIsHumanOut );
-	bool IsPlayerEnabled( PlayerNumber pn ) const;
+	void GetPlayerInfo(PlayerNumber pn, bool& bIsEnabledOut, bool& bIsHumanOut);
+	bool IsPlayerEnabled(PlayerNumber pn) const;
 	int	GetNumPlayersEnabled() const;
 	bool PlayerUsingBothSides() const;
 
-	bool IsHumanPlayer( PlayerNumber pn ) const;
+	bool IsHumanPlayer(PlayerNumber pn) const;
 	int GetNumHumanPlayers() const;
 	PlayerNumber GetFirstHumanPlayer() const;
 	PlayerNumber GetFirstDisabledPlayer() const;
-	bool IsCpuPlayer( PlayerNumber pn ) const;
+	bool IsCpuPlayer(PlayerNumber pn) const;
 	bool AnyPlayersAreCpu() const;
 
-	void GetCharacters( vector<Character*> &apCharactersOut );
+	void GetCharacters(vector<Character*> &apCharactersOut);
 	Character* GetRandomCharacter();
 	Character* GetDefaultCharacter();
 
@@ -105,10 +112,11 @@ public:
 
 	bool ShowMarvelous() const;
 
+	CString			m_sSongBroadcastURL;
 	CString			m_sLoadingMessage;	// used in loading screen
 	CString			m_sPreferredSongGroup;	// GROUP_ALL_MUSIC denotes no preferred group
 	bool			m_bChangedFailTypeOnScreenSongOptions;	// true if FailType was changed in the song options screen
-	BroadcastOnChange1D<Difficulty,NUM_PLAYERS>	m_PreferredDifficulty;
+	BroadcastOnChange1D<Difficulty, NUM_PLAYERS>	m_PreferredDifficulty;
 	SortOrder		m_SortOrder;			// set by MusicWheel
 	SortOrder		m_PreferredSortOrder;			// used by MusicWheel
 	bool			m_bEditing;			// NoteField does special stuff when this is true
@@ -116,6 +124,7 @@ public:
 	bool			m_bJukeboxUsesModifiers;
 	int				m_iNumStagesOfThisSong;
 	int				m_iCurrentStageIndex;
+
 
 	int				GetStageIndex() const;
 	void			BeginStage();
@@ -127,9 +136,9 @@ public:
 	bool			IsExtraStage() const;
 	bool			IsExtraStage2() const;
 	Stage			GetCurrentStage() const;
-	void			GetPossibleStages( vector<Stage> &out ) const;
+	void			GetPossibleStages(vector<Stage> &out) const;
 	int				GetCourseSongIndex() const;
-	CString			GetPlayerDisplayName( PlayerNumber pn ) const;
+	CString			GetPlayerDisplayName(PlayerNumber pn) const;
 
 
 	//
@@ -140,13 +149,13 @@ public:
 	BroadcastOnChangePtr<Song>	m_pCurSong;
 	// The last Song that the user manually changed to.
 	Song*		m_pPreferredSong;
-	BroadcastOnChangePtr1D<Steps,NUM_PLAYERS> m_pCurSteps;
-	
+	BroadcastOnChangePtr1D<Steps, NUM_PLAYERS> m_pCurSteps;
+
 	// NULL on ScreenSelectMusic if the currently selected wheel item isn't a Course.
 	BroadcastOnChangePtr<Course>	m_pCurCourse;
 	// The last Course that the user manually changed to.
 	Course*		m_pPreferredCourse;
-	BroadcastOnChangePtr1D<Trail,NUM_PLAYERS>	m_pCurTrail;
+	BroadcastOnChangePtr1D<Trail, NUM_PLAYERS>	m_pCurTrail;
 
 
 	//
@@ -166,25 +175,25 @@ public:
 
 	int			m_BeatToNoteSkinRev; /* hack: incremented whenever m_BeatToNoteSkin changes */
 	void ResetNoteSkins();
-	void ResetNoteSkinsForPlayer( PlayerNumber pn );
-	void GetAllUsedNoteSkins( vector<CString> &out ) const;
+	void ResetNoteSkinsForPlayer(PlayerNumber pn);
+	void GetAllUsedNoteSkins(vector<CString> &out) const;
 
 	static const float MUSIC_SECONDS_INVALID;
 
 	void ResetMusicStatistics();	// Call this when it's time to play a new song.  Clears the values above.
-	void UpdateSongPosition( float fPositionSeconds, const TimingData &timing, const RageTimer &timestamp = RageZeroTimer );
-	float GetSongPercent( float beat ) const;
+	void UpdateSongPosition(float fPositionSeconds, const TimingData &timing, const RageTimer &timestamp = RageZeroTimer);
+	float GetSongPercent(float beat) const;
 
-	bool IsPlayerHot( PlayerNumber pn ) const;
-	bool IsPlayerInDanger( PlayerNumber pn ) const;
-	bool IsPlayerDead( PlayerNumber pn ) const;
+	bool IsPlayerHot(PlayerNumber pn) const;
+	bool IsPlayerInDanger(PlayerNumber pn) const;
+	bool IsPlayerDead(PlayerNumber pn) const;
 	bool AllAreInDangerOrWorse() const;
 	bool AllAreDead() const;
 	bool AllHumanHaveComboOf30OrMoreMisses() const;
 	bool OneIsHot() const;
 
 	// used in PLAY_MODE_BATTLE and PLAY_MODE_RAVE
-	void SetNoteSkinForBeatRange( PlayerState* pPlayerState, const CString& sNoteSkin, float StartBeat, float EndBeat );
+	void SetNoteSkinForBeatRange(PlayerState* pPlayerState, const CString& sNoteSkin, float StartBeat, float EndBeat);
 
 	// used in PLAY_MODE_BATTLE
 	float	m_fOpponentHealthPercent;
@@ -194,17 +203,17 @@ public:
 
 	// used in workout
 	bool	m_bGoalComplete[NUM_PLAYERS];
-	
-	void GetUndisplayedBeats( const PlayerState* pPlayerState, float TotalSeconds, float &StartBeat, float &EndBeat ) const; // only meaningful when a NoteField is in use
-	void LaunchAttack( PlayerNumber target, const Attack& a );
-	void RebuildPlayerOptionsFromActiveAttacks( PlayerNumber pn );
+
+	void GetUndisplayedBeats(const PlayerState* pPlayerState, float TotalSeconds, float &StartBeat, float &EndBeat) const; // only meaningful when a NoteField is in use
+	void LaunchAttack(PlayerNumber target, const Attack& a);
+	void RebuildPlayerOptionsFromActiveAttacks(PlayerNumber pn);
 	void RemoveAllActiveAttacks();	// called on end of song
-	void RemoveActiveAttacksForPlayer( PlayerNumber pn, AttackLevel al=NUM_ATTACK_LEVELS /*all*/ );
-	void EndActiveAttacksForPlayer( PlayerNumber pn );
+	void RemoveActiveAttacksForPlayer(PlayerNumber pn, AttackLevel al = NUM_ATTACK_LEVELS /*all*/);
+	void EndActiveAttacksForPlayer(PlayerNumber pn);
 	void RemoveAllInventory();
-	int GetSumOfActiveAttackLevels( PlayerNumber pn ) const;
+	int GetSumOfActiveAttackLevels(PlayerNumber pn) const;
 	PlayerNumber GetBestPlayer() const;
-	StageResult GetStageResult( PlayerNumber pn ) const;
+	StageResult GetStageResult(PlayerNumber pn) const;
 
 	void ResetStageStatistics();	// Call this when it's time to play a new stage.
 
@@ -219,26 +228,32 @@ public:
 	SongOptions		m_SongOptions;
 	SongOptions		m_StoredSongOptions;
 
-	void ApplyModifiers( PlayerNumber pn, CString sModifiers );
+	void ApplyModifiers(PlayerNumber pn, CString sModifiers);
 	void StoreSelectedOptions();
 	void RestoreSelectedOptions();
 	void ResetCurrentOptions();
 
-	bool IsDisqualified( PlayerNumber pn );
-	bool PlayerIsUsingModifier( PlayerNumber pn, const CString &sModifier );
+	bool IsDisqualified(PlayerNumber pn);
+	bool PlayerIsUsingModifier(PlayerNumber pn, const CString &sModifier);
 
-	SongOptions::FailType GetPlayerFailType( PlayerNumber pn ) const;
+	SongOptions::FailType GetPlayerFailType(PlayerNumber pn) const;
 
 	// character stuff
 private:
 	vector<Character*> m_pCharacters;
+
+	//network private vars
+#if !defined(WITHOUT_NETWORKING)
+
+	HTTPHelper* m_SongBroadcastHTTP;
+#endif
 
 public:
 	Character* m_pCurCharacters[NUM_PLAYERS];
 
 	void ReloadCharacters();
 
-	
+
 
 
 	bool HasEarnedExtraStage() const;
@@ -262,9 +277,9 @@ public:
 		CString *pStringToFill;
 	};
 
-	void GetRankingFeats( PlayerNumber pn, vector<RankingFeat> &vFeatsOut ) const;
+	void GetRankingFeats(PlayerNumber pn, vector<RankingFeat> &vFeatsOut) const;
 	bool AnyPlayerHasRankingFeats() const;
-	void StoreRankingName( PlayerNumber pn, CString name );	// Called by name entry screens
+	void StoreRankingName(PlayerNumber pn, CString name);	// Called by name entry screens
 	vector<CString*> m_vpsNamesThatWereFilled;	// filled on StoreRankingName, 
 
 
@@ -281,7 +296,7 @@ public:
 	//
 	int m_iNumTimesThroughAttract;	// negative means play regardless of m_iAttractSoundFrequency setting
 	bool IsTimeToPlayAttractSounds() const;
-	void VisitAttractScreen( const CString sScreenName );
+	void VisitAttractScreen(const CString sScreenName);
 
 	//
 	// PlayerState
@@ -306,8 +321,8 @@ public:
 	BroadcastOnChange<StepsType> m_stEditSource;
 
 	// Workout stuff
-	float GetGoalPercentComplete( PlayerNumber pn );
-	bool IsGoalComplete( PlayerNumber pn )	{ return GetGoalPercentComplete( pn ) >= 1; }
+	float GetGoalPercentComplete(PlayerNumber pn);
+	bool IsGoalComplete(PlayerNumber pn)	{ return GetGoalPercentComplete(pn) >= 1; }
 
 	// Sync changes stuff
 	TimingData *m_pTimingDataOriginal;
@@ -318,7 +333,7 @@ public:
 	void RevertSyncChanges();
 
 	// Lua
-	void PushSelf( lua_State *L );
+	void PushSelf(lua_State *L);
 };
 
 
@@ -328,26 +343,26 @@ extern GameState*	GAMESTATE;	// global and accessable from anywhere in our progr
 #endif
 
 /*
- * (c) 2001-2004 Chris Danford, Glenn Maynard, Chris Gomez
- * All rights reserved.
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, and/or sell copies of the Software, and to permit persons to
- * whom the Software is furnished to do so, provided that the above
- * copyright notice(s) and this permission notice appear in all copies of
- * the Software and that both the above copyright notice(s) and this
- * permission notice appear in supporting documentation.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF
- * THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS
- * INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT
- * OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
- * OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
- * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
- * PERFORMANCE OF THIS SOFTWARE.
- */
+* (c) 2001-2004 Chris Danford, Glenn Maynard, Chris Gomez
+* All rights reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the
+* "Software"), to deal in the Software without restriction, including
+* without limitation the rights to use, copy, modify, merge, publish,
+* distribute, and/or sell copies of the Software, and to permit persons to
+* whom the Software is furnished to do so, provided that the above
+* copyright notice(s) and this permission notice appear in all copies of
+* the Software and that both the above copyright notice(s) and this
+* permission notice appear in supporting documentation.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT OF
+* THIRD PARTY RIGHTS. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS
+* INCLUDED IN THIS NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT
+* OR CONSEQUENTIAL DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+* OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+* OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+* PERFORMANCE OF THIS SOFTWARE.
+*/

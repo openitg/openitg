@@ -14,7 +14,7 @@ CString HTTPHelper::SubmitPostRequest(const CString &URL, const CString &PostDat
 
 		if( HTTPHelper::ParseHTTPAddress( URL, Proto, Server, Port, sAddress)  )
 		{
-				sAddress = HTTPHelper::URLEncode( sAddress );
+				//sAddress = HTTPHelper::URLEncode( sAddress );
 
 				if ( sAddress != "/" )
 					sAddress = "/" + sAddress;
@@ -143,7 +143,7 @@ bool HTTPHelper::ParseHTTPAddress( const CString &URL, CString &sProto, CString 
 	return true;
 }
 
-CString HTTPHelper::URLEncode( const CString &URL )
+CString HTTPHelper::URLEncode( const CString &URL, bool force )
 {
 	CString Input = StripOutContainers( URL );
 	CString Output;
@@ -151,7 +151,7 @@ CString HTTPHelper::URLEncode( const CString &URL )
 	for( unsigned k = 0; k < Input.size(); k++ )
 	{
 		char t = Input.at( k );
-		if ( ( t >= '!' ) && ( t <= 'z' ) )
+		if ( (( t >= '0' ) && ( t <= 'z' )) && force==false )
 		{
 			Output+=t;
 		}

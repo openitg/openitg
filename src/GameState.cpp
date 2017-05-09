@@ -336,7 +336,6 @@ void GameState::HTTPBroadcastSongInProgress(const CString &sWriteOut)
 	//and we have a broadcast URL...
 	if (m_sSongBroadcastURL.length()>3)
 	{
-		m_SongBroadcastHTTP = new HTTPHelper();
 		m_SongBroadcastHTTP->Threaded_SubmitPostRequest(m_sSongBroadcastURL, sWriteOut);
 	}
 	else

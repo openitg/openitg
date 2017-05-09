@@ -1952,7 +1952,10 @@ void ScreenGameplay::AbortGiveUp( bool bShowText )
 		return;
 
 	if ( !bShowText )
+	{
 		GAMESTATE->SetSongInProgress("(none)");
+		GAMESTATE->HTTPBroadcastSongInProgress("");
+	}
 
 	m_textDebug.StopTweening();
 	if( bShowText )
@@ -2104,6 +2107,7 @@ void ScreenGameplay::SongFinished()
 	/* Extremely important: if we don't remove attacks before moving on to the next
 	 * screen, they'll still be turned on eventually. */
 	GAMESTATE->SetSongInProgress("(none)");
+	GAMESTATE->HTTPBroadcastSongInProgress("");
 	GAMESTATE->RemoveAllActiveAttacks();
 	FOREACH_EnabledPlayer( p )
 		m_ActiveAttackList[p].Refresh();

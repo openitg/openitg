@@ -58,8 +58,8 @@ public:
 	bool initHDXB4();
 	bool pingHDXB();
 	bool spamBaudCheck();
-	bool writeHDXB(uint8_t* payload, int len, uint8_t opcode=HDXB_SET_LIGHTS);
-	bool readHDXB(int len=0x7e);
+	bool writeHDXB(uint8_t* payload, int len, uint8_t opcode = HDXB_SET_LIGHTS);
+	bool readHDXB(int len = 0x7e);
 	void HDXBAllOnTest();
 	bool nodeCount();
 
@@ -73,8 +73,8 @@ public:
 
 
 private:
-	int GetResponseFromBulk(uint8_t* response, int response_length, bool output_to_log=false, bool force_override=false);
-	bool WriteToBulkWithExpectedReply(uint8_t* message, bool init_packet, bool output_to_log=true);
+	int GetResponseFromBulk(uint8_t* response, int response_length, bool output_to_log = false, bool force_override = false);
+	bool WriteToBulkWithExpectedReply(uint8_t* message, bool init_packet, bool output_to_log = false);
 	uint8_t checkInput(uint8_t x, uint8_t y);
 	void InitHDAndWatchDog();
 

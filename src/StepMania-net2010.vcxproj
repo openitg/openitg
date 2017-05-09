@@ -494,6 +494,7 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)/verstub.obj"</Command>
     <ClCompile Include="arch\Lights\LightsDriver_EXTIO.cpp" />
     <ClCompile Include="arch\Lights\LightsDriver_Satellite.cpp" />
     <ClCompile Include="arch\MovieTexture\FFMpeg_Helper.cpp" />
+    <ClCompile Include="HTTPHelper.cpp" />
     <ClCompile Include="ibutton\crcutil.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='FastDebug|Win32'">NotUsing</PrecompiledHeader>
@@ -1228,6 +1229,7 @@ cl /Zl /nologo /c verstub.cpp /Fo"$(IntDir)/verstub.obj"</Command>
     <ClInclude Include="arch\Lights\LightsDriver_EXTIO.h" />
     <ClInclude Include="arch\Lights\LightsDriver_Satellite.h" />
     <ClInclude Include="arch\MovieTexture\FFMpeg_Helper.h" />
+    <ClInclude Include="HTTPHelper.h" />
     <ClInclude Include="ibutton\ds2480.h" />
     <ClInclude Include="ibutton\owfile.h" />
     <ClInclude Include="ibutton\ownet.h" />

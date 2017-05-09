@@ -1457,6 +1457,7 @@
     <ClCompile Include="arch\ACIO\ACIO.cpp" />
     <ClCompile Include="io\MiniMaid.cpp" />
     <ClCompile Include="arch\InputHandler\InputHandler_MiniMaid.cpp" />
+    <ClCompile Include="HTTPHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Screen.h">
@@ -2784,6 +2785,7 @@
     <ClInclude Include="io\P3IO.h" />
     <ClInclude Include="io\MiniMaid.h" />
     <ClInclude Include="arch\InputHandler\InputHandler_MiniMaid.h" />
+    <ClInclude Include="HTTPHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="archutils\Win32\StepMania.ico">

@@ -125,7 +125,7 @@ void MemoryCardDriverThreaded_Windows::GetUSBStorageDevices( vector<UsbStorageDe
 		FOREACH_PlayerNumber( p )
 		{
 			CString sPointWithoutSlash = "" + MEMCARDMAN->m_sMemoryCardOsMountPoint[p].Get();
-			while (sPointWithoutSlash.c_str()[sPointWithoutSlash.length()]=='\\' || sPointWithoutSlash.c_str()[sPointWithoutSlash.length()]=='/')
+			while (sPointWithoutSlash.length() > 1 && (sPointWithoutSlash.c_str()[sPointWithoutSlash.length()] == '\\' || sPointWithoutSlash.c_str()[sPointWithoutSlash.length()] == '/'))
 			{
 				sPointWithoutSlash = sPointWithoutSlash.Left(sPointWithoutSlash.length()-1);
 			}

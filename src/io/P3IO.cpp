@@ -25,12 +25,12 @@ uint8_t pchunk[3][4];
 //first set is what a chimera uses, second set is a real ddr io (from an hd black cab), the last set is actually a mouse I use for testing!
 
 //has mouse debugger
-const uint16_t P3IO_VENDOR_ID[3] = { 0x0000, 0x1CCF, 0x046D};
-const uint16_t P3IO_PRODUCT_ID[3] = { 0x5731, 0x8008, 0xC077};
+//const uint16_t P3IO_VENDOR_ID[3] = { 0x0000, 0x1CCF, 0x046D};
+//const uint16_t P3IO_PRODUCT_ID[3] = { 0x5731, 0x8008, 0xC077};
 
 
-//const uint16_t P3IO_VENDOR_ID[2] = { 0x0000, 0x1CCF };
-//const uint16_t P3IO_PRODUCT_ID[2] = { 0x5731, 0x8008 };
+const uint16_t P3IO_VENDOR_ID[2] = { 0x0000, 0x1CCF };
+const uint16_t P3IO_PRODUCT_ID[2] = { 0x5731, 0x8008 };
 uint8_t p_light_payload[] = { 0, 0, 0, 0, 0 };
 const unsigned NUM_P3IO_CHECKS_IDS = ARRAYLEN(P3IO_PRODUCT_ID);
 int interrupt_ep = 0x83;

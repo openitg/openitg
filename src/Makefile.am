@@ -423,7 +423,7 @@ ProductInfo.cpp ProductInfo.h
 
 if !WITHOUT_NETWORKING
 # Compile NetworkSyncManager even if networking is disabled; it'll stub itself.
-GlobalSingletons += ezsockets.cpp ezsockets.h
+GlobalSingletons += ezsockets.cpp ezsockets.h HTTPHelper.cpp HTTPHelper.h
 endif
 
 ibutton = \

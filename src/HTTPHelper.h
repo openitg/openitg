@@ -7,7 +7,7 @@
 #include "RageLog.h"
 #include "RageThreads.h"
 #include <sstream>
-#define HTTP_CHUNK_SIZE 256
+#define HTTP_CHUNK_SIZE 1024 //matches EZSockets
 #define SSTR( x ) static_cast< std::ostringstream & >( \
         ( std::ostringstream() << std::dec << x ) ).str()
 

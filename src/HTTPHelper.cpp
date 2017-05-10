@@ -6,6 +6,7 @@ CString HTTPHelper::SubmitPostRequest(const CString &URL, const CString &PostDat
 	CString sBUFFER = "";
 	#if !defined(WITHOUT_NETWORKING)
 		EzSockets wSocket;
+		//w
 		CString Proto;
 		CString Server;
 		int Port=80;
@@ -21,9 +22,9 @@ CString HTTPHelper::SubmitPostRequest(const CString &URL, const CString &PostDat
 
 				wSocket.close();
 				wSocket.create();
-				wSocket.setTimeout(3,0); //three second timeout
-
-				wSocket.blocking = false;
+				wSocket.setTimeout(0,250000); //acceptable timeout
+				wSocket.setBlocking(true);
+				
 				if( !wSocket.connect( Server, (short) Port ) )
 				{
 					LOG->Info("HTTPHelper::SubmitPostRequest failed to connect to %s:%d ", Server,Port);
@@ -43,21 +44,24 @@ CString HTTPHelper::SubmitPostRequest(const CString &URL, const CString &PostDat
 
 				wSocket.SendData( Header.c_str(), Header.length() );
 
+				wSocket.setBlocking(false);
 				int BytesGot=0;
 
 				while(1)
 				{
 					char res[HTTP_CHUNK_SIZE];
+					
+					//WHY IS THIS BLOCKING UNTIL TIMEOUT OCCURS?!
 					int iSize = wSocket.ReadData( res, HTTP_CHUNK_SIZE );
 					if( iSize <= 0 )
 						break;
+					
 
 					sBUFFER.append( res, iSize );
 					BytesGot += iSize;
 					if( iSize < HTTP_CHUNK_SIZE )
 						break;
 				}
-
 				wSocket.close();
 		}
 		else

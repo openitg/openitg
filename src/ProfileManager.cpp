@@ -588,6 +588,7 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 		
 		CString sHSName = HTTPHelper::URLEncode(hs.sName);
 		CString sTitle = HTTPHelper::URLEncode(pSong->GetTranslitFullTitle(),true);
+		CString sArtist = HTTPHelper::URLEncode(pSong->GetDisplayArtist(),true);
 		CString sDir (HTTPHelper::URLEncode(pSong->GetSongDir()));
 		
 		sprintf(temp, "%d", pSteps->GetDifficulty());
@@ -623,16 +624,20 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 		sprintf(temp, "%d", hs.iScore);
 		CString sScore= HTTPHelper::URLEncode(temp);
 
+		CString sPlayerGUID =  HTTPHelper::URLEncode(PROFILEMAN->GetProfile(pn)->m_sGuid);
+		CString sMachineGUID = HTTPHelper::URLEncode(hs.sMachineGuid);
 		
 
-		CString sDataToSend="key="+sDir+"&title="+sTitle+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
-//		LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());
+		CString sDataToSend="machineguid="+sMachineGUID+"&key="+sDir+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
+		LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());
 		
 		//and we have a broadcast URL...
 		if (m_sScoreBroadcastURL.length()>3)
 		{
 			m_ScoreBroadcastHTTP->Threaded_SubmitPostRequest(m_sScoreBroadcastURL, sDataToSend);
+			LOG->Info("ProfileManager::AddStepsScore sent!!");
 			CString res = m_ScoreBroadcastHTTP->GetThreadedResult();
+			LOG->Info("ProfileManager::AddStepsScore res: %s",res.c_str());
 		}
 		else
 		{

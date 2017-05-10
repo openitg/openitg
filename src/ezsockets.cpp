@@ -151,6 +151,7 @@ void EzSockets::setBlocking(bool b)
     if (!(flags & O_NONBLOCK) && b) { return; }
     fcntl(sock, F_SETFL, b ? flags ^ O_NONBLOCK : flags | O_NONBLOCK));
 	#endif
+	blocking=b;
 }
 
 bool EzSockets::accept(EzSockets& socket)

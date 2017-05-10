@@ -21,12 +21,12 @@ CString HTTPHelper::SubmitPostRequest(const CString &URL, const CString &PostDat
 
 				wSocket.close();
 				wSocket.create();
-				wSocket.setTimeout(0,250000); //one second timeout
+				wSocket.setTimeout(3,0); //three second timeout
 
 				wSocket.blocking = false;
 				if( !wSocket.connect( Server, (short) Port ) )
 				{
-					LOG->Debug("HTTPHelper::SubmitPostRequest failed to connect to %s:%d ", Server,Port);
+					LOG->Info("HTTPHelper::SubmitPostRequest failed to connect to %s:%d ", Server,Port);
 					return sBUFFER;
 				}
 				//Produce HTTP POST broadcast
@@ -108,8 +108,10 @@ void HTTPHelper::Threaded_SubmitPostRequest(const CString &myURL, const CString 
 CString HTTPHelper::GetThreadedResult()
 {
 	m_ResultLock->Lock();
-	return _retBuffer;
+	CString ret (_retBuffer);
 	m_ResultLock->Unlock();
+	return ret;
+	
 }
 
 bool HTTPHelper::ParseHTTPAddress( const CString &URL, CString &sProto, CString &sServer, int &iPort, CString &sAddress )
@@ -156,7 +158,7 @@ CString HTTPHelper::URLEncode( const CString &URL, bool force )
 			Output+=t;
 		}
 		else
-			Output += "%" + ssprintf( "%X", t );
+			Output += "%" + ssprintf( "%X", t&0xFF );
 	}
 	return Output;
 }

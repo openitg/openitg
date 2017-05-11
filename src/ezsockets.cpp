@@ -146,10 +146,10 @@ void EzSockets::setBlocking(bool b)
 	if (!b)	iMode=1;
 	ioctlsocket(sock, FIONBIO, &iMode);
 	#else
-	const int flags = fcntl(socket, F_GETFL, 0);
+	const int flags = fcntl(sock, F_GETFL, 0);
     if ((flags & O_NONBLOCK) && !b) { return; }
     if (!(flags & O_NONBLOCK) && b) { return; }
-    fcntl(sock, F_SETFL, b ? flags ^ O_NONBLOCK : flags | O_NONBLOCK));
+    fcntl(sock, F_SETFL, (b ? flags ^ O_NONBLOCK : flags | O_NONBLOCK));
 	#endif
 	blocking=b;
 }

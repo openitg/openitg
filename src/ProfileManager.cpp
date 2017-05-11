@@ -639,10 +639,6 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 			CString res = m_ScoreBroadcastHTTP->GetThreadedResult();
 			LOG->Info("ProfileManager::AddStepsScore res: %s",res.c_str());
 		}
-		else
-		{
-			//LOG->Info("ProfileManager::AddStepsScore too short!!");
-		}
 		
 		
 	}

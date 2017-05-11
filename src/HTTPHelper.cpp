@@ -27,7 +27,7 @@ CString HTTPHelper::SubmitPostRequest(const CString &URL, const CString &PostDat
 				
 				if( !wSocket.connect( Server, (short) Port ) )
 				{
-					LOG->Info("HTTPHelper::SubmitPostRequest failed to connect to %s:%d ", Server,Port);
+					LOG->Warn("HTTPHelper::SubmitPostRequest failed to connect to %s:%d ", Server.c_str(),Port);
 					return sBUFFER;
 				}
 				//Produce HTTP POST broadcast
@@ -66,7 +66,7 @@ CString HTTPHelper::SubmitPostRequest(const CString &URL, const CString &PostDat
 		}
 		else
 		{
-			LOG->Debug("HTTPHelper::SubmitPostRequest could not parse %s ", URL);
+			LOG->Warn("HTTPHelper::SubmitPostRequest could not parse %s ", URL.c_str());
 		}
 	#endif
 

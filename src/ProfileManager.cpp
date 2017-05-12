@@ -9,6 +9,8 @@
 #include "Steps.h"
 #include "MemoryCardManager.h"
 #include "Style.h"
+#include "NetworkSyncManager.h"
+#include "MsdFile.h"
 
 /* GUID generation for arcade */
 #include "DiagnosticsUtil.h"
@@ -624,20 +626,22 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 		sprintf(temp, "%d", hs.iScore);
 		CString sScore= HTTPHelper::URLEncode(temp);
 
+		CString MD5Sum =  HTTPHelper::URLEncode(NSMAN->MD5Hex(MsdFile::ReadFileIntoString(pSong->GetSongFilePath())));
+
 		CString sPlayerGUID =  HTTPHelper::URLEncode(PROFILEMAN->GetProfile(pn)->m_sGuid);
 		CString sMachineGUID = HTTPHelper::URLEncode(hs.sMachineGuid);
 		
 
-		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
+		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&md5="+MD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
 		LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());
 		
 		//and we have a broadcast URL...
 		if (m_sScoreBroadcastURL.length()>3)
 		{
 			m_ScoreBroadcastHTTP->Threaded_SubmitPostRequest(m_sScoreBroadcastURL, sDataToSend);
-			LOG->Info("ProfileManager::AddStepsScore sent!!");
-			CString res = m_ScoreBroadcastHTTP->GetThreadedResult();
-			LOG->Info("ProfileManager::AddStepsScore res: %s",res.c_str());
+			//LOG->Info("ProfileManager::AddStepsScore sent!!");
+			//CString res = m_ScoreBroadcastHTTP->GetThreadedResult();
+			//LOG->Info("ProfileManager::AddStepsScore res: %s",res.c_str());
 		}
 		
 		

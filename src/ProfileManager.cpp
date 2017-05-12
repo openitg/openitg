@@ -545,6 +545,7 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 
 	iPersonalIndexOut = -1;
 	iMachineIndexOut = -1;
+	
 
 	// In event mode, set the score's name immediately to the Profile's last
 	// used name.  If no profile last used name exists, use "EVNT".
@@ -630,9 +631,11 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 
 		CString sPlayerGUID =  HTTPHelper::URLEncode(PROFILEMAN->GetProfile(pn)->m_sGuid);
 		CString sMachineGUID = HTTPHelper::URLEncode(hs.sMachineGuid);
+		CString sEventMode = "0";
+		if (GAMESTATE->IsEventMode()) sEventMode = "1";
 		
 
-		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&md5="+MD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
+		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&md5="+MD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&eventmode="+sEventMode+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
 		LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());
 		
 		//and we have a broadcast URL...

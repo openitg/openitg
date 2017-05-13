@@ -48,7 +48,7 @@ public:
 	void SaveCurrentSettingsToProfile( PlayerNumber pn ); // called at the beginning of each stage
 
 	void SetSongInProgress( const CString &sWriteOut );
-	void HTTPBroadcastSongInProgress( bool bNoSong );
+	void HTTPBroadcastSongInProgress( bool bNoSong=false );
 
 	void Update( float fDelta );
 

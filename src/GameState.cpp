@@ -330,7 +330,7 @@ void GameState::SetSongInProgress( const CString &sWriteOut )
 
 }
 
-void GameState::HTTPBroadcastSongInProgress( )
+void GameState::HTTPBroadcastSongInProgress( bool bNoSong )
 {
 
 	//if we have networking
@@ -338,20 +338,30 @@ void GameState::HTTPBroadcastSongInProgress( )
 	//and we have a broadcast URL...
 	if (m_sSongBroadcastURL.length()>3)
 	{
-		Song* pSong = GAMESTATE->m_pCurSong;
+		CString sTitle = "";
+		CString sArtist ="";
+		CString sDir = "";
+		CString sMD5Sum = "";
 		CString sMachineGUID = HTTPHelper::URLEncode(PROFILEMAN->GetMachineProfile()->m_sGuid);
-		CString sTitle = HTTPHelper::URLEncode(pSong->GetTranslitFullTitle(),true);
-		CString sArtist = HTTPHelper::URLEncode(pSong->GetDisplayArtist(),true);
-		CString sDir (HTTPHelper::URLEncode(pSong->GetSongDir()));
-		CString sMD5Sum = MsdFile::ReadFileIntoString(pSong->GetSongFilePath());
 		CString sEventMode = "0";
 		if (GAMESTATE->IsEventMode()) sEventMode = "1";
-		if(sMD5Sum==NULL)
+
+		if (!bNoSong)
 		{
-			sMD5Sum=sDir;
-			sMD5Sum.append(sMachineGUID);
+			Song* pSong = GAMESTATE->m_pCurSong;
+			sTitle = HTTPHelper::URLEncode(pSong->GetTranslitFullTitle(),true);
+			sArtist = HTTPHelper::URLEncode(pSong->GetDisplayArtist(),true);
+			sDir = (HTTPHelper::URLEncode(pSong->GetSongDir()));
+			sMD5Sum = MsdFile::ReadFileIntoString(pSong->GetSongFilePath());
+			if(sMD5Sum==NULL)
+			{
+				sMD5Sum=sDir;
+				sMD5Sum.append(sMachineGUID);
+			}
+			sMD5Sum= HTTPHelper::URLEncode(NSMAN->MD5Hex(sMD5Sum));
 		}
-		sMD5Sum= HTTPHelper::URLEncode(NSMAN->MD5Hex(sMD5Sum));
+		
+		
 		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&smfilemd5="+sMD5Sum+"&title="+sTitle+"&artist="+sArtist+"&eventmode="+sEventMode+"";
 		m_SongBroadcastHTTP->Threaded_SubmitPostRequest(m_sSongBroadcastURL, sDataToSend);
 	}

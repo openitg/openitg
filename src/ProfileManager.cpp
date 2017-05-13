@@ -585,86 +585,89 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 	//broadcast score to db if it's not an edit from the card or a custom song -- could put something inappropriate in there
 	//if we have networking
 	#if !defined(WITHOUT_NETWORKING)
-	if( !pSteps->IsAPlayerEdit() && !pSong->IsCustomSong() )
+	if( PROFILEMAN->IsPersistentProfile(pn) ) // anonymous profiles keep generating guids and polluting the database, higher collission potential. Require a USB for score to broadcast
 	{
-		char temp[50];
-		
-		CString sHSName = HTTPHelper::URLEncode(hs.sName);
-		Profile* pProfile = PROFILEMAN->GetProfile(pn);
-		if( pProfile && !pProfile->m_sLastUsedHighScoreName.empty() )
+		if( !pSteps->IsAPlayerEdit() && !pSong->IsCustomSong() )
 		{
-			sHSName = HTTPHelper::URLEncode(pProfile->m_sLastUsedHighScoreName);
-		}
-		CString sTitle = HTTPHelper::URLEncode(pSong->GetTranslitFullTitle(),true);
-		CString sArtist = HTTPHelper::URLEncode(pSong->GetDisplayArtist(),true);
-		CString sDir (HTTPHelper::URLEncode(pSong->GetSongDir()));
+			char temp[50];
 		
-		sprintf(temp, "%d", pSteps->GetDifficulty());
-		CString sDifficulty=HTTPHelper::URLEncode(temp);
-		//LOG->Info("ProfileManager::AddStepsScore Check diff %s",sDifficulty.c_str());
+			CString sHSName = HTTPHelper::URLEncode(hs.sName);
+			Profile* pProfile = PROFILEMAN->GetProfile(pn);
+			if( pProfile && !pProfile->m_sLastUsedHighScoreName.empty() )
+			{
+				sHSName = HTTPHelper::URLEncode(pProfile->m_sLastUsedHighScoreName);
+			}
+			CString sTitle = HTTPHelper::URLEncode(pSong->GetTranslitFullTitle(),true);
+			CString sArtist = HTTPHelper::URLEncode(pSong->GetDisplayArtist(),true);
+			CString sDir (HTTPHelper::URLEncode(pSong->GetSongDir()));
 		
-		StepsType st = pSteps->m_StepsType;
-		CString sStepType="0";
-		switch (st)
-		{
-			case STEPS_TYPE_DANCE_DOUBLE:
-			case STEPS_TYPE_PUMP_HALFDOUBLE:
-			case STEPS_TYPE_PUMP_DOUBLE:
-			case STEPS_TYPE_EZ2_DOUBLE:
-			case STEPS_TYPE_BM_DOUBLE5:
-			case STEPS_TYPE_BM_DOUBLE7:
-			case STEPS_TYPE_MANIAX_DOUBLE:
-			case STEPS_TYPE_TECHNO_DOUBLE4:
-			case STEPS_TYPE_TECHNO_DOUBLE5:
-				sStepType="1";
-				break;
-			default:
-				break;
-		}
-		sStepType= HTTPHelper::URLEncode(sStepType);
+			sprintf(temp, "%d", pSteps->GetDifficulty());
+			CString sDifficulty=HTTPHelper::URLEncode(temp);
+			//LOG->Info("ProfileManager::AddStepsScore Check diff %s",sDifficulty.c_str());
 		
-		sprintf(temp, "%d", hs.grade);
-		CString sGrade=HTTPHelper::URLEncode(temp);
+			StepsType st = pSteps->m_StepsType;
+			CString sStepType="0";
+			switch (st)
+			{
+				case STEPS_TYPE_DANCE_DOUBLE:
+				case STEPS_TYPE_PUMP_HALFDOUBLE:
+				case STEPS_TYPE_PUMP_DOUBLE:
+				case STEPS_TYPE_EZ2_DOUBLE:
+				case STEPS_TYPE_BM_DOUBLE5:
+				case STEPS_TYPE_BM_DOUBLE7:
+				case STEPS_TYPE_MANIAX_DOUBLE:
+				case STEPS_TYPE_TECHNO_DOUBLE4:
+				case STEPS_TYPE_TECHNO_DOUBLE5:
+					sStepType="1";
+					break;
+				default:
+					break;
+			}
+			sStepType= HTTPHelper::URLEncode(sStepType);
+		
+			sprintf(temp, "%d", hs.grade);
+			CString sGrade=HTTPHelper::URLEncode(temp);
 
-		sprintf(temp, "%f", hs.fPercentDP);
-		CString sPercent=HTTPHelper::URLEncode(temp);
+			sprintf(temp, "%f", hs.fPercentDP);
+			CString sPercent=HTTPHelper::URLEncode(temp);
 		
-		sprintf(temp, "%d", hs.iScore);
-		CString sScore= HTTPHelper::URLEncode(temp);
+			sprintf(temp, "%d", hs.iScore);
+			CString sScore= HTTPHelper::URLEncode(temp);
 
-		CString sPlayerGUID =  "0";
+			CString sPlayerGUID =  "0";
 
-		if( pProfile )
-		{
-			sPlayerGUID =  HTTPHelper::URLEncode(PROFILEMAN->GetProfile(pn)->m_sGuid);
+			if( pProfile )
+			{
+				sPlayerGUID =  HTTPHelper::URLEncode(PROFILEMAN->GetProfile(pn)->m_sGuid);
+			}
+		
+			CString sMachineGUID = HTTPHelper::URLEncode(hs.sMachineGuid);
+			CString sEventMode = "0";
+			if (GAMESTATE->IsEventMode()) sEventMode = "1";
+		
+
+			CString sMD5Sum = MsdFile::ReadFileIntoString(pSong->GetSongFilePath());
+			if(sMD5Sum==NULL)
+			{
+				sMD5Sum=sDir;
+				sMD5Sum.append(sMachineGUID);
+			}
+			sMD5Sum= HTTPHelper::URLEncode(NSMAN->MD5Hex(sMD5Sum));
+
+			CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&smfilemd5="+sMD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&eventmode="+sEventMode+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
+			LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());
+		
+			//and we have a broadcast URL...
+			if (m_sScoreBroadcastURL.length()>3)
+			{
+				m_ScoreBroadcastHTTP->Threaded_SubmitPostRequest(m_sScoreBroadcastURL, sDataToSend);
+				//LOG->Info("ProfileManager::AddStepsScore sent!!");
+				//CString res = m_ScoreBroadcastHTTP->GetThreadedResult();
+				//LOG->Info("ProfileManager::AddStepsScore res: %s",res.c_str());
+			}
+		
+		
 		}
-		
-		CString sMachineGUID = HTTPHelper::URLEncode(hs.sMachineGuid);
-		CString sEventMode = "0";
-		if (GAMESTATE->IsEventMode()) sEventMode = "1";
-		
-
-		CString sMD5Sum = MsdFile::ReadFileIntoString(pSong->GetSongFilePath());
-		if(sMD5Sum==NULL)
-		{
-			sMD5Sum=sDir;
-			sMD5Sum.append(sMachineGUID);
-		}
-		sMD5Sum= HTTPHelper::URLEncode(NSMAN->MD5Hex(sMD5Sum));
-
-		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&md5="+sMD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&eventmode="+sEventMode+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
-		LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());
-		
-		//and we have a broadcast URL...
-		if (m_sScoreBroadcastURL.length()>3)
-		{
-			m_ScoreBroadcastHTTP->Threaded_SubmitPostRequest(m_sScoreBroadcastURL, sDataToSend);
-			//LOG->Info("ProfileManager::AddStepsScore sent!!");
-			//CString res = m_ScoreBroadcastHTTP->GetThreadedResult();
-			//LOG->Info("ProfileManager::AddStepsScore res: %s",res.c_str());
-		}
-		
-		
 	}
 	#endif
 }

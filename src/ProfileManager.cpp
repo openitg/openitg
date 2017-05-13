@@ -627,13 +627,19 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 		sprintf(temp, "%d", hs.iScore);
 		CString sScore= HTTPHelper::URLEncode(temp);
 
-		CString MD5Sum =  HTTPHelper::URLEncode(NSMAN->MD5Hex(MsdFile::ReadFileIntoString(pSong->GetSongFilePath())));
-
 		CString sPlayerGUID =  HTTPHelper::URLEncode(PROFILEMAN->GetProfile(pn)->m_sGuid);
 		CString sMachineGUID = HTTPHelper::URLEncode(hs.sMachineGuid);
 		CString sEventMode = "0";
 		if (GAMESTATE->IsEventMode()) sEventMode = "1";
 		
+
+		CString sMD5Sum = MsdFile::ReadFileIntoString(pSong->GetSongFilePath());
+		if(sMD5Sum==NULL)
+		{
+			sMD5Sum=sDir;
+			sMD5Sum.append(sMachineGUID);
+		}
+		sMD5Sum= HTTPHelper::URLEncode(NSMAN->MD5Hex(sMD5Sum));
 
 		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&md5="+MD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&eventmode="+sEventMode+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
 		LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());

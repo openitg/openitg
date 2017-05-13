@@ -22,6 +22,8 @@
 #include "Steps.h"
 #include "LuaReference.h"
 #include "StepMania.h"
+#include "NetworkSyncManager.h"
+#include "MsdFile.h"
 
 //dont include this if we dont have networking
 #if !defined(WITHOUT_NETWORKING)
@@ -328,7 +330,7 @@ void GameState::SetSongInProgress( const CString &sWriteOut )
 
 }
 
-void GameState::HTTPBroadcastSongInProgress( const CString &sWriteOut )
+void GameState::HTTPBroadcastSongInProgress( )
 {
 
 	//if we have networking
@@ -336,11 +338,22 @@ void GameState::HTTPBroadcastSongInProgress( const CString &sWriteOut )
 	//and we have a broadcast URL...
 	if (m_sSongBroadcastURL.length()>3)
 	{
-		m_SongBroadcastHTTP->Threaded_SubmitPostRequest(m_sSongBroadcastURL, sWriteOut);
-	}
-	else
-	{
-		//LOG->Debug("GameState::SetSongInProgress m_sSongBroadcastURL ( %s ) length is less than 3! Skipping broadcast!", m_sSongBroadcastURL.c_str());
+		Song* pSong = GAMESTATE->m_pCurSong;
+		CString sMachineGUID = HTTPHelper::URLEncode(PROFILEMAN->GetMachineProfile()->m_sGuid);
+		CString sTitle = HTTPHelper::URLEncode(pSong->GetTranslitFullTitle(),true);
+		CString sArtist = HTTPHelper::URLEncode(pSong->GetDisplayArtist(),true);
+		CString sDir (HTTPHelper::URLEncode(pSong->GetSongDir()));
+		CString sMD5Sum = MsdFile::ReadFileIntoString(pSong->GetSongFilePath());
+		CString sEventMode = "0";
+		if (GAMESTATE->IsEventMode()) sEventMode = "1";
+		if(sMD5Sum==NULL)
+		{
+			sMD5Sum=sDir;
+			sMD5Sum.append(sMachineGUID);
+		}
+		sMD5Sum= HTTPHelper::URLEncode(NSMAN->MD5Hex(sMD5Sum));
+		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&smfilemd5="+sMD5Sum+"&title="+sTitle+"&artist="+sArtist+"&eventmode="+sEventMode+"";
+		m_SongBroadcastHTTP->Threaded_SubmitPostRequest(m_sSongBroadcastURL, sDataToSend);
 	}
 	#endif
 }

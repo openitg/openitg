@@ -641,7 +641,7 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 		}
 		sMD5Sum= HTTPHelper::URLEncode(NSMAN->MD5Hex(sMD5Sum));
 
-		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&md5="+MD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&eventmode="+sEventMode+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
+		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&md5="+sMD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&eventmode="+sEventMode+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
 		LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());
 		
 		//and we have a broadcast URL...

@@ -590,6 +590,11 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 		char temp[50];
 		
 		CString sHSName = HTTPHelper::URLEncode(hs.sName);
+		Profile* pProfile = PROFILEMAN->GetProfile(pn);
+		if( pProfile && !pProfile->m_sLastUsedHighScoreName.empty() )
+		{
+			sHSName = HTTPHelper::URLEncode(pProfile->m_sLastUsedHighScoreName);
+		}
 		CString sTitle = HTTPHelper::URLEncode(pSong->GetTranslitFullTitle(),true);
 		CString sArtist = HTTPHelper::URLEncode(pSong->GetDisplayArtist(),true);
 		CString sDir (HTTPHelper::URLEncode(pSong->GetSongDir()));
@@ -627,7 +632,13 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 		sprintf(temp, "%d", hs.iScore);
 		CString sScore= HTTPHelper::URLEncode(temp);
 
-		CString sPlayerGUID =  HTTPHelper::URLEncode(PROFILEMAN->GetProfile(pn)->m_sGuid);
+		CString sPlayerGUID =  "0";
+
+		if( pProfile )
+		{
+			sPlayerGUID =  HTTPHelper::URLEncode(PROFILEMAN->GetProfile(pn)->m_sGuid);
+		}
+		
 		CString sMachineGUID = HTTPHelper::URLEncode(hs.sMachineGuid);
 		CString sEventMode = "0";
 		if (GAMESTATE->IsEventMode()) sEventMode = "1";

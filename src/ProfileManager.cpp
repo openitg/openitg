@@ -585,7 +585,8 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 	//broadcast score to db if it's not an edit from the card or a custom song -- could put something inappropriate in there
 	//if we have networking
 	#if !defined(WITHOUT_NETWORKING)
-	if( PROFILEMAN->IsPersistentProfile(pn) ) // anonymous profiles keep generating guids and polluting the database, higher collission potential. Require a USB for score to broadcast
+	// anonymous profiles keep generating guids and polluting the database, higher collission potential. Require a USB for score to broadcast
+	if( PROFILEMAN->ProfileWasLoadedFromMemoryCard(pn) ) 
 	{
 		if( !pSteps->IsAPlayerEdit() && !pSong->IsCustomSong() )
 		{

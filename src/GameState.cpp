@@ -22,12 +22,20 @@
 #include "Steps.h"
 #include "LuaReference.h"
 #include "StepMania.h"
+#include "NetworkSyncManager.h"
+#include "MsdFile.h"
+
+//dont include this if we dont have networking
+#if !defined(WITHOUT_NETWORKING)
+#include "HTTPHelper.h"
+#endif
 
 #include <ctime>
 #include <set>
 
 
 GameState*	GAMESTATE = NULL;	// global and accessable from anywhere in our program
+static Preference<CString> pSongBroadcastURL("SongBroadcastURL", "");
 
 #define CHARACTERS_DIR "Characters/"
 #define NAME_BLACKLIST_FILE "Data/NamesBlacklist.dat"
@@ -110,6 +118,14 @@ GameState::GameState() :
 	m_Environment = new LuaTable;
 
 	m_pTimingDataOriginal = new TimingData;
+	
+	//DUMB but if I don't do it this way, it crashes. Gotta have a private member instead of a preference	
+	m_sSongBroadcastURL.assign(pSongBroadcastURL.Get().c_str());
+	
+	//allocate networking variables
+	#if !defined(WITHOUT_NETWORKING)
+		m_SongBroadcastHTTP = new HTTPHelper();
+	#endif
 
 	/* Don't reset yet; let the first screen do it, so we can
 	 * use PREFSMAN and THEME. */
@@ -127,6 +143,14 @@ GameState::~GameState()
 	SAFE_DELETE( m_Environment );
 
 	SAFE_DELETE( m_pTimingDataOriginal );
+	
+	//destroy network variables
+	#if !defined(WITHOUT_NETWORKING)
+
+
+		m_SongBroadcastHTTP->GetThreadedResult(); //waits for last call to finish or timeout before destroying object
+		SAFE_DELETE( m_SongBroadcastHTTP );
+	#endif
 }
 
 void GameState::ApplyGameCommand( const CString &sCommand, PlayerNumber pn )
@@ -298,11 +322,50 @@ void GameState::SetSongInProgress( const CString &sWriteOut )
 {
 	CString sLockFile = "Data/songinprogress";
 	LOG->Debug("GameState::SetSongInProgress( %s )", sWriteOut.c_str());
-
 	RageFile f;
 	f.Open(sLockFile, RageFile::WRITE);
 	f.Write( sWriteOut );
 	f.Close();
+
+
+}
+
+void GameState::HTTPBroadcastSongInProgress( bool bNoSong )
+{
+
+	//if we have networking
+	#if !defined(WITHOUT_NETWORKING)
+	//and we have a broadcast URL...
+	if (m_sSongBroadcastURL.length()>3)
+	{
+		CString sTitle = "";
+		CString sArtist ="";
+		CString sDir = "";
+		CString sMD5Sum = "";
+		CString sMachineGUID = HTTPHelper::URLEncode(PROFILEMAN->GetMachineProfile()->m_sGuid);
+		CString sEventMode = "0";
+		if (GAMESTATE->IsEventMode()) sEventMode = "1";
+
+		if (!bNoSong)
+		{
+			Song* pSong = GAMESTATE->m_pCurSong;
+			sTitle = HTTPHelper::URLEncode(pSong->GetTranslitFullTitle(),true);
+			sArtist = HTTPHelper::URLEncode(pSong->GetDisplayArtist(),true);
+			sDir = (HTTPHelper::URLEncode(pSong->GetSongDir()));
+			sMD5Sum = MsdFile::ReadFileIntoString(pSong->GetSongFilePath());
+			if(sMD5Sum==NULL)
+			{
+				sMD5Sum=sDir;
+				sMD5Sum.append(sMachineGUID);
+			}
+			sMD5Sum= HTTPHelper::URLEncode(NSMAN->MD5Hex(sMD5Sum));
+		}
+		
+		
+		CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&smfilemd5="+sMD5Sum+"&title="+sTitle+"&artist="+sArtist+"&eventmode="+sEventMode+"";
+		m_SongBroadcastHTTP->Threaded_SubmitPostRequest(m_sSongBroadcastURL, sDataToSend);
+	}
+	#endif
 }
 
 /*

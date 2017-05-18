@@ -3,10 +3,13 @@
 
 #include "ScreenWithMenuElements.h"
 #include "BitmapText.h"
-#include "ezsockets.h"
 #include "RageFileManager.h"
 
 #if !defined(WITHOUT_NETWORKING)
+#include "HTTPHelper.h"
+#include "ezsockets.h"
+
+
 
 class ScreenPackages : public ScreenWithMenuElements
 {
@@ -27,6 +30,9 @@ public:
 	virtual void TweenOffScreen( );
 	virtual void Update(float f);
 
+
+
+
 private:
 	void UpdatePackagesList();
 	void UpdateLinksList();
@@ -34,8 +40,6 @@ private:
 
 	void HTMLParse();
 
-	CString URLEncode( const CString &URL );			//Encode any string in URL-style
-	CString StripOutContainers( const CString & In );	//Strip off "'s and ''s
 
 	Sprite	m_sprExistingBG;
 	Sprite	m_sprWebBG;
@@ -62,8 +66,7 @@ private:
 	void EnterURL( const CString & sURL );
 	void HTTPUpdate( );
 
-	//True if proper string, false if improper
-	bool ParseHTTPAddress( const CString & URL, CString & Proto, CString & Server, int & Port, CString & Addy );
+	
 
 	Sprite	m_sprDL;
 	Sprite	m_sprDLBG;

@@ -58,6 +58,12 @@ EzSockets::~EzSockets()
 	delete times;
 }
 
+void EzSockets::setTimeout(int sec, int usec)
+{
+	times->tv_sec = sec;
+	times->tv_usec = usec;
+}
+
 //Check to see if the socket has been created
 bool EzSockets::check()
 {
@@ -132,6 +138,21 @@ bool EzSockets::listen()
 #if defined(WIN32)
 typedef int socklen_t;
 #endif
+
+void EzSockets::setBlocking(bool b)
+{
+	#if defined(WIN32)
+	u_long iMode = 0;
+	if (!b)	iMode=1;
+	ioctlsocket(sock, FIONBIO, &iMode);
+	#else
+	const int flags = fcntl(sock, F_GETFL, 0);
+    if ((flags & O_NONBLOCK) && !b) { return; }
+    if (!(flags & O_NONBLOCK) && b) { return; }
+    fcntl(sock, F_SETFL, (b ? flags ^ O_NONBLOCK : flags | O_NONBLOCK));
+	#endif
+	blocking=b;
+}
 
 bool EzSockets::accept(EzSockets& socket)
 {
@@ -231,6 +252,14 @@ bool EzSockets::CanRead()
 	return select(sock+1,scks,NULL,NULL,times) > 0;
 }
 
+bool EzSockets::IsErrorNoSelect()
+{
+	if (state == skERROR)
+		return true;
+	
+	return false;
+}
+
 bool EzSockets::IsError()
 {
 	if (state == skERROR)
@@ -298,6 +327,13 @@ int EzSockets::ReadData(char *data, unsigned int bytes)
 	return bytesRead;
 }
 
+int EzSockets::ReadDataNoSelect(char *data, unsigned int bytes)
+{	
+	int bytesRead = PeekDataNoSelect(data,bytes);
+	inBuffer = inBuffer.substr(bytesRead);
+	return bytesRead;
+}
+
 int EzSockets::PeekData(char *data, unsigned int bytes)
 {
 	if (blocking)
@@ -305,6 +341,25 @@ int EzSockets::PeekData(char *data, unsigned int bytes)
 			pUpdateRead();
 	else
 		while (CanRead() && !IsError())
+			if (pUpdateRead()<1)
+				break;
+	
+	int bytesRead = bytes;
+	if (inBuffer.length()<bytes)
+		bytesRead = inBuffer.length();
+	memcpy(data,inBuffer.c_str(), bytesRead);
+	
+	return bytesRead;
+}
+
+
+int EzSockets::PeekDataNoSelect(char *data, unsigned int bytes)
+{
+	if (blocking)
+		while ((inBuffer.length()<bytes) && !IsErrorNoSelect())
+			pUpdateRead();
+	else
+		while (!IsErrorNoSelect())
 			if (pUpdateRead()<1)
 				break;
 	
@@ -480,6 +535,7 @@ int EzSockets::pWriteData(const char* data, int dataSize)
 {
 	return send(sock, data, dataSize, 0);
 }
+
 
 /* 
  * (c) 2003-2004 Josh Allen, Charles Lohr, and Adam Lowman

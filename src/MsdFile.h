@@ -20,6 +20,8 @@ public:
 	bool ReadFile( CString sFilePath );
 	void ReadFromString( const CString &sString );
 
+	static CString ReadFileIntoString(CString sNewPath);
+
 	CString GetError() const { return error; }
 
 	unsigned GetNumValues() const { return values.size(); }

@@ -124,8 +124,13 @@ void MemoryCardDriverThreaded_Windows::GetUSBStorageDevices( vector<UsbStorageDe
 		bool bIsSpecifiedMountPoint = false;
 		FOREACH_PlayerNumber( p )
 		{
-			LOG->Trace("MemoryCardOsMountPointP%d: %s", (int)(p+1), MEMCARDMAN->m_sMemoryCardOsMountPoint[p].Get().c_str());
-			bIsSpecifiedMountPoint |= bool( !(MEMCARDMAN->m_sMemoryCardOsMountPoint[p].Get().CompareNoCase(sDrive)) );
+			CString sPointWithoutSlash = "" + MEMCARDMAN->m_sMemoryCardOsMountPoint[p].Get();
+			while (sPointWithoutSlash.length() > 1 && (sPointWithoutSlash.c_str()[sPointWithoutSlash.length()] == '\\' || sPointWithoutSlash.c_str()[sPointWithoutSlash.length()] == '/'))
+			{
+				sPointWithoutSlash = sPointWithoutSlash.Left(sPointWithoutSlash.length()-1);
+			}
+			LOG->Trace("MemoryCardOsMountPointP%d: %s", (int)(p+1), sPointWithoutSlash.c_str());
+			bIsSpecifiedMountPoint |= bool( !(sPointWithoutSlash.CompareNoCase(sDrive)) );
 		}
 
 		CString sDrivePath = sDrive + "\\";

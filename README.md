@@ -70,6 +70,10 @@ TODO: Similar process to arcade, but create 32-bit chroot of modern debian
 
 ## How to build for home on windows:
 
-TODO: Need someone to describe how to build in Visual Studio and produce
-releases.
+1. Open visual studio (2010, 2013, and 2015 have been tested)
+2. Select "File -> Open Project" and pick src\Stepmania-net2010.sln
+3. 5 Projects will load in the solution explorer. Right click each and select properties.
+4. For each of the project properties, under the configurations drop-down, select "All Configurations" and under Configuration "Options->General" select the appropriate platform toolset for your VS Version.
+5. If you use Visual Studio 2013, depending on your edition of it, there is a bug, you will need to add the /FS flag to Additional Options under "C/C++ -> Command Line", or you can simply build twice the first time you build.
+6. To compile the release, select the appropriate profile (usually the SSE2 build), then select "Build -> Rebuild Solution".
 

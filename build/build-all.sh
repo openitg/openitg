@@ -5,6 +5,7 @@ set -e
 set -u
 
 PRIVATE_RSA="$1"
+PATCH_RSA="$2"
 
 function print_usage
 {
@@ -19,6 +20,6 @@ if [ ! -d "artifacts" ]; then
 fi
 
 ./build-source-package.sh ./artifacts
-./build-arcade-machine-revision.sh $PRIVATE_RSA
+./build-arcade-machine-revision.sh $PRIVATE_RSA $PATCH_RSA
 ./build-opensuse-package.sh
 ./build-ubuntu-packages.sh

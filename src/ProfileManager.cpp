@@ -633,7 +633,11 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 			sprintf(temp, "%d", hs.iScore);
 			CString sScore= HTTPHelper::URLEncode(temp);
 
-			CString sPlayerGUID =  "0";
+			sprintf(temp, "%d", pn);
+			CString sPlayerGUID =  HTTPHelper::URLEncode(temp);
+
+			sprintf(temp, "%d", GAMESTATE->GetNumSidesJoined());
+			CString sNumPlayers = HTTPHelper::URLEncode(temp);
 
 			//if we have a valid profile and it was loaded from usb, populate player guid
 			if( pProfile && PROFILEMAN->ProfileWasLoadedFromMemoryCard(pn))
@@ -654,7 +658,7 @@ void ProfileManager::AddStepsScore( const Song* pSong, const Steps* pSteps, Play
 			}
 			sMD5Sum= HTTPHelper::URLEncode(NSMAN->MD5Hex(sMD5Sum));
 
-			CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&smfilemd5="+sMD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&eventmode="+sEventMode+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"";
+			CString sDataToSend="machineguid="+sMachineGUID+"&path="+sDir+"&smfilemd5="+sMD5Sum+"&title="+sTitle+"&artist="+sArtist+"&playerguid="+sPlayerGUID+"&eventmode="+sEventMode+"&difficulty="+sDifficulty+"&steptype="+sStepType+"&name="+sHSName+"&score="+sScore+"&percent="+sPercent+"&grade="+sGrade+"&numplayers="+sNumPlayers;
 			//LOG->Info("ProfileManager::AddStepsScore Want to send %s to %s",sDataToSend.c_str(), m_sScoreBroadcastURL.c_str());
 		
 			m_ScoreBroadcastHTTP->Threaded_SubmitPostRequest(m_sScoreBroadcastURL, sDataToSend);

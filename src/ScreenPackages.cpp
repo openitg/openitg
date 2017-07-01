@@ -367,7 +367,7 @@ void ScreenPackages::HTMLParse()
 			if ( j < l )
 				k = j;
 
-			CString TempLink = StripOutContainers( m_sBUFFER.substr(m+1,k-m-1) );
+			CString TempLink = HTTPHelper::StripOutContainers( m_sBUFFER.substr(m+1,k-m-1) );
 			if ( TempLink.substr(0,7).compare("http://") != 0 )
 				TempLink = m_sBaseAddress + TempLink;
 
@@ -387,51 +387,7 @@ void ScreenPackages::HTMLParse()
 	UpdateLinksList();
 }
 
-CString ScreenPackages::URLEncode( const CString &URL )
-{
-	CString Input = StripOutContainers( URL );
-	CString Output;
 
-	for( unsigned k = 0; k < Input.size(); k++ )
-	{
-		char t = Input.at( k );
-		if ( ( t >= '!' ) && ( t <= 'z' ) )
-		{
-			Output+=t;
-		}
-		else
-			Output += "%" + ssprintf( "%X", t );
-	}
-	return Output;
-}
-
-CString ScreenPackages::StripOutContainers( const CString & In )
-{
-	if( In.size() == 0 )
-		return "";
-
-	unsigned i = 0;
-	char t = In.at(i);
-	while( t == ' ' && i < In.length() )
-	{
-		t = In.at(++i);
-	}
-
-	if( t == '\"' || t == '\'' )
-	{
-		unsigned j = i+1; 
-		char u = In.at(j);
-		while( u != t && j < In.length() )
-		{
-			u = In.at(++j);
-		}
-		if( j == i )
-			return StripOutContainers( In.substr(i+1) );
-		else
-			return StripOutContainers( In.substr(i+1, j-i-1) );
-	}
-	return In.substr( i );
-}
 
 void ScreenPackages::UpdateProgress()
 {
@@ -469,7 +425,7 @@ void ScreenPackages::EnterURL( const CString & sURL )
 	int Port=80;
 	CString sAddress;
 
-	if( !ParseHTTPAddress( sURL, Proto, Server, Port, sAddress ) )
+	if( !HTTPHelper::ParseHTTPAddress( sURL, Proto, Server, Port, sAddress ) )
 	{
 		m_sStatus = "Invalid URL.";
 		UpdateProgress();
@@ -525,7 +481,7 @@ void ScreenPackages::EnterURL( const CString & sURL )
 	}
 	//Continue...
 
-	sAddress = URLEncode( sAddress );
+	sAddress = HTTPHelper::URLEncode( sAddress );
 
 	if ( sAddress != "/" )
 		sAddress = "/" + sAddress;
@@ -669,35 +625,7 @@ void ScreenPackages::HTTPUpdate()
 	}
 }
 
-bool ScreenPackages::ParseHTTPAddress( const CString &URL, CString &sProto, CString &sServer, int &iPort, CString &sAddress )
-{
-	// [PROTO://]SERVER[:PORT][/URL]
 
-	Regex re(
-		"^([A-Z]+)://" // [0]: HTTP://
-		"([^/:]+)"     // [1]: a.b.com
-		"(:([0-9]+))?" // [2], [3]: :1234 (optional, default 80)
-		"(/(.*))?$");    // [4], [5]: /foo.html (optional)
-	vector<CString> asMatches;
-	if( !re.Compare( URL, asMatches ) )
-		return false;
-	ASSERT( asMatches.size() == 6 );
-
-	sProto = asMatches[0];
-	sServer = asMatches[1];
-	if( asMatches[3] != "" )
-	{
-		iPort = atoi(asMatches[3]);
-		if( iPort == 0 )
-			return false;
-	}
-	else
-		iPort = 80;
-
-	sAddress = asMatches[5];
-
-	return true;
-}
 
 #endif
 /*

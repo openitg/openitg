@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 
 /** 
@@ -15,7 +15,7 @@
 */
 #include "tomcrypt.h"
 
-#ifdef LTC_OCB_MODE
+#ifdef OCB_MODE
 
 /* Since the last block is encrypted in CTR mode the same code can
  * be used to finish a decrypt or encrypt stream.  The only difference

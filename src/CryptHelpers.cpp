@@ -170,7 +170,7 @@ bool CryptHelpers::SignFile( RageFileBasic &file, CString sPrivKey, CString &sSi
 		LOG->Warn("Could not get SHA1 for file");
 		return false;
 	}
-	ret = rsa_sign_hash_ex( filehash, 20, sig, &sigsize, LTC_LTC_PKCS_1_V1_5, &g_PRNGState, g_PRNGDescId, g_SHA1DescId, 0, &key );
+	ret = rsa_sign_hash_ex( filehash, 20, sig, &sigsize, LTC_PKCS_1_V1_5, &g_PRNGState, g_PRNGDescId, g_SHA1DescId, 0, &key );
 	if ( ret != CRYPT_OK )
 	{
 		LOG->Warn("Could not sign hash file: %s", error_to_string(ret));
@@ -204,7 +204,7 @@ bool CryptHelpers::VerifyFile( RageFileBasic &file, CString sSignature, CString 
 	
 	int iMatch = 0;
 	ret = rsa_verify_hash_ex( (const unsigned char*)sSignature.data(), sSignature.size(),
-		buf_hash, sizeof(buf_hash), LTC_LTC_PKCS_1_V1_5, g_SHA1DescId, 0, &iMatch, &key );
+		buf_hash, sizeof(buf_hash), LTC_PKCS_1_V1_5, g_SHA1DescId, 0, &iMatch, &key );
 	if ( ret != CRYPT_OK )
 	{
 		sError = ssprintf("Could not verify hash: %s", error_to_string(ret));

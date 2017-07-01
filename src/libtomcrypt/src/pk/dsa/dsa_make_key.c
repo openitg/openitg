@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
@@ -15,7 +15,7 @@
    DSA implementation, generate a DSA key, Tom St Denis
 */
 
-#ifdef LTC_MDSA
+#ifdef MDSA
 
 /**
   Create a DSA key
@@ -41,13 +41,13 @@ int dsa_make_key(prng_state *prng, int wprng, int group_size, int modulus_size, 
    }
 
    /* check size */
-   if (group_size >= LTC_MDSA_MAX_GROUP || group_size <= 15 || 
-       group_size >= modulus_size || (modulus_size - group_size) >= LTC_MDSA_DELTA) {
+   if (group_size >= MDSA_MAX_GROUP || group_size <= 15 || 
+       group_size >= modulus_size || (modulus_size - group_size) >= MDSA_DELTA) {
       return CRYPT_INVALID_ARG;
    }
 
    /* allocate ram */
-   buf = XMALLOC(LTC_MDSA_DELTA);
+   buf = XMALLOC(MDSA_DELTA);
    if (buf == NULL) {
       return CRYPT_MEM;
    }
@@ -117,7 +117,7 @@ int dsa_make_key(prng_state *prng, int wprng, int group_size, int modulus_size, 
    key->qord = group_size;
 
 #ifdef LTC_CLEAN_STACK
-   zeromem(buf, LTC_MDSA_DELTA);
+   zeromem(buf, MDSA_DELTA);
 #endif
 
    err = CRYPT_OK;

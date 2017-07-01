@@ -6,17 +6,17 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
 
 /**
   @file md5.c
-  LTC_MD5 hash function by Tom St Denis 
+  MD5 hash function by Tom St Denis 
 */
 
-#ifdef LTC_MD5
+#ifdef MD5
 
 const struct ltc_hash_descriptor md5_desc =
 {

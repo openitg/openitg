@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
@@ -15,13 +15,13 @@
    RMD160 hash function
 */   
 
-/* Implementation of LTC_RIPEMD-160 based on the source by Antoon Bosselaers, ESAT-COSIC
+/* Implementation of RIPEMD-160 based on the source by Antoon Bosselaers, ESAT-COSIC
  *
  * This source has been radically overhauled to be portable and work within
  * the LibTomCrypt API by Tom St Denis
  */
 
-#ifdef LTC_RIPEMD160
+#ifdef RIPEMD160
 
 const struct ltc_hash_descriptor rmd160_desc =
 {

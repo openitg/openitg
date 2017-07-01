@@ -9,7 +9,6 @@
 
 # default to private.rsa in CWD (for the sake of a default value)
 PRIVATE_RSA=${1-private.rsa}
-PATCH_RSA=${2-Patch.rsa}
 
 # include the simple helper routines
 source common.sh
@@ -34,11 +33,11 @@ set -u
 
 function print_usage
 {
-	echo "Usage: $0 [private RSA key] [public RSA key]"
+	echo "Usage: $0 [private RSA key]"
 	exit 0
 }
 
-if ! [ -f "$PRIVATE_RSA" ] || ! [ -f "$PATCH_RSA" ]; then print_usage; fi
+if ! [ -f "$PRIVATE_RSA" ]; then print_usage; fi
 
 # clean up after ourselves on exit
 trap "rm -rf $TMP_DIR" EXIT
@@ -91,7 +90,8 @@ echo "Copying base patch data..."
 cp -a $PATCH_DATA_DIR/* "$TMP_DIR"
 
 # Replace Patch-OpenITG.rsa with the one actually used to sign the machine revision
-cp $PATCH_RSA "$PATCH_DIR/Data/Patch-OpenITG.rsa"
+openssl rsa -in $PRIVATE_RSA -inform DER \
+	-pubout -out "$PATCH_DIR/Data/Patch-OpenITG.rsa" -outform DER
 
 echo "Generating patch.zip..."
 ./gen-patch-zip.sh "$TMP_DIR/patch.zip" &> /dev/null
@@ -116,9 +116,9 @@ TEMP_SIG_FILE="$TMP_DIR/.sig"
 rm -f "$PATCH_OUTPUT_FILE"
 
 CWD="`pwd`"
-cd "$TMP_DIR"
+pushd "$TMP_DIR"
 zip -r "$CWD/$PATCH_OUTPUT_FILE" * &> /dev/null
-cd - &> /dev/null
+popd
 
 echo "Signing and appending signature..."
 

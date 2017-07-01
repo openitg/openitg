@@ -516,9 +516,6 @@
     <ClCompile Include="TrailUtil.cpp">
       <Filter>Data Structures</Filter>
     </ClCompile>
-    <ClCompile Include="io\USBDevice_Libusb.cpp">
-      <Filter>Data Structures</Filter>
-    </ClCompile>
     <ClCompile Include="io\USBDriver.cpp">
       <Filter>Data Structures</Filter>
     </ClCompile>
@@ -1446,6 +1443,21 @@
     <ClCompile Include="ibutton\win32lnk.c">
       <Filter>Special I/O\iButton</Filter>
     </ClCompile>
+    <ClCompile Include="arch\MovieTexture\FFMpeg_Helper.cpp">
+      <Filter>StepMania\arch\MovieTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="io\P3IO.cpp" />
+    <ClCompile Include="arch\InputHandler\InputHandler_P3IO.cpp" />
+    <ClCompile Include="io\USBDevice_Libusb.cpp" />
+    <ClCompile Include="arch\COM\impl\win.cc" />
+    <ClCompile Include="arch\COM\serial.cc" />
+    <ClCompile Include="arch\COM\impl\list_ports\list_ports_win.cc" />
+    <ClCompile Include="arch\Lights\LightsDriver_EXTIO.cpp" />
+    <ClCompile Include="arch\Lights\LightsDriver_Satellite.cpp" />
+    <ClCompile Include="arch\ACIO\ACIO.cpp" />
+    <ClCompile Include="io\MiniMaid.cpp" />
+    <ClCompile Include="arch\InputHandler\InputHandler_MiniMaid.cpp" />
+    <ClCompile Include="HTTPHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Screen.h">
@@ -1899,9 +1911,6 @@
       <Filter>Data Structures</Filter>
     </ClInclude>
     <ClInclude Include="TrailUtil.h">
-      <Filter>Data Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="io\USBDevice.h">
       <Filter>Data Structures</Filter>
     </ClInclude>
     <ClInclude Include="io\USBDriver.h">
@@ -2762,6 +2771,21 @@
     <ClInclude Include="ibutton\shaib.h">
       <Filter>Special I/O\iButton</Filter>
     </ClInclude>
+    <ClInclude Include="arch\MovieTexture\FFMpeg_Helper.h">
+      <Filter>StepMania\arch\MovieTexture</Filter>
+    </ClInclude>
+    <ClInclude Include="arch\InputHandler\InputHandler_P3IO.h" />
+    <ClInclude Include="io\USBDevice.h" />
+    <ClInclude Include="arch\COM\impl\win.h" />
+    <ClInclude Include="arch\COM\serial.h" />
+    <ClInclude Include="arch\COM\v8stdint.h" />
+    <ClInclude Include="arch\Lights\LightsDriver_EXTIO.h" />
+    <ClInclude Include="arch\Lights\LightsDriver_Satellite.h" />
+    <ClInclude Include="arch\ACIO\ACIO.h" />
+    <ClInclude Include="io\P3IO.h" />
+    <ClInclude Include="io\MiniMaid.h" />
+    <ClInclude Include="arch\InputHandler\InputHandler_MiniMaid.h" />
+    <ClInclude Include="HTTPHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="archutils\Win32\StepMania.ico">
@@ -2771,6 +2795,7 @@
     <None Include="archutils\Win32\DialogErrorHeader.bmp" />
     <None Include="archutils\Win32\OpenITG.ico" />
     <None Include="StepMania.xpm" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="archutils\Win32\WindowsResources.rc">

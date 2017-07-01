@@ -46,10 +46,10 @@ CWD=`pwd`
 # mild hack: wipe that CWD if we're using an absolute path
 if [ ${PATCH_FILE:0:1} == "/" ]; then CWD=""; fi
 
-cd "$PATCH_DIR"
+pushd "$PATCH_DIR"
 echo "Zipping files into $PATCH_FILE..."
 zip -rq "$CWD/$PATCH_FILE" ./*/
-cd - 0&> /dev/null
+popd
 
 echo "Encrypting patch data..."
 encrypt-patch "$PATCH_FILE"

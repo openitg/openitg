@@ -6,23 +6,23 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
 /** 
   @file omac_file.c
-  LTC_OMAC1 support, process a file, Tom St Denis
+  OMAC1 support, process a file, Tom St Denis
 */
 
 #ifdef LTC_OMAC
 
 /**
-   LTC_OMAC a file
+   OMAC a file
    @param cipher   The index of the cipher desired
    @param key      The secret key
    @param keylen   The length of the secret key (octets)
-   @param filename The name of the file you wish to LTC_OMAC
+   @param filename The name of the file you wish to OMAC
    @param out      [out] Where the authentication tag is to be stored
    @param outlen   [in/out] The max size and resulting size of the authentication tag
    @return CRYPT_OK if successful, CRYPT_NOP if file support has been disabled

@@ -10,6 +10,11 @@
 #include "Difficulty.h"
 #include "MessageManager.h"
 #include "SongOptions.h"
+#include "Preference.h"
+
+#if !defined(WITHOUT_NETWORKING)
+#include "HTTPHelper.h"
+#endif
 
 #include <map>
 #include <deque>
@@ -43,8 +48,10 @@ public:
 	void SaveCurrentSettingsToProfile( PlayerNumber pn ); // called at the beginning of each stage
 
 	void SetSongInProgress( const CString &sWriteOut );
+	void HTTPBroadcastSongInProgress( bool bNoSong=false );
 
 	void Update( float fDelta );
+
 
 	//
 	// Delayed command stuff
@@ -105,6 +112,8 @@ public:
 
 	bool ShowMarvelous() const;
 
+
+	CString			m_sSongBroadcastURL;
 	CString			m_sLoadingMessage;	// used in loading screen
 	CString			m_sPreferredSongGroup;	// GROUP_ALL_MUSIC denotes no preferred group
 	bool			m_bChangedFailTypeOnScreenSongOptions;	// true if FailType was changed in the song options screen
@@ -116,6 +125,7 @@ public:
 	bool			m_bJukeboxUsesModifiers;
 	int				m_iNumStagesOfThisSong;
 	int				m_iCurrentStageIndex;
+
 
 	int				GetStageIndex() const;
 	void			BeginStage();
@@ -232,6 +242,12 @@ public:
 	// character stuff
 private:
 	vector<Character*> m_pCharacters;
+	
+	//network private vars
+	#if !defined(WITHOUT_NETWORKING)
+	
+	HTTPHelper* m_SongBroadcastHTTP;
+	#endif
 
 public:
 	Character* m_pCurCharacters[NUM_PLAYERS];

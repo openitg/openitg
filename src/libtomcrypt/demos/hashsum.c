@@ -68,43 +68,43 @@ void register_algs(void)
 {
   int err;
 
-#ifdef LTC_TIGER
+#ifdef TIGER
   register_hash (&tiger_desc);
 #endif
-#ifdef LTC_MD2
+#ifdef MD2
   register_hash (&md2_desc);
 #endif
-#ifdef LTC_MD4
+#ifdef MD4
   register_hash (&md4_desc);
 #endif
-#ifdef LTC_MD5
+#ifdef MD5
   register_hash (&md5_desc);
 #endif
-#ifdef LTC_SHA1
+#ifdef SHA1
   register_hash (&sha1_desc);
 #endif
-#ifdef LTC_SHA224
+#ifdef SHA224
   register_hash (&sha224_desc);
 #endif
-#ifdef LTC_SHA256
+#ifdef SHA256
   register_hash (&sha256_desc);
 #endif
-#ifdef LTC_SHA384
+#ifdef SHA384
   register_hash (&sha384_desc);
 #endif
-#ifdef LTC_SHA512
+#ifdef SHA512
   register_hash (&sha512_desc);
 #endif
-#ifdef LTC_RIPEMD128
+#ifdef RIPEMD128
   register_hash (&rmd128_desc);
 #endif
-#ifdef LTC_RIPEMD160
+#ifdef RIPEMD160
   register_hash (&rmd160_desc);
 #endif
-#ifdef LTC_WHIRLPOOL
+#ifdef WHIRLPOOL
   register_hash (&whirlpool_desc);
 #endif
-#ifdef LTC_CHC_HASH
+#ifdef CHC_HASH
   register_hash(&chc_desc);
   if ((err = chc_register(register_cipher(&aes_enc_desc))) != CRYPT_OK) {
      printf("chc_register error: %s\n", error_to_string(err));

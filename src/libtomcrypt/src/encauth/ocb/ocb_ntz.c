@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 
 /**
@@ -16,7 +16,7 @@
 
 #include "tomcrypt.h"
 
-#ifdef LTC_OCB_MODE
+#ifdef OCB_MODE
 
 /**
    Returns the number of leading zero bits [from lsb up]

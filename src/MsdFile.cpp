@@ -118,6 +118,29 @@ void MsdFile::ReadBuf( char *buf, int len )
 		AddParam(buf+value_start, i - value_start);
 }
 
+//static helper for other features
+CString MsdFile::ReadFileIntoString(CString sNewPath)
+{
+	RageFile f;
+	/* Open file. */
+	if( !f.Open( sNewPath ) )
+	{
+		return NULL;
+	}
+
+	// allocate a string to hold the file
+	CString FileString;
+	FileString.reserve( f.GetFileSize() );
+
+	int iBytesRead = f.Read( FileString );
+	if( iBytesRead == -1 )
+	{
+		return NULL;
+	}
+	return FileString;
+
+}
+
 // returns true if successful, false otherwise
 bool MsdFile::ReadFile( CString sNewPath )
 {

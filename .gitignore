@@ -26,6 +26,7 @@ version.txt
 assets/utilities/itg2-util/src/.deps/
 assets/utilities/itg2-util/src/itg2ac-util
 src/libresample/src/config.h
+src/verinfo.h
 src/libresample/tests/testresample
 run
 build/artifacts/
@@ -43,6 +44,10 @@ Release-SSE2
 *.suo
 *.pdb
 *.vscode
+*.VC.db
+*.opensdf
+*.VC.VC.opendb
+*.vdi
 
 # Windows build artefacts
 src/verstub.cpp

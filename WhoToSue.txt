@@ -42,6 +42,7 @@ Contributions:
  - xjen0vax (theme metrics, Long/Marathon notifiers)
  - Wanny (font overrides for several screens, announcer bugfixes)
  - augustg (countless bugfixes)
+ - chrispable (Windows build overhaul)
 
 If we forgot to mention you, hit us up at one of the following places:
         irc.badnik.net channel #openitg

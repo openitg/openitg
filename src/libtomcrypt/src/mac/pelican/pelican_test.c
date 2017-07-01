@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
@@ -15,7 +15,7 @@
    Pelican MAC, test, by Tom St Denis 
 */
 
-#ifdef LTC_PELICAN
+#ifdef PELICAN
 
 int pelican_test(void)
 {

@@ -1,3 +1,4 @@
+#include "global.h"
 #if defined(_WIN32)
 
 /*

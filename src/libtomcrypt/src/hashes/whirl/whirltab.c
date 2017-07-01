@@ -1,11 +1,7 @@
 /**
    @file whirltab.c
-   LTC_WHIRLPOOL tables, Tom St Denis
+   WHIRLPOOL tables, Tom St Denis
 */   
-
-#if defined(LTC_WHIRLPOOL) || 1
-#include "tomcrypt_macros.h"
-
 static const ulong64 sbox0[] = {
 CONST64(0x18186018c07830d8), CONST64(0x23238c2305af4626), CONST64(0xc6c63fc67ef991b8), CONST64(0xe8e887e8136fcdfb), 
 CONST64(0x878726874ca113cb), CONST64(0xb8b8dab8a9626d11), CONST64(0x0101040108050209), CONST64(0x4f4f214f426e9e0d), 
@@ -581,7 +577,6 @@ CONST64(0xca2dbf07ad5a8333),
 CONST64(0x6302aa71c81949d9),
 };
 
-#endif /* LTC_WHIRLPOOL */
 
 /* $Source$ */
 /* $Revision$ */

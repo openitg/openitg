@@ -25,12 +25,12 @@ uint8_t pchunk[3][4];
 //first set is what a chimera uses, second set is a real ddr io (from an hd black cab), the last set is actually a mouse I use for testing!
 
 //has mouse debugger
-const uint16_t P3IO_VENDOR_ID[3] = { 0x0000, 0x1CCF, 0x046D};
-const uint16_t P3IO_PRODUCT_ID[3] = { 0x5731, 0x8008, 0xC077};
+//const uint16_t P3IO_VENDOR_ID[3] = { 0x0000, 0x1CCF, 0x046D};
+//const uint16_t P3IO_PRODUCT_ID[3] = { 0x5731, 0x8008, 0xC077};
 
 
-//const uint16_t P3IO_VENDOR_ID[2] = { 0x0000, 0x1CCF };
-//const uint16_t P3IO_PRODUCT_ID[2] = { 0x5731, 0x8008 };
+const uint16_t P3IO_VENDOR_ID[2] = { 0x0000, 0x1CCF };
+const uint16_t P3IO_PRODUCT_ID[2] = { 0x5731, 0x8008 };
 uint8_t p_light_payload[] = { 0, 0, 0, 0, 0 };
 const unsigned NUM_P3IO_CHECKS_IDS = ARRAYLEN(P3IO_PRODUCT_ID);
 int interrupt_ep = 0x83;
@@ -325,7 +325,7 @@ bool P3IO::sendUnknownCommand()
 	0x01,
 	0x00
 	};
-	LOG->Info("**************HDXB UNKNOWN COMMAND:");
+	//LOG->Info("**************HDXB UNKNOWN COMMAND:");
 	return WriteToBulkWithExpectedReply( unknown, false, true);
 }
 
@@ -335,7 +335,7 @@ bool P3IO::pingHDXB()
 {
 if (COM4SET)
 	{
-		LOG->Info("**************HDXB Serial PING:");
+		//LOG->Info("**************HDXB Serial PING:");
 		uint8_t hdxb_ping_command[] = {
 			0xaa,//ACIO_PACKET_START
 			0x03,//HDXB
@@ -366,7 +366,7 @@ if (COM4SET)
 			0x00,
 			0x14//CHECKSUM
 		};
-		LOG->Info("**************HDXB P3IO PING:");
+		//LOG->Info("**************HDXB P3IO PING:");
 		WriteToBulkWithExpectedReply(hdxb_ping_command, false, true);
 		return readHDXB(0x7e); // now flush it according to captures
 	}
@@ -379,7 +379,7 @@ bool P3IO::spamBaudCheck()
 	bool found_baud=false;
 	if (COM4SET)
 	{
-		LOG->Info("**************HDXB Serial BAUD Routine:");
+		//LOG->Info("**************HDXB Serial BAUD Routine:");
 		found_baud= ACIO::baudCheck(com4);
 	}
 	else
@@ -396,13 +396,13 @@ bool P3IO::spamBaudCheck()
 
 		for (int i=0;i<50;i++)
 		{
-			LOG->Info("**************HDXB P3IO BAUD:");
+			//LOG->Info("**************HDXB P3IO BAUD:");
 			WriteToBulkWithExpectedReply(com_baud_command, false, true);
 			readHDXB(0x40);
 			if (bulk_reply_size>=16 && p3io_response[1]==0x0F && p3io_response[4]==0x0B &&  p3io_response[5]==0xAA && p3io_response[6]==0xAA && p3io_response[7]==0xAA && p3io_response[8]==0xAA && p3io_response[9]==0xAA && p3io_response[10]==0xAA && p3io_response[11]==0xAA && p3io_response[12]==0xAA && p3io_response[13]==0xAA && p3io_response[14]==0xAA && p3io_response[15]==0xAA)
 			{
 			
-				LOG->Info("**************HDXB P3IO GOT BAUD RATE! Flushing...");
+				//LOG->Info("**************HDXB P3IO GOT BAUD RATE! Flushing...");
 				readHDXB(0x40); // now flush it
 			
 				readHDXB(0x40); // now flush it
@@ -433,7 +433,7 @@ bool P3IO::nodeCount()
 	{
 		// 00    00    01    00    PP    07    CC -- 01 is the command for enumeration, PP is 01 (payload length), 07 is the payload with a reply of 7 in it, CC is checksum
 		uint8_t nodes[]={0xaa,0x0e,0x01,0x3a,0x00,0x08,0xaa,0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x02}; 
-		LOG->Info("**************HDXB P3IO Get Node Count:");
+		//LOG->Info("**************HDXB P3IO Get Node Count:");
 		WriteToBulkWithExpectedReply(nodes, false, true);
 		readHDXB(0x40);
 		return readHDXB(0x40); // now flush it
@@ -471,20 +471,20 @@ bool P3IO::getVersion()
 			0x00,
 			0x05,
 		};
-		LOG->Info("**************ICCB1 Serial Get Version:");
+		//LOG->Info("**************ICCB1 Serial Get Version:");
 
 		com4.write(ICCB_1,7);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
-		LOG->Info("**************ICCB2 Serial Get Version:");
+		//LOG->Info("**************ICCB2 Serial Get Version:");
 		com4.write(ICCB_2,7);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
-		LOG->Info("**************HDXB Serial Get Version:");
+		//LOG->Info("**************HDXB Serial Get Version:");
 		com4.write(HDXB,7);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
@@ -540,15 +540,15 @@ bool P3IO::getVersion()
 			0x00,
 			0x05,
 		};
-		LOG->Info("**************ICCB1 P3IO Get Version:");
+		//LOG->Info("**************ICCB1 P3IO Get Version:");
 		WriteToBulkWithExpectedReply(ICCB_1, false, true);
 		readHDXB(0x7e);
 		readHDXB(0x7e);
-		LOG->Info("**************ICCB2 P3IO Get Version:");
+		//LOG->Info("**************ICCB2 P3IO Get Version:");
 		WriteToBulkWithExpectedReply(ICCB_2, false, true);
 		readHDXB(0x7e);
 		readHDXB(0x7e);
-		LOG->Info("**************HDXB P3IO Get Version:");
+		//LOG->Info("**************HDXB P3IO Get Version:");
 		WriteToBulkWithExpectedReply(HDXB, false, true);
 		readHDXB(0x7e);
 		return readHDXB(0x7e);
@@ -574,15 +574,15 @@ bool P3IO::initHDXB2()
 		uint8_t ICCB1_op3[]={0xaa,0x01,0x00,0x03,0x00,0x00,0x04};
 		uint8_t ICCB2_op3[]={0xaa,0x02,0x00,0x03,0x00,0x00,0x05};
 	
-		LOG->Info("**************ICCB1 Serial INIT mode 3:");
+		//LOG->Info("**************ICCB1 Serial INIT mode 3:");
 		com4.write(ICCB1_op3,7);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
-		LOG->Info("**************ICCB2 Serial INIT mode 3:");
+		//LOG->Info("**************ICCB2 Serial INIT mode 3:");
 		com4.write(ICCB2_op3,7);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
-		LOG->Info("**************HDXB Serial INIT mode 3:");
+		//LOG->Info("**************HDXB Serial INIT mode 3:");
 		com4.write(hdxb_op3,7);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
@@ -613,13 +613,13 @@ bool P3IO::initHDXB2()
 		uint8_t ICCB1_op3[]={0xaa,0x0d,0x02,0x3a,0x00,0x07,0xaa,0x01,0x00,0x03,0x00,0x00,0x04};
 		uint8_t ICCB2_op3[]={0xaa,0x0d,0x03,0x3a,0x00,0x07,0xaa,0x02,0x00,0x03,0x00,0x00,0x05};
 	
-		LOG->Info("**************ICCB1 P3IO INIT mode 3:");
+		//LOG->Info("**************ICCB1 P3IO INIT mode 3:");
 		WriteToBulkWithExpectedReply(ICCB1_op3, false, true);
 		readHDXB(0x7e);
-		LOG->Info("**************ICCB2 P3IO INIT mode 3:");
+		//LOG->Info("**************ICCB2 P3IO INIT mode 3:");
 		WriteToBulkWithExpectedReply(ICCB2_op3, false, true);
 		readHDXB(0x7e);
-		LOG->Info("**************HDXB P3IO INIT mode 3:");
+		//LOG->Info("**************HDXB P3IO INIT mode 3:");
 		WriteToBulkWithExpectedReply(hdxb_op3, false, true);
 		readHDXB(0x7e);
 		return readHDXB(0x7e); // now flush it according to captures
@@ -644,19 +644,19 @@ bool P3IO::initHDXB3()
 		uint8_t iccb1_type[]={0xaa,0x01,0x01,0x00,0x00,0x00,0x02};
 		uint8_t iccb2_type[]={0xaa,0x02,0x01,0x00,0x00,0x00,0x03};
 	
-		LOG->Info("**************ICCB1 Serial INIT type 0:");
+		//LOG->Info("**************ICCB1 Serial INIT type 0:");
 		com4.write(iccb1_type,7);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
-		LOG->Info("**************ICCB2 Serial  INIT type 0:");
+		//LOG->Info("**************ICCB2 Serial  INIT type 0:");
 		com4.write(iccb2_type,7);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
-		LOG->Info("**************HDXB Serial  INIT type 0:");
+		//LOG->Info("**************HDXB Serial  INIT type 0:");
 		com4.write(hdxb_type,7);
 		usleep(36000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
@@ -686,15 +686,15 @@ bool P3IO::initHDXB3()
 		uint8_t iccb1_type[]={0xaa,0x0b,0x0a,0x3a,0x00,0x07,0xaa,0x01,0x01,0x00,0x00,0x00,0x02};
 		uint8_t iccb2_type[]={0xaa,0x0b,0x0e,0x3a,0x00,0x07,0xaa,0x02,0x01,0x00,0x00,0x00,0x03};
 	
-		LOG->Info("**************ICCB1 P3IO INIT type 0:");
+		//LOG->Info("**************ICCB1 P3IO INIT type 0:");
 		WriteToBulkWithExpectedReply(iccb1_type, false, true);
 		readHDXB(0x7e);
 		readHDXB(0x7e); // now flush it according to captures
-		LOG->Info("**************ICCB2 P3IO INIT type 0:");
+		//LOG->Info("**************ICCB2 P3IO INIT type 0:");
 		WriteToBulkWithExpectedReply(iccb2_type, false, true);
 		readHDXB(0x7e);
 		readHDXB(0x7e); // now flush it according to captures
-		LOG->Info("**************HDXB P3IO INIT type 0:");
+		//LOG->Info("**************HDXB P3IO INIT type 0:");
 		WriteToBulkWithExpectedReply(hdxb_type, false, true);
 		readHDXB(0x7e);
 		return readHDXB(0x7e); // now flush it according to captures
@@ -718,7 +718,7 @@ bool P3IO::initHDXB4()
 			0x00,
 			0x2e
 		};
-		LOG->Info("**************HDXB Serial INIT4:");
+		//LOG->Info("**************HDXB Serial INIT4:");
 		com4.write(breath_of_life,9);
 		usleep(72000); // 36 ms wait
 		ACIO::read_acio_packet(com4,acio_response);
@@ -744,7 +744,7 @@ bool P3IO::initHDXB4()
 			0x00,
 			0x2e
 		};
-		LOG->Info("**************HDXB P3IO INIT4:");
+		//LOG->Info("**************HDXB P3IO INIT4:");
 		return WriteToBulkWithExpectedReply(breath_of_life, false, true);
 		//We are NOT reading because the capture says we don't at this point!
 	}
@@ -757,7 +757,7 @@ bool P3IO::openHDXB()
 	{
 		com4.open();
 		com4.setBaudrate(38400);
-		LOG->Info("**************HDXB SERIAL OPEN:");
+		//LOG->Info("**************HDXB SERIAL OPEN:");
 		return true;
 	}
 	else
@@ -773,7 +773,7 @@ bool P3IO::openHDXB()
 		0x00, // @ baud
 		0x03  // choose speed: ?, ?, 19200, 38400, 57600
 		};
-		LOG->Info("**************HDXB P3IO OPEN:");
+		//LOG->Info("**************HDXB P3IO OPEN:");
 		return WriteToBulkWithExpectedReply(com_open_command, false, true);
 	}
 }
@@ -790,7 +790,7 @@ bool P3IO::readHDXB(int len)
 		0x7e  // 7e is 126 bytes to read
 	};
 	com_read_command[5]=len&0xFF; // plug in passed in len
-	LOG->Info("**************HDXB P3IO Read:");
+	//LOG->Info("**************HDXB P3IO Read:");
 	return WriteToBulkWithExpectedReply(com_read_command, false, true);
 }
 
@@ -858,9 +858,9 @@ bool P3IO::writeHDXB(uint8_t* payload, int len, uint8_t opcode)
 		p3io_acio_message[4]=0; // actual virtual com port number to use
 		p3io_acio_message[5]=len&0xFF; //num bytes to write on the acio bus
 		memcpy( &p3io_acio_message[6],  p3io_request, len * sizeof( uint8_t ) ); // stuff in a p3io wrapper
-		LOG->Info("**************HDXB P3IO LIGHT Write:");
+		//LOG->Info("**************HDXB P3IO LIGHT Write:");
 		WriteToBulkWithExpectedReply(p3io_acio_message, false, true);
-		LOG->Info("**************HDXB P3IO Get Ping:");
+		//LOG->Info("**************HDXB P3IO Get Ping:");
 	
 	}
 	return pingHDXB();
@@ -1006,7 +1006,7 @@ bool P3IO::WriteToBulkWithExpectedReply(uint8_t* message, bool init_packet, bool
 	{
 		sprintf (debug_message+(i*3), "%02X ", message2[i]);
 	}
-	if(output_to_log) LOG->Info("Send %d bytes - %s", bytes_to_write, debug_message);
+	//if(output_to_log) LOG->Info("Send %d bytes - %s", bytes_to_write, debug_message);
 
 	int iResult = m_pDriver->BulkWrite(bulk_write_to_ep, (char*)message2, bytes_to_write, REQ_TIMEOUT);
 
@@ -1027,7 +1027,7 @@ bool P3IO::WriteToBulkWithExpectedReply(uint8_t* message, bool init_packet, bool
 	{
 		sprintf (debug_message+(i*3), "%02X ", response[i]);
 	}
-	if(output_to_log) LOG->Info("Full response is %d/%d bytes - %s", bulk_reply_size,response[1]+2, debug_message);
+	//if(output_to_log) LOG->Info("Full response is %d/%d bytes - %s", bulk_reply_size,response[1]+2, debug_message);
 	
 
 	//if the unescaped data is too small according to the packet length byte...
@@ -1074,7 +1074,7 @@ int P3IO::GetResponseFromBulk(uint8_t* response, int expected_response_length, b
 	//LOG->Info("begin while loop");
 	while (totalBytesRead < (expected_response_length+2)) //sometimes a response is fragmented over multiple requests, try a another time
 	{
-		if(output_to_log) LOG->Info("GETTING BULK OF EXPECTED SIZE: %02X/%02x",totalBytesRead,expected_response_length);
+		//if(output_to_log) LOG->Info("GETTING BULK OF EXPECTED SIZE: %02X/%02x",totalBytesRead,expected_response_length);
 		int i=0;
 		num_reads++;
 
@@ -1089,7 +1089,7 @@ int P3IO::GetResponseFromBulk(uint8_t* response, int expected_response_length, b
 		{
 			sprintf (debug_message+(i*3), "%02X ", response2[i]);
 		}
-		if(output_to_log) LOG->Info("Bulk read round %d is %d bytes - %s", num_reads, bytesReadThisRound, debug_message);
+		//if(output_to_log) LOG->Info("Bulk read round %d is %d bytes - %s", num_reads, bytesReadThisRound, debug_message);
 		//END DEBUG
 
 
@@ -1109,7 +1109,7 @@ int P3IO::GetResponseFromBulk(uint8_t* response, int expected_response_length, b
 			//LOG->Info("P3io not escaping sop");
 			while(response2[0]!=0xAA && bytesReadThisRound>0)
 			{
-				LOG->Info("Response buffer does NOT start with 0xAA, it starts with %02X. Shifting buffer left by one.",response2[0]);
+				//LOG->Info("Response buffer does NOT start with 0xAA, it starts with %02X. Shifting buffer left by one.",response2[0]);
 				//shift everything over until we do
 				for (i=0;i<bytesReadThisRound-1;i++)
 				{
@@ -1144,7 +1144,7 @@ int P3IO::GetResponseFromBulk(uint8_t* response, int expected_response_length, b
 				//if we see ANY character that is not AA... we have a response length at some point
 				if (response2[i]!=0xAA)
 				{
-					if(output_to_log) LOG->Info("Expected response length found! Setting new length to %02X",response2[i]);
+					//if(output_to_log) LOG->Info("Expected response length found! Setting new length to %02X",response2[i]);
 					flag_has_response_length=true;
 					expected_response_length=response2[i];
 					i--;

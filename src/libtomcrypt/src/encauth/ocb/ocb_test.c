@@ -6,7 +6,7 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 
 /** 
@@ -15,7 +15,7 @@
 */
 #include "tomcrypt.h"
 
-#ifdef LTC_OCB_MODE
+#ifdef OCB_MODE
 
 /** 
   Test the OCB protocol
@@ -222,7 +222,7 @@ int ocb_test(void)
 #endif /* LTC_TEST */
 }
 
-#endif /* LTC_OCB_MODE */
+#endif /* OCB_MODE */
 
 
 /* some comments

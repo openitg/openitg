@@ -6,28 +6,28 @@
  * The library is free for all purposes without any express
  * guarantee it works.
  *
- * Tom St Denis, tomstdenis@gmail.com, http://libtom.org
+ * Tom St Denis, tomstdenis@gmail.com, http://libtomcrypt.com
  */
 #include "tomcrypt.h"
 
 /** 
   @file omac_process.c
-  LTC_OMAC1 support, process data, Tom St Denis
+  OMAC1 support, process data, Tom St Denis
 */
 
 
 #ifdef LTC_OMAC
 
 /** 
-   Process data through LTC_OMAC
-   @param omac     The LTC_OMAC state
-   @param in       The input data to send through LTC_OMAC
+   Process data through OMAC
+   @param omac     The OMAC state
+   @param in       The input data to send through OMAC
    @param inlen    The length of the input (octets)
    @return CRYPT_OK if successful
 */
 int omac_process(omac_state *omac, const unsigned char *in, unsigned long inlen)
 {
-   unsigned long n, x, blklen;
+   unsigned long n, x;
    int           err;
 
    LTC_ARGCHK(omac  != NULL);
@@ -42,14 +42,13 @@ int omac_process(omac_state *omac, const unsigned char *in, unsigned long inlen)
    }
 
 #ifdef LTC_FAST
-   blklen = cipher_descriptor[omac->cipher_idx].block_length;
-   if (omac->buflen == 0 && inlen > blklen) {
-      unsigned long y;
-      for (x = 0; x < (inlen - blklen); x += blklen) {
-          for (y = 0; y < blklen; y += sizeof(LTC_FAST_TYPE)) {
+   if (omac->buflen == 0 && inlen > 16) {
+      int y;
+      for (x = 0; x < (inlen - 16); x += 16) {
+          for (y = 0; y < 16; y += sizeof(LTC_FAST_TYPE)) {
               *((LTC_FAST_TYPE*)(&omac->prev[y])) ^= *((LTC_FAST_TYPE*)(&in[y]));
           }
-          in += blklen;
+          in += 16;
           if ((err = cipher_descriptor[omac->cipher_idx].ecb_encrypt(omac->prev, omac->prev, &omac->key)) != CRYPT_OK) {
              return err;
           }

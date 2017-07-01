@@ -10,9 +10,21 @@
 #  include "libpng/include/png.h"
 #  if defined(_MSC_VER)
 #  if defined(_XBOX)
-#    pragma comment(lib, "libpng/lib/xboxlibpng.lib")
+#    pragma comment(lib, "../extern/libpng/lib/xboxlibpng.lib")
+#  elif _MSC_VER == 1400 // Visual Studio 2005 -- MIA do not have
+#	 pragma comment(lib, "../extern/libpng/lib/vs2005/libpng.lib")
+#  elif _MSC_VER == 1500 // Visual Studio 2008 -- MIA do not have
+#	 pragma comment(lib, "../extern/libpng/lib/vs2008/libpng.lib")
+#  elif _MSC_VER == 1600 // Visual Studio 2010
+#	 pragma comment(lib, "../extern/libpng/lib/vs2010/libpng.lib")
+#  elif _MSC_VER == 1700 // Visual Studio 2012 -- MIA do not have
+#	 pragma comment(lib, "../extern/libpng/lib/vs2012/libpng.lib") 
+#  elif _MSC_VER == 1800 // Visual Studio 2013
+#	 pragma comment(lib, "../extern/libpng/lib/vs2013/libpng.lib") 
+#  elif _MSC_VER == 1900 // Visual Studio 2015
+#	 pragma comment(lib, "../extern/libpng/lib/vs2015/libpng.lib") 
 #  else
-#    pragma comment(lib, "libpng/lib/libpng.lib")
+#    pragma comment(lib, "../extern/libpng/lib/libpng.lib") // Visual Studio 2003?
 #  endif
 #  pragma warning(disable: 4611) /* interaction between '_setjmp' and C++ object destruction is non-portable */
 #  endif // _MSC_VER

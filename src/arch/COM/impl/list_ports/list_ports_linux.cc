@@ -130,7 +130,8 @@ usb_sysfs_friendly_name(const string& sys_usb_path)
 {
     unsigned int device_number = 0;
 
-    istringstream( read_line(sys_usb_path + "/devnum") ) >> device_number;
+    istringstream devnum_iss( read_line(sys_usb_path + "/devnum") );
+    devnum_iss >> device_number;
 
     string manufacturer = read_line( sys_usb_path + "/manufacturer" );
 

@@ -22,7 +22,6 @@ replacement for the ITG binary on arcade cabinents.
 1. StepMania 4.0 LUA Bindings
 2. StepMania 4.0 Theme metrics
 
-
 ## How to check-out the source
 
 ```sh
@@ -64,9 +63,24 @@ free space to work with.
 TODO: No chroot necessary, need script to install dependencies on various
 distributions...
 
-## How to build for home on 64-bit linux:
+## How to build for home on 64-bit Ubuntu:
+```shell
+# Install required dependencies
+sudo apt install git build-essential autoconf automake \
+libgl1-mesa-dev libglu1-mesa-dev libpng12-dev \
+libjpeg62-dev liblua5.1-0-dev libvorbis-dev libmad0-dev \
+libusb-dev libxrandr-dev libavcodec-dev libswscale-dev \
+libavformat-dev libasound2-dev libavutil-dev
 
-TODO: Similar process to arcade, but create 32-bit chroot of modern debian
+# Clone the software
+git clone https://github.com/openitg/openitg.git
+
+# Change to the OpenITG directory
+cd openitg
+
+# Build OpenITG
+./build_home.sh
+```
 
 ## How to build for home on windows:
 
@@ -76,4 +90,3 @@ TODO: Similar process to arcade, but create 32-bit chroot of modern debian
 4. For each of the project properties, under the configurations drop-down, select "All Configurations" and under Configuration "Options->General" select the appropriate platform toolset for your VS Version.
 5. If you use Visual Studio 2013, depending on your edition of it, there is a bug, you will need to add the /FS flag to Additional Options under "C/C++ -> Command Line", or you can simply build twice the first time you build.
 6. To compile the release, select the appropriate profile (usually the SSE2 build), then select "Build -> Rebuild Solution".
-

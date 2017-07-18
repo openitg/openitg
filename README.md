@@ -79,7 +79,7 @@ git clone https://github.com/openitg/openitg.git
 cd openitg
 
 # Build OpenITG
-./build_home.sh
+./build-home.sh
 ```
 
 ## How to build for home on windows:

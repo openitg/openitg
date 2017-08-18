@@ -49,8 +49,8 @@ pull request".
 
 1. Choose a location for your chroot:  MY_CHROOT=/home/cmyers/chroot
 2. Install debootstrap and chroot (on debian/ubuntu, apt-get install chroot debootstrap)
-3. Set up chroot, from root dir of source, as the root user, run: ./chroot-arcade.sh `pwd` $MY_CHROOT
-4. cd /root/openitg-dev/ && ./build-arcade.sh
+3. Set up chroot, from root dir of source, as the root user, run: ``./chroot-arcade.sh `pwd` $MY_CHROOT``
+4. `cd /root/openitg-dev/ && ./build-arcade.sh`
 
 NOTE: the chroot will be created in the location you choose for MY_CHROOT.  This
 will build an entire Debian Sarge Linux system (the same OS used by arcade

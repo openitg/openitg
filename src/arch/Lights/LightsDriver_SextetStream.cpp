@@ -88,7 +88,7 @@ inline size_t packControllerLights(const LightsState *ls, GameController gc, uin
 		ls->m_bGameButtonLights[gc][GAME_BUTTON_BACK],
 		ls->m_bGameButtonLights[gc][GAME_BUTTON_COIN],
 		ls->m_bGameButtonLights[gc][GAME_BUTTON_OPERATOR],
-		false,
+		false, //Removed as SM3.95 does not have EFFECT_UP and EFFECT_DOWN
 		false,
 		false);
 
@@ -131,6 +131,7 @@ inline size_t packLine(uint8_t * buffer, const LightsState* ls)
 
 	index += packCabinetLights(ls, &(buffer[index]));
 
+	//Hardcoded to two players.
 	FOREACH_ENUM(GameController, 2, gc)
 	{
 		index += packControllerLights(ls, gc, &(buffer[index]));
@@ -267,6 +268,7 @@ LightsDriver_SextetStreamToFile::LightsDriver_SextetStreamToFile()
 
 /*
  * Copyright © 2014 Peter S. May
+ * Backported by dinsfire 2017
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the

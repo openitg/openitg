@@ -226,7 +226,8 @@ Lights = arch/Lights/LightsDriver.cpp arch/Lights/LightsDriver.h \
 		arch/Lights/LightsDriver_PacDrive.cpp arch/Lights/LightsDriver_PacDrive.h \
 		arch/Lights/LightsDriver_G15.cpp arch/Lights/LightsDriver_G15.h \
 		arch/Lights/LightsDriver_EXTIO.cpp arch/Lights/LightsDriver_EXTIO.h \
-		arch/Lights/LightsDriver_Satellite.cpp arch/Lights/LightsDriver_Satellite.h
+		arch/Lights/LightsDriver_Satellite.cpp arch/Lights/LightsDriver_Satellite.h \
+		arch/Lights/LightsDriver_SextetStream.cpp arch/Lights/LightsDriver_SextetStream.h
 
 MemoryCard = arch/MemoryCard/MemoryCardDriver.cpp arch/MemoryCard/MemoryCardDriver.h
 LowLevelWindow = arch/LowLevelWindow/LowLevelWindow.cpp arch/LowLevelWindow/LowLevelWindow.h

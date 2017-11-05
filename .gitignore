@@ -31,6 +31,10 @@ src/libresample/tests/testresample
 run
 build/artifacts/
 
+#Compiled ZIPs
+home-*.zip
+patch.zip
+
 # Visual Studio build artefacts
 *.obj
 build-vs2008

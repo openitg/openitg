@@ -298,62 +298,65 @@ void MemoryCardDriverThreaded_Linux::GetUSBStorageDevices( vector<UsbStorageDevi
 				LOG->Warn( "error reading '%s': %s", fn.c_str(), f.GetError().c_str() );
 				return;
 			}
-			
+
 			char szScsiDevice[1024];
 			char szMountPoint[1024];
-			int iRet = sscanf( sLine, "%s %s", szScsiDevice, szMountPoint );
-			if( iRet != 2 )
+			int iRet = sscanf( sLine.c_str(), "%1023s %1023s", szScsiDevice, szMountPoint );
+			if( iRet != 2 || szScsiDevice[0] == '#')
 				continue;	// don't process this line
-			
-			
-			CString sMountPoint = szMountPoint;
-			TrimLeft( sMountPoint );
-			TrimRight( sMountPoint );
-			
+
+			/* Get the real kernel device name, which should match
+			 * the name from /sys/block, by following symlinks in
+			 * /dev.  This allows us to specify persistent names in
+			 * /etc/fstab using things like /dev/device/by-path. */
+			char szUnderlyingDevice[PATH_MAX];
+			if( realpath(szScsiDevice, szUnderlyingDevice) == nullptr )
+			{
+				// "No such file or directory" is understandable
+				if (errno != ENOENT)
+					LOG->Warn( "realpath(\"%s\"): %s", szScsiDevice, strerror(errno) );
+				continue;
+			}
+
+			//std::string sMountPoint = Rage::trim(szMountPoint);
+			std::string sMountPoint = szMountPoint;
+
 			// search for the mountpoint corresponding to the device
 			for( unsigned i=0; i<vDevicesOut.size(); i++ )
 			{
 				UsbStorageDevice& usbd = vDevicesOut[i];
-				if( usbd.sDevice == szScsiDevice )	// found our match
+				if( usbd.sDevice == szUnderlyingDevice )	// found our match
 				{
+					// Use the device entry from fstab so the mount command works
+					usbd.sDevice = szScsiDevice;
 					usbd.sOsMountDir = sMountPoint;
 					break;	// stop looking for a match
 				}
 			}
 		}
 	}
-	
+
+	for( unsigned i=0; i<vDevicesOut.size(); i++ )
+	{
+		UsbStorageDevice& usbd = vDevicesOut[i];
+		LOG->Trace( "    sDevice: %s, iBus: %d, iLevel: %d, iPort: %d, id: %04X:%04X, Vendor: '%s', Product: '%s', sSerial: \"%s\", sOsMountDir: %s",
+				usbd.sDevice.c_str(), usbd.iBus, usbd.iLevel, usbd.iPort, usbd.idVendor, usbd.idProduct, usbd.sVendor.c_str(),
+				usbd.sProduct.c_str(), usbd.sSerial.c_str(), usbd.sOsMountDir.c_str() );
+	}
+
 	/* Remove any devices that we couldn't find a mountpoint for. */
 	for( unsigned i=0; i<vDevicesOut.size(); i++ )
 	{
 		UsbStorageDevice& usbd = vDevicesOut[i];
 		if( usbd.sOsMountDir.empty() )
 		{
-			if( usbd.iBus != -1 )
-			{
-				LOG->Trace( "Using pmount for USB device %s", usbd.sDevice.c_str() );
+			LOG->Trace( "Ignoring %s (couldn't find in /etc/fstab)", usbd.sDevice.c_str() );
 
-				usbd.bUsePmount = true;
-				usbd.sOsMountDir = "/media/"+usbd.sPmountLabel;
-			}
-			else
-			{
-				LOG->Trace( "Ignoring %s (couldn't find in /etc/fstab)", usbd.sDevice.c_str() );
-
-				vDevicesOut.erase( vDevicesOut.begin()+i );
-				--i;
-			}
+			vDevicesOut.erase( vDevicesOut.begin()+i );
+			--i;
 		}
 	}
 
-	for( unsigned i=0; i<vDevicesOut.size(); i++ )
-	{
-		UsbStorageDevice& usbd = vDevicesOut[i];
-		LOG->Trace( "    sDevice: %s, iBus: %d, iLevel: %d, iPort: %d, id: %04X:%04X, Vendor: '%s', Product: '%s', sSerial: \"%s\", sOsMountDir: %s, bUsePmount: %d",
-				usbd.sDevice.c_str(), usbd.iBus, usbd.iLevel, usbd.iPort, usbd.idVendor, usbd.idProduct, usbd.sVendor.c_str(),
-				usbd.sProduct.c_str(), usbd.sSerial.c_str(), usbd.sOsMountDir.c_str(), usbd.bUsePmount );
-	}
-	
 	LOG->Trace( "Done with GetUSBStorageDevices" );
 }
 

@@ -40,6 +40,8 @@ public:
 	BitmapText			m_textCourse;
 	BitmapText			m_textSort;
 	GradeDisplay		m_GradeDisplay[NUM_PLAYERS];
+
+	void PushSelf( lua_State *L );
 };
 
 struct WheelItemData : public WheelItemBaseData

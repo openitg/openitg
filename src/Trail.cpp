@@ -200,15 +200,53 @@ public:
 		return 1;
 	}
 
+	static int GetEntries( T* p, lua_State *L )
+	{
+		lua_newtable(L);
+		for(int i=0; i<p->m_vEntries.size(); ++i)
+		{
+			p->m_vEntries[i].PushSelf(L);
+			lua_rawseti(L, -2, i+1);
+		}
+		return 1;
+	}
+
+	static int GetMeter( T* p, lua_State *L )				{ lua_pushnumber(L, p->m_iSpecifiedMeter); return 1; }
+	static int GetStepsType( T* p, lua_State *L )				{ lua_pushnumber(L, p->m_StepsType); return 1; }
+
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( GetDifficulty )
 		ADD_METHOD( GetRadarValues )
+		ADD_METHOD( GetEntries )
+		ADD_METHOD( GetMeter )
+		ADD_METHOD( GetStepsType )
 		Luna<T>::Register( L );
 	}
 };
 
 LUA_REGISTER_CLASS( Trail )
+
+template<class T>
+class LunaTrailEntry: public Luna<T>
+{
+public:
+	LunaTrailEntry() { LUA->Register( Register ); }
+
+	static int GetSong( T* p, lua_State *L )				{ p->pSong->PushSelf(L); return 1; }
+	static int GetSteps( T* p, lua_State *L )				{ p->pSteps->PushSelf(L); return 1; }
+	static int IsSecret( T* p, lua_State *L )			{ lua_pushboolean(L, p->bSecret ); return 1; }
+
+	static void Register(lua_State *L)
+	{
+		ADD_METHOD( GetSong )
+		ADD_METHOD( GetSteps )
+		ADD_METHOD( IsSecret )
+		Luna<T>::Register( L );
+	}
+};
+
+LUA_REGISTER_CLASS( TrailEntry )
 // lua end
 
 /*

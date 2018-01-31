@@ -1358,12 +1358,24 @@ public:
 	static int GetTranslitFullTitle( T* p, lua_State *L )	{ lua_pushstring(L, p->GetTranslitFullTitle() ); return 1; }
 	static int GetCourseDir( T* p, lua_State *L )			{ lua_pushstring(L, p->m_sPath ); return 1; }
 
+	static int GetTrail( T* p, lua_State *L )				{ p->GetTrail( (StepsType)IArg(1), (CourseDifficulty)IArg(2) )->PushSelf(L); return 1; }
+
+	static int GetAllTrails( T* p, lua_State *L )
+	{
+		vector<Trail*> trails;
+		p->GetAllTrails(trails);
+		LuaHelpers::CreateTableFromArray<Trail*>( trails, L );
+		return 1;
+	}
+
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( GetPlayMode )
 		ADD_METHOD( GetDisplayFullTitle )
 		ADD_METHOD( GetTranslitFullTitle )
 		ADD_METHOD( GetCourseDir )
+		ADD_METHOD( GetTrail )
+		ADD_METHOD( GetAllTrails )
 		Luna<T>::Register( L );
 	}
 };

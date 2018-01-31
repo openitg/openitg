@@ -10,7 +10,7 @@ if test "$with_ffmpeg" = "yes"; then
 
         if pkg-config --libs libavcodec &> /dev/null; then AVCODEC_LIBS="`pkg-config --libs libavcodec`"; else AVCODEC_LIBS="-lavcodec"; fi
 		if pkg-config --libs libavformat &> /dev/null; then AVFORMAT_LIBS="`pkg-config --libs libavformat`"; else AVFORMAT_LIBS="-lavformat"; fi
-		if pkg-config --libs libswscale &> /dev/null; then SWSCALE_LIBS="`pkg-config --libs libswscale`"; else SWSCALE_LIBS="-swscale"; fi
+		if pkg-config --libs libswscale &> /dev/null; then SWSCALE_LIBS="`pkg-config --libs libswscale`"; else SWSCALE_LIBS="-lswscale"; fi
         if pkg-config --libs libavutil &> /dev/null; then AVUTIL_LIBS="`pkg-config --libs libavutil`"; else AVUTIL_LIBS="-lavutil"; fi
         
         if pkg-config --cflags libavcodec &> /dev/null; then AVCODEC_CFLAGS="`pkg-config --cflags libavcodec`"; else AVCODEC_CFLAGS=""; fi

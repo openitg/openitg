@@ -70,6 +70,9 @@ CString GetStatsLineValue( PlayerNumber pn, EndingStatsLine line )
 	case CALORIES_TODAY:		return pProfile->GetDisplayTotalCaloriesBurnedToday();
 	case CURRENT_COMBO:			return Commify( pProfile->m_iCurrentCombo );
 	case PERCENT_COMPLETE:
+		if( !PREFSMAN->m_bGameEndStats )
+			return ssprintf( "" );
+		else
 		{
 			float fActual = 0;
 			float fPossible = 0;
@@ -98,6 +101,10 @@ CString GetStatsLineValue( PlayerNumber pn, EndingStatsLine line )
 	case PERCENT_COMPLETE_HARD:
 	case PERCENT_COMPLETE_CHALLENGE:
 		// Ugly...
+		// Ugly indeed. It takes far too long at the USB save screen and newer commonly used themes (eg Simply Love) don't use these stats at all. BYE -Mercury
+		if( !PREFSMAN->m_bGameEndStats )
+			return ssprintf( "" );
+		else
 		{
 			CString sStepsType = GAMEMAN->StepsTypeToThemedString(st);
 			float fPercent = 0;

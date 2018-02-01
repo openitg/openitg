@@ -380,6 +380,17 @@ public:
 		return 1;
 	}
 
+	// I want to be able to read charts directly, without using an external tool to pre-cache. -Mercury
+	static int GetSMNoteData( T* p, lua_State *L )
+	{
+		CString nd;
+		p->Decompress(); //Delete if this causes a leak.
+		p->GetSMNoteData( nd );
+		p->Compress(); //
+		lua_pushstring(L, nd);
+		return 1;
+	}
+
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( GetStepsType )
@@ -387,6 +398,7 @@ public:
 		ADD_METHOD( GetDescription )
 		ADD_METHOD( GetMeter )
 		ADD_METHOD( GetRadarValues )
+		ADD_METHOD( GetSMNoteData ) // stepchart string
 		Luna<T>::Register( L );
 	}
 };

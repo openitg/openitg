@@ -1201,7 +1201,7 @@ void Profile::LoadGeneralDataFromNode( const XNode* pNode )
 				m_sDefaultModifiers[game_type->m_sName] = game_type->m_sValue;
 			}
 			// is "Speed" the only OptionRow for scroll speeds?
-			if (! IsMachine() )
+			if (PREFSMAN->m_bValidateSpeedMods && !IsMachine() )
 			{
 				CHECKPOINT_M("CustomSpeedMod check 1");
 				int iSpeedLineCount = THEME->GetMetricI("ScreenOptionsMaster", "Speed");
@@ -2001,6 +2001,32 @@ public:
 	static int GetTotalStepsWithTopGrade( T* p, lua_State *L )	{ lua_pushnumber(L, p->GetTotalStepsWithTopGrade((StepsType)IArg(1),(Difficulty)IArg(2),(Grade)IArg(3)) ); return 1; }
 	static int GetTotalTrailsWithTopGrade( T* p, lua_State *L )	{ lua_pushnumber(L, p->GetTotalTrailsWithTopGrade((StepsType)IArg(1),(CourseDifficulty)IArg(2),(Grade)IArg(3)) ); return 1; }
 
+	static int GetStepsHighScoreList(T* p, lua_State *L)
+	{
+		// the theme is responsible for passing both parameters.
+		ASSERT( !(lua_isnil(L,1) || lua_isnil(L,2)) );
+
+		Song *pSong = Luna<Song>::check(L,1);
+		Steps *pSteps = Luna<Steps>::check(L,2);
+
+		HighScoreList &hsl = p->GetStepsHighScoreList( pSong, pSteps );
+		hsl.PushSelf(L);
+		return 1;
+	}
+
+	static int GetCourseHighScoreList(T* p, lua_State *L)
+	{
+		// the theme is responsible for passing both parameters.
+		ASSERT( !(lua_isnil(L,1) || lua_isnil(L,2)) );
+
+		Course *pCourse = Luna<Course>::check(L,1);
+		Trail *pTrail = Luna<Trail>::check(L,2);
+
+		HighScoreList &hsl = p->GetCourseHighScoreList( pCourse, pTrail );
+		hsl.PushSelf(L);
+		return 1;
+	}
+
 	static void Register(lua_State *L)
 	{
 		ADD_METHOD( GetWeightPounds )
@@ -2023,6 +2049,8 @@ public:
 		ADD_METHOD( GetCoursesPercentComplete )
 		ADD_METHOD( GetTotalStepsWithTopGrade )
 		ADD_METHOD( GetTotalTrailsWithTopGrade )
+		ADD_METHOD( GetStepsHighScoreList )
+		ADD_METHOD( GetCourseHighScoreList )
 		Luna<T>::Register( L );
 	}
 };

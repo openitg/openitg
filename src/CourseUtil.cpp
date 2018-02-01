@@ -9,6 +9,22 @@
 //
 // Sorting stuff
 //
+
+// Course folder support
+bool CompareCoursePointersBySection( const Course *pCourse1, const Course *pCourse2 )
+{
+	CString sName1 = pCourse1->m_sGroupName;
+	CString sName2 = pCourse2->m_sGroupName;
+
+	return sName1 < sName2;
+}
+
+void CourseUtil::SortCoursePointerArrayBySection( vector<Course*> &vpCoursesInOut )
+{
+	stable_sort( vpCoursesInOut.begin(), vpCoursesInOut.end(), CompareCoursePointersBySection );
+}
+
+
 static bool CompareCoursePointersByName( const Course* pCourse1, const Course* pCourse2 )
 {
 	CString sName1 = pCourse1->GetDisplayFullTitle();

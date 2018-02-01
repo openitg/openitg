@@ -155,12 +155,31 @@ void MusicWheel::Load( CString sType )
 	CString times;
 	/* Build all of the wheel item data.  Do this after selecting
 	 * the extra stage, so it knows to always display it. */
+       /* Only sort for whatever sorts are specified by the theme for the sort menu + current sort. Takes ages otherwise. -Mercury */
+        {
+                vector<CString> vsModeChoiceNames;
+                split( MODE_MENU_CHOICE_NAMES, ",", vsModeChoiceNames );
+                SortOrder gso = GAMESTATE->m_SortOrder;
+                BuildWheelItemDatas( m_WheelItemDatas[gso], gso );
+                BuildWheelItemDatas( m_WheelItemDatas[SORT_MODE_MENU], SORT_MODE_MENU );
+                for( size_t i=0; i<vsModeChoiceNames.size(); ++i )
+                {
+                        GameCommand gc;
+                        gc.Load( 0, ParseCommands(CHOICE.GetValue(vsModeChoiceNames[i])) );
+                        SortOrder so = gc.m_SortOrder;
+                        if( so != SORT_INVALID ) /* not all mode entries have a sort function in them */
+                                BuildWheelItemDatas( m_WheelItemDatas[so], so );
+                        times += ssprintf( "%s:%.3f ", SortOrderToString(so).c_str(), timer.GetDeltaTime() );
+                }
+        }
+/*
 	FOREACH_SortOrder( so )
 	{
 		BuildWheelItemDatas( m_WheelItemDatas[so], so );
 		times += ssprintf( "%i:%.3f ", so, timer.GetDeltaTime() );
 	}
 	LOG->Trace( "took: %s", times.c_str() );
+*/
 
 	/* Set m_LastModeMenuItem to the first item that matches the current mode.  (Do this
 	 * after building wheel item data.) */
@@ -682,6 +701,8 @@ void MusicWheel::BuildWheelItemDatas( vector<WheelItemData> &arrayWheelItemDatas
 
 			if( so == SORT_ALL_COURSES )
 				CourseUtil::SortCoursePointerArrayByType( apCourses );
+			else if( PREFSMAN->m_bCourseSelectUsesSections )
+				CourseUtil::SortCoursePointerArrayBySection( apCourses );
 
 			arrayWheelItemDatas.clear();	// clear out the previous wheel items 
 
@@ -704,6 +725,10 @@ void MusicWheel::BuildWheelItemDatas( vector<WheelItemData> &arrayWheelItemDatas
 					case PLAY_MODE_NONSTOP:	sThisSection = "Nonstop";	break;
 					case PLAY_MODE_ENDLESS:	sThisSection = "Endless";	break;
 					}
+				}
+				else {
+					if( PREFSMAN->m_bCourseSelectUsesSections ) // Course folder support
+						sThisSection = pCourse->m_sGroupName;
 				}
 
 				// check that this course has at least one song playable in the current style

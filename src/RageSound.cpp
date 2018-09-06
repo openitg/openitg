@@ -265,9 +265,15 @@ void RageSound::RateChange( char *pBuffer, int &iCount, int iInputSpeed, int iOu
 			{
 				float frac = fPosition - floorf( fPosition );
 				int iPosition = int(fPosition);
-				int iValue = int(samps[iPosition] * (1-frac));
-				if( s+1 < iOutputSpeed )
+				int iValue;
+
+				if( iPosition + 1 < iInputSpeed )
+				{
+					iValue = int(samps[iPosition] * (1-frac));
 					iValue += int(samps[iPosition+1] * frac);
+				} else {
+					iValue = int(samps[iPosition]);
+				}
 
 				*pOutput = int16_t(iValue);
 				fPosition += fIncrement;

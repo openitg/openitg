@@ -1,3 +1,7 @@
+
+**NOTE**: This project is dead and has been archived. Further ideas and contributions should be made toward the StepMania project: https://github.com/stepmania/stepmania. Thanks to those who have helped made it what it is for the last 12 years.
+
+
 # OpenITG
 
 An open-source rhythm dancing game which is a fork of StepMania 3.95

@@ -1,5 +1,10 @@
 
-**NOTE**: This project is dead and has been archived. Further ideas and contributions should be made toward the StepMania project: https://github.com/stepmania/stepmania. Thanks to those who have helped made it what it is for the last 12 years.
+**NOTE**: This project is dead and has been archived. Thanks to those who have helped made it what it is for the last 12 years.
+
+Further ideas and contributions should be made toward the following projects instead:
+
+ * NotITG (more featureful and up-to-date fork of this project): https://notitg.heysora.net/
+ * StepMania (parent project): https://github.com/stepmania/stepmania. 
 
 
 # OpenITG

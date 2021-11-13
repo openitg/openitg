@@ -11,6 +11,7 @@ struct XNode;
 
 namespace CourseUtil
 {
+	void SortCoursePointerArrayBySection( vector<Course*> &vpCoursesInOut );
 	void SortCoursePointerArrayByDifficulty( vector<Course*> &vpCoursesInOut );
 	void SortCoursePointerArrayByType( vector<Course*> &vpCoursesInOut );
 	void SortCoursePointerArrayByTitle( vector<Course*> &vpCoursesInOut );

@@ -2,6 +2,7 @@
 #include "MusicWheelItem.h"
 #include "SongManager.h"
 #include "GameState.h"
+#include "song.h"
 #include "Steps.h"
 #include "ProfileManager.h"
 #include "ActorUtil.h"
@@ -257,6 +258,30 @@ void MusicWheelItem::DrawPrimitives()
 {
 	WheelItemBase::DrawPrimitives();
 }
+
+// lua start
+#include "LuaBinding.h"
+
+template<class T>
+class LunaMusicWheelItem : public LunaActorFrame<T>
+{
+public:
+	LunaMusicWheelItem() { LUA->Register( Register ); }
+
+	static int GetSong( T* p, lua_State *L ) { Song *pS = p->data->m_pSong; if(pS) pS->PushSelf(L); else lua_pushnil(L); return 1; }
+	static int GetCourse( T* p, lua_State *L ) { Course *pC = p->data->m_pCourse; if(pC) pC->PushSelf(L); else lua_pushnil(L); return 1; }
+
+	static void Register(lua_State *L)
+	{
+		ADD_METHOD( GetSong )
+		ADD_METHOD( GetCourse )
+		LunaActor<T>::Register( L );
+	}
+};
+
+LUA_REGISTER_CLASS( MusicWheelItem )
+
+// lua end
 
 /*
  * (c) 2001-2004 Chris Danford, Chris Gomez, Glenn Maynard

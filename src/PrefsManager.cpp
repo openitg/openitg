@@ -176,6 +176,7 @@ PrefsManager::PrefsManager() :
 	m_bShowNativeLanguage		( "ShowNativeLanguage",			true ),
 	m_bArcadeOptionsNavigation	( "ArcadeOptionsNavigation",	false ),
 	m_MusicWheelUsesSections	( "MusicWheelUsesSections",		ALWAYS ),
+	m_bCourseSelectUsesSections	( "CourseSelectUsesSections",	false ), // Course folders
 	m_iMusicWheelSwitchSpeed	( "MusicWheelSwitchSpeed",		10 ),
 	m_bEasterEggs				( "EasterEggs",					true ),
 	m_bEasterEggs2				( "EasterEggs2",				true ),
@@ -296,7 +297,11 @@ PrefsManager::PrefsManager() :
 
 	/* Game-specific prefs: */
 	m_sTheme						( "Theme",						"default" ),
-	m_sDefaultModifiers				( "DefaultModifiers",			"" )
+	m_sDefaultModifiers				( "DefaultModifiers",			"" ),
+
+	m_bValidateSpeedMods				( "ValidateSpeedMods",		true ), // allow Simply Love to load arbitrary speed mod selections from USB
+	m_bGameEndStats				( "GameEndStats",		true ), // "PercentComplete" calculation on ScreenEnding takes an unacceptably long time
+	m_bSaveCatalogXml			( "SaveCatalogXml",		true ) // catalog xml isn't used anywhere so it might as well go
 
 #if defined(XBOX)
 	,

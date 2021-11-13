@@ -159,6 +159,8 @@ public:
 	Preference<bool>	m_bArcadeOptionsNavigation;
 	enum MusicWheelUsesSections { NEVER, ALWAYS, ABC_ONLY };
 	Preference<MusicWheelUsesSections>		m_MusicWheelUsesSections;
+	Preference<bool>	m_bCourseSelectUsesSections;
+
 	Preference<int>		m_iMusicWheelSwitchSpeed;
 	Preference<bool>	m_bEasterEggs;
 	Preference<bool>	m_bEasterEggs2;
@@ -314,6 +316,10 @@ public:
 	/* Game-specific prefs: */
 	Preference<CString> m_sTheme;
 	Preference<CString>	m_sDefaultModifiers;
+
+	Preference<bool>	m_bValidateSpeedMods;
+	Preference<bool>	m_bGameEndStats;
+	Preference<bool>	m_bSaveCatalogXml;
 
 #if defined(XBOX)
 	// Virtual memory preferences
